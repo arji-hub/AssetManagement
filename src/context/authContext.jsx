@@ -3,6 +3,7 @@ import { auth, db } from "../services/firebase-config";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 
+//check if the user is logged in, their role, and other user information
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
