@@ -6,12 +6,13 @@ import logo from "../../assets/CICTLOGO.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const defaultNavItems = [
-  { label: "Dashboard", path: "/dashboard" },
-  { label: "Asset", path: "/asset" },
-  { label: "Report", path: "/report" },
-  { label: "QR", path: "/qr" },
-  { label: "Room", path: "/room" },
-  { label: "Faculty", path: "/faculty" },
+  { label: "Dashboard", path: "/dashboard" }, //all users
+  { label: "Asset", path: "/asset" },// all users
+  { label: "QR Code", path: "/qr" },// all users
+  { label: "Audit", path: "/audit" },// admin only
+  { label: "Report", path: "/report" },// all users
+  { label: "Faculty", path: "/faculty" }, //admin only
+  { label: "Room", path: "/room" },// admin only
 ];
 
 function Navbar({
