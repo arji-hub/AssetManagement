@@ -5,6 +5,7 @@ import "./Navbar.css";
 import logo from "../../assets/CICTLOGO.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ROLES } from "../../data/roles";
+import LogoutModal from "../ui/LogoutModal";
 
 const allRoles = [ROLES.ADMIN, ROLES.PARTTIME, ROLES.FULLTIME];
 
@@ -22,6 +23,7 @@ function Navbar({
   children,
   title = "ASSET MANAGEMENT SYSTEM",
   userName = "User",
+  userEmail = "",
   userRole = "admin",
   navItems = defaultNavItems,
   activePath = "/dashboard",
@@ -30,12 +32,35 @@ function Navbar({
   defaultSidebarOpen = false,
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(defaultSidebarOpen);
+
   const filteredNavItems = navItems.filter((item) =>
-    item.roles ? item.roles.includes(userRole) : true
+    item.roles ? item.roles.includes(userRole) : true,
   );
+
+  const [showLogoutModal, setShowLogoutModal] = useState(false);  
+
+  const handleLogoutClick = () => {
+    setShowLogoutModal(true);   
+  };
+
+  const handleLogoutConfirm = () => {
+    setShowLogoutModal(false);
+    onLogout();       
+  };
+
+  const handleLogoutCancel = () => {
+    setShowLogoutModal(false);  
+  };
 
   return (
     <div className="layout-wrapper">
+       {/* logout modal */}
+      <LogoutModal
+        isOpen={showLogoutModal}
+        onConfirm={handleLogoutConfirm}
+        onCancel={handleLogoutCancel}
+        userEmail={userEmail}
+      />
       {/*COLLUMN 1 SIDEBAR */}
       <aside
         className={`sidebar
@@ -68,7 +93,7 @@ function Navbar({
 
         {/*FOOTER*/}
         <div className="sidebar-footer">
-          <button className="logout-sidebar-btn" onClick={onLogout}>
+          <button className="logout-sidebar-btn" onClick={handleLogoutClick}>
             <span>
               <FontAwesomeIcon
                 icon="fa-solid fa-arrow-right-from-bracket"
@@ -124,6 +149,7 @@ Navbar.propTypes = {
   children: PropTypes.node,
   title: PropTypes.string,
   userName: PropTypes.string,
+  userEmail: PropTypes.string,  
   userRole: PropTypes.string,
   navItems: PropTypes.arrayOf(
     PropTypes.shape({

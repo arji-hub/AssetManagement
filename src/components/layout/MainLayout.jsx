@@ -17,6 +17,7 @@ function MainLayout({ children }) {
     <Navbar
       title="ASSET MANAGEMENT SYSTEM"
       userName={`${userInfo?.first_name} ${userInfo?.last_name}`}
+      userEmail={userInfo?.email}
       userRole={role}
       activePath={location.pathname}
       onNavigate={(path) => navigate(path)}
