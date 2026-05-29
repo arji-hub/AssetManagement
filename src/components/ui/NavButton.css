@@ -1,0 +1,27 @@
+.nav-button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  margin: 2px 8px;
+  width: calc(100% - 16px);
+  text-align: left;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+
+  background: #c8c7c7;
+  color: #000000;
+}
+
+.nav-button:hover {
+  background: #5d0302;
+  color: #ffcdcd;
+}
+
+.nav-button-active {
+  background: #860100; /* red */
+  color: #ffffff;
+}
