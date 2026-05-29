@@ -7,10 +7,17 @@
   padding: 0;
 }
 .layout-wrapper {
+   all: revert;
   display: flex;
   flex-direction: row;
   height: 100vh;
   overflow: hidden;
+}
+
+.layout-wrapper h1 {
+  font-size: inherit;
+  margin: 0;
+  font-weight: 600;
 }
 
 /* =========================
@@ -97,7 +104,7 @@
   gap: 12px;
   background: none;
   border: none;
-  color: #aaa;
+  color: #000000;
   cursor: pointer;
   font-size: 14px;
   padding: 10px 8px;
@@ -205,28 +212,6 @@
   padding: 4px;
   z-index: 4;
   min-width: 32px;
-}
-
-.burger-btn span {
-  display: block;
-  width: 24px;
-  height: 2px;
-  background: #ffffff;
-  border-radius: 2px;
-  transition: all 0.3s ease;
-}
-
-/* burger animation */
-.burger-btn span.open:nth-child(1) {
-  transform: translateY(7px) rotate(45deg);
-}
-
-.burger-btn span.open:nth-child(2) {
-  opacity: 0;
-}
-
-.burger-btn span.open:nth-child(3) {
-  transform: translateY(-7px) rotate(-45deg);
 }
 /* #endregion */
 

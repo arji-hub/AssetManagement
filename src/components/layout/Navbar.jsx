@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import NavButton from "../ui/NavButton";
 import "./Navbar.css";
 import logo from "../../assets/CICTLOGO.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const defaultNavItems = [
   { label: "Dashboard", path: "/dashboard" },
@@ -61,8 +62,13 @@ function Navbar({
         {/*FOOTER*/}
         <div className="sidebar-footer">
           <button className="logout-sidebar-btn" onClick={onLogout}>
-            <span className="nav-icon">🚪</span>
-            {sidebarOpen && <span>Logout</span>}
+            <span>
+              <FontAwesomeIcon
+                icon="fa-solid fa-arrow-right-from-bracket"
+                flip="horizontal"
+              />
+              Logout
+            </span>
           </button>
         </div>
       </aside>
@@ -82,10 +88,10 @@ function Navbar({
           {/*BURGER BTN (mobile only)*/}
           <button
             className={`burger-btn`}
-            onClick={() => setSidebarOpen(true)}
+            onClick={() => setSidebarOpen(!sidebarOpen)}
             aria-label="Toggle sidebar"
           >
-            ☰
+            <FontAwesomeIcon icon="fa-solid fa-bars" />
           </button>
 
           {/* title */}

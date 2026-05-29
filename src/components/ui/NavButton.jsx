@@ -5,7 +5,8 @@ function NavButton({ label, icon, isActive, onClick }) {
   return (
     <button
       className={`nav-button ${isActive ? "nav-button-active" : ""}`}
-      onClick={onClick}
+      onClick={isActive ? undefined : onClick}
+      disabled={isActive}
     >
       <span className="nav-button-label">{label}</span>
     </button>
