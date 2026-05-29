@@ -12,7 +12,7 @@ const defaultNavItems = [
   { label: "Audit", path: "/audit" },// admin only
   { label: "Report", path: "/report" },// all users
   { label: "Faculty", path: "/faculty" }, //admin only
-  { label: "Room", path: "/room" },// admin only
+  { label: "Room", path: "/room" },
 ];
 
 function Navbar({
