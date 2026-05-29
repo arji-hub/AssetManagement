@@ -4,14 +4,18 @@ import NavButton from "../ui/NavButton";
 import "./Navbar.css";
 import logo from "../../assets/CICTLOGO.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ROLES } from "../../data/roles";
+
+const allRoles = [ROLES.ADMIN, ROLES.PARTTIME, ROLES.FULLTIME];
 
 const defaultNavItems = [
-  { label: "Dashboard", path: "/dashboard" },
-  { label: "Asset", path: "/asset" },
-  { label: "Report", path: "/report" },
-  { label: "QR", path: "/qr" },
-  { label: "Room", path: "/room" },
-  { label: "Faculty", path: "/faculty" },
+  { label: "Dashboard", path: "/dashboard", roles: allRoles },
+  { label: "Asset", path: "/asset", roles: allRoles },
+  { label: "QR Code", path: "/qr", roles: allRoles },
+  { label: "Audit", path: "/audit", roles: [ROLES.ADMIN] },
+  { label: "Report", path: "/report", roles: allRoles },
+  { label: "Faculty", path: "/faculty", roles: [ROLES.ADMIN] },
+  { label: "Room", path: "/room", roles: [ROLES.ADMIN] },
 ];
 
 function Navbar({
@@ -26,6 +30,9 @@ function Navbar({
   defaultSidebarOpen = false,
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(defaultSidebarOpen);
+  const filteredNavItems = navItems.filter((item) =>
+    item.roles ? item.roles.includes(userRole) : true
+  );
 
   return (
     <div className="layout-wrapper">
@@ -45,7 +52,7 @@ function Navbar({
 
         {/*NAV PATHS*/}
         <nav className="sidebar-nav">
-          {navItems.map((item) => (
+          {filteredNavItems.map((item) => (
             <NavButton
               key={item.path}
               label={item.label}
