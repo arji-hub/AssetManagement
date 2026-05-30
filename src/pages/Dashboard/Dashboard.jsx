@@ -7,10 +7,6 @@ import { ROLES } from "../../data/roles";
 function Dashboard() {
   const { role, loading, user, userInfo } = useAuth();
 
-  // add these logs
-  console.log("loading:", loading);
-  console.log("user:", user);
-  console.log("role:", role);
   console.log("userInfo:", userInfo);
   if (loading) return <p>Loading...</p>;
 

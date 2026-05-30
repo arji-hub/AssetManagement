@@ -20,7 +20,6 @@ function Login() {
     try {
       const { role } = await login(email, password);
 
-      console.log("Role:", role);
       if (role === "admin") {
         navigate("/dashboard");
       } else if (role === "parttime" || role === "fulltime") {
