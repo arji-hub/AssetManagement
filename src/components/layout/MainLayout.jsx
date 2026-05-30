@@ -16,7 +16,7 @@ function MainLayout({ children }) {
   return (
     <Navbar
       title="ASSET MANAGEMENT SYSTEM"
-      userName={`${userInfo?.first_name} ${userInfo?.last_name}`}
+      userName={`${userInfo?.firstname} ${userInfo?.lastname}`}
       userEmail={userInfo?.email}
       userRole={role}
       activePath={location.pathname}

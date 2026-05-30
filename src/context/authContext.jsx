@@ -7,20 +7,30 @@ import { doc, getDoc } from "firebase/firestore";
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
+  console.log("AuthProvider is rendering");
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log("Setting up auth state listener...");
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
+        console.log("user exists:", user);
         const userDoc = await getDoc(doc(db, "users", user.uid));
         if (userDoc.exists()) {
           const data = userDoc.data();
+          console.log("raw firestore data:", data);
           setUser(user);
           setRole(data.role);
-          setUserInfo(data);
+          setUserInfo({
+            firstname: data.first_name,
+            lastname: data.last_name,
+            email: data.email,
+            role: data.role,
+            username: data.user_name,
+          });
         }
       } else {
         setUser(null);
