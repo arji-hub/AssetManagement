@@ -135,6 +135,7 @@ function Navbar({
               <span className="user-role">{userRole}</span>
               <span className="user-name">{userName}</span>
             </div>
+            <FontAwesomeIcon icon="fa-solid fa-circle-user" style={{ fontSize: "36px" }} />
           </div>
         </header>
 
