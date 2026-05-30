@@ -8,7 +8,7 @@ function Dashboard() {
   const { role, loading, user, userInfo } = useAuth();
 
   console.log("userInfo:", userInfo);
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p>Loading pa wait lang...</p>;
 
   if (role === ROLES.ADMIN) return <AdminDashboard />;
 

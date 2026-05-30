@@ -1,0 +1,147 @@
+.login-modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: loginFadeIn 0.2s ease;
+}
+
+.login-modal-box {
+  background: #fff;
+  border-radius: 4px;
+  padding: 40px 36px 32px;
+  width: 100%;
+  max-width: 320px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  animation: loginSlideUp 0.25s ease;
+  position: relative;
+}
+
+.login-modal-title {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #111;
+  margin-bottom: 28px;
+}
+
+/* ── fields ── */
+.login-modal-field {
+  position: relative;
+  margin-bottom: 14px;
+}
+
+.login-modal-field input {
+  width: 100%;
+  padding: 10px 36px 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+.login-modal-field input::placeholder {
+  color: #aaa;
+}
+
+.login-modal-field input:focus {
+  border-color: #860100;
+}
+
+.login-modal-field-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #aaa;
+  font-size: 14px;
+  pointer-events: none;
+}
+
+.login-modal-eye {
+  pointer-events: all;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.login-modal-eye:hover {
+  color: #860100;
+}
+
+/* ── button ── */
+.login-modal-submit-btn {
+  width: 100%;
+  padding: 11px;
+  background: #860100;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  margin-top: 6px;
+  transition: background 0.2s ease;
+}
+
+.login-modal-submit-btn:hover {
+  background: #5d0100;
+}
+
+.login-modal-submit-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* ── footer links ── */
+.login-modal-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 14px;
+}
+
+.login-modal-footer span {
+  font-size: 12px;
+  color: #860100;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.login-modal-footer span:hover {
+  opacity: 0.7;
+  text-decoration: underline;
+}
+
+/* ── error ── */
+.login-modal-error {
+  font-size: 12px;
+  color: #c0392b;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+@keyframes loginFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes loginSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
