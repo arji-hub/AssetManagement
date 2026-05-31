@@ -31,7 +31,8 @@ function LoginModal({ onLogin }) {
   };
 
   return (
-    <div className="login-modal-overlay">
+    <div className="login-modal-overlays">
+      {/* currently hidden remove 's' to implement*/}
       <div className="login-modal-box">
         <div className="login-modal-title">LOGIN</div>
 
@@ -41,7 +42,7 @@ function LoginModal({ onLogin }) {
           <div className="login-modal-field">
             <input
               type="email"
-              placeholder="Username"
+              placeholder="E-mail"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required

@@ -1,3 +1,4 @@
+
 .nav-button {
   display: flex;
   align-items: center;
@@ -24,4 +25,24 @@
 .nav-button-active {
   background: #860100; /* red */
   color: #ffffff;
+}
+
+@font-face {
+  font-family: "Sansation";
+  src: url("../../assets/fonts/Sansation/Sansation-Bold.ttf") format("truetype");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Sansation";
+  src: url("../../assets/fonts/Sansation/Sansation-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.nav-button-label {
+  font-family: "Sansation";
+  font-weight: bold;
+  font-size: 16px;
 }

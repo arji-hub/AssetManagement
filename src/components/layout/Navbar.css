@@ -159,9 +159,17 @@
 /* #endregion */
 
 /* #region ─── NAVBAR LEFT ───  */
+@font-face {
+  font-family: "Cinzel";
+  src: url("../../assets/fonts/Cinzel/Cinzel-VariableFont_wght.ttf")
+    format("truetype");
+  font-weight: bold;
+  font-style: normal;
+}
+
 .app-title {
-  font-size: clamp(15px, 1vw, 18px);
-  font-weight: 600;
+  font-family: "Cinzel";
+  font-size: clamp(18px, 3vw, 30px) !important;
   flex: 1;
   color: #f5aa2c;
   overflow: hidden;

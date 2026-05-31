@@ -15,7 +15,8 @@ const defaultNavItems = [
   { label: "QR Code", path: "/qr", roles: allRoles },
   { label: "Audit", path: "/audit", roles: [ROLES.ADMIN] },
   { label: "Report", path: "/report", roles: allRoles },
-  { label: "Faculty", path: "/faculty", roles: [ROLES.ADMIN] },
+  { label: "Transfer", path: "/transfer", roles: allRoles },
+  { label: "Custodian", path: "/custodian", roles: [ROLES.ADMIN] },
   { label: "Room", path: "/room", roles: [ROLES.ADMIN] },
 ];
 
