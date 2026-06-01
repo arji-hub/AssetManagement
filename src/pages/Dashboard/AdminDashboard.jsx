@@ -10,7 +10,7 @@ function AdminDashboard() {
       <div style={{ padding: "40px" }}>
         <h1>Admin Dashboard</h1>
         <p>
-          Welcome, {userInfo?.first_name} {userInfo?.last_name}
+          Welcome, {userInfo?.firstname} {userInfo?.lastname}
         </p>
         <p>Role: Admin</p>
       </div>

@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { auth, db } from "../services/firebase-config";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 
 //check if the user is logged in, their role, and other user information
@@ -12,6 +12,13 @@ export function AuthProvider({ children }) {
   const [role, setRole] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    setUser(null);
+    setRole(null);
+    setUserInfo(null);
+  };
 
   useEffect(() => {
     console.log("Setting up auth state listener...");
@@ -44,7 +51,9 @@ export function AuthProvider({ children }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, role, userInfo, loading }}>
+    <AuthContext.Provider
+      value={{ user, role, userInfo, loading, logout: handleLogout }}
+    >
       {children}
     </AuthContext.Provider>
   );

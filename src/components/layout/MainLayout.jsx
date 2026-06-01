@@ -4,7 +4,7 @@ import { logout } from "../../services/authService";
 import Navbar from "./Navbar";
 
 function MainLayout({ children }) {
-  const { userInfo, role } = useAuth();
+  const { userInfo, role, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -27,5 +27,9 @@ function MainLayout({ children }) {
     </Navbar>
   );
 }
+const handleLogout = async () => {
+  await logout();
+  navigate("/login");
+};
 
 export default MainLayout;
