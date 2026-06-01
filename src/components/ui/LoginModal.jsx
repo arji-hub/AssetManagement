@@ -31,8 +31,8 @@ function LoginModal({ onLogin }) {
   };
 
   return (
-    <div className="login-modal-overlays">
-      {/* currently hidden remove 's' to implement*/}
+    <div className="login-modal-overlay">
+      {/*remove 's' to implement right align*/}
       <div className="login-modal-box">
         <div className="login-modal-title">LOGIN</div>
 

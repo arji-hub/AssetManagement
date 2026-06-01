@@ -1,6 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { logout } from "../../services/authService";
 import Navbar from "./Navbar";
 
 function MainLayout({ children }) {
@@ -27,9 +26,5 @@ function MainLayout({ children }) {
     </Navbar>
   );
 }
-const handleLogout = async () => {
-  await logout();
-  navigate("/login");
-};
 
 export default MainLayout;
