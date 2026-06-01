@@ -6,7 +6,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "./LogoutModal.css";
 
-function LogoutModal({ isOpen, onConfirm, onCancel, userEmail }) {
+function LogoutModal({ isOpen, onConfirm, onCancel, userEmail = "" }) {
   if (!isOpen) return null;
 
   return (
@@ -38,10 +38,6 @@ LogoutModal.propTypes = {
   onConfirm: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
   userEmail: PropTypes.string,
-};
-
-LogoutModal.defaultProps = {
-  userEmail: "",
 };
 
 export default LogoutModal;

@@ -89,6 +89,7 @@ function Navbar({
                 setSidebarOpen(false);
               }}
             />
+            
           ))}
         </nav>
 

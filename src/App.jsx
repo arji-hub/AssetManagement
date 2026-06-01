@@ -37,7 +37,7 @@ function App() {
           <Route path="/custodian" element={<Custodian />} />
           <Route path="/transfer" element={<Transfer />} />
           <Route path="/report" element={<Report />} />
-          <Route path="/QR" element={<QR />} />
+          <Route path="/qr" element={<QR />} />
           <Route path="/audit" element={<Audit />} />
           <Route path="/room" element={<Room />} />
         </Route>
