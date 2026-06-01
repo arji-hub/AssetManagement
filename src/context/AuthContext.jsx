@@ -21,14 +21,11 @@ export function AuthProvider({ children }) {
   };
 
   useEffect(() => {
-    console.log("Setting up auth state listener...");
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        console.log("user exists:", user);
         const userDoc = await getDoc(doc(db, "users", user.uid));
         if (userDoc.exists()) {
           const data = userDoc.data();
-          console.log("raw firestore data:", data);
           setUser(user);
           setRole(data.role);
           setUserInfo({
