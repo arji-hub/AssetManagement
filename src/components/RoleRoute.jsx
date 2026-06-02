@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import LoadingScreen from "./LoadingScreen";
+import LoadingScreen from "./ui/LoadingScreen";
 
 function RoleRoute({ allowed }) {
   const { role, loading } = useAuth();

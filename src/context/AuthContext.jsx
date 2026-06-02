@@ -3,32 +3,33 @@ import { auth, db } from "../services/firebase-config";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 
-//check if the user is logged in, their role, and other user information
+//check if the currentUser is logged in, their role, and other currentUser information
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   console.log("AuthProvider is rendering");
-  const [user, setUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
   const [role, setRole] = useState(null);
-  const [userInfo, setUserInfo] = useState(null);
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const handleLogout = async () => {
     await signOut(auth);
-    setUser(null);
+    setCurrentUser(null);
     setRole(null);
-    setUserInfo(null);
+    setUser(null);
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const userDoc = await getDoc(doc(db, "users", user.uid));
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        console.log("User logged in:", currentUser);
+        const userDoc = await getDoc(doc(db, "users", currentUser.uid));
         if (userDoc.exists()) {
           const data = userDoc.data();
-          setUser(user);
+          setCurrentUser(currentUser);
           setRole(data.role);
-          setUserInfo({
+          setUser({
             firstname: data.first_name,
             lastname: data.last_name,
             email: data.email,
@@ -37,9 +38,9 @@ export function AuthProvider({ children }) {
           });
         }
       } else {
-        setUser(null);
+        setCurrentUser(null);
         setRole(null);
-        setUserInfo(null);
+        setUser(null);
       }
       setLoading(false);
     });
@@ -49,7 +50,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, role, userInfo, loading, logout: handleLogout }}
+      value={{ currentUser, role, user, loading, logout: handleLogout }}
     >
       {children}
     </AuthContext.Provider>
