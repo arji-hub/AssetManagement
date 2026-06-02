@@ -3,7 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 import Navbar from "./Navbar";
 
 function MainLayout({ children }) {
-  const { userInfo, role, logout } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -15,9 +15,9 @@ function MainLayout({ children }) {
   return (
     <Navbar
       title="ASSET MANAGEMENT SYSTEM"
-      userName={`${userInfo?.firstname} ${userInfo?.lastname}`}
-      userEmail={userInfo?.email}
-      userRole={role}
+      userName={`${user?.firstname} ${user?.lastname}`}
+      userEmail={user?.email}
+      userRole={user?.role}
       activePath={location.pathname}
       onNavigate={(path) => navigate(path)}
       onLogout={handleLogout}

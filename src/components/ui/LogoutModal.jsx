@@ -1,9 +1,6 @@
 import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowRightFromBracket,
-  faXmark,
-} from "@fortawesome/free-solid-svg-icons";
+import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import "./LogoutModal.css";
 
 function LogoutModal({ isOpen, onConfirm, onCancel, userEmail = "" }) {

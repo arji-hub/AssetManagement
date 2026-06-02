@@ -6,7 +6,7 @@ import { ROLES } from "../../data/roles";
 import LoadingScreen from "../../components/ui/LoadingScreen";
 
 function Dashboard() {
-  const { role, loading, user, userInfo } = useAuth();
+  const { role, loading } = useAuth();
 
   console.log("userInfo:", userInfo);
   if (loading) return <LoadingScreen />;

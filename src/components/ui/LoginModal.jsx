@@ -1,12 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUser,
-  faLock,
-  faEye,
-  faEyeSlash,
-} from "@fortawesome/free-solid-svg-icons";
+import { faUser, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import "./LoginModal.css";
 
 function LoginModal({ onLogin }) {
