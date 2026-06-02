@@ -3,16 +3,16 @@ import { useAuth } from "../../context/AuthContext";
 import MainLayout from "../../components/layout/MainLayout";
 
 function FacultyDashboard() {
-  const { userInfo } = useAuth();
+  const { user } = useAuth();
 
   return (
     <MainLayout>
       <div style={{ padding: "40px" }}>
         <h1>Faculty Dashboard</h1>
         <p>
-          Welcome, {userInfo?.firstname} {userInfo?.lastname}
+          Welcome, {user?.firstname} {user?.lastname}
         </p>
-        <p>Role: {userInfo?.role}</p>
+        <p>Role: {user?.role}</p>
       </div>
     </MainLayout>
   );
