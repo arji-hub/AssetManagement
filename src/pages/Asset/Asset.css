@@ -1,0 +1,294 @@
+/* src/pages/Asset/Asset.css */
+
+/* ── page container ── */
+.asset-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+}
+
+/* ── header row ── */
+.asset-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.asset-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.asset-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #111;
+  margin: 0;
+  line-height: 1;
+}
+
+.asset-date {
+  font-size: 11px;
+  color: #888;
+  letter-spacing: 0.06em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.asset-header-right {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ── search ── */
+.asset-search-wrap {
+  position: relative;
+  max-width: 420px;
+}
+
+.asset-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #aaa;
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.asset-search {
+  width: 100%;
+  padding: 8px 12px 8px 34px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #333;
+  background: #fff;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.asset-search:focus {
+  border-color: #860100;
+}
+
+/* ── filter dropdown ── */
+.asset-filter-wrap {
+  position: relative;
+}
+
+.asset-filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.asset-filter-btn:hover,
+.asset-filter-btn--active {
+  border-color: #860100;
+  color: #860100;
+}
+
+.asset-filter-icon {
+  font-size: 10px;
+  opacity: 0.6;
+}
+
+.asset-filter-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  min-width: 160px;
+  overflow: hidden;
+  animation: dropIn 0.15s ease;
+}
+
+@keyframes dropIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.asset-filter-option {
+  padding: 9px 16px;
+  font-size: 13px;
+  color: #444;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.asset-filter-option:hover {
+  background: #f5f5f5;
+}
+
+.asset-filter-option--selected {
+  color: #860100;
+  font-weight: 600;
+  background: #fff5f5;
+}
+
+/* ── add asset button ── */
+.asset-add-btn {
+  padding: 8px 18px;
+  background: #860100;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.asset-add-btn:hover {
+  background: #5d0100;
+}
+
+/* ── table wrapper ── */
+.asset-table-wrap {
+  flex: 1;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid #ebebeb;
+}
+
+/* ── table ── */
+.asset-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.asset-table thead {
+  background: #860100;
+}
+
+.asset-table thead th {
+  padding: 12px 14px;
+  color: #fff;
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.asset-table tbody tr {
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 0.15s;
+}
+
+.asset-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.asset-table tbody tr:hover {
+  background: rgba(245, 170, 44, 0.1);
+}
+
+.asset-table tbody td {
+  padding: 11px 14px;
+  color: #444;
+  vertical-align: middle;
+}
+
+.asset-desc {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── condition badge ── */
+.asset-condition-badge {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ── action button ── */
+.asset-action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888;
+  font-size: 16px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.15s;
+}
+
+.asset-action-btn:hover {
+  background: #f5aa2c;
+  color: #860100;
+  scale: 1.1;
+}
+
+/* ── empty / loading state ── */
+.asset-empty {
+  padding: 60px;
+  text-align: center;
+  color: #aaa;
+  font-size: 14px;
+}
+
+.asset-empty--error {
+  color: #dc2626;
+}
+
+/* ── footer bar ── */
+.asset-footer-bar {
+  background: #860100;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+/* ── responsive ── */
+@media (max-width: 768px) {
+  .asset-header {
+    flex-direction: column;
+  }
+
+  .asset-table-wrap {
+    overflow-x: auto;
+  }
+
+  .asset-table {
+    min-width: 800px;
+  }
+}

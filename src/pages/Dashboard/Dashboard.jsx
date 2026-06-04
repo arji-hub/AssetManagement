@@ -3,16 +3,12 @@ import { useAuth } from "../../context/AuthContext";
 import AdminDashboard from "./AdminDashboard";
 import FacultyDashboard from "./FacultyDashboard";
 import { ROLES } from "../../data/roles";
+import LoadingScreen from "../../components/ui/LoadingScreen";
 
 function Dashboard() {
-  const { role, loading, user, userInfo } = useAuth();
+  const { role, loading } = useAuth();
 
-  // add these logs
-  console.log("loading:", loading);
-  console.log("user:", user);
-  console.log("role:", role);
-  console.log("userInfo:", userInfo);
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <LoadingScreen />;
 
   if (role === ROLES.ADMIN) return <AdminDashboard />;
 
