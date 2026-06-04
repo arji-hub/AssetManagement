@@ -117,7 +117,7 @@
   background: #fff;
   border: 1px solid #e5e5e5;
   border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   z-index: 100;
   min-width: 160px;
   overflow: hidden;
@@ -125,8 +125,14 @@
 }
 
 @keyframes dropIn {
-  from { opacity: 0; transform: translateY(-6px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .asset-filter-option {
@@ -171,7 +177,7 @@
   background: #fff;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   border: 1px solid #ebebeb;
 }
 
@@ -205,7 +211,7 @@
 }
 
 .asset-table tbody tr:hover {
-  background: #fdf5f5;
+  background: rgba(245, 170, 44, 0.1);
 }
 
 .asset-table tbody td {
@@ -244,8 +250,9 @@
 }
 
 .asset-action-btn:hover {
-  background: #f0f0f0;
-  color: #333;
+  background: #f5aa2c;
+  color: #860100;
+  scale: 1.1;
 }
 
 /* ── empty / loading state ── */
