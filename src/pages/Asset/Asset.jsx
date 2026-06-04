@@ -1,4 +1,3 @@
-// src/pages/Asset/Asset.jsx
 import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -8,7 +7,7 @@ import { ROLES } from "../../data/roles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./Asset.css";
 
-// ── condition badge color map ──────────────────────────────────────────────
+//condition badge color map
 const CONDITION_COLORS = {
   Working: { bg: "#16a34a", color: "#fff" },
   Missing: { bg: "#dc2626", color: "#fff" },
@@ -18,18 +17,22 @@ const CONDITION_COLORS = {
 };
 
 function ConditionBadge({ condition }) {
-  const style = CONDITION_COLORS[condition] || { bg: "#6b7280", color: "#fff" };
+  const style = CONDITION_COLORS[condition] || {
+    bg: "#6b7280",
+    color: "#fff",
+    cursor: "default",
+  };
   return (
     <span
       className="asset-condition-badge"
-      style={{ background: style.bg, color: style.color }}
+      style={{ background: style.bg, color: style.color, cursor: style.cursor }}
     >
       {condition}
     </span>
   );
 }
 
-// ── filter dropdown ────────────────────────────────────────────────────────
+//filter dropdown
 function FilterDropdown({ label, options, value, onChange }) {
   const [open, setOpen] = useState(false);
   return (
@@ -39,13 +42,19 @@ function FilterDropdown({ label, options, value, onChange }) {
         onClick={() => setOpen((o) => !o)}
       >
         {value || label}
-        <FontAwesomeIcon icon="fa-solid fa-chevron-down" className="asset-filter-icon" />
+        <FontAwesomeIcon
+          icon="fa-solid fa-chevron-down"
+          className="asset-filter-icon"
+        />
       </button>
       {open && (
         <div className="asset-filter-dropdown">
           <div
             className="asset-filter-option"
-            onClick={() => { onChange(""); setOpen(false); }}
+            onClick={() => {
+              onChange("");
+              setOpen(false);
+            }}
           >
             All
           </div>
@@ -53,7 +62,10 @@ function FilterDropdown({ label, options, value, onChange }) {
             <div
               key={opt}
               className={`asset-filter-option ${value === opt ? "asset-filter-option--selected" : ""}`}
-              onClick={() => { onChange(opt); setOpen(false); }}
+              onClick={() => {
+                onChange(opt);
+                setOpen(false);
+              }}
             >
               {opt}
             </div>
@@ -64,7 +76,7 @@ function FilterDropdown({ label, options, value, onChange }) {
   );
 }
 
-// ── main component ─────────────────────────────────────────────────────────
+//main component
 function Asset() {
   const { user, role, currentUser } = useAuth();
   const navigate = useNavigate();
@@ -82,8 +94,9 @@ function Asset() {
 
   const isAdmin = role === ROLES.ADMIN;
 
-  // ── fetch ────────────────────────────────────────────────────────────────
+  // fetch assets
   useEffect(() => {
+    console.log("Current user:", currentUser.uid, "Role:", role);
     if (!currentUser) return;
     setLoading(true);
     fetchAssets(role, currentUser.uid)
@@ -92,13 +105,27 @@ function Asset() {
       .finally(() => setLoading(false));
   }, [role, currentUser]);
 
-  // ── derive unique filter options from data ───────────────────────────────
-  const categories  = useMemo(() => [...new Set(assets.map((a) => a.category_id).filter(Boolean))], [assets]);
-  const locations   = useMemo(() => [...new Set(assets.map((a) => a.room_id).filter(Boolean))], [assets]);
-  const conditions  = useMemo(() => [...new Set(assets.map((a) => a.condition).filter(Boolean))], [assets]);
-  const custodians  = useMemo(() => [...new Set(assets.map((a) => a.property_custodian).filter(Boolean))], [assets]);
+  //derive unique filter options from data
+  const categories = useMemo(
+    () => [...new Set(assets.map((a) => a.category_id).filter(Boolean))],
+    [assets],
+  );
+  const locations = useMemo(
+    () => [...new Set(assets.map((a) => a.room_id).filter(Boolean))],
+    [assets],
+  );
+  const conditions = useMemo(
+    () => [...new Set(assets.map((a) => a.condition).filter(Boolean))],
+    [assets],
+  );
+  const custodians = useMemo(
+    () => [
+      ...new Set(assets.map((a) => a.property_custodian_name).filter(Boolean)),
+    ],
+    [assets],
+  );
 
-  // ── filtered list ────────────────────────────────────────────────────────
+  //filtered list
   const filtered = useMemo(() => {
     return assets.filter((a) => {
       const q = search.toLowerCase();
@@ -107,30 +134,42 @@ function Asset() {
         a.asset_id?.toLowerCase().includes(q) ||
         a.description?.toLowerCase().includes(q) ||
         a.serial_number?.toLowerCase().includes(q);
-      const matchCat  = !filterCategory  || a.category_id === filterCategory;
-      const matchLoc  = !filterLocation  || a.room_id === filterLocation;
+      const matchCat = !filterCategory || a.category_id === filterCategory;
+      const matchLoc = !filterLocation || a.room_id === filterLocation;
       const matchCond = !filterCondition || a.condition === filterCondition;
-      const matchCust = !filterCustodian || a.property_custodian === filterCustodian;
+      const matchCust =
+        !filterCustodian || a.property_custodian === filterCustodian;
       return matchSearch && matchCat && matchLoc && matchCond && matchCust;
     });
-  }, [assets, search, filterCategory, filterLocation, filterCondition, filterCustodian]);
+  }, [
+    assets,
+    search,
+    filterCategory,
+    filterLocation,
+    filterCondition,
+    filterCustodian,
+  ]);
 
-  // ── date formatter ───────────────────────────────────────────────────────
+  //date formatter
   const fmtDate = (val) => {
     if (!val) return "—";
     if (val?.toDate) return val.toDate().toLocaleDateString("en-GB");
     return new Date(val).toLocaleDateString("en-GB");
   };
 
-  const today = new Date().toLocaleDateString("en-US", {
-    weekday: "long", year: "numeric", month: "long", day: "numeric",
-  }).toUpperCase();
+  const today = new Date()
+    .toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
+    .toUpperCase();
 
   return (
     <MainLayout>
       <div className="asset-page">
-
-        {/* ── header row ── */}
+        {/* header */}
         <div className="asset-header">
           <div className="asset-header-left">
             <h1 className="asset-title">Assets</h1>
@@ -139,11 +178,31 @@ function Asset() {
 
           <div className="asset-header-right">
             {/* filters */}
-            <FilterDropdown label="Category ▾"  options={categories}  value={filterCategory}  onChange={setFilterCategory} />
-            <FilterDropdown label="Location ▾"  options={locations}   value={filterLocation}  onChange={setFilterLocation} />
-            <FilterDropdown label="Condition ▾" options={conditions}  value={filterCondition} onChange={setFilterCondition} />
+            <FilterDropdown
+              label="Category ▾"
+              options={categories}
+              value={filterCategory}
+              onChange={setFilterCategory}
+            />
+            <FilterDropdown
+              label="Location ▾"
+              options={locations}
+              value={filterLocation}
+              onChange={setFilterLocation}
+            />
+            <FilterDropdown
+              label="Condition ▾"
+              options={conditions}
+              value={filterCondition}
+              onChange={setFilterCondition}
+            />
             {isAdmin && (
-              <FilterDropdown label="Custodian ▾" options={custodians} value={filterCustodian} onChange={setFilterCustodian} />
+              <FilterDropdown
+                label="Custodian ▾"
+                options={custodians}
+                value={filterCustodian}
+                onChange={setFilterCustodian}
+              />
             )}
 
             {/* Add Asset — admin only */}
@@ -158,9 +217,12 @@ function Asset() {
           </div>
         </div>
 
-        {/* ── search ── */}
+        {/* search */}
         <div className="asset-search-wrap">
-          <FontAwesomeIcon icon="fa-solid fa-magnifying-glass" className="asset-search-icon" />
+          <FontAwesomeIcon
+            icon="fa-solid fa-magnifying-glass"
+            className="asset-search-icon"
+          />
           <input
             className="asset-search"
             placeholder="Search by ID, description, serial number…"
@@ -169,7 +231,7 @@ function Asset() {
           />
         </div>
 
-        {/* ── table ── */}
+        {/* table */}
         <div className="asset-table-wrap">
           {loading ? (
             <div className="asset-empty">Loading assets…</div>
@@ -197,20 +259,24 @@ function Asset() {
               <tbody>
                 {filtered.map((asset) => (
                   <tr key={asset.id}>
-                    <td>{asset.asset_id || "—"}</td>
+                    <td>{asset.id || "—"}</td>
                     <td className="asset-desc">{asset.description || "—"}</td>
                     <td>{asset.category_id || "—"}</td>
                     <td>{asset.room_id || "—"}</td>
-                    <td>{asset.property_custodian || "—"}</td>
-                    <td>{asset.local_mr || "—"}</td>
+                    <td>{asset.property_custodian_name || "—"}</td>
+                    <td>{asset.local_mr_name || "—"}</td>
                     <td>{asset.qty ?? 1}</td>
                     <td>{asset.unit_value?.toLocaleString() ?? "—"}</td>
-                    <td><ConditionBadge condition={asset.condition} /></td>
+                    <td>
+                      <ConditionBadge condition={asset.condition} />
+                    </td>
                     <td>{fmtDate(asset.date_acquired)}</td>
                     <td>
                       <button
                         className="asset-action-btn"
-                        onClick={() => {/* open action menu */}}
+                        onClick={() => {
+                          /* open action menu */
+                        }}
                         aria-label="Actions"
                       >
                         <FontAwesomeIcon icon="fa-solid fa-ellipsis-vertical" />
@@ -223,11 +289,12 @@ function Asset() {
           )}
         </div>
 
-        {/* ── footer bar ── */}
+        {/* footer bar */}
         <div className="asset-footer-bar">
-          <span>{filtered.length} asset{filtered.length !== 1 ? "s" : ""} shown</span>
+          <span>
+            {filtered.length} asset{filtered.length !== 1 ? "s" : ""} shown
+          </span>
         </div>
-
       </div>
     </MainLayout>
   );
