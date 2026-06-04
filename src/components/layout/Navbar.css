@@ -33,7 +33,7 @@
   background: #d9d9d9;
   color: #fff;
   height: 100vh;
-  width: 240px;
+  width: 200px;
   position: fixed;
   top: 0;
   left: 0;
@@ -69,7 +69,7 @@
 /* logo text */
 .sidebar-logo-text {
   font-family: "Palatino Linotype", Palatino, "Book Antiqua", serif;
-  font-size: 18px;
+  font-size: clamp(14px, 1.2vw, 18px);
   font-weight: 400;
   color: #000000;
   text-align: center;
@@ -133,7 +133,7 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  margin-left: 240px;
+  margin-left: 200px;
   transition: margin-left 0.3s ease;
   height: 100vh;
   overflow: hidden;
@@ -268,8 +268,8 @@ Z overlay guide
 
   /* sidebar hidden off screen */
   .sidebar {
-    left: -240px;
-    width: 240px !important;
+    left: -200px;
+    width: 200px !important;
     transition: all 0.3s ease;
   }
 
