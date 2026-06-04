@@ -69,7 +69,7 @@
 /* logo text */
 .sidebar-logo-text {
   font-family: "Palatino Linotype", Palatino, "Book Antiqua", serif;
-  font-size: clamp(14px, 1.2vw, 18px);
+  font-size: clamp(12px, 1.1vw, 18px);
   font-weight: 400;
   color: #000000;
   text-align: center;

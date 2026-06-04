@@ -7,7 +7,6 @@ import { doc, getDoc } from "firebase/firestore";
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  console.log("AuthProvider is rendering");
   const [currentUser, setCurrentUser] = useState(null);
   const [role, setRole] = useState(null);
   const [user, setUser] = useState(null);
@@ -23,7 +22,6 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
-        console.log("User logged in:", currentUser);
         const userDoc = await getDoc(doc(db, "users", currentUser.uid));
         if (userDoc.exists()) {
           const data = userDoc.data();

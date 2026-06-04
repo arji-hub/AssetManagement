@@ -7,6 +7,7 @@ import LoadingScreen from "./components/ui/LoadingScreen";
 import Login from "./pages/Login/Login";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Asset from "./pages/Asset/Asset";
+import AssetRegistration from "./pages/Asset/AssetRegistration";
 import Custodian from "./pages/Custodian/Custodian";
 import Report from "./pages/Report/Report";
 import Transfer from "./pages/Transfer/Transfer";
@@ -36,7 +37,10 @@ function App() {
         {/*routes accessible by any user*/}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/asset" element={<Asset />} />
+          <Route path="/asset">
+            <Route index element={<Asset />} />
+            <Route path="registration" element={<AssetRegistration />} />
+          </Route>
           <Route path="/qr" element={<QR />} />
           <Route path="/report" element={<Report />} />
           <Route path="/transfer" element={<Transfer />} />
