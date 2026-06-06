@@ -15,6 +15,7 @@ import QR from "./pages/QR/QR";
 import Audit from "./pages/Audit/Audit";
 import Room from "./pages/Room/Room";
 import { ROLES } from "./data/roles";
+import CustodianAssets from "./pages/Custodian/CustodianAssets";
 
 function App() {
   const { user, loading } = useAuth();
@@ -49,6 +50,7 @@ function App() {
           <Route element={<RoleRoute allowed={[ROLES.ADMIN]} />}>
             <Route path="/audit" element={<Audit />} />
             <Route path="/custodian" element={<Custodian />} />
+            <Route path="/custodian/:username" element={<CustodianAssets />} />
             <Route path="/room" element={<Room />} />
           </Route>
         </Route>

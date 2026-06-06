@@ -3,6 +3,7 @@ export const ROLES = {
   PARTTIME: "parttime",
   FULLTIME: "fulltime",
 };
+export default ROLES;
 
 export const ROLE_LABELS = {
   admin: "Administrator",

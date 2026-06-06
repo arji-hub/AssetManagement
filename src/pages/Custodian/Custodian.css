@@ -1,0 +1,140 @@
+.custodian-page {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "header   settings"
+    "cards    cards";
+  gap: 24px 0px;
+  align-items: start;
+  position: relative;
+}
+
+.custodian-top {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f0f2f5;
+  display: grid;
+  padding: 16px 24px;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "header settings";
+  align-items: center;
+  gap: 10px;
+}
+
+@media (max-width: 640px) {
+  .custodian-top {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "header"
+      "settings";
+  }
+}
+
+.custodian-header {
+  grid-area: header;
+}
+
+.custodian-header h1 {
+  margin: 0 0 4px;
+  font-size: clamp(20px, 2.5vw, 28px);
+  font-weight: 700;
+  color: #111827;
+}
+
+.custodian-header p {
+  margin: 0;
+  font-size: clamp(13px, 1.2vw, 15px);
+  color: #6b7280;
+}
+
+.custodian-settings {
+  grid-area: settings;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filters label {
+  font-size: clamp(12px, 1vw, 14px);
+  font-weight: 500;
+  color: #374151;
+  white-space: nowrap;
+}
+
+.filters select {
+  font-size: clamp(12px, 1vw, 14px);
+  padding: 6px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #111827;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.filters select:focus {
+  border-color: #860100;
+}
+
+.settings-button {
+  font-size: clamp(12px, 1vw, 14px);
+  font-weight: 500;
+  padding: 7px 16px;
+  background: #860100;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.2s ease,
+    transform 0.1s ease;
+}
+
+.settings-button:hover {
+  background: #6b0000;
+}
+
+.settings-button:active {
+  transform: scale(0.97);
+}
+
+.custodian-cards {
+  grid-area: cards;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  gap: 16px;
+}
+.custodian-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  gap: 16px;
+}
+
+@media (max-width: 640px) {
+  .custodian-page {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "header"
+      "settings"
+      "cards";
+  }
+
+  .custodian-settings {
+    justify-content: flex-start;
+  }
+}

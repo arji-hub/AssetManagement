@@ -229,7 +229,7 @@
 /* #region ─── MAIN CONTENT ───  */
 .main-content {
   flex: 1;
-  padding: 24px;
+  min-height: 0; 
   overflow-y: auto;
   background: #f0f2f5;
 }
