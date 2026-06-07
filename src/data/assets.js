@@ -1,16 +1,26 @@
+import { db } from "../services/firebase-config";
+import { collection, getDocs } from "firebase/firestore";
+
 export const ASSET_CATEGORIES = [
   "Computer Set",
-  "Laboratory Equipment",
+  "Laboratory",
+  "Network",
+  "Cables & Accessories",
+  "Peripheral",
+  "Storage Device",
   "Furniture",
-  "Projector",
-  "Monitor",
-  "Networking Equipment",
+  "Safety Equipment",
 ];
 
 export const ASSET_STATUS = [
   "Working",
   "Missing",
-  "Under Maintenance",
+  "For Repair",
   "Damaged",
   "Condemned",
 ];
+
+export async function fetchRooms() {
+  const snapshot = await getDocs(collection(db, "rooms"));
+  return snapshot.docs.map((doc) => doc.data().name ?? doc.id);
+}

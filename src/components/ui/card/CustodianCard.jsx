@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import "./CustodianCard.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ROLES } from "../../data/roles";
+import { ROLES } from "../../../data/roles";
 import { useNavigate } from "react-router-dom";
 
 function getRole(classification) {

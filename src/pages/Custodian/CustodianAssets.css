@@ -260,3 +260,47 @@
     display: none; /* hide date assigned on small screens */
   }
 }
+
+.filter-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: clamp(12px, 1vw, 14px);
+  font-weight: 500;
+  padding: 7px 16px;
+  background: #860100; /* red background */
+  color: #ffffff; /* white text and icon */
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.1s ease;
+  white-space: nowrap;
+}
+
+.filter-button:hover {
+  background: #6b0000;
+}
+
+.filter-button:active {
+  transform: scale(0.97);
+}
+
+/* badge stays white text on a darker red when active */
+.filter-button--active {
+  background: #6b0000;
+}
+
+.filter-badge {
+  background: #ffffff;
+  color: #860100;
+  font-size: 10px;
+  font-weight: 700;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

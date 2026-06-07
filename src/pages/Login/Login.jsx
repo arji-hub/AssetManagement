@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../services/authService";
-import LoginModal from "../../components/ui/LoginModal";
+import LoginModal from "../../components/ui/modal/LoginModal";
 import logo from "../../assets/CICTLOGO.png";
 import elib from "../../assets/elib.png";
 import "./Login.css";
@@ -22,10 +22,7 @@ function Login() {
   return (
     <div className="login-page">
       {/* Background */}
-      <div
-        className="login-bg"
-        style={{ backgroundImage: `url(${elib})` }}
-      />
+      <div className="login-bg" style={{ backgroundImage: `url(${elib})` }} />
 
       {/* Top bar */}
       <div className="login-topbar">

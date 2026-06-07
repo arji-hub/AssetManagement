@@ -1,0 +1,237 @@
+/* ── Overlay ────────────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+}
+
+/* ── Container ──────────────────────────────────────────────── */
+.modal-container {
+  background: #ffffff;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Header ─────────────────────────────────────────────────── */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #860100;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+.modal-close:hover {
+  color: #860100;
+  background: #f3f4f6;
+}
+
+/* ── Body ───────────────────────────────────────────────────── */
+.modal-body {
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ── Row (two columns) ──────────────────────────────────────── */
+.modal-row {
+  display: flex;
+  gap: 12px;
+}
+
+/* ── Field ──────────────────────────────────────────────────── */
+.modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+}
+
+.modal-field label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b7280;
+  letter-spacing: 0.05em;
+}
+
+.modal-field input,
+.modal-field select {
+  font-size: 14px;
+  padding: 8px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  color: #000000;
+  background: #f9fafb;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.modal-field input::placeholder {
+  color: #9ca3af;
+}
+
+.modal-field input:focus,
+.modal-field select:focus {
+  border-color: #860100;
+  background: #ffffff;
+}
+
+.modal-field select {
+  cursor: pointer;
+  appearance: auto;
+}
+
+/* ── Info box ───────────────────────────────────────────────── */
+.modal-info {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: rgba(245, 170, 44, 0.06);
+  border: 1px solid rgba(134, 1, 0, 0.2);
+  border-radius: 6px;
+  padding: 12px 14px;
+}
+
+.info-icon {
+  color: #860100;
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.modal-info p {
+  margin: 0;
+  font-size: 12px;
+  color: #860100;
+  line-height: 1.6;
+}
+
+/* ── Footer ─────────────────────────────────────────────────── */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 24px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.modal-cancel {
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 18px;
+  background: #ffffff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.modal-cancel:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+/* ── Submit button ──────────────────────────────────────────── */
+.modal-submit {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 20px;
+  background: #860100;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.1s ease;
+}
+
+.modal-submit:hover {
+  background: #6b0000;
+}
+
+.modal-submit:active {
+  transform: scale(0.97);
+}
+
+/* disabled state when fields are incomplete */
+.modal-submit--disabled {
+  background: #d1d5db;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.modal-submit--disabled:hover {
+  background: #d1d5db;
+}
+
+@media (max-width: 480px) {
+  .modal-row {
+    flex-direction: column;
+  }
+
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+.input-error {
+  border-color: #860100 !important;
+  background: #fff5f5 !important;
+}
+
+.input-error:focus {
+  border-color: #860100;
+  background: #fff5f5;
+}
+
+.field-error {
+  font-size: 11px;
+  color: #860100;
+  margin-top: 2px;
+}

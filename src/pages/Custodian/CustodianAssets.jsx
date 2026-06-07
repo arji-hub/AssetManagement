@@ -1,15 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
+import "./CustodianAssets.css";
 import { useParams, useNavigate } from "react-router-dom";
 import MainLayout from "../../components/layout/MainLayout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "./CustodianAssets.css";
+import FilterModal from "../../components/ui/modal/FilterModal";
 
-// Placeholder asset data — replace with real Firestore fetch using username
 const MOCK_ASSETS = [
   {
     id: 1,
     name: "Laptop Dell XPS 15",
     category: "Electronics",
+    room: "SDL1",
     status: "Active",
     dateAssigned: "2024-01-10",
   },
@@ -17,6 +18,7 @@ const MOCK_ASSETS = [
     id: 2,
     name: "Office Chair",
     category: "Furniture",
+    room: "SDL2",
     status: "Active",
     dateAssigned: "2023-08-22",
   },
@@ -24,6 +26,7 @@ const MOCK_ASSETS = [
     id: 3,
     name: "Projector Epson X41",
     category: "Electronics",
+    room: "Proglab 1",
     status: "Under Repair",
     dateAssigned: "2023-05-15",
   },
@@ -31,6 +34,7 @@ const MOCK_ASSETS = [
     id: 4,
     name: "Whiteboard 4x6",
     category: "Furniture",
+    room: "SDL3",
     status: "Active",
     dateAssigned: "2022-11-03",
   },
@@ -38,6 +42,7 @@ const MOCK_ASSETS = [
     id: 5,
     name: "Desktop PC",
     category: "Electronics",
+    room: "Proglab 2",
     status: "Inactive",
     dateAssigned: "2021-09-18",
   },
@@ -45,6 +50,7 @@ const MOCK_ASSETS = [
     id: 6,
     name: "Filing Cabinet",
     category: "Furniture",
+    room: "SDL4",
     status: "Active",
     dateAssigned: "2023-12-01",
   },
@@ -56,9 +62,36 @@ const STATUS_CLASS = {
   "Under Repair": "status-repair",
 };
 
+const INITIAL_FILTERS = {
+  status: "",
+  category: "",
+  room: "",
+};
+
 function CustodianAssets() {
   const { username } = useParams();
   const navigate = useNavigate();
+  const [showFilter, setShowFilter] = useState(false);
+  const [filters, setFilters] = useState(INITIAL_FILTERS);
+
+  const activeFilterCount = Object.values(filters).filter(Boolean).length;
+
+  const filteredAssets = MOCK_ASSETS.filter((asset) => {
+    if (filters.status && asset.status !== filters.status) return false;
+    if (filters.category && asset.category !== filters.category) return false;
+    if (filters.room && asset.room !== filters.room) return false;
+    return true;
+  });
+
+  const handleApplyFilters = (newFilters) => {
+    setFilters(newFilters);
+    setShowFilter(false);
+  };
+
+  const handleClearFilters = () => {
+    setFilters(INITIAL_FILTERS);
+    setShowFilter(false);
+  };
 
   return (
     <MainLayout>
@@ -82,29 +115,22 @@ function CustodianAssets() {
           </div>
 
           <div className="assets-settings">
-            <div className="filters">
-              <label htmlFor="status-filter">Status:</label>
-              <select id="status-filter">
-                <option value="">All</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-                <option value="repair">Under Repair</option>
-              </select>
-            </div>
-            <div className="filters">
-              <label htmlFor="category-filter">Category:</label>
-              <select id="category-filter">
-                <option value="">All</option>
-                <option value="electronics">Electronics</option>
-                <option value="furniture">Furniture</option>
-              </select>
-            </div>
+            <button
+              className={`filter-button ${activeFilterCount > 0 ? "filter-button--active" : ""}`}
+              onClick={() => setShowFilter(true)}
+            >
+              <FontAwesomeIcon icon="fa-solid fa-sliders" />
+              Filters
+              {activeFilterCount > 0 && (
+                <span className="filter-badge">{activeFilterCount}</span>
+              )}
+            </button>
           </div>
         </div>
 
         {/* ── Asset list ── */}
         <div className="assets-list">
-          {MOCK_ASSETS.length === 0 ? (
+          {filteredAssets.length === 0 ? (
             <div className="assets-empty">
               <FontAwesomeIcon icon="fa-solid fa-box-open" />
               <p>No assets found for this custodian.</p>
@@ -116,12 +142,13 @@ function CustodianAssets() {
                   <th>#</th>
                   <th>Asset Name</th>
                   <th>Category</th>
+                  <th>Room</th>
                   <th>Status</th>
                   <th>Date Assigned</th>
                 </tr>
               </thead>
               <tbody>
-                {MOCK_ASSETS.map((asset, index) => (
+                {filteredAssets.map((asset, index) => (
                   <tr key={asset.id}>
                     <td className="asset-index">{index + 1}</td>
                     <td className="asset-name">
@@ -132,6 +159,7 @@ function CustodianAssets() {
                       {asset.name}
                     </td>
                     <td>{asset.category}</td>
+                    <td>{asset.room}</td>
                     <td>
                       <span
                         className={`asset-status ${STATUS_CLASS[asset.status]}`}
@@ -147,6 +175,16 @@ function CustodianAssets() {
           )}
         </div>
       </div>
+
+      {/* ── Filter Modal ── */}
+      {showFilter && (
+        <FilterModal
+          filters={filters}
+          onApply={handleApplyFilters}
+          onClear={handleClearFilters}
+          onClose={() => setShowFilter(false)}
+        />
+      )}
     </MainLayout>
   );
 }

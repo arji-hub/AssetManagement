@@ -1,9 +1,17 @@
-import CustodianCard from "../../components/ui/CustodianCard";
+import { MemoryRouter } from "react-router-dom";
+import CustodianCard from "../../../components/ui/card/CustodianCard";
 
 export default {
   title: "Cards/CustodianCard",
   component: CustodianCard,
   tags: ["autodocs"],
+  decorators: [
+    (Story) => (
+      <MemoryRouter>
+        <Story />
+      </MemoryRouter>
+    ),
+  ],
   argTypes: {
     name: {
       control: "text",

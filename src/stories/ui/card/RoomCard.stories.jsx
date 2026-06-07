@@ -1,4 +1,4 @@
-import RoomCard from "../../components/ui/RoomCard";
+import RoomCard from "../../../components/ui/card/RoomCard";
 
 export default {
   title: "Cards/RoomCard",

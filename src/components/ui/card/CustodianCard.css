@@ -35,7 +35,7 @@
 
 .custodian-name {
   margin: 0;
-  font-size: clamp(14px, 1.2vw, 26px);
+  font-size: clamp(14px, 1.5vw, 26px);
   font-weight: 600;
   color: #111827;
 }
@@ -60,7 +60,7 @@
   background: rgba(59, 114, 68, 0.3);
   color: #004700;
   padding: 5px;
-  font-size: clamp(12px, 1.2vw, 16px);
+  font-size: clamp(12px, 1vw, 16px);
   border-radius: 5px;
   white-space: nowrap;
 }
@@ -76,7 +76,7 @@
 
 .assets-icon {
   color: #860100;
-  font-size: clamp(12px, 1.2vw, 16px);
+  font-size: clamp(12px, 1vw, 16px);
   padding: 0;
   display: flex;
   align-items: center;
@@ -86,7 +86,7 @@
 .assets-label {
   color: #860100;
   flex: 1;
-  font-size: clamp(12px, 1.2vw, 16px);
+  font-size: clamp(12px, 1vw, 16px);
   text-align: center;
   white-space: nowrap;
 }
@@ -95,7 +95,7 @@
   background: #860100;
   color: #ffffff;
   border-radius: 5px;
-  font-size: clamp(12px, 1.2vw, 16px);
+  font-size: clamp(12px, 1vw, 16px);
   padding: 1px 5px;
   flex-shrink: 0;
   display: flex;

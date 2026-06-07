@@ -49,8 +49,10 @@ function App() {
           {/*admin-only routes*/}
           <Route element={<RoleRoute allowed={[ROLES.ADMIN]} />}>
             <Route path="/audit" element={<Audit />} />
-            <Route path="/custodian" element={<Custodian />} />
-            <Route path="/custodian/:username" element={<CustodianAssets />} />
+            <Route path="/custodian">
+              <Route index element={<Custodian />} />
+              <Route path=":username" element={<CustodianAssets />} />
+            </Route>
             <Route path="/room" element={<Room />} />
           </Route>
         </Route>
