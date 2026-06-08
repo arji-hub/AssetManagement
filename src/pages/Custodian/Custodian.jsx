@@ -18,7 +18,7 @@ function Custodian() {
       <div className="custodian-page">
         <div className="custodian-top">
           <div className="custodian-header">
-            <h1>Custodian Page</h1>
+            <h1>Custodian</h1>
             <p>Welcome, {user.username}! This is the custodian page.</p>
           </div>
           <div className="custodian-settings">

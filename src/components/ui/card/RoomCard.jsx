@@ -1,12 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
 import "./RoomCard.css";
+import { useNavigate } from "react-router-dom";
 
-function RoomCard({ name,  totalAssets = 0 }) {
+function RoomCard({ roomName, totalAssets = 0 }) {
+  const navigate = useNavigate();
   return (
-    <div className="room-card">
+    <div className="room-card" onClick={() => navigate(`/room/${roomName}`)}>
       <div className="room-card-header">
-        <h3 className="room-name">{name}</h3>
+        <h3 className="room-name">{roomName}</h3>
       </div>
       <div className="room-assets">
         <span className="room-assets-label">Total Assets</span>
@@ -17,7 +19,7 @@ function RoomCard({ name,  totalAssets = 0 }) {
 }
 
 RoomCard.propTypes = {
-  name: PropTypes.string.isRequired,
+  roomName: PropTypes.string.isRequired,
   totalAssets: PropTypes.number.isRequired,
 };
 

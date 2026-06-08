@@ -238,7 +238,7 @@ function CustodianModal({ onClose, onSubmit }) {
             Cancel
           </button>
           <button
-            className={`modal-submit ${!isComplete ? "modal-submit--disabled" : ""}`}
+            className="modal-submit"
             onClick={handleSubmit}
             disabled={!isComplete}
           >

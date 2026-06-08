@@ -15,7 +15,28 @@ export default {
 
 export const Default = {
   args: {
-    name: "Room 101",
+    name: "ProgLab1",
     totalAssets: 12,
+  },
+};
+
+export const EmptyRoom = {
+  args: {
+    name: "SDL1",
+    totalAssets: 0,
+  },
+};
+
+export const LongName = {
+  args: {
+    name: "Computer Laboratory Room 101",
+    totalAssets: 8,
+  },
+};
+
+export const HighAssetCount = {
+  args: {
+    name: "Faculty Room",
+    totalAssets: 380,
   },
 };

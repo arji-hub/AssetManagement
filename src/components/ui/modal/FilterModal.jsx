@@ -2,11 +2,8 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import "./FilterModal.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  ASSET_CATEGORIES,
-  ASSET_STATUS,
-  fetchRooms,
-} from "../../../data/assets";
+import { ASSET_CATEGORIES, ASSET_STATUS } from "../../../data/assets";
+import { fetchRooms } from "../../../api/room";
 
 function FilterModal({
   filters,
@@ -110,11 +107,14 @@ function FilterModal({
                 size={4}
               >
                 <option value="">All Rooms</option>
-                {rooms.map((room) => (
-                  <option key={room} value={room}>
-                    {room}
-                  </option>
-                ))}
+                {rooms.map((room) => {
+                  const name = typeof room === "string" ? room : room.name;
+                  return (
+                    <option key={name} value={name}>
+                      {name}
+                    </option>
+                  );
+                })}
               </select>
             )}
           </div>

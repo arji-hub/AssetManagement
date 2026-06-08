@@ -1,25 +1,49 @@
-/* ── Overlay ────────────────────────────────────────────────── */
+
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.45);
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: flex-start;
+  overflow-y: auto;
   z-index: 100;
   padding: 16px;
+  animation: overlay-in 0.15s ease;
 }
 
-/* ── Container ──────────────────────────────────────────────── */
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .modal-container {
   background: #ffffff;
-  border-radius: 10px;
+  border-radius: 12px;
   width: 100%;
   max-width: 420px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.18);
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  animation: modal-in 0.2s ease;
+  margin: auto;
+  max-height: none;
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 /* ── Header ─────────────────────────────────────────────────── */
@@ -27,41 +51,35 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 24px 16px;
-  border-bottom: 1px solid #e5e7eb;
+  padding: 18px 24px;
+  background: #860100;
 }
 
 .modal-title {
   margin: 0;
-  font-size: 24px;
+  font-size: 1.1rem;
   font-weight: 700;
-  color: #860100;
+  color: #ffffff;
+  letter-spacing: 0.01em;
 }
 
 .modal-close {
   background: none;
   border: none;
-  font-size: 18px;
-  color: #6b7280;
+  font-size: 1rem;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
-  padding: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  transition:
-    color 0.2s ease,
-    background 0.2s ease;
+  transition: color 0.15s ease;
 }
 
 .modal-close:hover {
-  color: #860100;
-  background: #f3f4f6;
+  color: #ffffff;
 }
 
 /* ── Body ───────────────────────────────────────────────────── */
 .modal-body {
-  padding: 20px 24px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -77,29 +95,31 @@
 .modal-field {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 6px;
   flex: 1;
+  position: relative;
 }
 
 .modal-field label {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
-  color: #6b7280;
-  letter-spacing: 0.05em;
+  color: #374151;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 .modal-field input,
 .modal-field select {
-  font-size: 14px;
-  padding: 8px 10px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  color: #000000;
-  background: #f9fafb;
+  font-size: 15px;
+  padding: 10px 14px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  color: #111827;
+  background: #ffffff;
   outline: none;
   transition:
     border-color 0.2s ease,
-    background 0.2s ease;
+    box-shadow 0.2s ease;
   width: 100%;
   box-sizing: border-box;
 }
@@ -111,6 +131,7 @@
 .modal-field input:focus,
 .modal-field select:focus {
   border-color: #860100;
+  box-shadow: 0 0 0 3px rgba(134, 1, 0, 0.1);
   background: #ffffff;
 }
 
@@ -126,7 +147,7 @@
   align-items: flex-start;
   background: rgba(245, 170, 44, 0.06);
   border: 1px solid rgba(134, 1, 0, 0.2);
-  border-radius: 6px;
+  border-radius: 8px;
   padding: 12px 14px;
 }
 
@@ -150,63 +171,80 @@
   justify-content: flex-end;
   align-items: center;
   gap: 10px;
-  padding: 16px 24px;
-  border-top: 1px solid #e5e7eb;
+  padding: 16px 24px 24px;
 }
 
-.modal-cancel {
-  font-size: 14px;
-  font-weight: 500;
-  padding: 8px 18px;
-  background: #ffffff;
-  color: #374151;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  cursor: pointer;
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease;
-}
-
-.modal-cancel:hover {
-  background: #f3f4f6;
-  border-color: #9ca3af;
-}
-
-/* ── Submit button ──────────────────────────────────────────── */
+/* ── Buttons ─────────────────────────────────────────────────── */
+.modal-cancel,
 .modal-submit {
   font-size: 14px;
   font-weight: 600;
-  padding: 8px 20px;
-  background: #860100;
-  color: #ffffff;
+  padding: 9px 22px;
+  border-radius: 8px;
   border: none;
-  border-radius: 6px;
   cursor: pointer;
   transition:
     background 0.2s ease,
-    transform 0.1s ease;
+    transform 0.1s ease,
+    opacity 0.2s ease;
 }
 
-.modal-submit:hover {
-  background: #6b0000;
+.modal-cancel,
+.modal-submit {
+  border: none;
 }
 
+.modal-cancel:active,
 .modal-submit:active {
   transform: scale(0.97);
 }
 
-/* disabled state when fields are incomplete */
-.modal-submit--disabled {
-  background: #d1d5db;
-  color: #9ca3af;
+/* Cancel — outlined with 30% color */
+.modal-cancel {
+  background: #ffffff;
+  color: #860100;
+  border: 1.5px solid #860100;
+}
+
+.modal-cancel:hover {
+  background: rgba(134, 1, 0, 0.05);
+}
+
+/* Submit — 10% accent (#F5AA2C) */
+.modal-submit {
+  background: #f5aa2c;
+  color: #860100;
+}
+
+.modal-submit:hover:not(:disabled) {
+  background: #e09a1e;
+}
+
+.modal-submit:disabled {
+  opacity: 0.55;
   cursor: not-allowed;
 }
 
-.modal-submit--disabled:hover {
-  background: #d1d5db;
+.modal-submit:disabled:active {
+  transform: none;
 }
 
+/* ── Error states ────────────────────────────────────────────── */
+.modal-field.has-error input,
+.modal-field.has-error select,
+.input-error {
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.field-error {
+  font-size: 12px;
+  color: #dc2626;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
 @media (max-width: 480px) {
   .modal-row {
     flex-direction: column;
@@ -218,20 +256,4 @@
     padding-left: 16px;
     padding-right: 16px;
   }
-}
-
-.input-error {
-  border-color: #860100 !important;
-  background: #fff5f5 !important;
-}
-
-.input-error:focus {
-  border-color: #860100;
-  background: #fff5f5;
-}
-
-.field-error {
-  font-size: 11px;
-  color: #860100;
-  margin-top: 2px;
 }

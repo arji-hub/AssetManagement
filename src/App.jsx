@@ -16,6 +16,7 @@ import Audit from "./pages/Audit/Audit";
 import Room from "./pages/Room/Room";
 import { ROLES } from "./data/roles";
 import CustodianAssets from "./pages/Custodian/CustodianAssets";
+import RoomAssets from "./pages/Room/RoomAssets";
 
 function App() {
   const { user, loading } = useAuth();
@@ -53,7 +54,10 @@ function App() {
               <Route index element={<Custodian />} />
               <Route path=":username" element={<CustodianAssets />} />
             </Route>
-            <Route path="/room" element={<Room />} />
+            <Route path="/room">
+              <Route index element={<Room />} />
+              <Route path=":roomName" element={<RoomAssets />} />
+            </Route>
           </Route>
         </Route>
 
