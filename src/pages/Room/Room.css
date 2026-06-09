@@ -143,10 +143,6 @@
     transform 0.1s ease;
 }
 
-.settings-button:hover {
-  background: #6b0000;
-}
-
 .settings-button:active {
   transform: scale(0.97);
 }

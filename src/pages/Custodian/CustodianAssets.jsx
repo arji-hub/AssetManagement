@@ -5,7 +5,8 @@ import MainLayout from "../../components/layout/MainLayout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FilterModal from "../../components/ui/modal/FilterModal";
 import { ASSET_STATUS, ASSET_CATEGORIES } from "../../data/assets";
-import { Condition } from "../../components/ui/status/condition";
+import { Status } from "../../components/ui/status/assetStatus";
+import { useAssetFilters } from "../../hooks/useAssetFilters";
 
 const MOCK_ASSETS = [
   {
@@ -100,42 +101,23 @@ const MOCK_ASSETS = [
   },
 ];
 
-const STATUS_CLASS = {
-  Working: "status-active",
-  Inactive: "status-inactive",
-  "For Repair": "status-repair",
-};
-
-const INITIAL_FILTERS = {
-  status: "",
-  category: "",
-  room: "",
-};
 
 function CustodianAssets() {
   const { username } = useParams();
   const navigate = useNavigate();
-  const [showFilter, setShowFilter] = useState(false);
-  const [filters, setFilters] = useState(INITIAL_FILTERS);
+  //const [assets, setAssets] = useState([]);
+  const [assets] = useState(MOCK_ASSETS);
 
-  const activeFilterCount = Object.values(filters).filter(Boolean).length;
-
-  const filteredAssets = MOCK_ASSETS.filter((asset) => {
-    if (filters.status && asset.status !== filters.status) return false;
-    if (filters.category && asset.category !== filters.category) return false;
-    if (filters.room && asset.room !== filters.room) return false;
-    return true;
-  });
-
-  const handleApplyFilters = (newFilters) => {
-    setFilters(newFilters);
-    setShowFilter(false);
-  };
-
-  const handleClearFilters = () => {
-    setFilters(INITIAL_FILTERS);
-    setShowFilter(false);
-  };
+  const {
+    showFilter,
+    setShowFilter,
+    filters,
+    setFilters,
+    activeFilterCount,
+    filteredAssets,
+    handleApplyFilters,
+    handleClearFilters,
+  } = useAssetFilters(assets);
 
   return (
     <MainLayout>
@@ -199,7 +181,7 @@ function CustodianAssets() {
                     <td>{asset.category}</td>
                     <td>{asset.room}</td>
                     <td>
-                      <Condition condition={asset.status} />
+                      <Status status={asset.status} />
                     </td>
                     <td>{asset.dateAssigned}</td>
                   </tr>

@@ -227,7 +227,7 @@ FilterModal.propTypes = {
   onClear: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   initialRooms: PropTypes.arrayOf(PropTypes.string),
-  context: PropTypes.oneOf(["room", "custodian", "other"]),
+  context: PropTypes.oneOf(["room", "custodian", "asset", "other"]),
 };
 
 export default FilterModal;

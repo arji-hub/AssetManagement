@@ -200,6 +200,7 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   border: 1px solid #ebebeb;
   overflow-y: auto;
+  overflow-x: auto;
 }
 
 /* ── table ── */
@@ -277,6 +278,13 @@
   font-size: 14px;
 }
 
+.asset-empty-cell {
+  padding: 60px;
+  text-align: center;
+  color: #aaa;
+  font-size: 14px;
+}
+
 .asset-empty--error {
   color: #dc2626;
 }
@@ -293,7 +301,7 @@
 }
 
 /* ── responsive ── */
-@media (max-width: 768px) {
+@media (max-width: 960px) {
   .asset-page {
     padding: 16px;
   }
@@ -301,10 +309,6 @@
   .asset-header {
     flex-direction: column;
     z-index: 100;
-  }
-
-  .asset-table-wrap {
-    overflow-x: auto;
   }
 
   .asset-table {

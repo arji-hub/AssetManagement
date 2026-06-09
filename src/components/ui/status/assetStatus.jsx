@@ -1,22 +1,22 @@
 import React from "react";
 import { STATUS_COLORS } from "../../../data/assets";
-import "./condition.css";
+import "./assetStatus.css";
 
-export function Condition({ condition }) {
-  const style = STATUS_COLORS[condition] || {
+export function Status({ status }) {
+  const style = STATUS_COLORS[status] || {
     bg: "#e5e7eb",
     color: "#111",
   };
 
   return (
     <span
-      className="asset-condition"
+      className="asset-status"
       style={{
         backgroundColor: style.bg,
         color: style.color,
       }}
     >
-      {condition}
+      {status}
     </span>
   );
 }

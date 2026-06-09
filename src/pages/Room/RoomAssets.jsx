@@ -4,7 +4,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import MainLayout from "../../components/layout/MainLayout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FilterModal from "../../components/ui/modal/FilterModal";
-import { Condition } from "../../components/ui/status/condition";
+import { Status } from "../../components/ui/status/assetStatus";
+import { useAssetFilters } from "../../hooks/useAssetFilters";
 
 const MOCK_ASSETS = [
   {
@@ -99,18 +100,6 @@ const MOCK_ASSETS = [
   },
 ];
 
-const STATUS_CLASS = {
-  Active: "status-active",
-  Inactive: "status-inactive",
-  "Under Repair": "status-repair",
-};
-
-const INITIAL_FILTERS = {
-  status: "",
-  category: "",
-  custodian: "",
-};
-
 const convertDate = (dateStr) => {
   if (!dateStr) return "—";
   return new Date(dateStr).toLocaleDateString("en-US", {
@@ -123,28 +112,19 @@ const convertDate = (dateStr) => {
 function RoomAssets() {
   const { roomName } = useParams();
   const navigate = useNavigate();
-  const [showFilter, setShowFilter] = useState(false);
-  const [filters, setFilters] = useState(INITIAL_FILTERS);
+  //const [assets, setAssets] = useState([]);
+  const [assets] = useState(MOCK_ASSETS);
 
-  const activeFilterCount = Object.values(filters).filter(Boolean).length;
-
-  const filteredAssets = MOCK_ASSETS.filter((asset) => {
-    if (filters.status && asset.status !== filters.status) return false;
-    if (filters.category && asset.category !== filters.category) return false;
-    if (filters.custodian && asset.custodian !== filters.custodian)
-      return false;
-    return true;
-  });
-
-  const handleApplyFilters = (newFilters) => {
-    setFilters(newFilters);
-    setShowFilter(false);
-  };
-
-  const handleClearFilters = () => {
-    setFilters(INITIAL_FILTERS);
-    setShowFilter(false);
-  };
+  const {
+    showFilter,
+    setShowFilter,
+    filters,
+    setFilters,
+    activeFilterCount,
+    filteredAssets,
+    handleApplyFilters,
+    handleClearFilters,
+  } = useAssetFilters(assets);
 
   return (
     <MainLayout>
@@ -205,7 +185,7 @@ function RoomAssets() {
                     <td>{asset.category}</td>
                     <td>{asset.custodian}</td>
                     <td>
-                      <Condition condition={asset.status} />
+                      <Status status={asset.status} />
                     </td>
                     <td>{convertDate(asset.dateAssigned)}</td>
                   </tr>
