@@ -3,7 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 import MainLayout from "../../components/layout/MainLayout";
 import "./Room.css";
 import RoomCard from "../../components/ui/card/RoomCard";
-import { fetchRooms } from "../../api/room";
+import { fetchRooms } from "../../services/room";
 import RoomModal from "../../components/ui/modal/RoomModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 

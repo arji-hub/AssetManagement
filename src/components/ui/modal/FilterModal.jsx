@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import "./FilterModal.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ASSET_CATEGORIES, ASSET_STATUS } from "../../../data/assets";
-import { fetchRooms } from "../../../api/room";
+import { fetchRooms } from "../../../services/room";
 
 const MOCK_CUSTODIANS = [
   "Ralph Gomez M. Gatmaitan",

@@ -4,55 +4,98 @@ import { useParams, useNavigate } from "react-router-dom";
 import MainLayout from "../../components/layout/MainLayout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FilterModal from "../../components/ui/modal/FilterModal";
+import { Condition } from "../../components/ui/status/condition";
 
 const MOCK_ASSETS = [
   {
     id: 1,
     name: "Laptop Dell XPS 15",
     category: "Electronics",
-    custodian: "Ralph Gomez M. Gatmaitan",
-    status: "Active",
+    room: "SDL1",
+    status: "Working",
     dateAssigned: "2024-01-10",
+    custodian: "John Mark Reyes",
   },
   {
     id: 2,
     name: "Office Chair",
     category: "Furniture",
-    custodian: "Jasper C. Ortega",
-    status: "Active",
+    room: "SDL2",
+    status: "Missing",
     dateAssigned: "2023-08-22",
+    custodian: "Maria Clara Santos",
   },
   {
     id: 3,
     name: "Projector Epson X41",
     category: "Electronics",
-    custodian: "Jonathan D. Santos",
-    status: "Under Repair",
+    room: "Proglab 1",
+    status: "For Repair",
     dateAssigned: "2023-05-15",
+    custodian: "Andrei Luis Cruz",
   },
   {
     id: 4,
     name: "Whiteboard 4x6",
     category: "Furniture",
-    custodian: "Ralph Gomez M. Gatmaitan",
-    status: "Active",
+    room: "SDL3",
+    status: "Working",
     dateAssigned: "2022-11-03",
+    custodian: "Angelica Mae Dizon",
   },
   {
     id: 5,
     name: "Desktop PC",
     category: "Electronics",
-    custodian: "Michael B. Tomacruz",
-    status: "Inactive",
+    room: "Proglab 2",
+    status: "Condemned",
     dateAssigned: "2021-09-18",
+    custodian: "Michael Angelo Torres",
   },
   {
     id: 6,
     name: "Filing Cabinet",
     category: "Furniture",
-    custodian: "Jasper C. Ortega",
-    status: "Active",
+    room: "SDL4",
+    status: "Working",
     dateAssigned: "2023-12-01",
+    custodian: "Kristine Joy Bautista",
+  },
+  {
+    id: 7,
+    name: "Printer HP LaserJet Pro",
+    category: "Electronics",
+    room: "Admin Office",
+    status: "For Repair",
+    dateAssigned: "2024-02-14",
+    custodian: "Ronald James Lim",
+  },
+  {
+    id: 8,
+    name: "Air Conditioner 1.5HP",
+    category: "Appliance",
+    room: "SDL1",
+    status: "Working",
+    dateAssigned: "2022-06-30",
+    custodian: "Patricia Anne Gomez",
+  },
+  {
+    id: 9,
+    name: "Steel Locker",
+    category: "Furniture",
+    room: "Storage Room",
+    status: "Missing",
+    dateAssigned: "2023-03-19",
+    custodian: "Kevin Rafael Santos",
+  },
+  {
+    id: 10,
+    name: "Network Router TP-Link",
+    category: "Electronics",
+    room: "Server Room",
+    status: "Working",
+    dateAssigned: "2024-05-08",
+    custodian: "Stephanie Marie Dela Cruz",
   },
 ];
 
@@ -162,11 +205,7 @@ function RoomAssets() {
                     <td>{asset.category}</td>
                     <td>{asset.custodian}</td>
                     <td>
-                      <span
-                        className={`asset-status ${STATUS_CLASS[asset.status]}`}
-                      >
-                        {asset.status}
-                      </span>
+                      <Condition condition={asset.status} />
                     </td>
                     <td>{convertDate(asset.dateAssigned)}</td>
                   </tr>

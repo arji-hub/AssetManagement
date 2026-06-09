@@ -150,14 +150,14 @@
   position: sticky;
   top: 0;
   z-index: 1;
-  background: #f9fafb;
+  background: #860100;
 }
 
 .assets-table th {
   text-align: left;
   padding: 12px 16px;
   font-weight: 600;
-  color: #374151;
+  color: #ffffff;
   border-bottom: 1px solid #e5e7eb;
   white-space: nowrap;
 }
@@ -174,7 +174,7 @@
 }
 
 .assets-table tbody tr:hover td {
-  background: #fef2f2;
+  background: rgba(245, 170, 44, 0.1);
 }
 
 .asset-index {
@@ -194,33 +194,6 @@
   color: #860100;
   font-size: 13px;
   flex-shrink: 0;
-}
-
-/* ── Status badges ──────────────────────────────────────────── */
-.asset-status {
-  display: inline-block;
-  font-size: 11px;
-  font-weight: 500;
-  padding: 3px 10px;
-  border-radius: 999px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-}
-
-.status-active {
-  background: rgba(59, 114, 68, 0.15);
-  color: #004700;
-}
-
-.status-inactive {
-  background: rgba(107, 114, 128, 0.15);
-  color: #374151;
-}
-
-.status-repair {
-  background: rgba(217, 119, 6, 0.15);
-  color: #92400e;
 }
 
 /* ── Empty state ────────────────────────────────────────────── */
