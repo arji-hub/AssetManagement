@@ -76,7 +76,7 @@
 
 .assets-icon {
   color: #860100;
-  font-size: clamp(12px, 1vw, 16px);
+  font-size: 12px;
   padding: 0;
   display: flex;
   align-items: center;
@@ -84,11 +84,12 @@
 }
 
 .assets-label {
+  display: flex;
   color: #860100;
-  flex: 1;
   font-size: clamp(12px, 1vw, 16px);
   text-align: center;
   white-space: nowrap;
+  align-items: center;
 }
 
 .assets-count {

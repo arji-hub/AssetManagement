@@ -13,7 +13,7 @@
 .custodian-top {
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 999;
   border-bottom: 1px solid #e5e7eb;
   background: #f0f2f5;
   display: grid;
@@ -24,12 +24,13 @@
   gap: 10px;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 960px) {
   .custodian-top {
     grid-template-columns: 1fr;
     grid-template-areas:
       "header"
       "settings";
+    z-index: 100;
   }
 }
 

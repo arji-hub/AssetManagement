@@ -28,7 +28,7 @@ function RoomModal({ onClose, onSubmit, existingRooms = [] }) {
     if (trimmed.length < 2) return "Room name must be at least 2 characters.";
     if (trimmed.length > 50) return "Room name must be 50 characters or fewer.";
     const isDuplicate = existingRooms.some(
-      (name) => name.toLowerCase() === trimmed.toLowerCase()
+      (name) => name.toLowerCase() === trimmed.toLowerCase(),
     );
     if (isDuplicate) return `"${trimmed}" already exists.`;
     return "";
@@ -59,7 +59,7 @@ function RoomModal({ onClose, onSubmit, existingRooms = [] }) {
   };
 
   return (
-    <div className="room-modal-overlay" onClick={onClose}>
+    <div className="room-modal-overlay">
       <div
         className="room-modal"
         onClick={(e) => e.stopPropagation()}

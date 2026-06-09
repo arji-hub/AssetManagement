@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import "./RoomCard.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 
 function RoomCard({ roomName, totalAssets = 0 }) {
@@ -11,6 +12,9 @@ function RoomCard({ roomName, totalAssets = 0 }) {
         <h3 className="room-name">{roomName}</h3>
       </div>
       <div className="room-assets">
+        <span className="assets-icon-room">
+          <FontAwesomeIcon icon="fa-solid fa-box-archive" />
+        </span>
         <span className="room-assets-label">Total Assets</span>
         <span className="room-assets-count">{totalAssets}</span>
       </div>

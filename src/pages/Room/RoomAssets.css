@@ -161,12 +161,6 @@
   font-weight: 500;
 }
 
-.asset-row-icon {
-  color: #860100;
-  font-size: 13px;
-  flex-shrink: 0;
-}
-
 /* ── Status badges ──────────────────────────────────────────── */
 .asset-status {
   display: inline-block;

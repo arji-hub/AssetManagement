@@ -68,6 +68,15 @@ const INITIAL_FILTERS = {
   custodian: "",
 };
 
+const convertDate = (dateStr) => {
+  if (!dateStr) return "—";
+  return new Date(dateStr).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+};
+
 function RoomAssets() {
   const { roomName } = useParams();
   const navigate = useNavigate();
@@ -79,7 +88,8 @@ function RoomAssets() {
   const filteredAssets = MOCK_ASSETS.filter((asset) => {
     if (filters.status && asset.status !== filters.status) return false;
     if (filters.category && asset.category !== filters.category) return false;
-    if (filters.custodian && asset.custodian !== filters.custodian) return false;
+    if (filters.custodian && asset.custodian !== filters.custodian)
+      return false;
     return true;
   });
 
@@ -99,10 +109,7 @@ function RoomAssets() {
         {/* ── Top bar ── */}
         <div className="room-assets-top">
           <div className="room-assets-header">
-            <button
-              className="return-button"
-              onClick={() => navigate("/room")}
-            >
+            <button className="return-button" onClick={() => navigate("/room")}>
               <FontAwesomeIcon icon="fa-solid fa-arrow-left" />
               Back
             </button>
@@ -151,13 +158,7 @@ function RoomAssets() {
                 {filteredAssets.map((asset, index) => (
                   <tr key={asset.id}>
                     <td className="asset-index">{index + 1}</td>
-                    <td className="asset-name">
-                      <FontAwesomeIcon
-                        icon="fa-solid fa-box-archive"
-                        className="asset-row-icon"
-                      />
-                      {asset.name}
-                    </td>
+                    <td className="asset-name">{asset.name}</td>
                     <td>{asset.category}</td>
                     <td>{asset.custodian}</td>
                     <td>
@@ -167,7 +168,7 @@ function RoomAssets() {
                         {asset.status}
                       </span>
                     </td>
-                    <td>{asset.dateAssigned}</td>
+                    <td>{convertDate(asset.dateAssigned)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -179,6 +180,7 @@ function RoomAssets() {
       {/* ── Filter Modal ── */}
       {showFilter && (
         <FilterModal
+          context="room"
           filters={filters}
           onApply={handleApplyFilters}
           onClear={handleClearFilters}

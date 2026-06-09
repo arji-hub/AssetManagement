@@ -18,22 +18,74 @@ export default {
     onApply: () => {},
     onClear: () => {},
     onClose: () => {},
+    initialRooms: ["Room 101", "Room 102", "Lab A", "Lab B", "SDL 1"],
   },
 };
 
-// ── No filters selected (default) ────────────────────────────
+const BASE_FILTERS = { status: "", category: "", room: "", custodian: "" };
+
+// ── Default (shows all sections) ─────────────────────────────
 export const Default = {
-  name: "No Filters Selected",
+  name: "Default (All Sections Visible)",
   args: {
-    filters: { status: "", category: "", room: "" },
-    initialRooms: ["Room 101", "Room 102", "Lab A", "Lab B", "SDL 1"],
+    filters: BASE_FILTERS,
+    context: "other",
   },
 };
 
 export const AllSelected = {
   name: "All Filters Selected",
   args: {
-    filters: { status: "Working", category: "Computer Set", room: "Lab A" },
-    initialRooms: ["Room 101", "Room 102", "Lab A", "Lab B", "SDL 1"],
+    filters: {
+      status: "Working",
+      category: "Computer Set",
+      room: "Lab A",
+      custodian: "Jasper C. Ortega",
+    },
+    context: "other",
+  },
+};
+
+// ── Used in Custodian context (Room section hidden) ───────────
+export const CustodianContext = {
+  name: "Custodian Context (Room Hidden)",
+  args: {
+    filters: BASE_FILTERS,
+    context: "custodian",
+  },
+};
+
+export const CustodianContextSelected = {
+  name: "Custodian Context (Filters Selected)",
+  args: {
+    filters: {
+      status: "Working",
+      category: "Computer Set",
+      room: "",
+      custodian: "",
+    },
+    context: "custodian",
+  },
+};
+
+// ── Used in Room context (Custodian section hidden) ───────────
+export const RoomContext = {
+  name: "Room Context (Custodian Hidden)",
+  args: {
+    filters: BASE_FILTERS,
+    context: "room",
+  },
+};
+
+export const RoomContextSelected = {
+  name: "Room Context (Filters Selected)",
+  args: {
+    filters: {
+      status: "Active",
+      category: "Furniture",
+      room: "",
+      custodian: "",
+    },
+    context: "room",
   },
 };

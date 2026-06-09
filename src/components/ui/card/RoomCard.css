@@ -41,6 +41,11 @@
   align-items: center;
 }
 
+.assets-icon-room {
+  color: #860100;
+  font-size: 20px;
+}
+
 .room-assets-label {
   color: rgba(134, 1, 0, 1);
   font-size: 16px;
@@ -50,7 +55,7 @@
 .room-assets-count {
   background: rgba(134, 1, 0, 1);
   color: rgba(255, 255, 255, 1);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   padding: 4px 14px;
   border-radius: 999px;

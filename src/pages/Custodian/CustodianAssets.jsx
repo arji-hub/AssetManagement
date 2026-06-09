@@ -179,6 +179,7 @@ function CustodianAssets() {
       {/* ── Filter Modal ── */}
       {showFilter && (
         <FilterModal
+          context="custodian"
           filters={filters}
           onApply={handleApplyFilters}
           onClear={handleClearFilters}
