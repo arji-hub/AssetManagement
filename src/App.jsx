@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import RoleRoute from "./components/RoleRoute";
-import LoadingScreen from "./components/ui/LoadingScreen";
+import LoadingScreen from "./components/ui/status/LoadingScreen";
 import Login from "./pages/Login/Login";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Asset from "./pages/Asset/Asset";
@@ -15,6 +15,8 @@ import QR from "./pages/QR/QR";
 import Audit from "./pages/Audit/Audit";
 import Room from "./pages/Room/Room";
 import { ROLES } from "./data/roles";
+import CustodianAssets from "./pages/Custodian/CustodianAssets";
+import RoomAssets from "./pages/Room/RoomAssets";
 
 function App() {
   const { user, loading } = useAuth();
@@ -48,8 +50,14 @@ function App() {
           {/*admin-only routes*/}
           <Route element={<RoleRoute allowed={[ROLES.ADMIN]} />}>
             <Route path="/audit" element={<Audit />} />
-            <Route path="/custodian" element={<Custodian />} />
-            <Route path="/room" element={<Room />} />
+            <Route path="/custodian">
+              <Route index element={<Custodian />} />
+              <Route path=":username" element={<CustodianAssets />} />
+            </Route>
+            <Route path="/room">
+              <Route index element={<Room />} />
+              <Route path=":roomName" element={<RoomAssets />} />
+            </Route>
           </Route>
         </Route>
 

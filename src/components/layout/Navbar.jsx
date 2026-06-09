@@ -5,7 +5,7 @@ import "./Navbar.css";
 import logo from "../../assets/CICTLOGO.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ROLES } from "../../data/roles";
-import LogoutModal from "../ui/LogoutModal";
+import LogoutModal from "../ui/modal/LogoutModal";
 
 const allRoles = [ROLES.ADMIN, ROLES.PARTTIME, ROLES.FULLTIME];
 
@@ -38,24 +38,24 @@ function Navbar({
     item.roles ? item.roles.includes(userRole) : true,
   );
 
-  const [showLogoutModal, setShowLogoutModal] = useState(false);  
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const handleLogoutClick = () => {
-    setShowLogoutModal(true);   
+    setShowLogoutModal(true);
   };
 
   const handleLogoutConfirm = () => {
     setShowLogoutModal(false);
-    onLogout();       
+    onLogout();
   };
 
   const handleLogoutCancel = () => {
-    setShowLogoutModal(false);  
+    setShowLogoutModal(false);
   };
 
   return (
     <div className="layout-wrapper">
-       {/* logout modal */}
+      {/* logout modal */}
       <LogoutModal
         isOpen={showLogoutModal}
         onConfirm={handleLogoutConfirm}
@@ -83,13 +83,12 @@ function Navbar({
               key={item.path}
               label={item.label}
               icon={item.icon}
-              isActive={activePath === item.path}
+              isActive={activePath.startsWith(item.path)}
               onClick={() => {
                 onNavigate(item.path);
                 setSidebarOpen(false);
               }}
             />
-            
           ))}
         </nav>
 
@@ -137,7 +136,10 @@ function Navbar({
               <span className="user-role">{userRole}</span>
               <span className="user-name">{userName}</span>
             </div>
-            <FontAwesomeIcon icon="fa-solid fa-circle-user" style={{ fontSize: "36px" }} />
+            <FontAwesomeIcon
+              icon="fa-solid fa-circle-user"
+              style={{ fontSize: "36px" }}
+            />
           </div>
         </header>
 
@@ -152,7 +154,7 @@ Navbar.propTypes = {
   children: PropTypes.node,
   title: PropTypes.string,
   userName: PropTypes.string,
-  userEmail: PropTypes.string,  
+  userEmail: PropTypes.string,
   userRole: PropTypes.string,
   navItems: PropTypes.arrayOf(
     PropTypes.shape({
