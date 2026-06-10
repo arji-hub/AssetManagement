@@ -1,4 +1,5 @@
-import { db } from "./firebase-config";
+import { db, storage } from "./firebase-config";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import {
   collection,
   doc,
@@ -63,11 +64,12 @@ export const fetchAssets = async (role, currentUserUid) => {
   return assets;
 };
 
-export const fetchAssetById = async (assetId) => {
-  const snap = await getDoc(doc(db, "assets", assetId));
-  if (!snap.exists()) throw new Error("Asset not found.");
-  return { id: snap.id, ...snap.data() };
-};
+async function uploadImage(file, path) {
+  const storageRef = ref(storage, path);
+  const snapshot = await uploadBytes(storageRef, file);
+  const url = await getDownloadURL(snapshot.ref);
+  return url;
+}
 
 async function generateAssetId() {
   const snapshot = await getDocs(collection(db, "assets"));
@@ -83,35 +85,42 @@ async function generateAssetId() {
 }
 
 export const addAsset = async (data, role) => {
+  //console log role
+  console.log("role: " + role);
   if (role !== "admin") {
     throw new Error("Permission denied: only admins can register assets.");
   }
-
   const assetId = await generateAssetId();
 
+  const [assetImageUrl, docImageUrl] = await Promise.all([
+    uploadImage(data.assetImageFile, `assets/${assetId}/asset-image`),
+    uploadImage(data.docImageFile, `assets/${assetId}/asset-document`),
+  ]);
+
   const payload = {
-    // ── identifiers ──────────────────────────────────────────────────────────
+    // identifier
     asset_id: assetId,
 
-    // ── basic info (Step 1) ──────────────────────────────────────────────────
+    // basic info (Step 1)
     serial_number: data.serial_number || null,
     category_id: data.category_id,
     description: data.description,
     date_acquired: data.date_acquired,
-    acquisition_cost: parseFloat(data.acquisition_cost),
+    unit_value: parseFloat(data.unit_value),
     qty: parseInt(data.qty, 10),
+    status: "Working",
     remarks: data.remarks || null,
 
-    // ── media (Step 2) ───────────────────────────────────────────────────────
-    asset_image_url: data.asset_image_url || null,
-    par_image_url: data.par_image_url || null,
+    // media (Step 2)
+    asset_image_url: assetImageUrl || null,
+    doc_image_url: docImageUrl || null,
 
-    // ── assignment (Step 3) ──────────────────────────────────────────────────
-    primary_custodian: data.primary_custodian || null,
-    local_custodian: data.local_custodian || null,
+    // assignment (Step 3)
+    property_custodian: data.primary_custodian || null,
+    local_mr: data.local_custodian || null,
     room_id: data.room_id || null,
 
-    // ── metadata ─────────────────────────────────────────────────────────────
+    // metadata
     created_at: serverTimestamp(),
     updated_at: serverTimestamp(),
   };

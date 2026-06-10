@@ -189,7 +189,7 @@ function StepInfo({ form, onChange }) {
           />
         </div>
 
-        {/* Row 3: Date Acquired | Acquisition Cost | Quantity */}
+        {/* Row 3: Date Acquired | Unit Value | Quantity */}
         <div className="reg-field">
           <label className="reg-label">
             Date Acquired <span className="reg-required">*</span>
@@ -205,18 +205,18 @@ function StepInfo({ form, onChange }) {
 
         <div className="reg-field">
           <label className="reg-label">
-            Acquisition Cost <span className="reg-required">*</span>
+            Unit Value <span className="reg-required">*</span>
           </label>
           <div className="reg-input-prefix-wrap">
             <span className="reg-input-prefix">₱</span>
             <input
               className="reg-input reg-input--prefixed"
               type="number"
-              name="acquisition_cost"
+              name="unit_value"
               min="0"
               step="0.01"
               placeholder="0.00"
-              value={form.acquisition_cost}
+              value={form.unit_value}
               onChange={onChange}
             />
           </div>
@@ -255,7 +255,7 @@ function StepInfo({ form, onChange }) {
 }
 
 // ─── Step 2: Media ────────────────────────────────────────────────────────────
-function StepMedia({ assetImage, setAssetImage, parImage, setParImage }) {
+function StepMedia({ assetImage, setAssetImage, docImage, setDocImage }) {
   return (
     <div className="reg-card">
       <p className="reg-card-title">Asset Media</p>
@@ -272,8 +272,8 @@ function StepMedia({ assetImage, setAssetImage, parImage, setParImage }) {
         />
         <ImagePanel
           title="PAR / ICS Document"
-          image={parImage}
-          onImageChange={setParImage}
+          image={docImage}
+          onImageChange={setDocImage}
           required
         />
       </div>
@@ -383,7 +383,7 @@ function AssetRegistration() {
   const [showSkipWarning, setShowSkipWarning] = useState(false);
 
   const [assetImage, setAssetImage] = useState(null);
-  const [parImage, setParImage] = useState(null);
+  const [docImage, setDocImage] = useState(null);
 
   // ── Firestore data for Step 3 dropdowns ─────────────────────────────────────
   const [custodians, setCustodians] = useState([]);
@@ -415,7 +415,7 @@ function AssetRegistration() {
     category_id: "",
     date_acquired: "",
     description: "",
-    acquisition_cost: "",
+    unit_value: "",
     remarks: "",
     qty: "1",
     primary_custodian: "",
@@ -435,10 +435,10 @@ function AssetRegistration() {
         form.description.trim() !== "" &&
         form.category_id !== "" &&
         form.date_acquired !== "" &&
-        form.acquisition_cost !== "" &&
+        form.unit_value !== "" &&
         form.qty !== ""
       );
-    if (step === 2) return assetImage !== null && parImage !== null;
+    if (step === 2) return assetImage !== null && docImage !== null;
     return true; // step 3 is optional
   };
 
@@ -474,15 +474,11 @@ function AssetRegistration() {
     setSaving(true);
     setSaveError(null);
     try {
-      // TODO: upload images to Firebase Storage and replace with real URLs
-      // const assetImageUrl = await uploadImage(assetImage.file, `assets/.../asset-image`);
-      // const parImageUrl   = await uploadImage(parImage.file,   `assets/.../par-document`);
-
       await addAsset(
         {
           ...form,
-          asset_image_url: null, // replace with assetImageUrl once Storage is wired
-          par_image_url: null, // replace with parImageUrl once Storage is wired
+          assetImageFile: assetImage.file,
+          docImageFile: docImage.file,
         },
         role,
       );
@@ -531,8 +527,8 @@ function AssetRegistration() {
             <StepMedia
               assetImage={assetImage}
               setAssetImage={setAssetImage}
-              parImage={parImage}
-              setParImage={setParImage}
+              docImage={docImage}
+              setDocImage={setDocImage}
             />
           )}
           {step === 3 && (

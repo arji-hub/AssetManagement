@@ -7,7 +7,7 @@ function LogoutModal({ isOpen, onConfirm, onCancel, userEmail = "" }) {
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onCancel}>
+    <div className="modal-overlay-logout">
       <div className="modal-box" onClick={(e) => e.stopPropagation()}>
         <div className="modal-icon">
           <FontAwesomeIcon icon={faArrowRightFromBracket} flip="horizontal" />
