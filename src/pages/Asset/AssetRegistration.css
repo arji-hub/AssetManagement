@@ -1,343 +1,503 @@
 /* src/pages/Asset/AssetRegistration.css */
 
-/* ── page wrapper ── */
+/* ─── Page shell ─────────────────────────────────────────────────────────────── */
 .reg-page {
   display: flex;
   flex-direction: column;
-  gap: 0;
-  height: 100%;
-  box-sizing: border-box;
+  gap: 0.6rem;
+  padding: 1rem;
+  min-height: 100%;
 }
 
-/* ── breadcrumb header ── */
+/* ─── Page header ────────────────────────────────────────────────────────────── */
 .reg-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.reg-breadcrumb {
-  font-size: 28px;
-  font-weight: 700;
-  color: #111;
-  margin: 0;
-  line-height: 1;
-}
-
-.reg-breadcrumb span {
-  color: #555;
-  font-weight: 400;
-}
-
-/* ── main content grid ── */
-.reg-body {
-  display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: 20px;
-  flex: 1;
-}
-
-/* ══════════════════════════════
-   LEFT COLUMN — image panels
-══════════════════════════════ */
-.reg-left {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.reg-image-panel {
+  gap: 1rem;
+  padding: 1rem 1.5rem;
   background: #fff;
+  border: 1px solid #e4e4e4;
+  border-left: 4px solid #860100;
   border-radius: 10px;
-  border: 1px solid #e0e0e0;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
-  padding: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 }
 
-.reg-image-panel-title {
-  font-size: 13px;
+.reg-header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.reg-header-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #000000;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.reg-header-sep {
+  font-size: 0.6rem;
+  color: #ccc;
+}
+
+.reg-header-title {
+  font-size: 1.2rem;
   font-weight: 700;
   color: #860100;
-  margin: 0 0 6px 0;
-  letter-spacing: 0.03em;
+  margin: 0;
+  line-height: 1.2;
 }
 
-.reg-image-drop {
-  border: 2px solid #860100;
-  border-radius: 6px;
-  background: #fafafa;
-  min-height: 130px;
+/* ─── Step Indicator ─────────────────────────────────────────────────────────── */
+.reg-steps {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0.75rem 1.5rem;
+  background: #fff;
+  border: 1px solid #e4e4e4;
+  border-radius: 10px;
+}
+
+.reg-step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.reg-step-line {
+  flex: 1;
+  height: 2px;
+  background: #ddd;
+  margin-bottom: 1.1rem; /* aligns with circle center */
+  transition: background 0.3s;
+}
+
+.reg-step-line--done {
+  background: #860100;
+}
+
+.reg-step-circle {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  background: #fff;
+  color: #aaa;
+  font-size: 0.85rem;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #aaa;
-  font-size: 12px;
-  cursor: pointer;
-  transition: background 0.2s;
-  overflow: hidden;
-  position: relative;
+  transition: all 0.25s;
 }
 
-.reg-image-drop:hover {
-  background: #fff5f5;
+.reg-step-circle--active {
+  border-color: #860100;
+  background: #860100;
+  color: #fff;
+}
+
+.reg-step-circle--done {
+  border-color: #860100;
+  background: #860100;
+  color: #fff;
+}
+
+.reg-step-label {
+  font-size: 0.72rem;
+  color: #aaa;
+  white-space: nowrap;
+  font-weight: 500;
+  transition: color 0.25s;
+}
+
+.reg-step-label--active {
+  color: #860100;
+  font-weight: 700;
+}
+
+.reg-step-label--done {
+  color: #860100;
+}
+
+/* ─── Card ───────────────────────────────────────────────────────────────────── */
+.reg-content {
+  flex: 1;
+}
+
+.reg-card {
+  background: #fff;
+  border: 1px solid #e4e4e4;
+  border-radius: 10px;
+  padding: 1.5rem 2rem;
+}
+
+.reg-card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #860100;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0 0 0.35rem 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.reg-card-subtitle {
+  font-size: 0.82rem;
+  color: #777;
+  margin: 0 0 1.25rem 0;
+}
+
+/* ─── Form grid ──────────────────────────────────────────────────────────────── */
+.reg-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem 1.5rem;
+  margin-top: 1.25rem;
+}
+
+.reg-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+/* span all 3 columns */
+.reg-field--full {
+  grid-column: 1 / -1;
+}
+
+.reg-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #444;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.reg-required {
+  color: #860100;
+  margin-left: 2px;
+}
+
+.reg-input,
+.reg-select,
+.reg-textarea {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.9rem;
+  color: #222;
+  background: #fafafa;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.reg-input:focus,
+.reg-select:focus,
+.reg-textarea:focus {
+  outline: none;
+  border-color: #860100;
+  background: #fff;
+}
+
+.reg-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.reg-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  padding-right: 2rem;
+  cursor: pointer;
+}
+
+/* peso prefix */
+.reg-input-prefix-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.reg-input-prefix {
+  position: absolute;
+  left: 0.75rem;
+  color: #666;
+  font-size: 0.9rem;
+  pointer-events: none;
+}
+
+.reg-input--prefixed {
+  padding-left: 1.75rem;
+}
+
+/* ─── Step 2 — Media grid ────────────────────────────────────────────────────── */
+.reg-media-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1.25rem;
+}
+
+.reg-image-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border: 1px solid #e4e4e4;
+  border-radius: 8px;
+  padding: 1rem;
+  background: #fafafa;
+  transition: border-color 0.2s;
+}
+
+.reg-image-panel--empty {
+  border-color: #f0b0b0;
+  background: #fffafa;
+}
+
+.reg-image-panel-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0;
+}
+
+.reg-image-drop {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border: 2px dashed #ddd;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .reg-image-drop img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  position: absolute;
-  inset: 0;
+  object-fit: contain;
 }
 
-.reg-image-drop-label {
+.reg-image-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
   color: #bbb;
-  font-size: 12px;
-  text-align: center;
-  padding: 8px;
-  pointer-events: none;
+  font-size: 0.82rem;
+}
+
+.reg-image-placeholder svg {
+  font-size: 2rem;
+}
+
+.reg-image-remove {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  background: rgba(0, 0, 0, 0.55);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  width: 1.6rem;
+  height: 1.6rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  transition: background 0.2s;
+}
+
+.reg-image-remove:hover {
+  background: #860100;
+}
+
+.reg-image-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .reg-image-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 7px 10px;
-  border: 1px solid #ccc;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ddd;
   border-radius: 6px;
-  background: #f5f5f5;
-  font-size: 12px;
+  background: #fff;
   color: #444;
+  font-size: 0.82rem;
+  font-weight: 600;
   cursor: pointer;
   transition:
-    background 0.15s,
-    border-color 0.15s;
+    border-color 0.2s,
+    color 0.2s;
 }
 
 .reg-image-btn:hover {
-  background: #ebebeb;
-  border-color: #bbb;
-}
-
-/* ══════════════════════════════
-   RIGHT COLUMN — form panels
-══════════════════════════════ */
-.reg-right {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-/* ── shared card ── */
-.reg-card {
-  background: #fff;
-  border-radius: 10px;
-  border: 1px solid #e0e0e0;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
-  padding: 18px 20px;
-}
-
-.reg-card-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: #860100;
-  margin: 0 0 14px 0;
-  padding-bottom: 8px;
-  border-bottom: 2px solid #f0e0e0;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-}
-
-/* ── form grid ── */
-.reg-grid {
-  display: grid;
-  gap: 12px 16px;
-}
-
-/* Basic info: 3 cols for row-1, span rules below */
-.reg-grid-basic {
-  grid-template-columns: 1fr 1fr 1fr;
-}
-
-/* Custody grid: 3 cols */
-.reg-grid-custody {
-  grid-template-columns: 1fr 1fr 1fr;
-}
-
-/* Field spanning */
-.reg-field-full {
-  grid-column: 1 / -1;
-}
-.reg-field-half {
-  grid-column: span 2;
-}
-.reg-field-single {
-  grid-column: span 1;
-}
-
-/* ── label + input ── */
-.reg-field {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.reg-label {
-  font-size: 11.5px;
-  font-weight: 600;
-  color: #555;
-  letter-spacing: 0.03em;
-}
-
-.reg-input,
-.reg-select,
-.reg-textarea {
-  padding: 8px 10px;
-  border: 1px solid #d0d0d0;
-  border-radius: 6px;
-  font-size: 13px;
-  color: #333;
-  background: #fff;
-  outline: none;
-  transition:
-    border-color 0.2s,
-    box-shadow 0.2s;
-  box-sizing: border-box;
-  width: 100%;
-  font-family: inherit;
-}
-
-.reg-input::placeholder,
-.reg-textarea::placeholder {
-  color: #bbb;
-}
-
-.reg-input:focus,
-.reg-select:focus,
-.reg-textarea:focus {
   border-color: #860100;
-  box-shadow: 0 0 0 3px rgba(134, 1, 0, 0.08);
+  color: #860100;
 }
 
-.reg-select {
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  padding-right: 28px;
-  cursor: pointer;
+/* ─── Step 3 — Skip warning ──────────────────────────────────────────────────── */
+.reg-skip-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  background: #fff8e1;
+  border: 1px solid #f5aa2c;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  font-size: 0.84rem;
+  color: #7a5700;
+  margin-bottom: 1rem;
 }
 
-.reg-textarea {
-  resize: vertical;
-  min-height: 62px;
+.reg-skip-warning svg {
+  color: #f5aa2c;
+  margin-top: 1px;
+  flex-shrink: 0;
 }
 
-/* number input arrows */
-.reg-input[type="number"] {
-  -moz-appearance: textfield;
-}
-.reg-input[type="number"]::-webkit-inner-spin-button,
-.reg-input[type="number"]::-webkit-outer-spin-button {
-  opacity: 1;
-}
-
-/* date input */
-.reg-input[type="date"] {
-  color: #555;
-}
-
-/* ══════════════════════════════
-   FOOTER ACTIONS
-══════════════════════════════ */
+/* ─── Footer ─────────────────────────────────────────────────────────────────── */
 .reg-footer {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: 12px;
-  padding-top: 4px;
+  justify-content: space-between;
+  padding-top: 0.5rem;
+  border-top: 1px solid #eee;
 }
 
-.reg-btn-cancel {
-  padding: 10px 32px;
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  background: #fff;
-  color: #555;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  letter-spacing: 0.04em;
-  transition: all 0.2s;
+.reg-footer-left,
+.reg-footer-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
-.reg-btn-cancel:hover {
-  border-color: #999;
-  color: #333;
-  background: #f5f5f5;
-}
-
-.reg-btn-save {
-  padding: 10px 36px;
-  border: none;
-  border-radius: 8px;
-  background: #860100;
-  color: #fff;
-  font-size: 14px;
+/* ─── Buttons ────────────────────────────────────────────────────────────────── */
+.reg-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 1.25rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
-  letter-spacing: 0.06em;
-  transition: background 0.2s;
+  border: none;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s,
+    opacity 0.2s;
+  letter-spacing: 0.03em;
 }
 
-.reg-btn-save:hover {
-  background: #5d0100;
-}
-
-.reg-btn-save:disabled {
-  background: #ccc;
+.reg-btn:disabled {
+  opacity: 0.45;
   cursor: not-allowed;
 }
 
-/* ══════════════════════════════
-   RESPONSIVE
-══════════════════════════════ */
+/* Primary: filled red */
+.reg-btn--primary {
+  background: #860100;
+  color: #fff;
+  border: 2px solid #860100;
+}
+
+.reg-btn--primary:not(:disabled):hover {
+  background: #6a0100;
+  border-color: #6a0100;
+}
+
+/* Ghost: outlined red */
+.reg-btn--ghost {
+  background: transparent;
+  color: #860100;
+  border: 2px solid #860100;
+}
+
+.reg-btn--ghost:not(:disabled):hover {
+  background: #860100;
+  color: #fff;
+}
+
+/* Cancel: neutral */
+.reg-btn--cancel {
+  background: transparent;
+  color: #666;
+  border: 2px solid #ddd;
+}
+
+.reg-btn--cancel:not(:disabled):hover {
+  border-color: #999;
+  color: #333;
+}
+
+/* Warn: amber — for "Confirm Skip" state */
+.reg-btn--warn {
+  background: #f5aa2c;
+  color: #fff;
+  border: 2px solid #f5aa2c;
+}
+
+.reg-btn--warn:not(:disabled):hover {
+  background: #d99520;
+  border-color: #d99520;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────────────────── */
 @media (max-width: 900px) {
-  .reg-body {
-    grid-template-columns: 1fr;
+  .reg-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 
-  .reg-left {
-    flex-direction: row;
-  }
-
-  .reg-image-panel {
-    flex: 1;
-  }
-
-  .reg-grid-basic,
-  .reg-grid-custody {
-    grid-template-columns: 1fr 1fr;
+  .reg-field--full {
+    grid-column: 1 / -1;
   }
 }
 
 @media (max-width: 600px) {
-  .reg-left {
-    flex-direction: column;
+  .reg-page {
+    padding: 1rem;
   }
 
-  .reg-grid-basic,
-  .reg-grid-custody {
+  .reg-grid {
     grid-template-columns: 1fr;
   }
 
-  .reg-field-half,
-  .reg-field-single {
-    grid-column: 1 / -1;
+  .reg-media-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .reg-steps {
+    padding: 0.75rem 1rem;
+  }
+
+  .reg-card {
+    padding: 1.25rem;
   }
 }
