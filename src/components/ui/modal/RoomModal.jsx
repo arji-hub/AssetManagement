@@ -1,19 +1,22 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./RoomModal.css";
 
-function RoomModal({ onClose, onSubmit, existingRooms = [] }) {
-  const [roomName, setRoomName] = useState("");
-  const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+function RoomModal({
+  onClose,
+  onSubmit,
+  value,
+  onChange,
+  error,
+  isSubmitting,
+  existingRooms = [],
+}) {
   const inputRef = useRef(null);
 
-  // Auto-focus the input when modal opens
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
-  // Close on Escape key
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") onClose();
@@ -21,42 +24,6 @@ function RoomModal({ onClose, onSubmit, existingRooms = [] }) {
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
-
-  const validate = (value) => {
-    const trimmed = value.trim();
-    if (!trimmed) return "Room name is required.";
-    if (trimmed.length < 2) return "Room name must be at least 2 characters.";
-    if (trimmed.length > 50) return "Room name must be 50 characters or fewer.";
-    const isDuplicate = existingRooms.some(
-      (name) => name.toLowerCase() === trimmed.toLowerCase(),
-    );
-    if (isDuplicate) return `"${trimmed}" already exists.`;
-    return "";
-  };
-
-  const handleChange = (e) => {
-    const value = e.target.value;
-    setRoomName(value);
-    if (error) setError(validate(value));
-  };
-
-  const handleSubmit = async () => {
-    const trimmed = roomName.trim();
-    const validationError = validate(trimmed);
-    if (validationError) {
-      setError(validationError);
-      return;
-    }
-    setIsSubmitting(true);
-    try {
-      await onSubmit({ name: trimmed });
-      onClose();
-    } catch (err) {
-      setError(err.message ?? "Something went wrong. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   return (
     <div className="room-modal-overlay">
@@ -87,10 +54,11 @@ function RoomModal({ onClose, onSubmit, existingRooms = [] }) {
               id="room-name-input"
               ref={inputRef}
               type="text"
+              name="name"
               placeholder="e.g. Computer Lab 1"
-              value={roomName}
-              onChange={handleChange}
-              onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+              value={value}
+              onChange={onChange}
+              onKeyDown={(e) => e.key === "Enter" && onSubmit()}
               maxLength={50}
               disabled={isSubmitting}
             />
@@ -100,7 +68,7 @@ function RoomModal({ onClose, onSubmit, existingRooms = [] }) {
               </span>
             )}
             <span className="room-modal-char-count">
-              {roomName.trim().length}/50
+              {value.trim().length}/50
             </span>
           </div>
 
@@ -129,8 +97,8 @@ function RoomModal({ onClose, onSubmit, existingRooms = [] }) {
           </button>
           <button
             className="room-modal-btn room-modal-btn--submit"
-            onClick={handleSubmit}
-            disabled={isSubmitting || !roomName.trim()}
+            onClick={onSubmit}
+            disabled={isSubmitting || !value.trim()}
           >
             {isSubmitting ? "Adding..." : "Add Room"}
           </button>

@@ -1,42 +1,50 @@
+import { MemoryRouter } from "react-router-dom";
 import RoomCard from "../../../components/ui/card/RoomCard";
 
 export default {
   title: "Cards/RoomCard",
   component: RoomCard,
   tags: ["autodocs"],
+  decorators: [
+    (Story) => (
+      <MemoryRouter>
+        <Story />
+      </MemoryRouter>
+    ),
+  ],
   parameters: {
     layout: "centered",
   },
   argTypes: {
-    name: { control: "text" },
+    roomName: { control: "text" },
     totalAssets: { control: { type: "number", min: 0 } },
   },
 };
 
 export const Default = {
   args: {
-    name: "ProgLab1",
+    roomName: "ProgLab1",
     totalAssets: 12,
   },
 };
 
 export const EmptyRoom = {
   args: {
-    name: "SDL1",
+    roomName: "SDL1",
     totalAssets: 0,
   },
 };
 
 export const LongName = {
   args: {
-    name: "Computer Laboratory Room 101",
+    roomName: "Computer Laboratory Room 101",
     totalAssets: 8,
   },
 };
 
 export const HighAssetCount = {
   args: {
-    name: "Faculty Room",
+    roomName: "Faculty Room",
     totalAssets: 380,
   },
 };

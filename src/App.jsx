@@ -1,8 +1,8 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
-import ProtectedRoute from "./components/ProtectedRoute";
-import RoleRoute from "./components/RoleRoute";
+import ProtectedRoute from "./components/route/ProtectedRoute";
+import RoleRoute from "./components/route/RoleRoute";
 import LoadingScreen from "./components/ui/status/LoadingScreen";
 import Login from "./pages/Login/Login";
 import Dashboard from "./pages/Dashboard/Dashboard";
