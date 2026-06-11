@@ -1,4 +1,4 @@
-import LoadingScreen from "../../components/ui/LoadingScreen";
+import LoadingScreen from "../../components/ui/status/LoadingScreen";
 
 export default {
   title: "UI/LoadingScreen",
