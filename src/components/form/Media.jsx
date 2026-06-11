@@ -1,4 +1,4 @@
-import "./form.css";
+import "./Form.css";
 import "./Media.css";
 import ImagePanel from "./ImagePanel";
 
