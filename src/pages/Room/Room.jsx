@@ -6,15 +6,35 @@ import RoomCard from "../../components/ui/card/RoomCard";
 import { fetchRooms } from "../../services/room";
 import RoomModal from "../../components/ui/modal/RoomModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useRoomFilters } from "../../hooks/useRoomFilters";
+import { useRoomRegistration } from "../../hooks/useRoomRegistration";
 
 function Room() {
   const { user } = useAuth();
   const [showModal, setShowModal] = useState(false);
-  const [assetCountFilter, setAssetCountFilter] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const {
+    searchQuery,
+    setSearchQuery,
+    assetCountFilter,
+    setAssetCountFilter,
+    filteredRooms,
+  } = useRoomFilters(rooms);
+
+  const { name, error: roomError, saving, handleChange, handleSave } =
+    useRoomRegistration({
+      existingRooms: rooms.map((r) => r.name),
+      onSuccess: (savedName) => {
+        setRooms((prev) => [
+          ...prev,
+          { id: savedName, name: savedName, assetCount: 0 },
+        ]);
+        setShowModal(false);
+      },
+    });
 
   useEffect(() => {
     fetchRooms()
@@ -23,29 +43,12 @@ function Room() {
       .finally(() => setLoading(false));
   }, []);
 
-  const handleAddRoom = async ({ name }) => {
-    // await addRoom({ name }); — plug in your Firestore call here
-    setRooms((prev) => [...prev, { id: name, name, assetCount: 0 }]);
-  };
-
-  const filteredRooms = rooms
-    .filter((r) => r.name.toLowerCase().includes(searchQuery.toLowerCase()))
-    .filter((r) => {
-      if (assetCountFilter === "none") return r.assetCount === 0;
-      if (assetCountFilter === "low")
-        return r.assetCount >= 1 && r.assetCount <= 10;
-      if (assetCountFilter === "medium")
-        return r.assetCount >= 11 && r.assetCount <= 50;
-      if (assetCountFilter === "high") return r.assetCount > 50;
-      return true;
-    });
-
   return (
     <MainLayout>
       <div className="room-page">
         <div className="room-top">
           <div className="room-header">
-            <h1>Room </h1>
+            <h1>Room</h1>
             <p>Welcome, {user.username}! This is the room page.</p>
           </div>
           <div className="room-settings">
@@ -85,8 +88,11 @@ function Room() {
             {showModal && (
               <RoomModal
                 onClose={() => setShowModal(false)}
-                onSubmit={handleAddRoom}
-                existingRooms={rooms.map((r) => r.name)}
+                onSubmit={handleSave}
+                value={name}
+                onChange={handleChange}
+                error={roomError}
+                isSubmitting={saving}
               />
             )}
           </div>
