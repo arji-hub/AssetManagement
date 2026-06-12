@@ -1,84 +1,63 @@
 // src/pages/Asset/AssetRegistration.jsx
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MainLayout from "../../components/layout/MainLayout";
-import { ASSET_CATEGORIES, ASSET_STATUS } from "../../data/assets";
+import { fetchCustodians } from "../../services/user";
+import { fetchRooms } from "../../services/room";
+import { addAsset } from "../../services/asset";
+import { useAuth } from "../../context/AuthContext";
 import "./AssetRegistration.css";
+import StepIndicator from "../../components/form/StepIndicator";
+import BasicInfo from "../../components/form/BasicInfo";
+import Media from "../../components/form/Media";
+import Assignment from "../../components/form/Assignment";
 
-const LOCATIONS = []; // replace with real Firestore fetch later
 
-// ── reusable image upload panel ───────────────────────────────────────────────
-function ImagePanel({ title, image, onImageChange }) {
-  const fileRef = useRef(null);
-
-  const handleFile = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const url = URL.createObjectURL(file);
-    onImageChange({ file, preview: url });
-  };
-
-  return (
-    <div className="reg-image-panel">
-      <p className="reg-image-panel-title">{title}</p>
-
-      <div className="reg-image-drop">
-        {image?.preview ? (
-          <img src={image.preview} alt="preview" />
-        ) : (
-          <span className="reg-image-drop-label">Upload Image</span>
-        )}
-      </div>
-
-      <button
-        type="button"
-        className="reg-image-btn"
-        onClick={() => {
-          /* camera access — placeholder */
-          alert("Camera access not yet implemented.");
-        }}
-      >
-        <FontAwesomeIcon icon="fa-solid fa-camera" />
-        Scan via camera
-      </button>
-
-      <button
-        type="button"
-        className="reg-image-btn"
-        onClick={() => fileRef.current?.click()}
-      >
-        <FontAwesomeIcon icon="fa-solid fa-upload" />
-        Upload from files
-      </button>
-
-      <input
-        ref={fileRef}
-        type="file"
-        accept="image/*"
-        style={{ display: "none" }}
-        onChange={handleFile}
-      />
-    </div>
-  );
-}
-
-// ── main component 
+// ─── Main Component ───────────────────────────────────────────────────────────
 function AssetRegistration() {
   const navigate = useNavigate();
+  const { role } = useAuth();
+
+  const [step, setStep] = useState(1);
+  const [saveError, setSaveError] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [showSkipWarning, setShowSkipWarning] = useState(false);
 
-  // image state
   const [assetImage, setAssetImage] = useState(null);
-  const [parImage, setParImage] = useState(null);
+  const [docImage, setDocImage] = useState(null);
 
-  // form state
+  // ── Firestore data for Step 3 dropdowns ─────────────────────────────────────
+  const [custodians, setCustodians] = useState([]);
+  const [rooms, setRooms] = useState([]);
+  const [loadingOptions, setLoadingOptions] = useState(false);
+
+  useEffect(() => {
+    // Fetch once on mount — early fetch avoids a visible delay when user reaches Step 3
+    async function loadOptions() {
+      setLoadingOptions(true);
+      try {
+        const [fetchedCustodians, fetchedRooms] = await Promise.all([
+          fetchCustodians(),
+          fetchRooms(),
+        ]);
+        setCustodians(fetchedCustodians);
+        setRooms(fetchedRooms);
+      } catch (err) {
+        console.error("Failed to load custodians/rooms:", err);
+      } finally {
+        setLoadingOptions(false);
+      }
+    }
+    loadOptions();
+  }, []);
+
   const [form, setForm] = useState({
     serial_number: "",
     category_id: "",
     date_acquired: "",
     description: "",
-    acquisition_cost: "",
+    unit_value: "",
     remarks: "",
     qty: "1",
     primary_custodian: "",
@@ -91,226 +70,196 @@ function AssetRegistration() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = async (e) => {
-    e.preventDefault();
+  // ── per-step validation ─────────────────────────────────────────────────────
+  const canProceed = () => {
+    if (step === 1)
+      return (
+        form.description.trim() !== "" &&
+        form.category_id !== "" &&
+        form.date_acquired !== "" &&
+        form.unit_value !== "" &&
+        form.qty !== ""
+      );
+    if (step === 2) return assetImage !== null && docImage !== null;
+    return true; // step 3 is optional
+  };
+
+  // ── navigation ──────────────────────────────────────────────────────────────
+  const handleNext = () => {
+    if (!canProceed()) return;
+    setShowSkipWarning(false);
+    setStep((s) => s + 1);
+  };
+
+  const handleBack = () => {
+    setShowSkipWarning(false);
+    setStep((s) => s - 1);
+  };
+
+  // Step 3: "Skip for now" — show inline warning then allow save
+  const handleSkip = () => {
+    if (!showSkipWarning) {
+      setShowSkipWarning(true);
+    } else {
+      handleSave(true);
+    }
+  };
+
+  useEffect(() => {
+    if (showSkipWarning && isAssigned) {
+      setShowSkipWarning(false);
+    }
+  }, [form.primary_custodian, form.local_custodian, form.room_id]);
+
+  // ── save ────────────────────────────────────────────────────────────────────
+  const handleSave = async (skipped = false) => {
     setSaving(true);
+    setSaveError(null);
     try {
-      // TODO: write to Firestore via assetService / processAsset
-      console.log("Saving asset:", form, assetImage, parImage);
+      await addAsset(
+        {
+          ...form,
+          assetImageFile: assetImage.file,
+          docImageFile: docImage.file,
+        },
+        role,
+      );
+
       navigate("/asset");
     } catch (err) {
       console.error(err);
+      setSaveError(err.message);
     } finally {
       setSaving(false);
     }
   };
 
+  const fulltimeCustodians = custodians.filter((c) => c.role === "fulltime");
+  const parttimeCustodians = custodians.filter((c) => c.role === "parttime");
+
+  const isAssigned =
+    form.primary_custodian || form.local_custodian || form.room_id;
+
   return (
     <MainLayout>
-      <form className="reg-page" onSubmit={handleSave}>
-
-        {/* ── breadcrumb header ── */}
+      <div className="reg-page">
+        {/* ── header ── */}
         <div className="reg-header">
-          <h1 className="reg-breadcrumb">
-            Assets <span>&gt; Registration</span>
-          </h1>
+          <div className="reg-header-text">
+            <div className="reg-header-eyebrow">
+              <FontAwesomeIcon icon="fa-solid fa-layer-group" />
+              Assets
+              <FontAwesomeIcon
+                icon="fa-solid fa-chevron-right"
+                className="reg-header-sep"
+              />
+              Registration
+            </div>
+            <h1 className="reg-header-title">Register New Asset</h1>
+          </div>
         </div>
 
-        {/* ── body: left images + right form ── */}
-        <div className="reg-body">
+        {/* ── step indicator ── */}
+        <StepIndicator currentStep={step} />
 
-          {/* LEFT — image upload panels */}
-          <div className="reg-left">
-            <ImagePanel
-              title="Asset Image"
-              image={assetImage}
-              onImageChange={setAssetImage}
+        {/* ── step content ── */}
+        <div className="reg-content">
+          {step === 1 && <BasicInfo form={form} onChange={handleChange} />}
+          {step === 2 && (
+            <Media
+              assetImage={assetImage}
+              setAssetImage={setAssetImage}
+              docImage={docImage}
+              setDocImage={setDocImage}
             />
-            <ImagePanel
-              title="PAR/ICS Document"
-              image={parImage}
-              onImageChange={setParImage}
+          )}
+          {step === 3 && (
+            <Assignment
+              form={form}
+              onChange={handleChange}
+              skippedWarning={showSkipWarning}
+              fulltimeCustodians={fulltimeCustodians}
+              parttimeCustodians={parttimeCustodians}
+              rooms={rooms}
+              loadingOptions={loadingOptions}
             />
+          )}
+        </div>
+
+        {/* ── footer ── */}
+        <div className="reg-footer">
+          <div className="reg-footer-left">
+            {step > 1 && (
+              <button
+                type="button"
+                className="reg-btn reg-btn--ghost"
+                onClick={handleBack}
+                disabled={saving}
+              >
+                <FontAwesomeIcon icon="fa-solid fa-arrow-left" />
+                Back
+              </button>
+            )}
           </div>
 
-          {/* RIGHT — form panels */}
-          <div className="reg-right">
+          {saveError && (
+            <p className="reg-save-error">
+              <FontAwesomeIcon icon="fa-solid fa-circle-exclamation" />
+              {saveError}
+            </p>
+          )}
 
-            {/* ── Basic Asset Information ── */}
-            <div className="reg-card">
-              <p className="reg-card-title">Basic Asset Information</p>
+          <div className="reg-footer-right">
+            {/* Cancel — always present */}
+            <button
+              type="button"
+              className="reg-btn reg-btn--cancel"
+              onClick={() => navigate("/asset")}
+              disabled={saving}
+            >
+              Cancel
+            </button>
 
-              <div className="reg-grid reg-grid-basic">
-
-                {/* Row 1: Serial Number | Category | Date Acquired */}
-                <div className="reg-field reg-field-single">
-                  <label className="reg-label">Serial Number</label>
-                  <input
-                    className="reg-input"
-                    name="serial_number"
-                    placeholder="Enter Text"
-                    value={form.serial_number}
-                    onChange={handleChange}
-                  />
-                </div>
-
-                <div className="reg-field reg-field-single">
-                  <label className="reg-label">Category</label>
-                  <select
-                    className="reg-select"
-                    name="category_id"
-                    value={form.category_id}
-                    onChange={handleChange}
+            {/* Step 3: mutually exclusive — Save when assigned, Skip when not */}
+            {step === 3 && (
+              <>
+                {isAssigned ? (
+                  <button
+                    type="button"
+                    className="reg-btn reg-btn--primary"
+                    onClick={() => handleSave(false)}
+                    disabled={saving}
                   >
-                    <option value="">Select Category</option>
-                    {ASSET_CATEGORIES.map((c) => (
-                      <option key={c} value={c}>{c}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="reg-field reg-field-single">
-                  <label className="reg-label">Date Acquired</label>
-                  <input
-                    className="reg-input"
-                    type="date"
-                    name="date_acquired"
-                    value={form.date_acquired}
-                    onChange={handleChange}
-                  />
-                </div>
-
-                {/* Row 2: Description (span 2) | Acquisition Cost */}
-                <div className="reg-field reg-field-half">
-                  <label className="reg-label">Description</label>
-                  <input
-                    className="reg-input"
-                    name="description"
-                    placeholder="Enter Text"
-                    value={form.description}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-
-                <div className="reg-field reg-field-single">
-                  <label className="reg-label">Acquisition Cost</label>
-                  <input
-                    className="reg-input"
-                    type="number"
-                    name="acquisition_cost"
-                    min="0"
-                    step="0.01"
-                    placeholder="0"
-                    value={form.acquisition_cost}
-                    onChange={handleChange}
-                  />
-                </div>
-
-                {/* Row 3: Remarks (span 2) | Quantity */}
-                <div className="reg-field reg-field-half">
-                  <label className="reg-label">Remarks</label>
-                  <input
-                    className="reg-input"
-                    name="remarks"
-                    placeholder="Enter Text"
-                    value={form.remarks}
-                    onChange={handleChange}
-                  />
-                </div>
-
-                <div className="reg-field reg-field-single">
-                  <label className="reg-label">Quantity</label>
-                  <input
-                    className="reg-input"
-                    type="number"
-                    name="qty"
-                    min="1"
-                    placeholder="0"
-                    value={form.qty}
-                    onChange={handleChange}
-                  />
-                </div>
-
-              </div>
-            </div>
-
-            {/* ── Custody & Location ── */}
-            <div className="reg-card">
-              <p className="reg-card-title">Custody &amp; Location</p>
-
-              <div className="reg-grid reg-grid-custody">
-
-                <div className="reg-field reg-field-single">
-                  <label className="reg-label">Primary Custodian</label>
-                  <select
-                    className="reg-select"
-                    name="primary_custodian"
-                    value={form.primary_custodian}
-                    onChange={handleChange}
+                    {saving ? "Saving…" : "Save"}
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className={`reg-btn ${showSkipWarning ? "reg-btn--warn" : "reg-btn--ghost"}`}
+                    onClick={handleSkip}
+                    disabled={saving}
                   >
-                    <option value="">Select Custodian</option>
-                    {/* TODO: populate from Firestore users */}
-                  </select>
-                </div>
+                    {showSkipWarning ? "Confirm Skip" : "Skip for now"}
+                  </button>
+                )}
+              </>
+            )}
 
-                <div className="reg-field reg-field-single">
-                  <label className="reg-label">Local Custodian</label>
-                  <select
-                    className="reg-select"
-                    name="local_custodian"
-                    value={form.local_custodian}
-                    onChange={handleChange}
-                  >
-                    <option value="">Select Custodian</option>
-                    {/* TODO: populate from Firestore users */}
-                  </select>
-                </div>
-
-                <div className="reg-field reg-field-single">
-                  {/* spacer — keeps Location on its own row */}
-                </div>
-
-                <div className="reg-field reg-field-half">
-                  <label className="reg-label">Location</label>
-                  <select
-                    className="reg-select"
-                    name="room_id"
-                    value={form.room_id}
-                    onChange={handleChange}
-                  >
-                    <option value="">Select Location</option>
-                    {LOCATIONS.map((l) => (
-                      <option key={l} value={l}>{l}</option>
-                    ))}
-                  </select>
-                </div>
-
-              </div>
-            </div>
-
-          </div>{/* end reg-right */}
-        </div>{/* end reg-body */}
-
-        {/* ── footer actions ── */}
-        <div className="reg-footer">
-          <button
-            type="button"
-            className="reg-btn-cancel"
-            onClick={() => navigate("/asset")}
-          >
-            CANCEL
-          </button>
-          <button
-            type="submit"
-            className="reg-btn-save"
-            disabled={saving}
-          >
-            {saving ? "SAVING…" : "SAVE"}
-          </button>
+            {/* Steps 1 & 2: Next */}
+            {step < 3 && (
+              <button
+                type="button"
+                className="reg-btn reg-btn--primary"
+                onClick={handleNext}
+                disabled={!canProceed()}
+              >
+                Next
+                <FontAwesomeIcon icon="fa-solid fa-arrow-right" />
+              </button>
+            )}
+          </div>
         </div>
-
-      </form>
+      </div>
     </MainLayout>
   );
 }

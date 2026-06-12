@@ -1,0 +1,117 @@
+.reg-content {
+  flex: 1;
+}
+
+.reg-card {
+  background: #fff;
+  border: 1px solid #e4e4e4;
+  border-radius: 10px;
+  padding: 1.5rem 2rem;
+}
+
+.reg-card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #860100;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0 0 0.35rem 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.reg-card-subtitle {
+  font-size: 0.82rem;
+  color: #777;
+  margin: 0 0 1.25rem 0;
+}
+
+/* ─── Form grid ──────────────────────────────────────────────────────────────── */
+.reg-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem 1.5rem;
+  margin-top: 1.25rem;
+}
+
+.reg-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+/* span all 3 columns */
+.reg-field--full {
+  grid-column: 1 / -1;
+}
+
+.reg-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #444;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.reg-required {
+  color: #860100;
+  margin-left: 2px;
+}
+
+.reg-input,
+.reg-select,
+.reg-textarea {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.9rem;
+  color: #222;
+  background: #fafafa;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.reg-input:focus,
+.reg-select:focus,
+.reg-textarea:focus {
+  outline: none;
+  border-color: #860100;
+  background: #fff;
+}
+
+.reg-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.reg-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  padding-right: 2rem;
+  cursor: pointer;
+}
+
+/* peso prefix */
+.reg-input-prefix-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.reg-input-prefix {
+  position: absolute;
+  left: 0.75rem;
+  color: #666;
+  font-size: 0.9rem;
+  pointer-events: none;
+}
+
+.reg-input--prefixed {
+  padding-left: 1.75rem;
+}

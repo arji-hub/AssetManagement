@@ -1,0 +1,219 @@
+/* Overlay — dims the page behind the modal */
+.room-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  animation: overlay-in 0.15s ease;
+}
+
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Modal container — 60% white */
+.room-modal {
+  background: #ffffff;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 420px;
+  margin: 16px;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  animation: modal-in 0.2s ease;
+  overflow: hidden;
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Header — 30% accent (#860100) */
+.room-modal-header {
+  background: #860100;
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.room-modal-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.01em;
+}
+
+.room-modal-close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 2px;
+  transition: color 0.15s ease;
+}
+
+.room-modal-close:hover {
+  color: #ffffff;
+}
+
+/* Body — white space, clean form */
+.room-modal-body {
+  padding: 28px 24px 16px;
+}
+
+.room-modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+}
+
+.room-modal-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.room-modal-field input {
+  padding: 10px 14px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 15px;
+  color: #111827;
+  background: #ffffff;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.room-modal-field input:focus {
+  border-color: #860100;
+  box-shadow: 0 0 0 3px rgba(134, 1, 0, 0.1);
+}
+
+.room-modal-field input:disabled {
+  background: #f9fafb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Error state */
+.room-modal-field.has-error input {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.room-modal-error {
+  font-size: 12px;
+  color: #dc2626;
+  font-weight: 500;
+}
+
+/* Info box */
+.modal-info {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: rgba(245, 170, 44, 0.06);
+  border: 1px solid rgba(134, 1, 0, 0.2);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-top: 4px;
+}
+
+.info-icon {
+  color: #860100;
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.info-text {
+  margin: 0;
+  font-size: 12px;
+  color: #860100;
+  line-height: 1.6;
+}
+
+/* Character count */
+.room-modal-char-count {
+  font-size: 11px;
+  color: #9ca3af;
+  text-align: right;
+  margin-top: 2px;
+}
+
+/* Footer */
+.room-modal-footer {
+  padding: 16px 24px 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.room-modal-btn {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 9px 22px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.1s ease,
+    opacity 0.2s ease;
+}
+
+.room-modal-btn:active {
+  transform: scale(0.97);
+}
+
+.room-modal-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Cancel — outlined with 30% color */
+.room-modal-btn--cancel {
+  background: #ffffff;
+  color: #860100;
+  border: 1.5px solid #860100;
+}
+
+.room-modal-btn--cancel:hover:not(:disabled) {
+  background: rgba(134, 1, 0, 0.05);
+}
+
+/* Submit — 10% accent (#F5AA2C) */
+.room-modal-btn--submit {
+  background: #f5aa2c;
+  color: #860100;
+}
+
+.room-modal-btn--submit:hover:not(:disabled) {
+  background: #e09a1e;
+}

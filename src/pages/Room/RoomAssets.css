@@ -1,0 +1,238 @@
+/* ── Page wrapper ───────────────────────────────────────────── */
+.room-assets-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  padding: 24px;
+  gap: 24px;
+  box-sizing: border-box;
+}
+
+/* ── Top bar ────────────────────────────────────────────────── */
+.room-assets-top {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* ── Header + back button ───────────────────────────────────── */
+.room-assets-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.return-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: clamp(12px, 1vw, 14px);
+  font-weight: 500;
+  padding: 7px 14px;
+  background: #ffffff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.return-button:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.return-button:active {
+  transform: scale(0.97);
+}
+
+.room-assets-title {
+  margin: 0 0 4px;
+  font-size: clamp(20px, 2.5vw, 28px);
+  font-weight: 700;
+  color: #111827;
+}
+
+.room-assets-subtitle {
+  margin: 0;
+  font-size: clamp(13px, 1.2vw, 15px);
+  color: #6b7280;
+}
+
+.room-assets-subtitle strong {
+  color: #860100;
+  font-weight: 600;
+}
+
+/* ── Settings / filters ─────────────────────────────────────── */
+.room-assets-settings {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* ── Scrollable list ────────────────────────────────────────── */
+.room-assets-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.room-assets-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.room-assets-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.room-assets-list::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 999px;
+}
+
+.room-assets-list::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* ── Table ──────────────────────────────────────────────────── */
+.room-assets-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: clamp(12px, 1.1vw, 14px);
+}
+
+.room-assets-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #860100;
+}
+
+.room-assets-table th {
+  text-align: left;
+  padding: 12px 16px;
+  font-weight: 600;
+  color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  white-space: nowrap;
+}
+
+.room-assets-table td {
+  padding: 12px 16px;
+  color: #111827;
+  border-bottom: 1px solid #f3f4f6;
+  vertical-align: middle;
+}
+
+.room-assets-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.room-assets-table tbody tr:hover td {
+  background: rgba(245, 170, 44, 0.1);
+}
+
+.asset-index {
+  color: #9ca3af;
+  font-size: 12px;
+  width: 32px;
+}
+
+.asset-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+}
+
+/* ── Empty state ────────────────────────────────────────────── */
+.room-assets-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 60px 24px;
+  color: #9ca3af;
+  font-size: 15px;
+}
+
+.room-assets-empty svg {
+  font-size: 40px;
+}
+
+/* ── Filter button ──────────────────────────────────────────── */
+.filter-button {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  background: #fff;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.filter-button:hover,
+.filter-button--active {
+  border-color: #860100;
+  color: #860100;
+}
+
+.filter-badge {
+  background: #860100;
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 20px;
+  line-height: 1.5;
+}
+
+.filter-button--active .filter-badge {
+  background: #f5aa2c;
+  color: #860100;
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .room-assets-page {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .room-assets-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .room-assets-settings {
+    justify-content: flex-start;
+  }
+
+  .room-assets-table th:nth-child(4),
+  .room-assets-table td:nth-child(4) {
+    display: none; /* hide custodian column on small screens */
+  }
+}

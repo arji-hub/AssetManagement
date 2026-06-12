@@ -1,8 +1,8 @@
 import { useState } from "react";
-import LoginModal from "../../components/ui/LoginModal";
+import LoginModal from "../../../components/ui/modal/LoginModal";
 
 export default {
-  title: "UI/LoginModal",
+  title: "Modal/LoginModal",
   component: LoginModal,
   parameters: {
     layout: "fullscreen",
@@ -21,11 +21,7 @@ export const Default = {
 
     return (
       <>
-        <LoginModal
-          {...args}
-          isOpen={open}
-          onClose={() => setOpen(false)}
-        />
+        <LoginModal {...args} isOpen={open} onClose={() => setOpen(false)} />
       </>
     );
   },

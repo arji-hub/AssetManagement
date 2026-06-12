@@ -3,7 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 import AdminDashboard from "./AdminDashboard";
 import FacultyDashboard from "./FacultyDashboard";
 import { ROLES } from "../../data/roles";
-import LoadingScreen from "../../components/ui/LoadingScreen";
+import LoadingScreen from "../../components/ui/status/LoadingScreen";
 
 function Dashboard() {
   const { role, loading } = useAuth();

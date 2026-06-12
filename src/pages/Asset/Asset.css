@@ -6,6 +6,7 @@
   flex-direction: column;
   gap: 16px;
   height: 100%;
+  padding: 24px;
 }
 
 /* ── header row ── */
@@ -15,6 +16,7 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 12px;
+  z-index: 900;
 }
 
 .asset-header-left {
@@ -44,6 +46,62 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+/* ── filter button ── */
+.asset-filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  background: #fff;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.asset-filter-btn:hover,
+.asset-filter-btn--active {
+  border-color: #860100;
+  color: #860100;
+}
+
+.asset-filter-badge {
+  background: #860100;
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 20px;
+  line-height: 1.5;
+}
+
+.asset-filter-btn--active .asset-filter-badge {
+  background: #f5aa2c;
+  color: #860100;
+}
+
+/* ── add asset button ── */
+.asset-add-btn {
+  padding: 8px 18px;
+  background: #860100;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.asset-add-btn:hover {
+  background: #5d0100;
 }
 
 /* ── search ── */
@@ -79,96 +137,58 @@
   border-color: #860100;
 }
 
-/* ── filter dropdown ── */
-.asset-filter-wrap {
-  position: relative;
+/* ── active filter pills ── */
+.asset-active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
 }
 
-.asset-filter-btn {
-  display: flex;
+.asset-active-pill {
+  display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 14px;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 13px;
-  color: #555;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-
-.asset-filter-btn:hover,
-.asset-filter-btn--active {
-  border-color: #860100;
-  color: #860100;
-}
-
-.asset-filter-icon {
-  font-size: 10px;
-  opacity: 0.6;
-}
-
-.asset-filter-dropdown {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0;
-  background: #fff;
-  border: 1px solid #e5e5e5;
-  border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  z-index: 100;
-  min-width: 160px;
-  overflow: hidden;
-  animation: dropIn 0.15s ease;
-}
-
-@keyframes dropIn {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.asset-filter-option {
-  padding: 9px 16px;
-  font-size: 13px;
-  color: #444;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-
-.asset-filter-option:hover {
-  background: #f5f5f5;
-}
-
-.asset-filter-option--selected {
-  color: #860100;
-  font-weight: 600;
+  padding: 4px 10px 4px 12px;
   background: #fff5f5;
+  border: 1px solid #f0c0c0;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #860100;
 }
 
-/* ── add asset button ── */
-.asset-add-btn {
-  padding: 8px 18px;
-  background: #860100;
-  color: #fff;
+.asset-active-pill button {
+  background: none;
   border: none;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
-  white-space: nowrap;
+  color: #c08080;
+  font-size: 10px;
+  padding: 0;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s;
 }
 
-.asset-add-btn:hover {
-  background: #5d0100;
+.asset-active-pill button:hover {
+  color: #860100;
+}
+
+.asset-clear-all {
+  background: none;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: #888;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: color 0.15s;
+}
+
+.asset-clear-all:hover {
+  color: #860100;
 }
 
 /* ── table wrapper ── */
@@ -179,6 +199,8 @@
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   border: 1px solid #ebebeb;
+  overflow-y: auto;
+  overflow-x: auto;
 }
 
 /* ── table ── */
@@ -190,6 +212,9 @@
 
 .asset-table thead {
   background: #860100;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .asset-table thead th {
@@ -227,16 +252,6 @@
   white-space: nowrap;
 }
 
-/* ── condition badge ── */
-.asset-condition-badge {
-  display: inline-block;
-  padding: 3px 12px;
-  border-radius: 20px;
-  font-size: 11.5px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
 /* ── action button ── */
 .asset-action-btn {
   background: none;
@@ -263,6 +278,13 @@
   font-size: 14px;
 }
 
+.asset-empty-cell {
+  padding: 60px;
+  text-align: center;
+  color: #aaa;
+  font-size: 14px;
+}
+
 .asset-empty--error {
   color: #dc2626;
 }
@@ -279,13 +301,14 @@
 }
 
 /* ── responsive ── */
-@media (max-width: 768px) {
-  .asset-header {
-    flex-direction: column;
+@media (max-width: 960px) {
+  .asset-page {
+    padding: 16px;
   }
 
-  .asset-table-wrap {
-    overflow-x: auto;
+  .asset-header {
+    flex-direction: column;
+    z-index: 100;
   }
 
   .asset-table {
