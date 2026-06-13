@@ -4,7 +4,7 @@ import MainLayout from "../../components/layout/MainLayout";
 import "./Custodian.css";
 import CustodianCard from "../../components/ui/card/CustodianCard";
 import CustodianModal from "../../components/ui/modal/CustodianModal";
-import AddingStatusModal from "../../components/ui/status/AddingStatusModal";
+import AddingStatusModal from "../../components/ui/status/addingStatusModal";
 import { addCustodian, fetchCustodians } from "../../services/user";
 
 function Custodian() {
