@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { addAsset } from "../../services/asset";
 import { useAuth } from "../../context/AuthContext";
+import { fetchCustodians } from "../../services/user";
+import { fetchRooms } from "../../services/room";
+import { fetchCategories } from "../../services/category";
 
 const INITIAL_FORM = {
   serial_number: "",
@@ -28,10 +31,36 @@ export function useAssetRegistrationForm() {
   const [saveError, setSaveError] = useState(null);
   const [showSkipWarning, setShowSkipWarning] = useState(false);
 
+  // ── dropdown data ────────────────────────────────────────────────────────
+  const [custodians, setCustodians] = useState([]);
+  const [rooms, setRooms] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loadingOptions, setLoadingOptions] = useState(false);
+
+  useEffect(() => {
+    async function loadOptions() {
+      setLoadingOptions(true);
+      try {
+        const [fetchedCustodians, fetchedRooms, fetchedCategories] = await Promise.all([
+          fetchCustodians(),
+          fetchRooms(),
+          fetchCategories(),
+        ]);
+        setCustodians(fetchedCustodians);
+        setRooms(fetchedRooms);
+        setCategories(fetchedCategories);
+      } catch (err) {
+        console.error("Failed to load options:", err);
+      } finally {
+        setLoadingOptions(false);
+      }
+    }
+    loadOptions();
+  }, []);
+
   const isAssigned =
     form.primary_custodian || form.local_custodian || form.room_id;
 
-  // Hide the skip warning as soon as the user picks any assignment field
   useEffect(() => {
     if (showSkipWarning && isAssigned) {
       setShowSkipWarning(false);
@@ -96,6 +125,9 @@ export function useAssetRegistrationForm() {
     }
   };
 
+  const fulltimeCustodians = custodians.filter((c) => c.role === "fulltime");
+  const parttimeCustodians = custodians.filter((c) => c.role === "parttime");
+
   return {
     step,
     form,
@@ -107,6 +139,11 @@ export function useAssetRegistrationForm() {
     saveError,
     showSkipWarning,
     isAssigned,
+    categories,
+    rooms,
+    fulltimeCustodians,
+    parttimeCustodians,
+    loadingOptions,
     handleChange,
     canProceed,
     handleNext,
