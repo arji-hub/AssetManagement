@@ -112,7 +112,6 @@ const convertDate = (dateStr) => {
 function RoomAssets() {
   const { roomName } = useParams();
   const navigate = useNavigate();
-  //const [assets, setAssets] = useState([]);
   const [assets] = useState(MOCK_ASSETS);
 
   const {
@@ -124,6 +123,10 @@ function RoomAssets() {
     filteredAssets,
     handleApplyFilters,
     handleClearFilters,
+    rooms,
+    categories,
+    custodians,
+    loadingOptions,
   } = useAssetFilters(assets);
 
   return (
@@ -157,6 +160,30 @@ function RoomAssets() {
             </button>
           </div>
         </div>
+
+        {/* ── Active filter pills ── */}
+        {activeFilterCount > 0 && (
+          <div className="asset-active-filters">
+            {Object.entries(filters).map(([key, val]) =>
+              val ? (
+                <span key={key} className="asset-active-pill">
+                  {val}
+                  <button
+                    onClick={() =>
+                      setFilters((prev) => ({ ...prev, [key]: "" }))
+                    }
+                    aria-label={`Remove ${key} filter`}
+                  >
+                    <FontAwesomeIcon icon="fa-solid fa-xmark" />
+                  </button>
+                </span>
+              ) : null,
+            )}
+            <button className="asset-clear-all" onClick={handleClearFilters}>
+              Clear all
+            </button>
+          </div>
+        )}
 
         {/* ── Asset list ── */}
         <div className="room-assets-list">
@@ -204,6 +231,10 @@ function RoomAssets() {
           onApply={handleApplyFilters}
           onClear={handleClearFilters}
           onClose={() => setShowFilter(false)}
+          rooms={rooms}
+          categories={categories}
+          custodians={custodians}
+          loadingOptions={loadingOptions}
         />
       )}
     </MainLayout>
