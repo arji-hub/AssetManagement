@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { addAsset } from "../../services/asset";
-import { useAuth } from "../../context/AuthContext";
-import { fetchCustodians } from "../../services/user";
-import { fetchRooms } from "../../services/room";
-import { fetchCategories } from "../../services/category";
+import { addAsset } from "../services/asset";
+import { useAuth } from "../context/AuthContext";
+import { fetchCustodians } from "../services/user";
+import { fetchRooms } from "../services/room";
+import { fetchCategories } from "../services/category";
 
 const INITIAL_FORM = {
   serial_number: "",
@@ -41,11 +41,12 @@ export function useAssetRegistrationForm() {
     async function loadOptions() {
       setLoadingOptions(true);
       try {
-        const [fetchedCustodians, fetchedRooms, fetchedCategories] = await Promise.all([
-          fetchCustodians(),
-          fetchRooms(),
-          fetchCategories(),
-        ]);
+        const [fetchedCustodians, fetchedRooms, fetchedCategories] =
+          await Promise.all([
+            fetchCustodians(),
+            fetchRooms(),
+            fetchCategories(),
+          ]);
         setCustodians(fetchedCustodians);
         setRooms(fetchedRooms);
         setCategories(fetchedCategories);
