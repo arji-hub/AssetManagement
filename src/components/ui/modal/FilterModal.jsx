@@ -1,45 +1,34 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import PropTypes from "prop-types";
 import "./FilterModal.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ASSET_CATEGORIES, ASSET_STATUS } from "../../../data/assets";
-import { fetchRooms } from "../../../services/room";
-
-const MOCK_CUSTODIANS = [
-  "Ralph Gomez M. Gatmaitan",
-  "Jasper C. Ortega",
-  "Jonathan D. Santos",
-  "Michael B. Tomacruz",
-];
+import { ASSET_STATUS } from "../../../data/assets";
 
 function FilterModal({
   filters,
   onApply,
   onClear,
   onClose,
-  initialRooms = null,
-  context = "other", // "room" | "custodian" | "other"
+  rooms = [],
+  categories = [],
+  custodians = [],
+  loadingOptions = false,
+  context = "other",
 }) {
-  const [local, setLocal] = useState({ custodian: "", ...filters });
-  const [rooms, setRooms] = useState(initialRooms ?? []);
-  const [roomsLoading, setRoomsLoading] = useState(initialRooms === null);
+  const [local, setLocal] = useState({
+    custodian: "",
+    status: "",
+    category: "",
+    room: "",
+    ...filters,
+  });
   const [roomSearch, setRoomSearch] = useState("");
   const [custodianSearch, setCustodianSearch] = useState("");
 
-  useEffect(() => {
-    if (initialRooms !== null) return;
-    async function loadRooms() {
-      try {
-        const data = await fetchRooms();
-        setRooms(data.map((r) => (typeof r === "string" ? r : r.name)));
-      } catch (err) {
-        console.error("Failed to fetch rooms:", err);
-      } finally {
-        setRoomsLoading(false);
-      }
-    }
-    loadRooms();
-  }, []);
+  // Sanitize list props — strips undefined, null, and empty strings
+  const safeRooms = rooms.filter(Boolean);
+  const safeCustodians = custodians.filter(Boolean);
+  const safeCategories = categories.filter(Boolean);
 
   const handleSelect = (key, value) => {
     setLocal((prev) => ({
@@ -82,73 +71,71 @@ function FilterModal({
           {/* Category */}
           <div className="filter-section">
             <p className="filter-section-label">CATEGORY</p>
-            <select
-              className="filter-select"
-              value={local.category}
-              onChange={(e) =>
-                setLocal((prev) => ({ ...prev, category: e.target.value }))
-              }
-            >
-              <option value="">All Categories</option>
-              {ASSET_CATEGORIES.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
+            {loadingOptions ? (
+              <p className="filter-loading">Loading categories...</p>
+            ) : (
+              <select
+                className="filter-select"
+                value={local.category}
+                onChange={(e) =>
+                  setLocal((prev) => ({ ...prev, category: e.target.value }))
+                }
+              >
+                <option value="">All Categories</option>
+                {safeCategories.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
 
           {/* Room — hidden when context is "room" */}
           {context !== "room" && (
             <>
+              <div className="filter-divider" />
               <div className="filter-section">
                 <p className="filter-section-label">ROOM</p>
-                {roomsLoading ? (
+                {loadingOptions ? (
                   <p className="filter-loading">Loading rooms...</p>
-                ) : rooms.length === 0 ? (
+                ) : safeRooms.length === 0 ? (
                   <p className="filter-empty">No rooms found.</p>
                 ) : (
-                  <>
-                    <div className="filter-list">
-                      <div className="filter-search-wrapper">
-                        <FontAwesomeIcon
-                          icon="fa-solid fa-magnifying-glass"
-                          className="filter-search-icon"
-                        />
-                        <input
-                          type="text"
-                          className="filter-search-input"
-                          placeholder="Search rooms..."
-                          value={roomSearch}
-                          onChange={(e) => setRoomSearch(e.target.value)}
-                        />
-                      </div>
-                      <select
-                        className="filter-select filter-select--scrollable"
-                        value={local.room}
-                        onChange={(e) =>
-                          setLocal((prev) => ({
-                            ...prev,
-                            room: e.target.value,
-                          }))
-                        }
-                        size={4}
-                      >
-                        <option value="">All Rooms</option>
-                        {rooms
-                          .filter((room) =>
-                            room
-                              .toLowerCase()
-                              .includes(roomSearch.toLowerCase()),
-                          )
-                          .map((room) => (
-                            <option key={room} value={room}>
-                              {room}
-                            </option>
-                          ))}
-                      </select>
+                  <div className="filter-list">
+                    <div className="filter-search-wrapper">
+                      <FontAwesomeIcon
+                        icon="fa-solid fa-magnifying-glass"
+                        className="filter-search-icon"
+                      />
+                      <input
+                        type="text"
+                        className="filter-search-input"
+                        placeholder="Search rooms..."
+                        value={roomSearch}
+                        onChange={(e) => setRoomSearch(e.target.value)}
+                      />
                     </div>
-                  </>
+                    <select
+                      className="filter-select filter-select--scrollable"
+                      value={local.room}
+                      onChange={(e) =>
+                        setLocal((prev) => ({ ...prev, room: e.target.value }))
+                      }
+                      size={4}
+                    >
+                      <option value="">All Rooms</option>
+                      {safeRooms
+                        .filter((room) =>
+                          room.toLowerCase().includes(roomSearch.toLowerCase()),
+                        )
+                        .map((room) => (
+                          <option key={room} value={room}>
+                            {room}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
                 )}
               </div>
             </>
@@ -160,43 +147,51 @@ function FilterModal({
               <div className="filter-divider" />
               <div className="filter-section">
                 <p className="filter-section-label">CUSTODIAN</p>
-                <div className="filter-list">
-                  <div className="filter-search-wrapper">
-                    <FontAwesomeIcon
-                      icon="fa-solid fa-magnifying-glass"
-                      className="filter-search-icon"
-                    />
-                    <input
-                      type="text"
-                      className="filter-search-input"
-                      placeholder="Search custodians..."
-                      value={custodianSearch}
-                      onChange={(e) => setCustodianSearch(e.target.value)}
-                    />
+                {loadingOptions ? (
+                  <p className="filter-loading">Loading custodians...</p>
+                ) : safeCustodians.length === 0 ? (
+                  <p className="filter-empty">No custodians found.</p>
+                ) : (
+                  <div className="filter-list">
+                    <div className="filter-search-wrapper">
+                      <FontAwesomeIcon
+                        icon="fa-solid fa-magnifying-glass"
+                        className="filter-search-icon"
+                      />
+                      <input
+                        type="text"
+                        className="filter-search-input"
+                        placeholder="Search custodians..."
+                        value={custodianSearch}
+                        onChange={(e) => setCustodianSearch(e.target.value)}
+                      />
+                    </div>
+                    <select
+                      className="filter-select filter-select--scrollable"
+                      value={local.custodian}
+                      onChange={(e) =>
+                        setLocal((prev) => ({
+                          ...prev,
+                          custodian: e.target.value,
+                        }))
+                      }
+                      size={4}
+                    >
+                      <option value="">All Custodians</option>
+                      {safeCustodians
+                        .filter((name) =>
+                          name
+                            .toLowerCase()
+                            .includes(custodianSearch.toLowerCase()),
+                        )
+                        .map((name) => (
+                          <option key={name} value={name}>
+                            {name}
+                          </option>
+                        ))}
+                    </select>
                   </div>
-                  <select
-                    className="filter-select filter-select--scrollable"
-                    value={local.custodian}
-                    onChange={(e) =>
-                      setLocal((prev) => ({
-                        ...prev,
-                        custodian: e.target.value,
-                      }))
-                    }
-                    size={4}
-                  >
-                    <option value="">All Custodians</option>
-                    {MOCK_CUSTODIANS.filter((name) =>
-                      name
-                        .toLowerCase()
-                        .includes(custodianSearch.toLowerCase()),
-                    ).map((name) => (
-                      <option key={name} value={name}>
-                        {name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                )}
               </div>
             </>
           )}
@@ -226,7 +221,10 @@ FilterModal.propTypes = {
   onApply: PropTypes.func.isRequired,
   onClear: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
-  initialRooms: PropTypes.arrayOf(PropTypes.string),
+  rooms: PropTypes.arrayOf(PropTypes.string),
+  categories: PropTypes.arrayOf(PropTypes.string),
+  custodians: PropTypes.arrayOf(PropTypes.string),
+  loadingOptions: PropTypes.bool,
   context: PropTypes.oneOf(["room", "custodian", "asset", "other"]),
 };
 

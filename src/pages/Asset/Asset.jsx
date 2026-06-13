@@ -19,7 +19,7 @@ function Asset() {
   const [error, setError] = useState(null);
 
   const isAdmin = role === ROLES.ADMIN;
-  
+
   const {
     showFilter,
     setShowFilter,
@@ -29,8 +29,11 @@ function Asset() {
     filteredAssets,
     handleApplyFilters,
     handleClearFilters,
+    rooms,
+    categories,
+    custodians,
+    loadingOptions,
   } = useAssetFilters(assets);
-
   // fetch assets
   useEffect(() => {
     console.log("Current user:", currentUser.uid, "Role:", role);
@@ -198,6 +201,10 @@ function Asset() {
             onApply={handleApplyFilters}
             onClear={handleClearFilters}
             onClose={() => setShowFilter(false)}
+            rooms={rooms}
+            categories={categories}
+            custodians={custodians}
+            loadingOptions={loadingOptions}
           />
         )}
       </div>

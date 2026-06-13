@@ -4,7 +4,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import MainLayout from "../../components/layout/MainLayout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FilterModal from "../../components/ui/modal/FilterModal";
-import { ASSET_STATUS, ASSET_CATEGORIES } from "../../data/assets";
 import { Status } from "../../components/ui/status/assetStatus";
 import { useAssetFilters } from "../../hooks/useAssetFilters";
 
@@ -101,11 +100,9 @@ const MOCK_ASSETS = [
   },
 ];
 
-
 function CustodianAssets() {
   const { username } = useParams();
   const navigate = useNavigate();
-  //const [assets, setAssets] = useState([]);
   const [assets] = useState(MOCK_ASSETS);
 
   const {
@@ -117,6 +114,10 @@ function CustodianAssets() {
     filteredAssets,
     handleApplyFilters,
     handleClearFilters,
+    rooms,
+    categories,
+    custodians,
+    loadingOptions,
   } = useAssetFilters(assets);
 
   return (
@@ -153,6 +154,30 @@ function CustodianAssets() {
             </button>
           </div>
         </div>
+
+        {/* ── Active filter pills ── */}
+        {activeFilterCount > 0 && (
+          <div className="asset-active-filters">
+            {Object.entries(filters).map(([key, val]) =>
+              val ? (
+                <span key={key} className="asset-active-pill">
+                  {val}
+                  <button
+                    onClick={() =>
+                      setFilters((prev) => ({ ...prev, [key]: "" }))
+                    }
+                    aria-label={`Remove ${key} filter`}
+                  >
+                    <FontAwesomeIcon icon="fa-solid fa-xmark" />
+                  </button>
+                </span>
+              ) : null,
+            )}
+            <button className="asset-clear-all" onClick={handleClearFilters}>
+              Clear all
+            </button>
+          </div>
+        )}
 
         {/* ── Asset list ── */}
         <div className="assets-list">
@@ -200,6 +225,10 @@ function CustodianAssets() {
           onApply={handleApplyFilters}
           onClear={handleClearFilters}
           onClose={() => setShowFilter(false)}
+          rooms={rooms}
+          categories={categories}
+          custodians={custodians}
+          loadingOptions={loadingOptions}
         />
       )}
     </MainLayout>
