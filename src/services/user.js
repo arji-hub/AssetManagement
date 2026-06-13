@@ -1,5 +1,8 @@
 import { db } from "../services/firebase-config";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import { getFunctions, httpsCallable } from "firebase/functions";
+
+const functions = getFunctions();
 
 export async function fetchCustodians() {
   const q = query(collection(db, "users"), where("role", "!=", "admin"));
@@ -20,4 +23,10 @@ export async function fetchCustodians() {
       role: d.role,
     };
   });
+}
+
+export async function addCustodian(custodianData) {
+  const addCustodianFn = httpsCallable(functions, "addCustodian");
+  const result = await addCustodianFn(custodianData);
+  return result.data; // { uid }
 }
