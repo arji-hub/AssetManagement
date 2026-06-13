@@ -1,88 +1,11 @@
-import { useState } from "react";
 import PropTypes from "prop-types";
 import "./CustodianModal.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import useCustodianRegistration from "../../../hooks/useCustodianRegistration";
 
-const INITIAL_FORM = {
-  email: "",
-  username: "",
-  firstName: "",
-  middleName: "",
-  lastName: "",
-  classification: "fulltime",
-  password: "",
-  confirmPassword: "",
-};
-
-const INITIAL_ERRORS = {
-  email: "",
-  password: "",
-  confirmPassword: "",
-};
-
-function isValidEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
-function CustodianModal({ onClose, onSubmit }) {
-  const [form, setForm] = useState(INITIAL_FORM);
-  const [errors, setErrors] = useState(INITIAL_ERRORS);
-
-  const isComplete =
-    form.email.trim() &&
-    form.username.trim() &&
-    form.firstName.trim() &&
-    form.lastName.trim() &&
-    form.password.trim() &&
-    form.confirmPassword.trim() &&
-    !errors.email &&
-    !errors.password &&
-    !errors.confirmPassword;
-
-  const validate = (name, value) => {
-    switch (name) {
-      case "email":
-        return value && !isValidEmail(value)
-          ? "Please enter a valid email address."
-          : "";
-      case "password":
-        return value && value.length < 6
-          ? "Password must be at least 6 characters."
-          : "";
-      case "confirmPassword":
-        return value && value !== form.password
-          ? "Passwords do not match."
-          : "";
-      default:
-        return "";
-    }
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-
-    // re-validate confirmPassword when password changes
-    if (name === "password") {
-      setErrors((prev) => ({
-        ...prev,
-        password: validate("password", value),
-        confirmPassword:
-          form.confirmPassword && value !== form.confirmPassword
-            ? "Passwords do not match."
-            : "",
-      }));
-    } else {
-      setErrors((prev) => ({ ...prev, [name]: validate(name, value) }));
-    }
-  };
-
-  const handleSubmit = () => {
-    if (!isComplete) return;
-    const { confirmPassword, ...submitData } = form;
-    onSubmit(submitData);
-    onClose();
-  };
+function CustodianModal({ onClose, onSubmit, isSubmitting = false }) {
+  const { form, errors, isComplete, handleChange, handleSubmit } =
+    useCustodianRegistration({ onSubmit, onClose });
 
   return (
     <div className="modal-overlay">
@@ -97,7 +20,7 @@ function CustodianModal({ onClose, onSubmit }) {
 
         {/* ── Body ── */}
         <div className="modal-body">
-          {/* Row 1: Email */}
+          {/* Row 1: Email | Username*/}
           <div className="modal-row">
             <div className="modal-field">
               <label htmlFor="email">E-MAIL</label>
@@ -114,33 +37,29 @@ function CustodianModal({ onClose, onSubmit }) {
                 <span className="field-error">{errors.email}</span>
               )}
             </div>
-          </div>
-
-          {/* Row 2: Username */}
-          <div className="modal-row">
             <div className="modal-field">
               <label htmlFor="username">USERNAME</label>
               <input
                 id="username"
-                name="username"
+                name="user_name"
                 type="text"
                 placeholder="Enter username"
-                value={form.username}
+                value={form.user_name}
                 onChange={handleChange}
               />
             </div>
           </div>
 
-          {/* Row 3: First Name + Middle Name */}
+          {/* Row 2: First Name + Middle Name */}
           <div className="modal-row">
             <div className="modal-field">
               <label htmlFor="firstName">FIRST NAME</label>
               <input
                 id="firstName"
-                name="firstName"
+                name="first_name"
                 type="text"
                 placeholder="Enter first name"
-                value={form.firstName}
+                value={form.first_name}
                 onChange={handleChange}
               />
             </div>
@@ -148,25 +67,25 @@ function CustodianModal({ onClose, onSubmit }) {
               <label htmlFor="middleName">MIDDLE NAME</label>
               <input
                 id="middleName"
-                name="middleName"
+                name="middle_name"
                 type="text"
                 placeholder="Enter text"
-                value={form.middleName}
+                value={form.middle_name}
                 onChange={handleChange}
               />
             </div>
           </div>
 
-          {/* Row 4: Last Name + Classification */}
+          {/* Row 3: Last Name + Classification */}
           <div className="modal-row">
             <div className="modal-field">
               <label htmlFor="lastName">LAST NAME</label>
               <input
                 id="lastName"
-                name="lastName"
+                name="last_name"
                 type="text"
                 placeholder="Enter last name"
-                value={form.lastName}
+                value={form.last_name}
                 onChange={handleChange}
               />
             </div>
@@ -174,8 +93,8 @@ function CustodianModal({ onClose, onSubmit }) {
               <label htmlFor="classification">CLASSIFICATION</label>
               <select
                 id="classification"
-                name="classification"
-                value={form.classification}
+                name="role"
+                value={form.role}
                 onChange={handleChange}
               >
                 <option value="fulltime">FULL-TIME</option>
@@ -184,7 +103,7 @@ function CustodianModal({ onClose, onSubmit }) {
             </div>
           </div>
 
-          {/* Row 5: Password + Confirm Password */}
+          {/* Row 4: Password + Confirm Password */}
           <div className="modal-row">
             <div className="modal-field">
               <label htmlFor="password">PASSWORD</label>
@@ -205,15 +124,15 @@ function CustodianModal({ onClose, onSubmit }) {
               <label htmlFor="confirmPassword">CONFIRM PASSWORD</label>
               <input
                 id="confirmPassword"
-                name="confirmPassword"
+                name="confirm_password"
                 type="password"
                 placeholder="Re-enter password"
-                value={form.confirmPassword}
+                value={form.confirm_password}
                 onChange={handleChange}
-                className={errors.confirmPassword ? "input-error" : ""}
+                className={errors.confirm_password ? "input-error" : ""}
               />
-              {errors.confirmPassword && (
-                <span className="field-error">{errors.confirmPassword}</span>
+              {errors.confirm_password && (
+                <span className="field-error">{errors.confirm_password}</span>
               )}
             </div>
           </div>
@@ -240,9 +159,9 @@ function CustodianModal({ onClose, onSubmit }) {
           <button
             className="modal-submit"
             onClick={handleSubmit}
-            disabled={!isComplete}
+            disabled={!isComplete || isSubmitting}
           >
-            Add Record
+            {isSubmitting ? "Adding..." : "Add Record"}
           </button>
         </div>
       </div>
@@ -253,6 +172,7 @@ function CustodianModal({ onClose, onSubmit }) {
 CustodianModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  isSubmitting: PropTypes.bool,
 };
 
 export default CustodianModal;

@@ -1,16 +1,57 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import MainLayout from "../../components/layout/MainLayout";
 import "./Custodian.css";
 import CustodianCard from "../../components/ui/card/CustodianCard";
 import CustodianModal from "../../components/ui/modal/CustodianModal";
+import AddingStatusModal from "../../components/ui/status/addingStatusModal";
+import { addCustodian, fetchCustodians } from "../../services/user";
 
 function Custodian() {
   const { user } = useAuth();
   const [showModal, setShowModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleAddCustodian = (formData) => {
-    console.log("New custodian:", formData);
+  // ── Custodians list ───────────────────────────────────────────────────────
+  const [custodians, setCustodians] = useState([]);
+  const [isFetching, setIsFetching] = useState(true);
+
+  useEffect(() => {
+    fetchCustodians()
+      .then(setCustodians)
+      .catch((err) => console.error("Failed to fetch custodians:", err))
+      .finally(() => setIsFetching(false));
+  }, []);
+
+  // ── Status modal ──────────────────────────────────────────────────────────
+  // "idle" | "loading" | "success" | "error"
+  const [status, setStatus] = useState("idle");
+  const [submitError, setSubmitError] = useState(null);
+
+  const handleAddCustodian = async (formData) => {
+    setIsSubmitting(true);
+    setShowModal(false);
+    setStatus("loading");
+    setSubmitError(null);
+
+    try {
+      await addCustodian(formData);
+      // Re-fetch so the new custodian appears in the list
+      const updated = await fetchCustodians();
+      setCustodians(updated);
+      setStatus("success");
+    } catch (error) {
+      console.error("Failed to add custodian:", error);
+      setSubmitError(error.message || "Something went wrong. Please try again.");
+      setStatus("error");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleStatusClose = () => {
+    setStatus("idle");
+    setSubmitError(null);
   };
 
   return (
@@ -22,7 +63,7 @@ function Custodian() {
             <p>Welcome, {user.username}! This is the custodian page.</p>
           </div>
           <div className="custodian-settings">
-            {/*Filters */}
+            {/* Filters */}
             <div className="filters">
               <label htmlFor="classification-filter">Classification:</label>
               <select id="classification-filter" name="classification">
@@ -37,37 +78,46 @@ function Custodian() {
             >
               Add Custodian
             </button>
-            {showModal && (
-              <CustodianModal
-                onClose={() => setShowModal(false)}
-                onSubmit={handleAddCustodian}
-              />
-            )}
           </div>
         </div>
+
+        {/* ── Custodian Cards ── */}
         <div className="custodian-cards">
-          <CustodianCard
-            name="Ralph Gomez M. Gatmaitan"
-            classification={"parttime"}
-            totalAssets={888}
-          />
-          <CustodianCard
-            name="Jasper C. Ortega"
-            classification={"fulltime"}
-            totalAssets={10}
-          />
-          <CustodianCard
-            name="Jonathan D. Santos"
-            classification={"contractual"}
-            totalAssets={3}
-          />
-          <CustodianCard
-            name="Michael B. Tomacruz"
-            classification={"parttime"}
-            totalAssets={8}
-          />
+          {isFetching ? (
+            <p className="custodian-loading">Loading custodians...</p>
+          ) : custodians.length === 0 ? (
+            <p className="custodian-empty">No custodians found.</p>
+          ) : (
+            custodians.map((c) => (
+              <CustodianCard
+                key={c.id}
+                name={c.fullname}
+                classification={c.role}
+                totalAssets={c.totalAssets ?? 0}
+              />
+            ))
+          )}
         </div>
       </div>
+
+      {/* ── CustodianModal ── */}
+      {showModal && (
+        <CustodianModal
+          onClose={() => setShowModal(false)}
+          onSubmit={handleAddCustodian}
+          isSubmitting={isSubmitting}
+        />
+      )}
+
+      {/* ── Status Modal ── */}
+      {status !== "idle" && (
+        <AddingStatusModal
+          title="Custodian"
+          status={status}
+          errorMessage={submitError}
+          onClose={handleStatusClose}
+        />
+      )}
     </MainLayout>
   );
 }
