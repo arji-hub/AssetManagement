@@ -1,0 +1,236 @@
+.qr-info-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9900;
+  padding: 16px;
+  box-sizing: border-box;
+  animation: qrInfoFadeIn 0.2s ease;
+}
+
+.qr-info-box {
+  background: #fff;
+  border-radius: 4px;
+  padding: clamp(24px, 6vw, 40px) clamp(20px, 5vw, 36px) clamp(20px, 5vw, 32px);
+  width: 100%;
+  max-width: 320px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  animation: qrInfoSlideUp 0.25s ease;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.qr-info-title {
+  text-align: center;
+  font-size: clamp(18px, 5vw, 22px);
+  font-weight: 700;
+  font-family: "Sansation";
+  color: #860100;
+  margin-bottom: 20px;
+}
+
+/* ── image ── */
+.qr-info-image-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 8;
+  max-height: 180px;
+  background: #f1f1f3;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.qr-info-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.qr-info-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #c4c4c9;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.qr-info-status-badge {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  padding: 2px 8px;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  border-radius: 4px;
+  font-family: "Sansation";
+}
+
+/* ── description ── */
+.qr-info-description {
+  margin: 0 0 16px;
+  font-size: clamp(14px, 4vw, 15px);
+  font-weight: 700;
+  color: #111;
+  line-height: 1.4;
+}
+
+/* ── data grid ── */
+.qr-info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+}
+
+.qr-info-grid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("../../../assets/CICTLOGO.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  background-origin: content-box;
+  padding: 40px;
+  opacity: 0.2;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.qr-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+  position: relative;
+  z-index: 1;
+}
+
+.qr-info-row:last-child {
+  border-bottom: none;
+}
+
+.qr-info-label {
+  font-family: "Sansation";
+  font-size: 14px;
+  font-weight: 700;
+  color: #f5aa2c;
+  background: rgba(134, 1, 0, 0.05  );
+  padding: 2px 4px;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.qr-info-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  text-align: right;
+  word-break: break-word;
+}
+
+/* ── remarks ── */
+.qr-info-remarks {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+
+.qr-info-remarks-text {
+  margin: 0;
+  font-size: 13px;
+  color: #555;
+  line-height: 1.5;
+}
+
+/* ── empty state ── */
+.qr-info-empty {
+  margin: 0;
+  text-align: center;
+  font-size: 13px;
+  color: #999;
+}
+
+/* ── return button ── */
+.qr-info-return-btn {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px 0;
+  background: #860100;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.qr-info-return-btn:hover {
+  background: #6e0100;
+}
+
+.qr-info-return-btn:active {
+  background: #5a0000;
+}
+
+@keyframes qrInfoFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes qrInfoSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── desktop: wider box, smaller image, 2-column grid ── */
+@media (min-width: 600px) {
+  .qr-info-box {
+    max-width: 640px;
+  }
+
+  .qr-info-image-wrapper {
+    max-height: 160px;
+  }
+
+  .qr-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 24px;
+  }
+
+  .qr-info-grid::before {
+    background-size: 40% auto;
+  }
+}

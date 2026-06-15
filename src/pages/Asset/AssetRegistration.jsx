@@ -8,6 +8,7 @@ import BasicInfo from "../../components/form/BasicInfo";
 import Media from "../../components/form/Media";
 import Assignment from "../../components/form/Assignment";
 import { useAssetRegistrationForm } from "../../hooks/useAssetRegistration";
+import AddingStatusModal from "../../components/ui/status/addingStatusModal";
 
 function AssetRegistration() {
   const navigate = useNavigate();
@@ -20,6 +21,8 @@ function AssetRegistration() {
     setDocImage,
     saving,
     saveError,
+    saveStatus,
+    setSaveStatus,
     showSkipWarning,
     isAssigned,
     categories,
@@ -43,12 +46,7 @@ function AssetRegistration() {
           <div className="reg-header-text">
             <div className="reg-header-eyebrow">
               <FontAwesomeIcon icon="fa-solid fa-layer-group" />
-              Assets
-              <FontAwesomeIcon
-                icon="fa-solid fa-chevron-right"
-                className="reg-header-sep"
-              />
-              Registration
+              Asset Registration
             </div>
             <h1 className="reg-header-title">Register New Asset</h1>
           </div>
@@ -104,13 +102,6 @@ function AssetRegistration() {
             )}
           </div>
 
-          {saveError && (
-            <p className="reg-save-error">
-              <FontAwesomeIcon icon="fa-solid fa-circle-exclamation" />
-              {saveError}
-            </p>
-          )}
-
           <div className="reg-footer-right">
             <button
               type="button"
@@ -158,6 +149,21 @@ function AssetRegistration() {
             )}
           </div>
         </div>
+
+        {saveStatus && (
+          <AddingStatusModal
+            title="Asset"
+            status={saveStatus}
+            errorMessage={saveError}
+            onClose={() => {
+              if (saveStatus === "success") {
+                navigate("/asset");
+              } else {
+                setSaveStatus(null);
+              }
+            }}
+          />
+        )}
       </div>
     </MainLayout>
   );

@@ -168,9 +168,7 @@ function Asset() {
                       <td>
                         <button
                           className="asset-action-btn"
-                          onClick={() => {
-                            /* open action menu */
-                          }}
+                          onClick={() => navigate(`/asset/${asset.id}`)}
                           aria-label="Actions"
                         >
                           <FontAwesomeIcon icon="fa-solid fa-ellipsis-vertical" />

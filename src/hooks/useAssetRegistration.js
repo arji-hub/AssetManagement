@@ -28,6 +28,7 @@ export function useAssetRegistrationForm() {
   const [assetImage, setAssetImage] = useState(null);
   const [docImage, setDocImage] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState(null);
   const [saveError, setSaveError] = useState(null);
   const [showSkipWarning, setShowSkipWarning] = useState(false);
 
@@ -107,6 +108,7 @@ export function useAssetRegistrationForm() {
 
   const handleSave = async (skipped = false) => {
     setSaving(true);
+    setSaveStatus("loading");
     setSaveError(null);
     try {
       await addAsset(
@@ -117,10 +119,11 @@ export function useAssetRegistrationForm() {
         },
         role,
       );
-      navigate("/asset");
+      setSaveStatus("success");
     } catch (err) {
       console.error(err);
       setSaveError(err.message);
+      setSaveStatus("error");
     } finally {
       setSaving(false);
     }
@@ -138,6 +141,8 @@ export function useAssetRegistrationForm() {
     setDocImage,
     saving,
     saveError,
+    saveStatus,
+    setSaveStatus,
     showSkipWarning,
     isAssigned,
     categories,

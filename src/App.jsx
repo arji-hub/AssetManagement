@@ -4,10 +4,12 @@ import { useAuth } from "./context/AuthContext";
 import ProtectedRoute from "./components/route/ProtectedRoute";
 import RoleRoute from "./components/route/RoleRoute";
 import LoadingScreen from "./components/ui/status/LoadingScreen";
-import Login from "./pages/Login/Login";
+import LandingPage from "./pages/LandingPage/LandingPage";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Asset from "./pages/Asset/Asset";
 import AssetRegistration from "./pages/Asset/AssetRegistration";
+import AssetInfo from "./pages/Asset/AssetInfo";
+import AssetPreview from "./pages/QR/AssetPreview";
 import Custodian from "./pages/Custodian/Custodian";
 import Report from "./pages/Report/Report";
 import Transfer from "./pages/Transfer/Transfer";
@@ -30,24 +32,23 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={
-            user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />
-          }
+          element={user ? <Navigate to="/dashboard" /> : <LandingPage />}
         />
-        <Route path="/login" element={<Login />} />
 
-        {/*routes accessible by any user*/}
+        {/* PUBLIC: QR redirects here. Redirects to /asset/:assetId if logged in */}
+        <Route path="/asset/:assetId" element={<AssetPreview />} />
+
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/asset">
             <Route index element={<Asset />} />
             <Route path="registration" element={<AssetRegistration />} />
+            <Route path="info/:assetId" element={<AssetInfo />} />
           </Route>
           <Route path="/qr" element={<QR />} />
           <Route path="/report" element={<Report />} />
           <Route path="/transfer" element={<Transfer />} />
 
-          {/*admin-only routes*/}
           <Route element={<RoleRoute allowed={[ROLES.ADMIN]} />}>
             <Route path="/audit" element={<Audit />} />
             <Route path="/custodian">
