@@ -86,7 +86,7 @@ async function generateAssetId() {
 }
 
 async function generateQR(assetId) {
-  const url = `https://ams-cict.web.app/asset/${assetId}`;
+  const url = `http://localhost:8080/asset/${assetId}`;
   const qrDataUrl = await QRCode.toDataURL(url, { width: 300 });
 
   // Convert data URL to a File/Blob so it can use the same uploadImage helper

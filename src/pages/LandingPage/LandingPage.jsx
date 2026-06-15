@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { login } from "../../services/authService";
 import LoginModal from "../../components/ui/modal/LoginModal";
 import QRModal from "../../components/ui/modal/QRModal";
+import QRInfo from "../../components/ui/modal/QRInfo";
 import logo from "../../assets/CICTLOGO.png";
 import elib from "../../assets/elib.png";
 import { useQRScanner } from "../../hooks/useQRScanner";
@@ -52,10 +53,14 @@ function LandingPage({ previewAsset }) {
       {/* Modal floats over the background */}
       <div className="login-main">
         {view === "qr" ? (
-          <QRModal
-            onCameraScan={handleCameraScan}
-            onImageUpload={handleImageUpload}
-          />
+          previewAsset ? (
+            <QRInfo asset={previewAsset} />
+          ) : (
+            <QRModal
+              onCameraScan={handleCameraScan}
+              onImageUpload={handleImageUpload}
+            />
+          )
         ) : (
           <LoginModal onLogin={handleLogin} />
         )}
