@@ -1,0 +1,103 @@
+/* ── Overlay ── */
+.qr-status-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9900;
+}
+
+/* ── Container ── */
+.qr-status-container {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+/* ── Spinner ── */
+.qr-status-spinner {
+  width: 56px;
+  height: 56px;
+  border: 5px solid #f0f0f0;
+  border-top-color: #860100;
+  border-radius: 50%;
+  animation: qr-status-spin 0.8s linear infinite;
+}
+
+@keyframes qr-status-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Icon ── */
+.qr-status-icon {
+  font-size: 56px;
+  line-height: 1;
+}
+
+.qr-status-icon--success {
+  color: #22c55e;
+}
+
+.qr-status-icon--error {
+  color: #860100;
+}
+
+/* ── Title ── */
+.qr-status-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+/* ── Message ── */
+.qr-status-message {
+  font-size: 0.9rem;
+  color: #555555;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.qr-status-message--error {
+  color: #860100;
+  font-weight: 500;
+}
+
+/* ── Button ── */
+.qr-status-btn {
+  margin-top: 8px;
+  padding: 10px 32px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.qr-status-btn:hover {
+  opacity: 0.85;
+}
+
+.qr-status-btn--success {
+  background-color: #860100;
+  color: #ffffff;
+}
+
+.qr-status-btn--error {
+  background-color: #f5f5f5;
+  color: #860100;
+  border: 1.5px solid #860100;
+}

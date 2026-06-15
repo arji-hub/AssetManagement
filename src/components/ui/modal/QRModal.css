@@ -1,0 +1,172 @@
+.qr-modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9000;
+  animation: qrFadeIn 0.2s ease;
+}
+
+.qr-modal-box {
+  background: #fff;
+  border-radius: 4px;
+  padding: 40px 36px 32px;
+  width: 100%;
+  max-width: 320px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  animation: qrSlideUp 0.25s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.qr-modal-title {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #111;
+  margin-bottom: 28px;
+}
+
+/* ── scan frame visual ── */
+.qr-modal-frame {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  background: #f1f1f3;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.qr-modal-icon-qr {
+  font-size: 4.5rem;
+  color: #c4c4c9;
+}
+
+.qr-modal-icon-glass {
+  position: absolute;
+  bottom: 22%;
+  right: 20%;
+  font-size: 2rem;
+  color: #860100;
+}
+
+.qr-modal-corner {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 3px solid #860100;
+}
+
+.qr-modal-corner-tl {
+  top: 8px;
+  left: 8px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.qr-modal-corner-tr {
+  top: 8px;
+  right: 8px;
+  border-left: none;
+  border-bottom: none;
+}
+
+.qr-modal-corner-bl {
+  bottom: 8px;
+  left: 8px;
+  border-right: none;
+  border-top: none;
+}
+
+.qr-modal-corner-br {
+  bottom: 8px;
+  right: 8px;
+  border-left: none;
+  border-top: none;
+}
+
+/* ── actions ── */
+.qr-modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.qr-modal-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 11px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.qr-modal-btn-primary {
+  background: #860100;
+  color: #fff;
+}
+
+.qr-modal-btn-primary:hover {
+  background: #5d0100;
+}
+
+.qr-modal-btn-secondary {
+  background: #fff;
+  color: #860100;
+  border: 1px solid #860100;
+}
+
+.qr-modal-btn-secondary:hover {
+  background: #fdf1f1;
+}
+
+.qr-modal-file-input {
+  display: none;
+}
+
+/* ── hint text ── */
+.qr-modal-hint {
+  margin: 14px 0 0;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #888;
+}
+
+@keyframes qrFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes qrSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

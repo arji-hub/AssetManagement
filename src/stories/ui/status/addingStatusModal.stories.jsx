@@ -1,4 +1,4 @@
-import addingStatusModal from "../../components/ui/status/addingStatusModal";
+import addingStatusModal from "../../../components/ui/status/addingStatusModal";
 
 export default {
   title: "Status/addingStatusModal",

@@ -13,6 +13,7 @@ import {
 } from "firebase/firestore";
 import { ROLES } from "../data/roles";
 import { useAuth } from "../context/AuthContext";
+import QRCode from "qrcode";
 
 export const fetchAssets = async (role, currentUserUid) => {
   const assetsRef = collection(db, "assets");
@@ -84,17 +85,29 @@ async function generateAssetId() {
   return `cict-${highest + 1}`;
 }
 
+async function generateQR(assetId) {
+  const url = `https://ams-cict.web.app/asset/${assetId}`;
+  const qrDataUrl = await QRCode.toDataURL(url, { width: 300 });
+
+  // Convert data URL to a File/Blob so it can use the same uploadImage helper
+  const res = await fetch(qrDataUrl);
+  const blob = await res.blob();
+  const qrFile = new File([blob], `${assetId}-qr.png`, { type: "image/png" });
+
+  return uploadImage(qrFile, `assets/${assetId}/qr-code`);
+}
+
 export const addAsset = async (data, role) => {
-  //console log role
   console.log("role: " + role);
   if (role !== "admin") {
     throw new Error("Permission denied: only admins can register assets.");
   }
   const assetId = await generateAssetId();
 
-  const [assetImageUrl, docImageUrl] = await Promise.all([
+  const [assetImageUrl, docImageUrl, qrCodeUrl] = await Promise.all([
     uploadImage(data.assetImageFile, `assets/${assetId}/asset-image`),
     uploadImage(data.docImageFile, `assets/${assetId}/asset-document`),
+    generateQR(assetId),
   ]);
 
   const payload = {
@@ -114,6 +127,7 @@ export const addAsset = async (data, role) => {
     // media (Step 2)
     asset_image_url: assetImageUrl || null,
     doc_image_url: docImageUrl || null,
+    qr_code_url: qrCodeUrl || null,
 
     // assignment (Step 3)
     property_custodian: data.primary_custodian || null,

@@ -19,6 +19,7 @@
     "@fortawesome/react-fontawesome": "^3.3.1",
     "exceljs": "^4.4.0",
     "firebase": "^12.13.0",
+    "jsqr": "^1.4.0",
     "pdfkit": "^0.18.0",
     "qrcode": "^1.5.4",
     "react": "^19.2.6",
