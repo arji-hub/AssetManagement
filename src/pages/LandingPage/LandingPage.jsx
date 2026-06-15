@@ -12,7 +12,7 @@ import "./LandingPage.css";
 
 function LandingPage({ previewAsset }) {
   const navigate = useNavigate();
-  const [view, setView] = useState(previewAsset ? "qr" : "login");
+  const [view, setView] = useState("qr");
 
   const handleLogin = async (email, password) => {
     const { role } = await login(email, password);

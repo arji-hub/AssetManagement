@@ -9,7 +9,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import Asset from "./pages/Asset/Asset";
 import AssetRegistration from "./pages/Asset/AssetRegistration";
 import AssetInfo from "./pages/Asset/AssetInfo";
-import AssetPreview from "./pages/LandingPage/AssetPreview";
+import AssetPreview from "./pages/QR/AssetPreview";
 import Custodian from "./pages/Custodian/Custodian";
 import Report from "./pages/Report/Report";
 import Transfer from "./pages/Transfer/Transfer";
@@ -34,17 +34,16 @@ function App() {
           path="/"
           element={user ? <Navigate to="/dashboard" /> : <LandingPage />}
         />
-        <Route path="/login" element={<LandingPage />} />
 
         {/* PUBLIC: QR redirects here. Redirects to /asset/:assetId if logged in */}
-        <Route path="/asset/:assetId/preview" element={<AssetPreview />} />
+        <Route path="/asset/:assetId" element={<AssetPreview />} />
 
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/asset">
             <Route index element={<Asset />} />
             <Route path="registration" element={<AssetRegistration />} />
-            <Route path=":assetId" element={<AssetInfo />} />
+            <Route path="info/:assetId" element={<AssetInfo />} />
           </Route>
           <Route path="/qr" element={<QR />} />
           <Route path="/report" element={<Report />} />

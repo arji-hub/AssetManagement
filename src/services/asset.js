@@ -65,6 +65,38 @@ export const fetchAssets = async (role, currentUserUid) => {
   return assets;
 };
 
+export const fetchAssetByID = async (assetId) => {
+  const assetRef = doc(db, "assets", assetId);
+  const assetSnap = await getDoc(assetRef);
+
+  if (!assetSnap.exists()) {
+    throw new Error(`Asset with ID "${assetId}" not found.`);
+  }
+
+  const assetData = { id: assetSnap.id, ...assetSnap.data() };
+
+  const userIds = [assetData.property_custodian, assetData.local_mr].filter(
+    Boolean,
+  );
+
+  const userDocs = await Promise.all(
+    userIds.map((uid) => getDoc(doc(db, "users", uid))),
+  );
+
+  const userMap = {};
+  userDocs.forEach((d) => {
+    if (d.exists()) {
+      userMap[d.id] = d.data().user_name;
+    }
+  });
+
+  return {
+    ...assetData,
+    property_custodian_name: userMap[assetData.property_custodian] || "Unknown",
+    local_mr_name: userMap[assetData.local_mr] || "Unknown",
+  };
+};
+
 async function uploadImage(file, path) {
   const storageRef = ref(storage, path);
   const snapshot = await uploadBytes(storageRef, file);
@@ -88,13 +120,7 @@ async function generateAssetId() {
 async function generateQR(assetId) {
   const url = `http://localhost:8080/asset/${assetId}`;
   const qrDataUrl = await QRCode.toDataURL(url, { width: 300 });
-
-  // Convert data URL to a File/Blob so it can use the same uploadImage helper
-  const res = await fetch(qrDataUrl);
-  const blob = await res.blob();
-  const qrFile = new File([blob], `${assetId}-qr.png`, { type: "image/png" });
-
-  return uploadImage(qrFile, `assets/${assetId}/qr-code`);
+  return qrDataUrl; // "data:image/png;base64,iVBORw0KGgo..."
 }
 
 export const addAsset = async (data, role) => {

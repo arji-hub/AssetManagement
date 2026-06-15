@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { MemoryRouter } from "react-router-dom";
 import QRInfo from "../../../components/ui/modal/QRInfo";
 
 export default {
@@ -7,6 +7,13 @@ export default {
   parameters: {
     layout: "fullscreen",
   },
+  decorators: [
+    (Story) => (
+      <MemoryRouter>
+        <Story />
+      </MemoryRouter>
+    ),
+  ],
 };
 
 const sampleAsset = {
@@ -27,49 +34,54 @@ const sampleAsset = {
 
 export const Default = {
   args: {
-    isOpen: false,
     asset: sampleAsset,
-  },
-  render: (args) => {
-    const [open, setOpen] = useState(args.isOpen);
-
-    return (
-      <>
-        <QRInfo {...args} isOpen={open} onClose={() => setOpen(false)} />
-      </>
-    );
   },
 };
 
 export const ForRepair = {
   args: {
-    isOpen: false,
     asset: {
       ...sampleAsset,
       status: "For Repair",
       remarks: "Power supply unit needs replacement.",
     },
   },
-  render: Default.render,
 };
 
-export const NoImage = {
+export const Damaged = {
   args: {
-    isOpen: false,
+    asset: {
+      ...sampleAsset,
+      status: "Damaged",
+      remarks: "Screen cracked, needs assessment for repair or disposal.",
+    },
+  },
+};
+
+export const Condemned = {
+  args: {
     asset: {
       ...sampleAsset,
       asset_image_url: null,
-      status: "For Disposal",
+      status: "Condemned",
       remarks: null,
     },
   },
-  render: Default.render,
+};
+
+export const Missing = {
+  args: {
+    asset: {
+      ...sampleAsset,
+      asset_image_url: null,
+      status: "Missing",
+      remarks: "Last seen during Q1 inventory check.",
+    },
+  },
 };
 
 export const Unavailable = {
   args: {
-    isOpen: false,
     asset: null,
   },
-  render: Default.render,
 };

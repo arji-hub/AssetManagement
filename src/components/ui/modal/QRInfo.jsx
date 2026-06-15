@@ -1,41 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "./QRInfo.css";
-
-const STATUS_STYLES = {
-  Working: "qr-info-status-good",
-  "For Repair": "qr-info-status-warn",
-  "For Disposal": "qr-info-status-bad",
-  Lost: "qr-info-status-bad",
-};
-
-function formatCurrency(value) {
-  if (value === null || value === undefined || value === "") return "—";
-  const num = Number(value);
-  if (Number.isNaN(num)) return "—";
-  return num.toLocaleString("en-PH", {
-    style: "currency",
-    currency: "PHP",
-    minimumFractionDigits: 2,
-  });
-}
-
-function formatDate(value) {
-  if (!value) return "—";
-  try {
-    const date =
-      typeof value === "object" && value.toDate
-        ? value.toDate()
-        : new Date(value);
-    if (Number.isNaN(date.getTime())) return "—";
-    return date.toLocaleDateString("en-PH", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  } catch {
-    return "—";
-  }
-}
+import { STATUS_COLORS } from "../../../data/assets";
+import { formatCurrency } from "../../../utils/formatCurrency";
+import { formatDate } from "../../../utils/formatDate";
 
 function displayValue(value) {
   if (value === null || value === undefined || value === "") return "—";
@@ -43,12 +11,19 @@ function displayValue(value) {
 }
 
 function QRInfo({ asset }) {
+  const navigate = useNavigate();
+
+  const handleReturn = () => navigate("/");
+
   if (!asset) {
     return (
       <div className="qr-info-overlay">
         <div className="qr-info-box">
           <div className="qr-info-title">ASSET INFO</div>
           <p className="qr-info-empty">Asset information unavailable.</p>
+          <button className="qr-info-return-btn" onClick={handleReturn}>
+            Return
+          </button>
         </div>
       </div>
     );
@@ -69,7 +44,10 @@ function QRInfo({ asset }) {
     room_id,
   } = asset;
 
-  const statusClass = STATUS_STYLES[status] || "qr-info-status-default";
+  const statusStyle = STATUS_COLORS[status] || {
+    bg: "rgba(136, 136, 136, 0.5)",
+    color: "#1f1f1f",
+  };
 
   return (
     <div className="qr-info-overlay">
@@ -87,7 +65,13 @@ function QRInfo({ asset }) {
             <div className="qr-info-image-placeholder">No Image</div>
           )}
           {status && (
-            <span className={`qr-info-status-badge ${statusClass}`}>
+            <span
+              className="qr-info-status-badge"
+              style={{
+                backgroundColor: statusStyle.bg,
+                color: statusStyle.color,
+              }}
+            >
               {status}
             </span>
           )}
@@ -98,9 +82,7 @@ function QRInfo({ asset }) {
         <div className="qr-info-grid">
           <div className="qr-info-row">
             <span className="qr-info-label">Serial No.</span>
-            <span className="qr-info-value">
-              {displayValue(serial_number)}
-            </span>
+            <span className="qr-info-value">{displayValue(serial_number)}</span>
           </div>
 
           <div className="qr-info-row">
@@ -147,6 +129,10 @@ function QRInfo({ asset }) {
             <p className="qr-info-remarks-text">{remarks}</p>
           </div>
         )}
+
+        <button className="qr-info-return-btn" onClick={handleReturn}>
+          Return
+        </button>
       </div>
     </div>
   );

@@ -68,10 +68,10 @@ export function useQRScanner() {
     });
   }, []);
 
-  // Only navigate if the decoded value points to a valid asset preview path.
+  // Only navigate if the decoded value points to a valid asset
   // This prevents non-asset QR codes (wifi, contact cards, plain URLs, etc.)
   // from accidentally matching the catch-all route and redirecting to "/".
-  const ASSET_PREVIEW_PATTERN = /^\/asset\/[^/]+\/preview\/?$/;
+  const ASSET_PREVIEW_PATTERN = /^\/asset\/[^/]+\/?$/;
 
   const navigateFromDecodedValue = useCallback(
     (decodedValue) => {
@@ -81,14 +81,15 @@ export function useQRScanner() {
         const url = new URL(decodedValue);
         pathname = url.pathname;
       } catch {
-        // Not a full URL — check if it's a raw path
         if (decodedValue.startsWith("/")) {
           pathname = decodedValue;
         }
       }
 
       if (pathname && ASSET_PREVIEW_PATTERN.test(pathname)) {
-        navigate(pathname);
+        // strip trailing slash, navigate as-is — /asset/:assetId IS the preview route
+        const previewPath = pathname.replace(/\/$/, "");
+        navigate(previewPath);
         return true;
       }
 

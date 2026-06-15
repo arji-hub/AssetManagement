@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useParams, Navigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import LoadingScreen from "../../components/ui/status/LoadingScreen";
-import LandingPage from "./LandingPage";
-import { getAssetPreview } from "../../services/assetService";
+import LandingPage from "../LandingPage/LandingPage";
+import { fetchAssetByID } from "../../services/asset";
 
 function AssetPreview() {
   const { user, loading } = useAuth();
@@ -14,7 +14,7 @@ function AssetPreview() {
 
   useEffect(() => {
     if (!user) {
-      getAssetPreview(assetId)
+      fetchAssetByID(assetId)
         .then(setPreview)
         .finally(() => setFetching(false));
     }
@@ -23,7 +23,7 @@ function AssetPreview() {
   if (loading) return <LoadingScreen />;
 
   if (user) {
-    return <Navigate to={`/asset/${assetId}`} replace />;
+    return <Navigate to={`/asset/info/${assetId}`} replace />;
   }
 
   if (fetching) return <LoadingScreen />;
