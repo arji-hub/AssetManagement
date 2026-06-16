@@ -18,13 +18,9 @@ export const ASSET_STATUS = [
 ];
 
 export const STATUS_COLORS = Object.fromEntries([
-  ["Working", { bg: "rgba(59, 114, 68, 0.5)", color: "#1a5c23" }],
-
-  ["Missing", { bg: "rgba(220, 38, 38, 0.5)", color: "#a31515" }],
-
-  ["For Repair", { bg: "rgba(180, 155, 10, 0.5)", color: "#8a6d00" }],
-
-  ["Damaged", { bg: "rgba(234, 88, 12, 0.5)", color: "#a3450a" }],
-
-  ["Condemned", { bg: "rgba(107, 114, 128, 0.5)", color: "#3f4655" }],
+  ["Working", { bg: "rgba(0, 255, 128, 0.7)", color: "#003d1f" }],
+  ["Missing", { bg: "rgba(255, 50, 80, 0.7)", color: "#1a0008" }],
+  ["For Repair", { bg: "rgba(255, 200, 0, 0.7)", color: "#3d2e00" }],
+  ["Damaged", { bg: "rgba(255, 120, 0, 0.7)", color: "#2e1500" }],
+  ["Condemned", { bg: "rgba(160, 160, 255, 0.7)", color: "#0d0d2e" }],
 ]);

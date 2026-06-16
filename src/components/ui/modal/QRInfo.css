@@ -1,5 +1,4 @@
 .qr-info-overlay {
-  position: fixed;
   inset: 0;
   display: flex;
   align-items: center;
@@ -11,17 +10,26 @@
 }
 
 .qr-info-box {
-  background: #fff;
+  background: #f5aa2c;
   border-radius: 4px;
   padding: clamp(24px, 6vw, 40px) clamp(20px, 5vw, 36px) clamp(20px, 5vw, 32px);
   width: 100%;
   max-width: 320px;
-  max-height: 85vh;
-  overflow-y: auto;
+  max-height: 80vh;
+  overflow-y: hidden;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
   animation: qrInfoSlideUp 0.25s ease;
   position: relative;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.qr-info-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+  background: #ffffff;
 }
 
 .qr-info-title {
@@ -30,7 +38,7 @@
   font-weight: 700;
   font-family: "Sansation";
   color: #860100;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
 }
 
 /* ── image ── */
@@ -128,8 +136,8 @@
   font-family: "Sansation";
   font-size: 14px;
   font-weight: 700;
-  color: #f5aa2c;
-  background: rgba(134, 1, 0, 0.05  );
+  color: #860100;
+  background: rgba(134, 1, 0, 0.05);
   padding: 2px 4px;
   border-radius: 3px;
   display: inline-block;
@@ -172,7 +180,7 @@
 .qr-info-return-btn {
   display: block;
   width: 100%;
-  margin-top: 20px;
+  margin-top: 5px;
   padding: 12px 0;
   background: #860100;
   color: #fff;

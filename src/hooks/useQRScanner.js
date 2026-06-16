@@ -76,15 +76,23 @@ export function useQRScanner() {
   const navigateFromDecodedValue = useCallback(
     (decodedValue) => {
       let pathname = null;
+      console.log("decoded:", decodedValue);
 
       try {
         const url = new URL(decodedValue);
         pathname = url.pathname;
+        console.log("pathname:", pathname);
       } catch {
         if (decodedValue.startsWith("/")) {
           pathname = decodedValue;
         }
       }
+      console.log("pattern test:", ASSET_PREVIEW_PATTERN.test(pathname)); // 👈
+      console.log("pathname:", pathname); // 👈
+      console.log(
+        "will navigate:",
+        pathname && ASSET_PREVIEW_PATTERN.test(pathname),
+      ); // 👈
 
       if (pathname && ASSET_PREVIEW_PATTERN.test(pathname)) {
         // strip trailing slash, navigate as-is — /asset/:assetId IS the preview route
@@ -104,6 +112,7 @@ export function useQRScanner() {
    */
   const handleImageUpload = useCallback(
     async (file) => {
+      reset();
       setStatus("loading");
       setErrorMessage("");
 
@@ -113,8 +122,7 @@ export function useQRScanner() {
 
         if (navigated) {
           setStatus("success");
-          // brief confirmation before the route change takes over
-          setTimeout(() => reset(), 800);
+          setTimeout(() => reset(), 1500); // 👈 longer delay
         } else {
           setStatus("notfound");
           setErrorMessage("This QR code does not point to a valid asset.");
