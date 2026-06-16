@@ -14,6 +14,10 @@ import {
 import { ROLES } from "../data/roles";
 import { useAuth } from "../context/AuthContext";
 import QRCode from "qrcode";
+import { categoryCount } from "./category";
+import { roomCount } from "./room";
+import QRCodeStyling from "qr-code-styling";
+import CICTLogo from "../assets/CICTLOGO.png";
 
 export const fetchAssets = async (role, currentUserUid) => {
   const assetsRef = collection(db, "assets");
@@ -119,8 +123,55 @@ async function generateAssetId() {
 
 async function generateQR(assetId) {
   const url = `http://localhost:8080/asset/${assetId}`;
-  const qrDataUrl = await QRCode.toDataURL(url, { width: 300 });
-  return qrDataUrl; // "data:image/png;base64,iVBORw0KGgo..."
+
+  const qrCode = new QRCodeStyling({
+    width: 300,
+    height: 300,
+    type: "canvas",
+    data: url,
+
+    dotsOptions: {
+      type: "extra-rounded",  
+      gradient: {
+        type: "radial",
+        colorStops: [
+          { offset: 0, color: "#f5aa2c" },  
+          { offset: 1, color: "#860100" },  
+        ],
+      },
+    },
+
+    cornersSquareOptions: {
+      type: "extra-rounded",
+      color: "#860100",
+    },
+
+    cornersDotOptions: {
+      type: "dot",
+      color: "#f5aa2c",
+    },
+
+    backgroundOptions: {
+      color: "#ffffff",
+    },
+
+    imageOptions: {
+      crossOrigin: "anonymous",
+      margin: 6,
+      imageSize: 0.3,
+    },
+
+    image: CICTLogo,
+  });
+
+  // render to a temp div, grab the canvas, convert to base64
+  const tempDiv = document.createElement("div");
+  qrCode.append(tempDiv);
+
+  await new Promise((r) => setTimeout(r, 100)); // wait for render
+
+  const canvas = tempDiv.querySelector("canvas");
+  return canvas.toDataURL("image/png");
 }
 
 export const addAsset = async (data, role) => {
@@ -166,6 +217,7 @@ export const addAsset = async (data, role) => {
   };
 
   await setDoc(doc(db, "assets", assetId), payload);
+  await Promise.all([categoryCount(data.category_id), roomCount(data.room_id)]);
 
   return assetId;
 };

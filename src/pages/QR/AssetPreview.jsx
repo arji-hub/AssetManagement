@@ -13,19 +13,23 @@ function AssetPreview() {
   const [fetching, setFetching] = useState(true);
 
   useEffect(() => {
+    console.log("effect ran — user:", user, "loading:", loading);
     if (!user) {
       fetchAssetByID(assetId)
-        .then(setPreview)
+        .then((asset) => {
+          console.log("fetched:", asset);
+          setPreview(asset);
+        })
+        .catch((err) => {
+          console.log("fetch error:", err);
+          setPreview(null);
+        })
         .finally(() => setFetching(false));
     }
   }, [assetId, user]);
 
   if (loading) return <LoadingScreen />;
-
-  if (user) {
-    return <Navigate to={`/asset/info/${assetId}`} replace />;
-  }
-
+  if (user) return <Navigate to={`/asset/info/${assetId}`} replace />;
   if (fetching) return <LoadingScreen />;
 
   return <LandingPage previewAsset={preview} />;

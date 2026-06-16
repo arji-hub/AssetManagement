@@ -4,6 +4,7 @@ import MainLayout from "../../components/layout/MainLayout";
 import QRModal from "../../components/ui/modal/QRModal";
 import QRStatusModal from "../../components/ui/status/QRStatusModal";
 import { useQRScanner } from "../../hooks/useQRScanner";
+import "./QR.css";
 
 function QR() {
   const { user } = useAuth();

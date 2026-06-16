@@ -10,7 +10,7 @@ import { useQRScanner } from "../../hooks/useQRScanner";
 import QRStatusModal from "../../components/ui/status/QRStatusModal";
 import "./LandingPage.css";
 
-function LandingPage({ previewAsset }) {
+function LandingPage({ previewAsset, assetNotFound }) {
   const navigate = useNavigate();
   const [view, setView] = useState("qr");
 
@@ -53,8 +53,8 @@ function LandingPage({ previewAsset }) {
       {/* Modal floats over the background */}
       <div className="login-main">
         {view === "qr" ? (
-          previewAsset ? (
-            <QRInfo asset={previewAsset} />
+          previewAsset !== undefined ? ( 
+            <QRInfo asset={previewAsset} /> 
           ) : (
             <QRModal
               onCameraScan={handleCameraScan}

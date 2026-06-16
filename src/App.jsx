@@ -35,7 +35,7 @@ function App() {
           element={user ? <Navigate to="/dashboard" /> : <LandingPage />}
         />
 
-        {/* PUBLIC: QR redirects here. Redirects to /asset/:assetId if logged in */}
+        {/* QR redirects here */}
         <Route path="/asset/:assetId" element={<AssetPreview />} />
 
         <Route element={<ProtectedRoute />}>
