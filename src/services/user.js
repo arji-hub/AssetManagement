@@ -5,7 +5,7 @@ import { getFunctions, httpsCallable } from "firebase/functions";
 const functions = getFunctions();
 
 export async function fetchCustodians() {
-  const q = query(collection(db, "users"), where("role", "!=", "admin"));
+  const q = query(collection(db, "user"), where("role", "!=", "admin"));
 
   const snapshot = await getDocs(q);
 

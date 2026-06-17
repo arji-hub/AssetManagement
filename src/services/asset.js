@@ -20,7 +20,7 @@ import QRCodeStyling from "qr-code-styling";
 import CICTLogo from "../assets/CICTLOGO.png";
 
 export const fetchAssets = async (role, currentUserUid) => {
-  const assetsRef = collection(db, "assets");
+  const assetsRef = collection(db, "asset"); // ← changed
 
   let q;
   if (role === ROLES.ADMIN) {
@@ -50,7 +50,7 @@ export const fetchAssets = async (role, currentUserUid) => {
   ];
 
   const userDocs = await Promise.all(
-    userIds.map((uid) => getDoc(doc(db, "users", uid))),
+    userIds.map((uid) => getDoc(doc(db, "user", uid))),
   );
 
   const userMap = {};
@@ -70,7 +70,8 @@ export const fetchAssets = async (role, currentUserUid) => {
 };
 
 export const fetchAssetByID = async (assetId) => {
-  const assetRef = doc(db, "assets", assetId);
+  const assetRef = doc(db, "asset", assetId); // ← changed
+
   const assetSnap = await getDoc(assetRef);
 
   if (!assetSnap.exists()) {
@@ -84,7 +85,7 @@ export const fetchAssetByID = async (assetId) => {
   );
 
   const userDocs = await Promise.all(
-    userIds.map((uid) => getDoc(doc(db, "users", uid))),
+    userIds.map((uid) => getDoc(doc(db, "user", uid))),
   );
 
   const userMap = {};
@@ -109,7 +110,7 @@ async function uploadImage(file, path) {
 }
 
 async function generateAssetId() {
-  const snapshot = await getDocs(collection(db, "assets"));
+  const snapshot = await getDocs(collection(db, "asset")); // ← changed
 
   if (snapshot.empty) return "cict-1001";
 
@@ -131,12 +132,12 @@ async function generateQR(assetId) {
     data: url,
 
     dotsOptions: {
-      type: "extra-rounded",  
+      type: "extra-rounded",
       gradient: {
         type: "radial",
         colorStops: [
-          { offset: 0, color: "#f5aa2c" },  
-          { offset: 1, color: "#860100" },  
+          { offset: 0, color: "#f5aa2c" },
+          { offset: 1, color: "#860100" },
         ],
       },
     },
@@ -164,34 +165,29 @@ async function generateQR(assetId) {
     image: CICTLogo,
   });
 
-  // render to a temp div, grab the canvas, convert to base64
   const tempDiv = document.createElement("div");
   qrCode.append(tempDiv);
 
-  await new Promise((r) => setTimeout(r, 100)); // wait for render
+  await new Promise((r) => setTimeout(r, 100));
 
   const canvas = tempDiv.querySelector("canvas");
   return canvas.toDataURL("image/png");
 }
 
 export const addAsset = async (data, role) => {
-  console.log("role: " + role);
   if (role !== "admin") {
     throw new Error("Permission denied: only admins can register assets.");
   }
   const assetId = await generateAssetId();
 
   const [assetImageUrl, docImageUrl, qrCodeUrl] = await Promise.all([
-    uploadImage(data.assetImageFile, `assets/${assetId}/asset-image`),
-    uploadImage(data.docImageFile, `assets/${assetId}/asset-document`),
+    uploadImage(data.assetImageFile, `asset/${assetId}/asset-image`), // ← changed
+    uploadImage(data.docImageFile, `asset/${assetId}/asset-document`), // ← changed
     generateQR(assetId),
   ]);
 
   const payload = {
-    // identifier
     asset_id: assetId,
-
-    // basic info (Step 1)
     serial_number: data.serial_number || null,
     category_id: data.category_id,
     description: data.description,
@@ -200,23 +196,17 @@ export const addAsset = async (data, role) => {
     qty: parseInt(data.qty, 10),
     status: "Working",
     remarks: data.remarks || null,
-
-    // media (Step 2)
     asset_image_url: assetImageUrl || null,
     doc_image_url: docImageUrl || null,
     qr_code_url: qrCodeUrl || null,
-
-    // assignment (Step 3)
     property_custodian: data.primary_custodian || null,
     local_mr: data.local_custodian || null,
     room_id: data.room_id || null,
-
-    // metadata
     created_at: serverTimestamp(),
     updated_at: serverTimestamp(),
   };
 
-  await setDoc(doc(db, "assets", assetId), payload);
+  await setDoc(doc(db, "asset", assetId), payload); // ← changed
   await Promise.all([categoryCount(data.category_id), roomCount(data.room_id)]);
 
   return assetId;

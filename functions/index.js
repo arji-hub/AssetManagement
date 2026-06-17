@@ -105,7 +105,7 @@ exports.addCustodian = onCall(
     // ── Step 2: Write Firestore document ─────────────────────────────────────
     try {
       await getFirestore()
-        .collection("users")
+        .collection("user")
         .doc(userRecord.uid)
         .set({
           email,
