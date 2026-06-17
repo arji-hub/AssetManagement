@@ -186,6 +186,34 @@
   align-items: center;
   gap: 12px;
   color: #ffffff;
+  cursor: pointer;
+}
+
+.navbar-right-tooltip {
+  position: relative;
+  cursor: pointer;
+}
+
+.navbar-tooltip-text {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  padding: 4px 10px;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 12px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease;
+  pointer-events: none;
+}
+
+.navbar-right-tooltip:hover .navbar-tooltip-text {
+  opacity: 1;
+  visibility: visible;
 }
 
 .user-info {
@@ -206,6 +234,7 @@
   border-radius: 20px;
   text-transform: capitalize;
 }
+
 /* #endregion */
 
 /* #region ─── BURGER BUTTON ─── */
@@ -229,7 +258,7 @@
 /* #region ─── MAIN CONTENT ───  */
 .main-content {
   flex: 1;
-  min-height: 0; 
+  min-height: 0;
   overflow-y: auto;
   background: #f0f2f5;
 }
