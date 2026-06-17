@@ -6,13 +6,14 @@
   border: 1px solid #e5e5e5;
   border-radius: 6px;
   padding: 20px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
 .info-card-detail-col {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  min-width: 200px;
 }
 
 .info-card-category-row {
@@ -49,7 +50,7 @@
 
 .info-card-id-row {
   display: flex;
-  gap: 24px;
+  justify-content: space-around;
   flex-wrap: wrap;
 }
 
@@ -121,7 +122,8 @@
   }
 
   .info-card-image-col {
-    align-items: flex-start;
+    order: -1;
+    align-items: center;
   }
 
   .info-card-main-img,

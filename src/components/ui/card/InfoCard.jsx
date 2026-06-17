@@ -32,23 +32,23 @@ function InfoCard({ asset }) {
           <StatusBadge status={asset.status} />
         </div>
 
-        <h1 className="info-card-description">{asset.description || "—"}</h1>
-
         <div className="info-card-id-row">
-          <div className="info-card-id-item">
-            <span className="info-card-id-label">Asset ID</span>
-            <span className="info-card-id-value">{asset.id}</span>
-          </div>
-          <div className="info-card-id-item">
-            <span className="info-card-id-label">Serial Number</span>
-            <span className="info-card-id-value">
-              {asset.serial_number || "—"}
-            </span>
-          </div>
-          <div className="info-card-id-item">
-            <span className="info-card-id-label">Qty</span>
-            <span className="info-card-id-value">{asset.qty ?? "—"}</span>
-          </div>
+          <h1 className="info-card-description">{asset.description || "—"}</h1>
+
+            <div className="info-card-id-item">
+              <span className="info-card-id-label">Asset ID</span>
+              <span className="info-card-id-value">{asset.id}</span>
+            </div>
+            <div className="info-card-id-item">
+              <span className="info-card-id-label">Serial Number</span>
+              <span className="info-card-id-value">
+                {asset.serial_number || "—"}
+              </span>
+            </div>
+            <div className="info-card-id-item">
+              <span className="info-card-id-label">Qty</span>
+              <span className="info-card-id-value">{asset.qty ?? "—"}</span>
+            </div>
         </div>
 
         <div className="info-card-labels-grid">

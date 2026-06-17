@@ -2,7 +2,7 @@ import { db } from "./firebase-config";
 import { collection, doc, getDocs, updateDoc, increment } from "firebase/firestore";
 
 export async function fetchCategories() {
-  const snapshot = await getDocs(collection(db, "categories"));
+  const snapshot = await getDocs(collection(db, "category"));
   return snapshot.docs.map((doc) => ({
     id: doc.id,
     name: doc.id,
@@ -11,7 +11,7 @@ export async function fetchCategories() {
 }
 
 export async function categoryCount(category_id) {
-  const categoryRef = doc(db, "categories", category_id);
+  const categoryRef = doc(db, "category", category_id);
   await updateDoc(categoryRef, {
     assetCount: increment(1),
   });

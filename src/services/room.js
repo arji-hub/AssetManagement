@@ -5,11 +5,12 @@ import {
   getDocs,
   setDoc,
   serverTimestamp,
-  updateDoc, increment
+  updateDoc,
+  increment,
 } from "firebase/firestore";
 
 export async function fetchRooms() {
-  const snapshot = await getDocs(collection(db, "rooms"));
+  const snapshot = await getDocs(collection(db, "room"));
   return snapshot.docs.map((doc) => ({
     id: doc.id,
     name: doc.id,
@@ -30,13 +31,13 @@ export async function addRoom(data, role) {
     updated_at: serverTimestamp(),
   };
 
-  await setDoc(doc(db, "rooms", data.name), payload);
+  await setDoc(doc(db, "room", data.name), payload);
 
   return data.name;
 }
 
 export async function roomCount(room_id) {
-  const roomRef = doc(db, "rooms", room_id);
+  const roomRef = doc(db, "room", room_id);
   await updateDoc(roomRef, {
     assetCount: increment(1),
   });
