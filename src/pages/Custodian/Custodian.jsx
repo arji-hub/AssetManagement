@@ -42,7 +42,9 @@ function Custodian() {
       setStatus("success");
     } catch (error) {
       console.error("Failed to add custodian:", error);
-      setSubmitError(error.message || "Something went wrong. Please try again.");
+      setSubmitError(
+        error.message || "Something went wrong. Please try again.",
+      );
       setStatus("error");
     } finally {
       setIsSubmitting(false);
@@ -88,14 +90,18 @@ function Custodian() {
           ) : custodians.length === 0 ? (
             <p className="custodian-empty">No custodians found.</p>
           ) : (
-            custodians.map((c) => (
-              <CustodianCard
-                key={c.id}
-                name={c.fullname}
-                classification={c.role}
-                totalAssets={c.totalAssets ?? 0}
-              />
-            ))
+            custodians.map((c) => {
+              console.log(c);
+              return (
+                <CustodianCard
+                  key={c.id}
+                  name={c.fullname}
+                  username={c.username}
+                  classification={c.role}
+                  totalAssets={c.totalAssets ?? 0}
+                />
+              );
+            })
           )}
         </div>
       </div>
