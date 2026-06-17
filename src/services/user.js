@@ -30,3 +30,28 @@ export async function addCustodian(custodianData) {
   const result = await addCustodianFn(custodianData);
   return result.data; // { uid }
 }
+
+export async function checkUsernameAvailable(username) {
+  if (!username) return true;
+
+  const normalized = username.toLowerCase().replace(/\s+/g, "");
+
+  const q = query(
+    collection(db, "user"),
+    where("user_name", "==", normalized),
+  );
+
+  const snapshot = await getDocs(q);
+  return snapshot.empty; // true = available, false = taken
+}
+
+export async function checkEmailAvailable(email) {
+  if (!email) return true;
+
+  const normalized = email.toLowerCase().trim();
+
+  const q = query(collection(db, "user"), where("email", "==", normalized));
+
+  const snapshot = await getDocs(q);
+  return snapshot.empty; // true = available, false = taken
+}

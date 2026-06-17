@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useCustodianRegistration from "../../../hooks/useCustodianRegistration";
 
 function CustodianModal({ onClose, onSubmit, isSubmitting = false }) {
-  const { form, errors, isComplete, handleChange, handleSubmit } =
+  const { form, errors, checking, isComplete, handleChange, handleSubmit } =
     useCustodianRegistration({ onSubmit, onClose });
 
   return (
@@ -33,6 +33,9 @@ function CustodianModal({ onClose, onSubmit, isSubmitting = false }) {
                 onChange={handleChange}
                 className={errors.email ? "input-error" : ""}
               />
+              {checking.email && (
+                <span className="field-checking">Checking availability...</span>
+              )}
               {errors.email && (
                 <span className="field-error">{errors.email}</span>
               )}
@@ -46,7 +49,14 @@ function CustodianModal({ onClose, onSubmit, isSubmitting = false }) {
                 placeholder="Enter username"
                 value={form.user_name}
                 onChange={handleChange}
+                className={errors.user_name ? "input-error" : ""}
               />
+              {checking.user_name && (
+                <span className="field-checking">Checking availability...</span>
+              )}
+              {errors.user_name && (
+                <span className="field-error">{errors.user_name}</span>
+              )}
             </div>
           </div>
 

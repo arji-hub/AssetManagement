@@ -32,11 +32,6 @@ const GMAIL_PASS = defineSecret("GMAIL_PASS");
 exports.addCustodian = onCall(
   { cors: true, secrets: [GMAIL_USER, GMAIL_PASS] },
   async (request) => {
-    // ── Debug logging ─────────────────────────────────────────────────────────
-    console.log("=== addCustodian called ===");
-    console.log("request.auth:", JSON.stringify(request.auth, null, 2));
-    console.log("request.data:", JSON.stringify(request.data, null, 2));
-
     // ── Guard: caller must be logged in ──────────────────────────────────────
     if (!request.auth) {
       throw new HttpsError(
@@ -45,8 +40,7 @@ exports.addCustodian = onCall(
       );
     }
 
-    // ── Guard: caller must be an admin ───────────────────────────────────────
-    console.log("token.role:", request.auth.token.role);
+    // ── Guard: caller must be an admin ──────────────────────────────────
     if (request.auth.token.role !== "admin") {
       throw new HttpsError(
         "permission-denied",
@@ -64,11 +58,15 @@ exports.addCustodian = onCall(
       role,
     } = request.data;
 
-    // ── Guard: required fields ────────────────────────────────────────────────
+    const normalized_user_name = user_name
+      ? user_name.toLowerCase().replace(/\s+/g, "")
+      : user_name;
+
+    // ── Guard: required fields ──────────────────────────────────────────────
     if (
       !email ||
       !password ||
-      !user_name ||
+      !normalized_user_name ||
       !first_name ||
       !last_name ||
       !role
@@ -84,6 +82,20 @@ exports.addCustodian = onCall(
       throw new HttpsError(
         "invalid-argument",
         "Role must be either 'fulltime' or 'parttime'.",
+      );
+    }
+
+    // ── Guard: username must be unique ───────────────────────────
+    const existingUsername = await getFirestore()
+      .collection("user")
+      .where("user_name", "==", normalized_user_name) // ⬅ changed
+      .limit(1)
+      .get();
+
+    if (!existingUsername.empty) {
+      throw new HttpsError(
+        "already-exists",
+        "This username is already taken. Please choose another.",
       );
     }
 
@@ -109,7 +121,7 @@ exports.addCustodian = onCall(
         .doc(userRecord.uid)
         .set({
           email,
-          user_name,
+          user_name: normalized_user_name,
           first_name,
           middle_name: middle_name || "",
           last_name,
@@ -124,6 +136,21 @@ exports.addCustodian = onCall(
       throw new HttpsError(
         "internal",
         "Failed to save custodian data. Auth account has been rolled back.",
+      );
+    }
+
+    // Final verification read
+    const verify = await getFirestore()
+      .collection("user")
+      .where("user_name", "==", normalized_user_name)
+      .get();
+
+    if (verify.size > 1) {
+      // Collision detected — roll back this account, since another request won the race
+      await getAuth().deleteUser(userRecord.uid);
+      throw new HttpsError(
+        "already-exists",
+        "This username was just taken by another request. Please try again.",
       );
     }
 
@@ -201,7 +228,6 @@ exports.addCustodian = onCall(
           </div>
         `,
       });
-      console.log("Email sent to:", email);
     } catch (emailError) {
       console.error("Email delivery failed:", emailError);
     }
