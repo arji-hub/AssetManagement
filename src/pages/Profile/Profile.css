@@ -1,0 +1,15 @@
+.profile-page {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+  background: #ffffff;
+  height: 100%;
+}
+
+/* ── Mobile ── */
+
+@media (max-width: 640px) {
+  .profile-page {
+    padding: 16px;
+  }
+}

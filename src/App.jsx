@@ -19,6 +19,7 @@ import Room from "./pages/Room/Room";
 import { ROLES } from "./data/roles";
 import CustodianAssets from "./pages/Custodian/CustodianAssets";
 import RoomAssets from "./pages/Room/RoomAssets";
+import Profile from "./pages/Profile/Profile";
 
 function App() {
   const { user, loading } = useAuth();
@@ -39,6 +40,7 @@ function App() {
         <Route path="/asset/:assetId" element={<AssetPreview />} />
 
         <Route element={<ProtectedRoute />}>
+          <Route path="/profile" element={<Profile />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/asset">
             <Route index element={<Asset />} />

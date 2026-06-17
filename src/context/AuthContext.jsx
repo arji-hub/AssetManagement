@@ -28,8 +28,10 @@ export function AuthProvider({ children }) {
           setCurrentUser(currentUser);
           setRole(data.role);
           setUser({
+            uid: currentUser.uid,
             firstname: data.first_name,
             lastname: data.last_name,
+            middlename: data.middle_name ?? "_",
             email: data.email,
             role: data.role,
             username: data.user_name,
