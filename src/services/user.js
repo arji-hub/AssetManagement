@@ -105,3 +105,59 @@ export const attachCustodianNames = async (assetData) => {
 
   return Array.isArray(assetData) ? withNames : withNames[0];
 };
+
+export const findCustodianUidByUsername = async (username) => {
+  const custodians = await fetchCustodians();
+  const match = custodians.find((c) => c.username === username);
+  return match ? match.id : null;
+};
+
+export async function fetchAssetsByCustodian(uid) {
+  try {
+    if (!uid) return [];
+
+    const assetRef = collection(db, "asset");
+
+    const [propertyCustodianSnap, localMrSnap] = await Promise.all([
+      getDocs(query(assetRef, where("property_custodian", "==", uid))),
+      getDocs(query(assetRef, where("local_mr", "==", uid))),
+    ]);
+
+    const seen = new Map();
+    [...propertyCustodianSnap.docs, ...localMrSnap.docs].forEach((doc) => {
+      if (!seen.has(doc.id)) {
+        seen.set(doc.id, { id: doc.id, ...doc.data() });
+      }
+    });
+
+    const assetData = Array.from(seen.values());
+
+    const userIds = [
+      ...new Set(
+        assetData.flatMap((a) =>
+          [a.property_custodian, a.local_mr].filter(Boolean),
+        ),
+      ),
+    ];
+
+    const userDocs = await Promise.all(
+      userIds.map((id) => getDoc(doc(db, "user", id))),
+    );
+
+    const userMap = {};
+    userDocs.forEach((d) => {
+      if (d.exists()) {
+        userMap[d.id] = d.data().user_name;
+      }
+    });
+
+    return assetData.map((asset) => ({
+      ...asset,
+      property_custodian_name: userMap[asset.property_custodian] || "Unknown",
+      local_mr_name: userMap[asset.local_mr] || "Unknown",
+    }));
+  } catch (err) {
+    console.error("fetchAssetsByCustodian error:", err);
+    throw err;
+  }
+}

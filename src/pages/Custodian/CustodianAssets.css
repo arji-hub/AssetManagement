@@ -212,6 +212,31 @@
   flex-shrink: 0;
 }
 
+.assets-table th:nth-child(1),
+.assets-table td:nth-child(1) {
+  width: 6%;
+}
+
+.assets-table th:nth-child(3),
+.assets-table td:nth-child(3) {
+  width: 16%;
+}
+
+.assets-table th:nth-child(4),
+.assets-table td:nth-child(4) {
+  width: 20%;
+}
+
+.assets-table th:nth-child(5),
+.assets-table td:nth-child(5) {
+  width: 16%;
+}
+
+.assets-table th:nth-child(6),
+.assets-table td:nth-child(6) {
+  width: 16%;
+}
+
 /* ── tbody scrollbar (moved from .assets-list) ─────────────────── */
 .assets-table tbody::-webkit-scrollbar {
   width: 6px;
@@ -231,25 +256,10 @@
 }
 
 /* ── Empty state ────────────────────────────────────────────── */
-.assets-empty-row {
-  display: table-row;
-  width: 100%;
-}
-
-.assets-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 60px 24px;
-  color: #9ca3af;
-  font-size: 15px;
-  width: 100%;
-}
-
-.assets-empty svg {
-  font-size: 40px;
+.user-assets-empty-row {
+  text-align: center;
+  height: 100px;
+  vertical-align: middle;
 }
 
 /* ── Responsive ─────────────────────────────────────────────── */

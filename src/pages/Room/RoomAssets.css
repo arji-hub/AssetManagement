@@ -246,22 +246,6 @@
   vertical-align: middle;
 }
 
-.room-assets-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 60px 24px;
-  color: #9ca3af;
-  font-size: 15px;
-  width: 100%;
-}
-
-.room-assets-empty svg {
-  font-size: 40px;
-}
-
 /* ── Filter button ──────────────────────────────────────────── */
 .filter-button {
   display: flex;
