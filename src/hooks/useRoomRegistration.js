@@ -29,7 +29,6 @@ export function useRoomRegistration({ onSuccess, existingRooms = [] } = {}) {
   };
 
   const handleSave = async () => {
-
     const validationError = validate(name);
     if (validationError) {
       setError(validationError);
@@ -40,6 +39,7 @@ export function useRoomRegistration({ onSuccess, existingRooms = [] } = {}) {
     setError("");
 
     try {
+      console.log("Role", role);
       const savedName = await addRoom({ name: toProperCase(name) }, role);
       setName("");
       onSuccess?.(savedName);

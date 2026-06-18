@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "./CustodianAssets.css";
 import { useParams, useNavigate } from "react-router-dom";
 import MainLayout from "../../components/layout/MainLayout";
@@ -6,104 +6,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FilterModal from "../../components/ui/modal/FilterModal";
 import { Status } from "../../components/ui/status/assetStatus";
 import { useAssetFilters } from "../../hooks/useAssetFilters";
-
-const MOCK_ASSETS = [
-  {
-    id: 1,
-    name: "Laptop Dell XPS 15",
-    category: "Electronics",
-    room: "SDL1",
-    status: "Working",
-    dateAssigned: "2024-01-10",
-    custodian: "John Mark Reyes",
-  },
-  {
-    id: 2,
-    name: "Office Chair",
-    category: "Furniture",
-    room: "SDL2",
-    status: "Missing",
-    dateAssigned: "2023-08-22",
-    custodian: "Maria Clara Santos",
-  },
-  {
-    id: 3,
-    name: "Projector Epson X41",
-    category: "Electronics",
-    room: "Proglab 1",
-    status: "For Repair",
-    dateAssigned: "2023-05-15",
-    custodian: "Andrei Luis Cruz",
-  },
-  {
-    id: 4,
-    name: "Whiteboard 4x6",
-    category: "Furniture",
-    room: "SDL3",
-    status: "Working",
-    dateAssigned: "2022-11-03",
-    custodian: "Angelica Mae Dizon",
-  },
-  {
-    id: 5,
-    name: "Desktop PC",
-    category: "Electronics",
-    room: "Proglab 2",
-    status: "Condemned",
-    dateAssigned: "2021-09-18",
-    custodian: "Michael Angelo Torres",
-  },
-  {
-    id: 6,
-    name: "Filing Cabinet",
-    category: "Furniture",
-    room: "SDL4",
-    status: "Working",
-    dateAssigned: "2023-12-01",
-    custodian: "Kristine Joy Bautista",
-  },
-  {
-    id: 7,
-    name: "Printer HP LaserJet Pro",
-    category: "Electronics",
-    room: "Admin Office",
-    status: "For Repair",
-    dateAssigned: "2024-02-14",
-    custodian: "Ronald James Lim",
-  },
-  {
-    id: 8,
-    name: "Air Conditioner 1.5HP",
-    category: "Appliance",
-    room: "SDL1",
-    status: "Working",
-    dateAssigned: "2022-06-30",
-    custodian: "Patricia Anne Gomez",
-  },
-  {
-    id: 9,
-    name: "Steel Locker",
-    category: "Furniture",
-    room: "Storage Room",
-    status: "Missing",
-    dateAssigned: "2023-03-19",
-    custodian: "Kevin Rafael Santos",
-  },
-  {
-    id: 10,
-    name: "Network Router TP-Link",
-    category: "Electronics",
-    room: "Server Room",
-    status: "Working",
-    dateAssigned: "2024-05-08",
-    custodian: "Stephanie Marie Dela Cruz",
-  },
-];
+import { useCustodianAssets } from "../../hooks/useCustodianAssets";
+import { formatDate } from "../../utils/formatDate";
 
 function CustodianAssets() {
   const { username } = useParams();
   const navigate = useNavigate();
-  const [assets] = useState(MOCK_ASSETS);
+
+  const { assets, loading, error } = useCustodianAssets(username);
 
   const {
     showFilter,
@@ -181,39 +91,55 @@ function CustodianAssets() {
 
         {/* ── Asset list ── */}
         <div className="assets-list">
-          {filteredAssets.length === 0 ? (
-            <div className="assets-empty">
-              <FontAwesomeIcon icon="fa-solid fa-box-open" />
-              <p>No assets found for this custodian.</p>
-            </div>
-          ) : (
-            <table className="assets-table">
-              <thead>
+          <table className="assets-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Asset Name</th>
+                <th>Category</th>
+                <th>Room</th>
+                <th>Status</th>
+                <th>Date Assigned</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
                 <tr>
-                  <th>#</th>
-                  <th>Asset Name</th>
-                  <th>Category</th>
-                  <th>Room</th>
-                  <th>Status</th>
-                  <th>Date Assigned</th>
+                  <td colSpan="100%" className="user-assets-empty-row">
+                    <FontAwesomeIcon icon="fa-solid fa-spinner" spin />
+                    <p>Loading assets…</p>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {filteredAssets.map((asset, index) => (
+              ) : error ? (
+                <tr>
+                  <td colSpan="100%" className="user-assets-empty-row">
+                    <FontAwesomeIcon icon="fa-solid fa-triangle-exclamation" />
+                    <p>Failed to load assets. Please try again.</p>
+                  </td>
+                </tr>
+              ) : filteredAssets.length === 0 ? (
+                <tr>
+                  <td colSpan="100%" className="user-assets-empty-row">
+                    <FontAwesomeIcon icon="fa-solid fa-box-open" />
+                    <p>No assets found for this custodian.</p>
+                  </td>
+                </tr>
+              ) : (
+                filteredAssets.map((asset, index) => (
                   <tr key={asset.id}>
                     <td className="asset-index">{index + 1}</td>
-                    <td className="asset-name">{asset.name}</td>
-                    <td>{asset.category}</td>
-                    <td>{asset.room}</td>
+                    <td className="asset-name">{asset.description}</td>
+                    <td>{asset.category_id}</td>
+                    <td>{asset.room_id}</td>
                     <td>
                       <Status status={asset.status} />
                     </td>
-                    <td>{asset.dateAssigned}</td>
+                    <td>{formatDate(asset.created_at)}</td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
 

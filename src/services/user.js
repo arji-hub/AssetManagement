@@ -1,5 +1,13 @@
 import { db } from "../services/firebase-config";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  getDoc,
+  query,
+  where,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 import { getFunctions, httpsCallable } from "firebase/functions";
 
 const functions = getFunctions();
@@ -36,10 +44,7 @@ export async function checkUsernameAvailable(username) {
 
   const normalized = username.toLowerCase().replace(/\s+/g, "");
 
-  const q = query(
-    collection(db, "user"),
-    where("user_name", "==", normalized),
-  );
+  const q = query(collection(db, "user"), where("user_name", "==", normalized));
 
   const snapshot = await getDocs(q);
   return snapshot.empty; // true = available, false = taken
@@ -54,4 +59,105 @@ export async function checkEmailAvailable(email) {
 
   const snapshot = await getDocs(q);
   return snapshot.empty; // true = available, false = taken
+}
+
+export async function updateProfile(uid, profileData) {
+  const normalized_user_name = profileData.username
+    ? profileData.username.toLowerCase().replace(/\s+/g, "")
+    : profileData.username;
+
+  const userRef = doc(db, "user", uid);
+
+  await updateDoc(userRef, {
+    first_name: profileData.firstname,
+    middle_name: profileData.middlename || "_",
+    last_name: profileData.lastname,
+    user_name: normalized_user_name,
+  });
+  return { uid, user_name: normalized_user_name };
+}
+
+export const attachCustodianNames = async (assetData) => {
+  const list = Array.isArray(assetData) ? assetData : [assetData];
+
+  const userIds = [
+    ...new Set(
+      list.flatMap((a) => [a.property_custodian, a.local_mr].filter(Boolean)),
+    ),
+  ];
+
+  const userDocs = await Promise.all(
+    userIds.map((uid) => getDoc(doc(db, "user", uid))),
+  );
+
+  const userMap = {};
+  userDocs.forEach((d) => {
+    if (d.exists()) {
+      userMap[d.id] = d.data().first_name;
+    }
+  });
+
+  const withNames = list.map((asset) => ({
+    ...asset,
+    property_custodian_name: userMap[asset.property_custodian] || "Unknown",
+    local_mr_name: userMap[asset.local_mr] || "Unknown",
+  }));
+
+  return Array.isArray(assetData) ? withNames : withNames[0];
+};
+
+export const findCustodianUidByUsername = async (username) => {
+  const custodians = await fetchCustodians();
+  const match = custodians.find((c) => c.username === username);
+  return match ? match.id : null;
+};
+
+export async function fetchAssetsByCustodian(uid) {
+  try {
+    if (!uid) return [];
+
+    const assetRef = collection(db, "asset");
+
+    const [propertyCustodianSnap, localMrSnap] = await Promise.all([
+      getDocs(query(assetRef, where("property_custodian", "==", uid))),
+      getDocs(query(assetRef, where("local_mr", "==", uid))),
+    ]);
+
+    const seen = new Map();
+    [...propertyCustodianSnap.docs, ...localMrSnap.docs].forEach((doc) => {
+      if (!seen.has(doc.id)) {
+        seen.set(doc.id, { id: doc.id, ...doc.data() });
+      }
+    });
+
+    const assetData = Array.from(seen.values());
+
+    const userIds = [
+      ...new Set(
+        assetData.flatMap((a) =>
+          [a.property_custodian, a.local_mr].filter(Boolean),
+        ),
+      ),
+    ];
+
+    const userDocs = await Promise.all(
+      userIds.map((id) => getDoc(doc(db, "user", id))),
+    );
+
+    const userMap = {};
+    userDocs.forEach((d) => {
+      if (d.exists()) {
+        userMap[d.id] = d.data().user_name;
+      }
+    });
+
+    return assetData.map((asset) => ({
+      ...asset,
+      property_custodian_name: userMap[asset.property_custodian] || "Unknown",
+      local_mr_name: userMap[asset.local_mr] || "Unknown",
+    }));
+  } catch (err) {
+    console.error("fetchAssetsByCustodian error:", err);
+    throw err;
+  }
 }

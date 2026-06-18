@@ -113,30 +113,20 @@
   border-color: #860100;
 }
 
-/* ── Scrollable list ────────────────────────────────────────── */
+/* ── Scrollable list wrapper ───────────────────────────────────
+   No longer scrolls itself — it just clips corners/border and
+   carries the shadow. The tbody (inside the table) scrolls. */
 .assets-list {
   flex: 1;
   min-height: 0;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
   border-radius: 8px;
   border: 1px solid #e5e7eb;
-}
-
-.assets-list::-webkit-scrollbar {
-  width: 6px;
-}
-
-.assets-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.assets-list::-webkit-scrollbar-thumb {
-  background: #d1d5db;
-  border-radius: 999px;
-}
-
-.assets-list::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
+  overflow: hidden;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.08),
+    0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 /* ── Table ──────────────────────────────────────────────────── */
@@ -144,13 +134,37 @@
   width: 100%;
   border-collapse: collapse;
   font-size: clamp(12px, 1.1vw, 14px);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+/* thead/tbody become block-level so they can scroll independently */
+.assets-table thead,
+.assets-table tbody {
+  display: block;
+  width: 100%;
+}
+
+/* rows go back to table-row layout so cells still align in columns */
+.assets-table thead tr,
+.assets-table tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
 }
 
 .assets-table thead {
-  position: sticky;
-  top: 0;
-  z-index: 1;
+  flex-shrink: 0;
   background: #860100;
+  /* no position: sticky needed now — thead just sits above tbody */
+}
+
+.assets-table tbody {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .assets-table th {
@@ -160,6 +174,7 @@
   color: #ffffff;
   border-bottom: 1px solid #e5e7eb;
   white-space: nowrap;
+  box-sizing: border-box;
 }
 
 .assets-table td {
@@ -167,6 +182,7 @@
   color: #111827;
   border-bottom: 1px solid #f3f4f6;
   vertical-align: middle;
+  box-sizing: border-box;
 }
 
 .assets-table tbody tr:last-child td {
@@ -196,20 +212,54 @@
   flex-shrink: 0;
 }
 
-/* ── Empty state ────────────────────────────────────────────── */
-.assets-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 60px 24px;
-  color: #9ca3af;
-  font-size: 15px;
+.assets-table th:nth-child(1),
+.assets-table td:nth-child(1) {
+  width: 6%;
 }
 
-.assets-empty svg {
-  font-size: 40px;
+.assets-table th:nth-child(3),
+.assets-table td:nth-child(3) {
+  width: 16%;
+}
+
+.assets-table th:nth-child(4),
+.assets-table td:nth-child(4) {
+  width: 20%;
+}
+
+.assets-table th:nth-child(5),
+.assets-table td:nth-child(5) {
+  width: 16%;
+}
+
+.assets-table th:nth-child(6),
+.assets-table td:nth-child(6) {
+  width: 16%;
+}
+
+/* ── tbody scrollbar (moved from .assets-list) ─────────────────── */
+.assets-table tbody::-webkit-scrollbar {
+  width: 6px;
+}
+
+.assets-table tbody::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.assets-table tbody::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 999px;
+}
+
+.assets-table tbody::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* ── Empty state ────────────────────────────────────────────── */
+.user-assets-empty-row {
+  text-align: center;
+  height: 100px;
+  vertical-align: middle;
 }
 
 /* ── Responsive ─────────────────────────────────────────────── */

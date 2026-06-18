@@ -1,14 +1,9 @@
 import PropTypes from "prop-types";
 import "./CustodianCard.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ROLES } from "../../../data/roles";
 import { useNavigate } from "react-router-dom";
+import { getRole } from "../../../utils/role";
 
-function getRole(classification) {
-  if (classification === ROLES.PARTTIME) return "Part Time";
-  if (classification === ROLES.FULLTIME) return "Full Time";
-  return "unknown";
-}
 
 function CustodianCard({ name, classification, totalAssets, username }) {
   const role = getRole(classification);

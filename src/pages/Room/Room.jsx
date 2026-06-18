@@ -24,17 +24,22 @@ function Room() {
     filteredRooms,
   } = useRoomFilters(rooms);
 
-  const { name, error: roomError, saving, handleChange, handleSave } =
-    useRoomRegistration({
-      existingRooms: rooms.map((r) => r.name),
-      onSuccess: (savedName) => {
-        setRooms((prev) => [
-          ...prev,
-          { id: savedName, name: savedName, assetCount: 0 },
-        ]);
-        setShowModal(false);
-      },
-    });
+  const {
+    name,
+    error: roomError,
+    saving,
+    handleChange,
+    handleSave,
+  } = useRoomRegistration({
+    existingRooms: rooms.map((r) => r.name),
+    onSuccess: (savedName) => {
+      setRooms((prev) => [
+        ...prev,
+        { id: savedName, name: savedName, assetCount: 0 },
+      ]);
+      setShowModal(false);
+    },
+  });
 
   useEffect(() => {
     fetchRooms()
@@ -106,7 +111,12 @@ function Room() {
             <p className="room-status">No rooms found.</p>
           )}
           {filteredRooms.map(({ id, name, assetCount }) => (
-            <RoomCard key={id} roomName={name} totalAssets={assetCount} />
+            <RoomCard
+              key={id}
+              roomID={id}
+              roomName={name}
+              totalAssets={assetCount}
+            />
           ))}
         </div>
       </div>

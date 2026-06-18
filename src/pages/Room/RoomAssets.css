@@ -84,30 +84,20 @@
   justify-content: flex-end;
 }
 
-/* ── Scrollable list ────────────────────────────────────────── */
+/* ── Scrollable list wrapper ───────────────────────────────────
+   No longer scrolls itself — it just clips corners and borders.
+   The tbody (inside the table) is the actual scroll container. */
 .room-assets-list {
   flex: 1;
   min-height: 0;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
   border-radius: 8px;
   border: 1px solid #e5e7eb;
-}
-
-.room-assets-list::-webkit-scrollbar {
-  width: 6px;
-}
-
-.room-assets-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.room-assets-list::-webkit-scrollbar-thumb {
-  background: #d1d5db;
-  border-radius: 999px;
-}
-
-.room-assets-list::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
+  overflow: hidden;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.08),
+    0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 /* ── Table ──────────────────────────────────────────────────── */
@@ -115,13 +105,55 @@
   width: 100%;
   border-collapse: collapse;
   font-size: clamp(12px, 1.1vw, 14px);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.room-assets-table thead,
+.room-assets-table tbody {
+  display: block;
+  width: 100%;
+}
+
+.room-assets-table thead tr,
+.room-assets-table tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
 }
 
 .room-assets-table thead {
-  position: sticky;
-  top: 0;
-  z-index: 1;
+  flex-shrink: 0;
   background: #860100;
+}
+
+.room-assets-table tbody {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.room-assets-table tfoot {
+  display: block;
+  width: 100%;
+  flex-shrink: 0;
+  background: #860100;
+}
+
+.room-assets-table tfoot tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.room-assets-table tfoot td {
+  padding: 14px 16px;
+  color: #ffffff;
+  font-weight: 500;
+  border-bottom: none;
+  box-sizing: border-box;
 }
 
 .room-assets-table th {
@@ -131,6 +163,7 @@
   color: #ffffff;
   border-bottom: 1px solid #e5e7eb;
   white-space: nowrap;
+  box-sizing: border-box;
 }
 
 .room-assets-table td {
@@ -138,6 +171,7 @@
   color: #111827;
   border-bottom: 1px solid #f3f4f6;
   vertical-align: middle;
+  box-sizing: border-box;
 }
 
 .room-assets-table tbody tr:last-child td {
@@ -148,10 +182,36 @@
   background: rgba(245, 170, 44, 0.1);
 }
 
+/* Explicit, consistent (%-only) column widths keep header/body cells
+   aligned now that each <tr> is its own independent table layout. */
+.room-assets-table th:nth-child(1),
+.room-assets-table td:nth-child(1) {
+  width: 6%;
+}
+
+.room-assets-table th:nth-child(3),
+.room-assets-table td:nth-child(3) {
+  width: 16%;
+}
+
+.room-assets-table th:nth-child(4),
+.room-assets-table td:nth-child(4) {
+  width: 20%;
+}
+
+.room-assets-table th:nth-child(5),
+.room-assets-table td:nth-child(5) {
+  width: 16%;
+}
+
+.room-assets-table th:nth-child(6),
+.room-assets-table td:nth-child(6) {
+  width: 16%;
+}
+
 .asset-index {
   color: #9ca3af;
   font-size: 12px;
-  width: 32px;
 }
 
 .asset-name {
@@ -161,20 +221,29 @@
   font-weight: 500;
 }
 
-/* ── Empty state ────────────────────────────────────────────── */
-.room-assets-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 60px 24px;
-  color: #9ca3af;
-  font-size: 15px;
+/* ── tbody scrollbar (moved from .room-assets-list) ───────────── */
+.room-assets-table tbody::-webkit-scrollbar {
+  width: 6px;
 }
 
-.room-assets-empty svg {
-  font-size: 40px;
+.room-assets-table tbody::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.room-assets-table tbody::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 999px;
+}
+
+.room-assets-table tbody::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* ── Empty state ────────────────────────────────────────────── */
+.room-assets-empty-row {
+  text-align: center;
+  height: 100px;
+  vertical-align: middle;
 }
 
 /* ── Filter button ──────────────────────────────────────────── */

@@ -6,6 +6,7 @@ import logo from "../../assets/CICTLOGO.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ROLES } from "../../data/roles";
 import LogoutModal from "../ui/modal/LogoutModal";
+import { useNavigate } from "react-router-dom";
 
 const allRoles = [ROLES.ADMIN, ROLES.PARTTIME, ROLES.FULLTIME];
 
@@ -32,6 +33,7 @@ function Navbar({
   onLogout = () => {},
   defaultSidebarOpen = false,
 }) {
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(defaultSidebarOpen);
 
   const filteredNavItems = navItems.filter((item) =>
@@ -131,7 +133,11 @@ function Navbar({
           <h1 className="app-title">{title}</h1>
 
           {/* user info */}
-          <div className="navbar-right">
+          <div
+            className="navbar-right navbar-right-tooltip"
+            onClick={() => navigate("/profile")}
+            aria-label="Go to profile"
+          >
             <div className="user-info">
               <span className="user-role">{userRole}</span>
               <span className="user-name">{userName}</span>
@@ -140,6 +146,7 @@ function Navbar({
               icon="fa-solid fa-circle-user"
               style={{ fontSize: "36px" }}
             />
+             <span className="navbar-tooltip-text">Go to profile</span>
           </div>
         </header>
 
