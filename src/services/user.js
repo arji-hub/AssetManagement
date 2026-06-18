@@ -2,6 +2,7 @@ import { db } from "../services/firebase-config";
 import {
   collection,
   getDocs,
+  getDoc,
   query,
   where,
   doc,
@@ -75,3 +76,32 @@ export async function updateProfile(uid, profileData) {
   });
   return { uid, user_name: normalized_user_name };
 }
+
+export const attachCustodianNames = async (assetData) => {
+  const list = Array.isArray(assetData) ? assetData : [assetData];
+
+  const userIds = [
+    ...new Set(
+      list.flatMap((a) => [a.property_custodian, a.local_mr].filter(Boolean)),
+    ),
+  ];
+
+  const userDocs = await Promise.all(
+    userIds.map((uid) => getDoc(doc(db, "user", uid))),
+  );
+
+  const userMap = {};
+  userDocs.forEach((d) => {
+    if (d.exists()) {
+      userMap[d.id] = d.data().first_name;
+    }
+  });
+
+  const withNames = list.map((asset) => ({
+    ...asset,
+    property_custodian_name: userMap[asset.property_custodian] || "Unknown",
+    local_mr_name: userMap[asset.local_mr] || "Unknown",
+  }));
+
+  return Array.isArray(assetData) ? withNames : withNames[0];
+};

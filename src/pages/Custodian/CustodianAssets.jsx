@@ -181,25 +181,27 @@ function CustodianAssets() {
 
         {/* ── Asset list ── */}
         <div className="assets-list">
-          {filteredAssets.length === 0 ? (
-            <div className="assets-empty">
-              <FontAwesomeIcon icon="fa-solid fa-box-open" />
-              <p>No assets found for this custodian.</p>
-            </div>
-          ) : (
-            <table className="assets-table">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Asset Name</th>
-                  <th>Category</th>
-                  <th>Room</th>
-                  <th>Status</th>
-                  <th>Date Assigned</th>
+          <table className="assets-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Asset Name</th>
+                <th>Category</th>
+                <th>Room</th>
+                <th>Status</th>
+                <th>Date Assigned</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredAssets.length === 0 ? (
+                <tr className="assets-empty-row">
+                  <td colSpan={6} className="assets-empty">
+                    <FontAwesomeIcon icon="fa-solid fa-box-open" />
+                    <p>No assets found for this custodian.</p>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {filteredAssets.map((asset, index) => (
+              ) : (
+                filteredAssets.map((asset, index) => (
                   <tr key={asset.id}>
                     <td className="asset-index">{index + 1}</td>
                     <td className="asset-name">{asset.name}</td>
@@ -210,10 +212,10 @@ function CustodianAssets() {
                     </td>
                     <td>{asset.dateAssigned}</td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
 

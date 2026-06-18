@@ -56,7 +56,7 @@ export const fetchAssets = async (role, currentUserUid) => {
   const userMap = {};
   userDocs.forEach((d) => {
     if (d.exists()) {
-      userMap[d.id] = d.data().user_name;
+      userMap[d.id] = d.data().first_name;
     }
   });
 
@@ -91,7 +91,7 @@ export const fetchAssetByID = async (assetId) => {
   const userMap = {};
   userDocs.forEach((d) => {
     if (d.exists()) {
-      userMap[d.id] = d.data().user_name;
+      userMap[d.id] = d.data().first_name;
     }
   });
 

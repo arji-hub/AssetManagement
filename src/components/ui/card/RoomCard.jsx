@@ -4,10 +4,11 @@ import "./RoomCard.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 
-function RoomCard({ roomName, totalAssets = 0 }) {
+function RoomCard({ roomName, roomID, totalAssets = 0 }) {
   const navigate = useNavigate();
+  console.log("Id", roomID, "RoomName", roomName, "Total", totalAssets);
   return (
-    <div className="room-card" onClick={() => navigate(`/room/${roomName}`)}>
+    <div className="room-card" onClick={() => navigate(`/room/${roomID}`)}>
       <div className="room-card-header">
         <h3 className="room-name">{roomName}</h3>
       </div>
