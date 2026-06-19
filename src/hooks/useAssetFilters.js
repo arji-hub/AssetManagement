@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { fetchCustodians } from "../services/user";
 import { fetchRooms } from "../services/room";
 import { fetchCategories } from "../services/category";
+import { toLowerCase } from "../utils/TextCasing";
 
 const INITIAL_FILTERS = { status: "", category: "", room: "", custodian: "" };
 
@@ -58,10 +59,11 @@ export function useAssetFilters(assets = []) {
       if (filters.status && asset.status !== filters.status) return false;
       if (filters.category && asset.category_id !== filters.category)
         return false;
-      if (filters.room && asset.room_id !== filters.room) return false;
+      if (filters.room && asset.room_id !== toLowerCase(filters.room))
+        return false;
       if (
-        filters.custodian &&
-        asset.property_custodian_name !== filters.custodian
+        filters.custodian && //username vs fullname
+        asset.property_custodian_fullname !== filters.custodian
       )
         return false;
       return true;

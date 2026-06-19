@@ -50,12 +50,10 @@
 
 .return-button:hover {
   background: #f3f4f6;
-  border-color: #9ca3af;
+  color: #860100;
+  border-color: #860100;
 }
 
-.return-button:active {
-  transform: scale(0.97);
-}
 
 .room-assets-title {
   margin: 0 0 4px;
@@ -94,7 +92,8 @@
   flex-direction: column;
   border-radius: 8px;
   border: 1px solid #e5e7eb;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
   box-shadow:
     0 1px 3px rgba(0, 0, 0, 0.08),
     0 1px 2px rgba(0, 0, 0, 0.04);
@@ -103,6 +102,7 @@
 /* ── Table ──────────────────────────────────────────────────── */
 .room-assets-table {
   width: 100%;
+  min-width: 680px;
   border-collapse: collapse;
   font-size: clamp(12px, 1.1vw, 14px);
   display: flex;
@@ -182,32 +182,49 @@
   background: rgba(245, 170, 44, 0.1);
 }
 
+.asset-action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888;
+  font-size: 16px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.15s;
+}
+
+.asset-action-btn:hover {
+  background: #f5aa2c;
+  color: #860100;
+  scale: 1.1;
+}
+
 /* Explicit, consistent (%-only) column widths keep header/body cells
    aligned now that each <tr> is its own independent table layout. */
 .room-assets-table th:nth-child(1),
 .room-assets-table td:nth-child(1) {
-  width: 6%;
-}
-
+  width: 5%;
+} /* # */
 .room-assets-table th:nth-child(3),
 .room-assets-table td:nth-child(3) {
-  width: 16%;
-}
-
+  width: 15%;
+} /* Category */
 .room-assets-table th:nth-child(4),
 .room-assets-table td:nth-child(4) {
-  width: 20%;
-}
-
+  width: 18%;
+} /* Custodian */
 .room-assets-table th:nth-child(5),
 .room-assets-table td:nth-child(5) {
-  width: 16%;
-}
-
+  width: 14%;
+} /* Status */
 .room-assets-table th:nth-child(6),
 .room-assets-table td:nth-child(6) {
-  width: 16%;
-}
+  width: 14%;
+} /* Date Assigned */
+.room-assets-table th:nth-child(7),
+.room-assets-table td:nth-child(7) {
+  width: 8%;
+} /* Action */
 
 .asset-index {
   color: #9ca3af;
@@ -294,7 +311,6 @@
   color: #860100;
 }
 
-/* ── Responsive ─────────────────────────────────────────────── */
 @media (max-width: 640px) {
   .room-assets-page {
     padding: 16px;
@@ -310,8 +326,7 @@
     justify-content: flex-start;
   }
 
-  .room-assets-table th:nth-child(4),
-  .room-assets-table td:nth-child(4) {
-    display: none; /* hide custodian column on small screens */
+  .room-assets-table {
+    min-width: 700px;
   }
 }

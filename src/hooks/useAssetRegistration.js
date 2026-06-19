@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { addAsset } from "../services/asset";
+import { addAsset, isSerialNumberExist } from "../services/asset";
 import { useAuth } from "../context/AuthContext";
 import { fetchCustodians } from "../services/user";
 import { fetchRooms } from "../services/room";
@@ -31,6 +31,8 @@ export function useAssetRegistrationForm() {
   const [saveStatus, setSaveStatus] = useState(null);
   const [saveError, setSaveError] = useState(null);
   const [showSkipWarning, setShowSkipWarning] = useState(false);
+  const [serialError, setSerialError] = useState("");
+  const [checkingSerial, setCheckingSerial] = useState(false);
 
   // ── dropdown data ────────────────────────────────────────────────────────
   const [custodians, setCustodians] = useState([]);
@@ -74,6 +76,24 @@ export function useAssetRegistrationForm() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  const checkSerialNumber = async (value) => {
+    if (!value.trim()) {
+      setSerialError("");
+      return;
+    }
+
+    setCheckingSerial(true);
+    try {
+      const exists = await isSerialNumberExist(value);
+      setSerialError(exists ? "This serial number is already registered." : "");
+    } catch (err) {
+      console.error("Serial number check failed:", err);
+      setSerialError("Could not verify serial number. Please try again.");
+    } finally {
+      setCheckingSerial(false);
+    }
+  };
+
   const canProceed = () => {
     if (step === 1)
       return (
@@ -81,7 +101,9 @@ export function useAssetRegistrationForm() {
         form.category_id !== "" &&
         form.date_acquired !== "" &&
         form.unit_value !== "" &&
-        form.qty !== ""
+        form.qty !== "" &&
+        serialError === "" &&
+        !checkingSerial
       );
     if (step === 2) return assetImage !== null && docImage !== null;
     return true;
@@ -135,6 +157,9 @@ export function useAssetRegistrationForm() {
   return {
     step,
     form,
+    serialError,
+    checkingSerial,
+    checkSerialNumber,
     assetImage,
     setAssetImage,
     docImage,

@@ -18,9 +18,10 @@ import { categoryCount } from "./category";
 import { roomCount } from "./room";
 import QRCodeStyling from "qr-code-styling";
 import CICTLogo from "../assets/CICTLOGO.png";
+import { toLowerCase } from "../utils/TextCasing";
 
 export const fetchAssets = async (role, currentUserUid) => {
-  const assetsRef = collection(db, "asset"); // ← changed
+  const assetsRef = collection(db, "asset");
 
   let q;
   if (role === ROLES.ADMIN) {
@@ -60,17 +61,31 @@ export const fetchAssets = async (role, currentUserUid) => {
     }
   });
 
+  const fullname = {};
+  userDocs.forEach((d) => {
+    if (d.exists()) {
+      const data = d.data();
+      fullname[d.id] = [data.first_name, data.middle_name, data.last_name]
+        .filter(Boolean)
+        .join(" ");
+    }
+  });
+
   const assets = assetData.map((asset) => ({
     ...asset,
     property_custodian_name: userMap[asset.property_custodian] || "Unknown",
+    //fetch fullname first_name,middle_name,last_name
+    property_custodian_fullname:
+      fullname[asset.property_custodian] || "Unknown",
     local_mr_name: userMap[asset.local_mr] || "Unknown",
+    local_mr_fullname: fullname[asset.property_custodian] || "Unknown",
   }));
 
   return assets;
 };
 
 export const fetchAssetByID = async (assetId) => {
-  const assetRef = doc(db, "asset", assetId); // ← changed
+  const assetRef = doc(db, "asset", assetId);
 
   const assetSnap = await getDoc(assetRef);
 
@@ -213,4 +228,16 @@ export const addAsset = async (data, role) => {
   await Promise.all(countUpdates);
 
   return assetId;
+};
+
+export const isSerialNumberExist = async (serialNumber) => {
+  if (!serialNumber || !toLowerCase(serialNumber)) return false;
+
+  const normalizedInput = toLowerCase(serialNumber);
+  const snapshot = await getDocs(collection(db, "asset"));
+
+  return snapshot.docs.some((doc) => {
+    const existing = doc.data().serial_number;
+    return existing && toLowerCase(existing) === normalizedInput;
+  });
 };
