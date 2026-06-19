@@ -181,8 +181,8 @@ export const addAsset = async (data, role) => {
   const assetId = await generateAssetId();
 
   const [assetImageUrl, docImageUrl, qrCodeUrl] = await Promise.all([
-    uploadImage(data.assetImageFile, `asset/${assetId}/asset-image`), // ← changed
-    uploadImage(data.docImageFile, `asset/${assetId}/asset-document`), // ← changed
+    uploadImage(data.assetImageFile, `assets/${assetId}/asset-image`),
+    uploadImage(data.docImageFile, `assets/${assetId}/asset-document`),
     generateQR(assetId),
   ]);
 
@@ -206,7 +206,7 @@ export const addAsset = async (data, role) => {
     updated_at: serverTimestamp(),
   };
 
-  await setDoc(doc(db, "asset", assetId), payload); // ← changed
+  await setDoc(doc(db, "asset", assetId), payload);
   await Promise.all([categoryCount(data.category_id), roomCount(data.room_id)]);
 
   return assetId;
