@@ -2,7 +2,13 @@ import "./Form.css";
 import "./BasicInfo.css";
 import { ASSET_CATEGORIES } from "../../data/assets";
 
-function BasicInfo({ form, onChange }) {
+function BasicInfo({
+  form,
+  onChange,
+  serialError,
+  checkingSerial,
+  onSerialBlur,
+}) {
   return (
     <div className="reg-card">
       <p className="reg-card-title">Basic Asset Information</p>
@@ -12,12 +18,17 @@ function BasicInfo({ form, onChange }) {
         <div className="reg-field">
           <label className="reg-label">Serial Number</label>
           <input
-            className="reg-input"
+            className={`reg-input ${serialError ? "reg-input--error" : ""}`}
             name="serial_number"
             placeholder="e.g. SN-99823-X"
             value={form.serial_number}
             onChange={onChange}
+            onBlur={(e) => onSerialBlur(e.target.value)}
           />
+          {checkingSerial && (
+            <p className="reg-hint">Checking serial number...</p>
+          )}
+          {serialError && <p className="reg-error">{serialError}</p>}
         </div>
 
         <div className="reg-field">

@@ -1,0 +1,23 @@
+/* BasicInfo.css */
+
+.reg-input--error {
+  border-color: #860100;
+  outline: none;
+}
+
+.reg-input--error:focus {
+  box-shadow: 0 0 0 2px rgba(134, 1, 0, 0.15);
+}
+
+.reg-error {
+  color: #860100;
+  font-size: 0.8rem;
+  margin-top: 4px;
+}
+
+.reg-hint {
+  color: #6b6b6b;
+  font-size: 0.8rem;
+  margin-top: 4px;
+  font-style: italic;
+}

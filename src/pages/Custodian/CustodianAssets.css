@@ -50,11 +50,8 @@
 
 .return-button:hover {
   background: #f3f4f6;
-  border-color: #9ca3af;
-}
-
-.return-button:active {
-  transform: scale(0.97);
+  color: #860100;
+  border-color: #860100;
 }
 
 .assets-title {
@@ -123,7 +120,8 @@
   flex-direction: column;
   border-radius: 8px;
   border: 1px solid #e5e7eb;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
   box-shadow:
     0 1px 3px rgba(0, 0, 0, 0.08),
     0 1px 2px rgba(0, 0, 0, 0.04);
@@ -132,6 +130,7 @@
 /* ── Table ──────────────────────────────────────────────────── */
 .assets-table {
   width: 100%;
+  min-width: 680px;
   border-collapse: collapse;
   font-size: clamp(12px, 1.1vw, 14px);
   display: flex;
@@ -212,32 +211,49 @@
   flex-shrink: 0;
 }
 
+.asset-action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888;
+  font-size: 16px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.15s;
+}
+
+.asset-action-btn:hover {
+  background: #f5aa2c;
+  color: #860100;
+  scale: 1.1;
+}
+
 .assets-table th:nth-child(1),
 .assets-table td:nth-child(1) {
-  width: 6%;
-}
-
+  width: 5%;
+} /* # */
 .assets-table th:nth-child(3),
 .assets-table td:nth-child(3) {
-  width: 16%;
-}
-
+  width: 15%;
+} /* Category */
 .assets-table th:nth-child(4),
 .assets-table td:nth-child(4) {
-  width: 20%;
-}
-
+  width: 18%;
+} /* Room */
 .assets-table th:nth-child(5),
 .assets-table td:nth-child(5) {
-  width: 16%;
-}
-
+  width: 14%;
+} /* Status */
 .assets-table th:nth-child(6),
 .assets-table td:nth-child(6) {
-  width: 16%;
-}
+  width: 14%;
+} /* Date Assigned */
+.assets-table th:nth-child(7),
+.assets-table td:nth-child(7) {
+  width: 8%;
+} /* Action */
 
-/* ── tbody scrollbar (moved from .assets-list) ─────────────────── */
+/* ── tbody scrollbar (moved from .assets-list) ──────────── */
 .assets-table tbody::-webkit-scrollbar {
   width: 6px;
 }
@@ -262,7 +278,7 @@
   vertical-align: middle;
 }
 
-/* ── Responsive ─────────────────────────────────────────────── */
+/* ── Responsive ────────────────────────────────── */
 @media (max-width: 640px) {
   .assets-page {
     padding: 16px;
@@ -278,9 +294,8 @@
     justify-content: flex-start;
   }
 
-  .assets-table th:nth-child(4),
-  .assets-table td:nth-child(4) {
-    display: none; /* hide date assigned on small screens */
+  .assets-table {
+    min-width: 700px;
   }
 }
 

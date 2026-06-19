@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useParams, useNavigate } from "react-router-dom";
 import MainLayout from "../../components/layout/MainLayout";
 import { fetchAssetByID } from "../../services/asset";
 import InfoCard from "../../components/ui/card/InfoCard";
@@ -7,6 +8,7 @@ import HistoryCard from "../../components/ui/card/HistoryCard";
 import "./AssetInfo.css";
 
 function AssetInfo() {
+  const navigate = useNavigate();
   const { assetId } = useParams();
   const [asset, setAsset] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -39,6 +41,13 @@ function AssetInfo() {
         {/* ── Header ── */}
         <div className="asset-info-header">
           <div className="asset-info-breadcrumb">
+            <button
+              className="return-button"
+              onClick={() => navigate("/asset")}
+            >
+              <FontAwesomeIcon icon="fa-solid fa-arrow-left" />
+              Back
+            </button>
             <span className="breadcrumb-parent">Asset Information</span>
           </div>
           <div className="asset-info-actions">

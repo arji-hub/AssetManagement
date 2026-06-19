@@ -100,6 +100,7 @@ function CustodianAssets() {
                 <th>Room</th>
                 <th>Status</th>
                 <th>Date Assigned</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -135,6 +136,15 @@ function CustodianAssets() {
                       <Status status={asset.status} />
                     </td>
                     <td>{formatDate(asset.created_at)}</td>
+                    <td>
+                      <button
+                        className="asset-action-btn"
+                        onClick={() => navigate(`/asset/${asset.id}`)}
+                        aria-label="Actions"
+                      >
+                        <FontAwesomeIcon icon="fa-solid fa-ellipsis-vertical" />
+                      </button>
+                    </td>
                   </tr>
                 ))
               )}

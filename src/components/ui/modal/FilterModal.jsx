@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import "./FilterModal.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ASSET_STATUS } from "../../../data/assets";
+import { useAuth } from "../../../context/AuthContext";
+import { ROLES } from "../../../data/roles";
 
 function FilterModal({
   filters,
@@ -15,6 +17,9 @@ function FilterModal({
   loadingOptions = false,
   context = "other",
 }) {
+  const { role } = useAuth();
+  const effectiveContext = role !== ROLES.ADMIN ? "custodian" : context;
+
   const [local, setLocal] = useState({
     custodian: "",
     status: "",
@@ -142,7 +147,7 @@ function FilterModal({
           )}
 
           {/* Custodian — hidden when context is "custodian" */}
-          {context !== "custodian" && (
+          {effectiveContext !== "custodian" && (
             <>
               <div className="filter-divider" />
               <div className="filter-section">
