@@ -2,7 +2,7 @@
   display: grid;
   grid-template-columns: 1fr 180px;
   gap: 20px;
-  background: #fff;
+  background: rgba(134, 1, 0, 1);
   border: 1px solid #e5e5e5;
   border-radius: 6px;
   padding: 20px;
@@ -14,6 +14,7 @@
   flex-direction: column;
   gap: 14px;
   min-width: 200px;
+  font-family: "Sansation";
 }
 
 .info-card-category-row {
@@ -30,6 +31,14 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
+.info-card-date-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-left: auto;
+}
 
 .info-card-status-badge {
   display: inline-block;
@@ -40,18 +49,27 @@
   letter-spacing: 0.04em;
 }
 
-.info-card-description {
+h1.info-card-description {
   margin: 0;
   font-size: 20px;
-  font-weight: 700;
-  color: #1a1a1a;
+}
+
+.info-card-description {
+  display: flex;
+  color: #ffffff;
+  background-color: rgba(134, 1, 0, 1);
+  padding: 0px 5px;
   line-height: 1.3;
+  align-items: center;
+  border-radius: 5px;
+  border: 2px solid #f5aa2c;
 }
 
 .info-card-id-row {
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
+  gap: 10px;
 }
 
 .info-card-id-item {
@@ -63,7 +81,7 @@
 .info-card-id-label {
   font-size: 11px;
   font-weight: 600;
-  color: #999;
+  color: #f5aa2c;
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
@@ -71,13 +89,18 @@
 .info-card-id-value {
   font-size: 14px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: #ffffff;
 }
 
 .info-card-labels-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 10px;
+}
+
+.info-card-labels-grid .remarks-card {
+  grid-column: 1 / -1;
+  width: auto;
 }
 
 .info-card-image-col {

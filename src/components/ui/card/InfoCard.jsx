@@ -3,9 +3,10 @@ import { STATUS_COLORS } from "../../../data/assets";
 import LabelCard from "./LabelCard";
 import { formatCurrency } from "../../../utils/formatCurrency";
 import "./InfoCard.css";
+import { formatDate } from "../../../utils/formatDate";
 
 function StatusBadge({ status }) {
-  if (!status) return null; 
+  if (!status) return null;
   const style = STATUS_COLORS[status] || {
     bg: "rgba(136,136,136,0.7)",
     color: "#1f1f1f",
@@ -30,25 +31,27 @@ function InfoCard({ asset }) {
             {asset.category_id || "Uncategorized"}
           </span>
           <StatusBadge status={asset.status} />
+          <span className="info-card-date-label">
+            {formatDate(asset.date_acquired) || "----"}
+          </span>
         </div>
 
         <div className="info-card-id-row">
           <h1 className="info-card-description">{asset.description || "—"}</h1>
-
-            <div className="info-card-id-item">
-              <span className="info-card-id-label">Asset ID</span>
-              <span className="info-card-id-value">{asset.id}</span>
-            </div>
-            <div className="info-card-id-item">
-              <span className="info-card-id-label">Serial Number</span>
-              <span className="info-card-id-value">
-                {asset.serial_number || "—"}
-              </span>
-            </div>
-            <div className="info-card-id-item">
-              <span className="info-card-id-label">Qty</span>
-              <span className="info-card-id-value">{asset.qty ?? "—"}</span>
-            </div>
+          <div className="info-card-id-item">
+            <span className="info-card-id-label">Asset ID</span>
+            <span className="info-card-id-value">{asset.id}</span>
+          </div>
+          <div className="info-card-id-item">
+            <span className="info-card-id-label">Serial Number</span>
+            <span className="info-card-id-value">
+              {asset.serial_number || "—"}
+            </span>
+          </div>
+          <div className="info-card-id-item">
+            <span className="info-card-id-label">Qty</span>
+            <span className="info-card-id-value">{asset.qty ?? "—"}</span>
+          </div>
         </div>
 
         <div className="info-card-labels-grid">
@@ -59,7 +62,11 @@ function InfoCard({ asset }) {
             label="Acquisition Cost"
             value={formatCurrency(asset.unit_value)}
           />
-          <LabelCard label="Remarks" value={asset.remarks} />
+          <LabelCard
+            label="Remarks"
+            value={asset.remarks}
+            className="remarks-card"
+          />
         </div>
       </div>
 

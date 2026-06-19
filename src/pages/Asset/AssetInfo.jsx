@@ -6,8 +6,6 @@ import InfoCard from "../../components/ui/card/InfoCard";
 import HistoryCard from "../../components/ui/card/HistoryCard";
 import "./AssetInfo.css";
 
-
-
 function AssetInfo() {
   const { assetId } = useParams();
   const [asset, setAsset] = useState(null);
@@ -22,23 +20,31 @@ function AssetInfo() {
       .finally(() => setLoading(false));
   }, [assetId]);
 
-  if (loading) return <MainLayout><div className="asset-info-loading">Loading asset...</div></MainLayout>;
-  if (error) return <MainLayout><div className="asset-info-error">{error}</div></MainLayout>;
+  if (loading)
+    return (
+      <MainLayout>
+        <div className="asset-info-loading">Loading asset...</div>
+      </MainLayout>
+    );
+  if (error)
+    return (
+      <MainLayout>
+        <div className="asset-info-error">{error}</div>
+      </MainLayout>
+    );
 
   return (
     <MainLayout>
       <div className="asset-info-page">
-
         {/* ── Header ── */}
         <div className="asset-info-header">
           <div className="asset-info-breadcrumb">
-            <span className="breadcrumb-parent">Assets</span>
-            <span className="breadcrumb-sep">›</span>
-            <span className="breadcrumb-current">Information</span>
+            <span className="breadcrumb-parent">Asset Information</span>
           </div>
           <div className="asset-info-actions">
             <button className="action-btn" disabled>
-              <i className="ti ti-file-description" aria-hidden="true" /> Document
+              <i className="ti ti-file-description" aria-hidden="true" />{" "}
+              Document
             </button>
             <button className="action-btn" disabled>
               <i className="ti ti-download" aria-hidden="true" /> Export
@@ -50,7 +56,8 @@ function AssetInfo() {
               <i className="ti ti-edit" aria-hidden="true" /> Edit
             </button>
             <button className="action-btn action-btn--danger" disabled>
-              <i className="ti ti-alert-triangle" aria-hidden="true" /> Report Incident
+              <i className="ti ti-alert-triangle" aria-hidden="true" /> Report
+              Incident
             </button>
           </div>
         </div>
@@ -60,7 +67,6 @@ function AssetInfo() {
 
         {/* ── History Card ── */}
         <HistoryCard assetId={assetId} />
-
       </div>
     </MainLayout>
   );

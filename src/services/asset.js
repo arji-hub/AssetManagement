@@ -123,7 +123,7 @@ async function generateAssetId() {
 }
 
 async function generateQR(assetId) {
-  const url = `http://localhost:8080/asset/${assetId}`;
+  const url = `https://ams-cict.web.app/asset/${assetId}`;
 
   const qrCode = new QRCodeStyling({
     width: 300,

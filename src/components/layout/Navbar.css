@@ -153,7 +153,7 @@
   border-bottom: 1px solid #eee;
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 110;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 /* #endregion */
@@ -192,28 +192,6 @@
 .navbar-right-tooltip {
   position: relative;
   cursor: pointer;
-}
-
-.navbar-tooltip-text {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 8px;
-  padding: 4px 10px;
-  background: #1a1a1a;
-  color: #fff;
-  font-size: 12px;
-  border-radius: 4px;
-  white-space: nowrap;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.15s ease;
-  pointer-events: none;
-}
-
-.navbar-right-tooltip:hover .navbar-tooltip-text {
-  opacity: 1;
-  visibility: visible;
 }
 
 .user-info {

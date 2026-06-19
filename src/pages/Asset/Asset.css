@@ -271,22 +271,20 @@
 }
 
 /* ── empty / loading state ── */
-.asset-empty {
-  padding: 60px;
-  text-align: center;
-  color: #aaa;
-  font-size: 14px;
-}
-
 .asset-empty-cell {
-  padding: 60px;
   text-align: center;
-  color: #aaa;
-  font-size: 14px;
+  height: 100px;
+  vertical-align: middle;
 }
 
-.asset-empty--error {
-  color: #dc2626;
+.asset-empty-cell svg {
+  font-size: 20px;
+  color: #860100;
+  margin-bottom: 6px;
+}
+
+.asset-empty-cell p {
+  margin: 0;
 }
 
 /* ── footer bar ── */

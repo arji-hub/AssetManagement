@@ -19,7 +19,7 @@ function LoginModal({ onLogin }) {
     try {
       await onLogin(email, password);
     } catch (err) {
-      setError("Invalid username or password.");
+      setError("Invalid email or password.");
     } finally {
       setLoading(false);
     }

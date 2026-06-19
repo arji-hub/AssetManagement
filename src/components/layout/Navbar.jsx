@@ -146,7 +146,6 @@ function Navbar({
               icon="fa-solid fa-circle-user"
               style={{ fontSize: "36px" }}
             />
-             <span className="navbar-tooltip-text">Go to profile</span>
           </div>
         </header>
 

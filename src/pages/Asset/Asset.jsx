@@ -9,6 +9,7 @@ import "./Asset.css";
 import { Status } from "../../components/ui/status/assetStatus";
 import FilterModal from "../../components/ui/modal/FilterModal";
 import { useAssetFilters } from "../../hooks/useAssetFilters";
+import { formatDate } from "../../utils/formatDate";
 
 function Asset() {
   const { user, role, currentUser } = useAuth();
@@ -44,13 +45,6 @@ function Asset() {
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, [role, currentUser]);
-
-  //date formatter
-  const fmtDate = (val) => {
-    if (!val) return "—";
-    if (val?.toDate) return val.toDate().toLocaleDateString("en-GB");
-    return new Date(val).toLocaleDateString("en-GB");
-  };
 
   const today = new Date()
     .toLocaleDateString("en-US", {
@@ -122,64 +116,73 @@ function Asset() {
 
         {/* table */}
         <div className="asset-table-wrap">
-          {loading ? (
-            <div className="asset-empty">Loading assets…</div>
-          ) : error ? (
-            <div className="asset-empty asset-empty--error">{error}</div>
-          ) : (
-            <table className="asset-table">
-              <thead>
+          <table className="asset-table">
+            <thead>
+              <tr>
+                <th>Asset ID</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Location</th>
+                <th>Custodian</th>
+                <th>Local MR</th>
+                <th>Qty</th>
+                <th>Unit Value</th>
+                <th>Status</th>
+                <th>Date Acquired</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
                 <tr>
-                  <th>Asset ID</th>
-                  <th>Description</th>
-                  <th>Category</th>
-                  <th>Location</th>
-                  <th>Custodian</th>
-                  <th>Local MR</th>
-                  <th>Qty</th>
-                  <th>Unit Value</th>
-                  <th>Status</th>
-                  <th>Date Acquired</th>
-                  <th>Action</th>
+                  <td colSpan="100%" className="asset-empty-cell">
+                    <FontAwesomeIcon icon="fa-solid fa-spinner" spin />
+                    <p>Loading assets…</p>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {filteredAssets.length === 0 ? (
-                  <tr>
-                    <td colSpan={11} className="asset-empty-cell">
-                      No assets found.
+              ) : error ? (
+                <tr>
+                  <td colSpan="100%" className="asset-empty-cell">
+                    <FontAwesomeIcon icon="fa-solid fa-triangle-exclamation" />
+                    <p>{error}</p>
+                  </td>
+                </tr>
+              ) : filteredAssets.length === 0 ? (
+                <tr>
+                  <td colSpan="100%" className="asset-empty-cell">
+                    <FontAwesomeIcon icon="fa-solid fa-box-open" />
+                    No assets found.
+                  </td>
+                </tr>
+              ) : (
+                filteredAssets.map((asset) => (
+                  <tr key={asset.id}>
+                    <td>{asset.id || "—"}</td>
+                    <td className="asset-desc">{asset.description || "—"}</td>
+                    <td>{asset.category_id || "—"}</td>
+                    <td>{asset.room_id || "—"}</td>
+                    <td>{asset.property_custodian_name || "—"}</td>
+                    <td>{asset.local_mr_name || "—"}</td>
+                    <td>{asset.qty ?? 1}</td>
+                    <td>{asset.unit_value?.toLocaleString() ?? "—"}</td>
+                    <td>
+                      <Status status={asset.status} />
+                    </td>
+                    <td>{formatDate(asset.date_acquired)}</td>
+                    <td>
+                      <button
+                        className="asset-action-btn"
+                        onClick={() => navigate(`/asset/${asset.id}`)}
+                        aria-label="Actions"
+                      >
+                        <FontAwesomeIcon icon="fa-solid fa-ellipsis-vertical" />
+                      </button>
                     </td>
                   </tr>
-                ) : (
-                  filteredAssets.map((asset) => (
-                    <tr key={asset.id}>
-                      <td>{asset.id || "—"}</td>
-                      <td className="asset-desc">{asset.description || "—"}</td>
-                      <td>{asset.category_id || "—"}</td>
-                      <td>{asset.room_id || "—"}</td>
-                      <td>{asset.property_custodian_name || "—"}</td>
-                      <td>{asset.local_mr_name || "—"}</td>
-                      <td>{asset.qty ?? 1}</td>
-                      <td>{asset.unit_value?.toLocaleString() ?? "—"}</td>
-                      <td>
-                        <Status status={asset.status} />
-                      </td>
-                      <td>{fmtDate(asset.date_acquired)}</td>
-                      <td>
-                        <button
-                          className="asset-action-btn"
-                          onClick={() => navigate(`/asset/${asset.id}`)}
-                          aria-label="Actions"
-                        >
-                          <FontAwesomeIcon icon="fa-solid fa-ellipsis-vertical" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          )}
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
 
         {/* footer bar */}
