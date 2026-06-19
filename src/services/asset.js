@@ -206,8 +206,11 @@ export const addAsset = async (data, role) => {
     updated_at: serverTimestamp(),
   };
 
-  await setDoc(doc(db, "asset", assetId), payload);
-  await Promise.all([categoryCount(data.category_id), roomCount(data.room_id)]);
+  const countUpdates = [categoryCount(data.category_id)];
+  if (data.room_id) {
+    countUpdates.push(roomCount(data.room_id));
+  }
+  await Promise.all(countUpdates);
 
   return assetId;
 };
