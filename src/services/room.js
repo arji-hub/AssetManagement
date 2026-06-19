@@ -46,7 +46,7 @@ export async function addRoom(data, role) {
 
   await setDoc(doc(db, "room", normalizedName), payload);
 
-  return normalizedName;
+  return data.name;
 }
 
 export async function roomCount(room_id) {
