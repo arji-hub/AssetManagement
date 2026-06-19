@@ -39,15 +39,6 @@
   cursor: default;
 }
 
-.breadcrumb-sep {
-  color: #aaa;
-  font-weight: 400;
-}
-
-.breadcrumb-current {
-  color: #1a1a1a;
-}
-
 .asset-info-actions {
   display: flex;
   align-items: center;

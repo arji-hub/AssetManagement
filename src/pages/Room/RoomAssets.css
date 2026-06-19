@@ -246,7 +246,17 @@
   vertical-align: middle;
 }
 
-/* ── Filter button ──────────────────────────────────────────── */
+.room-assets-empty-row svg {
+  font-size: 20px;
+  color: #860100;
+  margin-bottom: 6px;
+}
+
+.room-assets-empty-row p {
+  margin: 0;
+}
+
+/* ── Filter button ──────────────────── */
 .filter-button {
   display: flex;
   align-items: center;
