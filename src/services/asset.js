@@ -20,7 +20,7 @@ import QRCodeStyling from "qr-code-styling";
 import CICTLogo from "../assets/CICTLOGO.png";
 import { toLowerCase } from "../utils/TextCasing";
 
-export const fetchAssets = async (role, currentUserUid) => {
+export async function fetchAssets(role, currentUserUid) {
   const assetsRef = collection(db, "asset");
 
   let q;
@@ -82,9 +82,9 @@ export const fetchAssets = async (role, currentUserUid) => {
   }));
 
   return assets;
-};
+}
 
-export const fetchAssetByID = async (assetId) => {
+export async function fetchAssetByID(assetId) {
   const assetRef = doc(db, "asset", assetId);
 
   const assetSnap = await getDoc(assetRef);
@@ -115,16 +115,16 @@ export const fetchAssetByID = async (assetId) => {
     property_custodian_name: userMap[assetData.property_custodian] || "Unknown",
     local_mr_name: userMap[assetData.local_mr] || "Unknown",
   };
-};
+}
 
-async function uploadImage(file, path) {
+const uploadImage = async (file, path) => {
   const storageRef = ref(storage, path);
   const snapshot = await uploadBytes(storageRef, file);
   const url = await getDownloadURL(snapshot.ref);
   return url;
-}
+};
 
-async function generateAssetId() {
+const generateAssetId = async () => {
   const snapshot = await getDocs(collection(db, "asset")); // ← changed
 
   if (snapshot.empty) return "cict-1001";
@@ -135,9 +135,9 @@ async function generateAssetId() {
   }, 1000);
 
   return `cict-${highest + 1}`;
-}
+};
 
-async function generateQR(assetId) {
+const generateQR = async (assetId) => {
   const url = `https://ams-cict.web.app/asset/${assetId}`;
 
   const qrCode = new QRCodeStyling({
@@ -187,9 +187,9 @@ async function generateQR(assetId) {
 
   const canvas = tempDiv.querySelector("canvas");
   return canvas.toDataURL("image/png");
-}
+};
 
-export const addAsset = async (data, role) => {
+export async function addAsset(data, role) {
   if (role !== "admin") {
     throw new Error("Permission denied: only admins can register assets.");
   }
@@ -228,9 +228,9 @@ export const addAsset = async (data, role) => {
   await Promise.all(countUpdates);
 
   return assetId;
-};
+}
 
-export const isSerialNumberExist = async (serialNumber) => {
+export async function isSerialNumberExist(serialNumber) {
   if (!serialNumber || !toLowerCase(serialNumber)) return false;
 
   const normalizedInput = toLowerCase(serialNumber);
@@ -240,4 +240,4 @@ export const isSerialNumberExist = async (serialNumber) => {
     const existing = doc.data().serial_number;
     return existing && toLowerCase(existing) === normalizedInput;
   });
-};
+}
