@@ -6,7 +6,7 @@
 
 **Bulacan State University**
 College of Information and Communications Technology
-BSIT 3G — Group 2, Group 4
+BSIT 3G — G2, Group 5
 
 A web-based capstone project for tracking, registering, and monitoring institutional assets — built to replace manual, paper-based asset records with a fast, auditable digital system.
 
