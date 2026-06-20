@@ -41,17 +41,17 @@ The **CICT Asset Management System (CICT-AMS)** is designed to give the College 
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Frontend | React + Vite |
-| Styling | Custom CSS |
-| Backend / Database | Firebase Firestore |
-| Authentication | Firebase Auth |
-| File Storage | Firebase Storage |
-| Serverless Functions | Firebase Cloud Functions (v2) |
-| Email Delivery | Resend |
-| Component Development | Storybook |
-| Hosting | Firebase Hosting & Vercel |
+| Layer                 | Technology                    |
+| --------------------- | ----------------------------- |
+| Frontend              | React + Vite                  |
+| Styling               | Custom CSS                    |
+| Backend / Database    | Firebase Firestore            |
+| Authentication        | Firebase Auth                 |
+| File Storage          | Firebase Storage              |
+| Serverless Functions  | Firebase Cloud Functions (v2) |
+| Email Delivery        | Resend                        |
+| Component Development | Storybook                     |
+| Hosting               | Firebase Hosting & Vercel     |
 
 ---
 
@@ -81,21 +81,21 @@ npm run dev
 
 ## 📂 Project Status
 
-| Phase | Status |
-|---|---|
-| Core Architecture | ✅ Complete |
-| Asset Registration | ✅ Complete |
-| Custodian Management | ✅ Complete |
-| Room Management | ✅ Complete |
-| QR Code Integration | ✅ Complete |
-| Report Management | 🔧 In Progress |
-| System-Wide Testing | 🔧 In Progress |
+| Phase                | Status         |
+| -------------------- | -------------- |
+| Core Architecture    | ✅ Complete    |
+| Asset Registration   | ✅ Complete    |
+| Custodian Management | ✅ Complete    |
+| Room Management      | ✅ Complete    |
+| QR Code Integration  | ✅ Complete    |
+| Report Management    | 🔧 In Progress |
+| System-Wide Testing  | 🔧 In Progress |
 
 ---
 
 ## 👥 Team
 
-Developed by **BSIT 3G — Group 4**
+Developed by **Group #5 BSIT 3G — G4**
 College of Information and Communications Technology
 Bulacan State University
 
