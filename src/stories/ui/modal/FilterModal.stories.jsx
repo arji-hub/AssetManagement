@@ -1,5 +1,59 @@
 import { MemoryRouter } from "react-router-dom";
+import { AuthContext } from "../../../context/AuthContext";
 import FilterModal from "../../../components/ui/modal/FilterModal";
+
+const BASE_FILTERS = { status: "", category: "", room: "", custodian: "" };
+
+// Mirrors the shape AuthProvider actually provides:
+// { currentUser, role, user, loading, logout }
+const adminAuth = {
+  currentUser: { uid: "mock-admin-uid" },
+  role: "admin",
+  user: {
+    uid: "mock-admin-uid",
+    firstname: "Juan",
+    lastname: "Dela Cruz",
+    role: "admin",
+    username: "juan.delacruz",
+  },
+  loading: false,
+  logout: () => {},
+};
+
+const custodianAuth = {
+  currentUser: { uid: "mock-custodian-uid" },
+  role: "fulltime",
+  user: {
+    uid: "mock-custodian-uid",
+    firstname: "Jasper",
+    lastname: "Ortega",
+    role: "fulltime",
+    username: "jasper.ortega",
+  },
+  loading: false,
+  logout: () => {},
+};
+
+// Mock rooms — at least 5 examples
+const mockRooms = ["Room 101", "Room 102", "Lab A", "Lab B", "SDL 1"];
+
+// Mock categories — at least 5 examples
+const mockCategories = [
+  "Computer Set",
+  "Furniture",
+  "Networking Equipment",
+  "Audio Visual",
+  "Office Supplies",
+];
+
+// Mock custodians — at least 5 examples (plain strings, matching component's expected shape)
+const mockCustodians = [
+  "Jasper C. Ortega",
+  "Maria L. Santos",
+  "Paolo R. Reyes",
+  "Angelica M. Cruz",
+  "Benedict T. Aquino",
+];
 
 export default {
   title: "Modal/FilterModal",
@@ -7,34 +61,34 @@ export default {
   parameters: {
     layout: "fullscreen",
   },
-  decorators: [
-    (Story) => (
-      <MemoryRouter>
-        <Story />
-      </MemoryRouter>
-    ),
-  ],
   args: {
     onApply: () => {},
     onClear: () => {},
     onClose: () => {},
-    initialRooms: ["Room 101", "Room 102", "Lab A", "Lab B", "SDL 1"],
-  },
-};
-
-const BASE_FILTERS = { status: "", category: "", room: "", custodian: "" };
-
-// ── Default (shows all sections) ─────────────────────────────
-export const Default = {
-  name: "Default (All Sections Visible)",
-  args: {
+    rooms: mockRooms,
+    categories: mockCategories,
+    custodians: mockCustodians,
     filters: BASE_FILTERS,
     context: "other",
   },
 };
 
-export const AllSelected = {
-  name: "All Filters Selected",
+// ── Admin view (custodian filter visible) ──────────────────────
+export const AdminView = {
+  name: "Admin (Custodian Filter Visible)",
+  decorators: [
+    (Story) => (
+      <MemoryRouter>
+        <AuthContext.Provider value={adminAuth}>
+          <Story />
+        </AuthContext.Provider>
+      </MemoryRouter>
+    ),
+  ],
+};
+
+export const AdminViewSelected = {
+  name: "Admin (Filters Selected)",
   args: {
     filters: {
       status: "Working",
@@ -42,50 +96,102 @@ export const AllSelected = {
       room: "Lab A",
       custodian: "Jasper C. Ortega",
     },
-    context: "other",
   },
+  decorators: [
+    (Story) => (
+      <MemoryRouter>
+        <AuthContext.Provider value={adminAuth}>
+          <Story />
+        </AuthContext.Provider>
+      </MemoryRouter>
+    ),
+  ],
 };
 
-// ── Used in Custodian context (Room section hidden) ───────────
-export const CustodianContext = {
-  name: "Custodian Context (Room Hidden)",
-  args: {
-    filters: BASE_FILTERS,
-    context: "custodian",
-  },
+// ── Custodian view (custodian filter auto-hidden via role check) ──
+export const CustodianView = {
+  name: "Custodian (Custodian Filter Hidden)",
+  decorators: [
+    (Story) => (
+      <MemoryRouter>
+        <AuthContext.Provider value={custodianAuth}>
+          <Story />
+        </AuthContext.Provider>
+      </MemoryRouter>
+    ),
+  ],
 };
 
-export const CustodianContextSelected = {
-  name: "Custodian Context (Filters Selected)",
+export const CustodianViewSelected = {
+  name: "Custodian (Filters Selected)",
   args: {
     filters: {
       status: "Working",
       category: "Computer Set",
-      room: "",
+      room: "Lab A",
       custodian: "",
     },
-    context: "custodian",
   },
+  decorators: [
+    (Story) => (
+      <MemoryRouter>
+        <AuthContext.Provider value={custodianAuth}>
+          <Story />
+        </AuthContext.Provider>
+      </MemoryRouter>
+    ),
+  ],
 };
 
-// ── Used in Room context (Custodian section hidden) ───────────
+// ── Loading state ────────────────────────────────────────────────
+export const LoadingOptions = {
+  name: "Loading Options (Admin)",
+  args: {
+    loadingOptions: true,
+  },
+  decorators: [
+    (Story) => (
+      <MemoryRouter>
+        <AuthContext.Provider value={adminAuth}>
+          <Story />
+        </AuthContext.Provider>
+      </MemoryRouter>
+    ),
+  ],
+};
+
+// ── Empty state — verifies "No rooms found." / "No custodians found." ──
+export const EmptyOptions = {
+  name: "Empty Options (Admin)",
+  args: {
+    rooms: [],
+    categories: [],
+    custodians: [],
+  },
+  decorators: [
+    (Story) => (
+      <MemoryRouter>
+        <AuthContext.Provider value={adminAuth}>
+          <Story />
+        </AuthContext.Provider>
+      </MemoryRouter>
+    ),
+  ],
+};
+
+// ── Room context — Room section hidden ──────────────────────────
 export const RoomContext = {
-  name: "Room Context (Custodian Hidden)",
+  name: "Room Context (Room Filter Hidden)",
   args: {
-    filters: BASE_FILTERS,
     context: "room",
   },
-};
-
-export const RoomContextSelected = {
-  name: "Room Context (Filters Selected)",
-  args: {
-    filters: {
-      status: "Active",
-      category: "Furniture",
-      room: "",
-      custodian: "",
-    },
-    context: "room",
-  },
+  decorators: [
+    (Story) => (
+      <MemoryRouter>
+        <AuthContext.Provider value={adminAuth}>
+          <Story />
+        </AuthContext.Provider>
+      </MemoryRouter>
+    ),
+  ],
 };

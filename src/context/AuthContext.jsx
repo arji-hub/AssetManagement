@@ -5,6 +5,7 @@ import { doc, getDoc } from "firebase/firestore";
 
 //check if the currentUser is logged in, their role, and other currentUser information
 const AuthContext = createContext();
+export { AuthContext };
 
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
