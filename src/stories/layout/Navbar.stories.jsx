@@ -1,3 +1,4 @@
+import { MemoryRouter } from "react-router-dom";
 import Navbar from "../../components/layout/Navbar";
 
 export default {
@@ -6,6 +7,13 @@ export default {
   parameters: {
     layout: "fullscreen",
   },
+  decorators: [
+    (Story) => (
+      <MemoryRouter initialEntries={["/dashboard"]}>
+        <Story />
+      </MemoryRouter>
+    ),
+  ],
 };
 
 //base args shared by all stories
@@ -23,7 +31,6 @@ const baseArgs = {
     </div>
   ),
 };
-
 
 export const Preview = {
   args: {
