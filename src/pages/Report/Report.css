@@ -1,0 +1,156 @@
+/* ── page container ── */
+.report-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+  padding: 24px;
+}
+
+/* ── header row ── */
+.report-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  z-index: 900;
+}
+
+.report-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.report-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #111;
+  margin: 0;
+  line-height: 1;
+}
+
+.report-date {
+  font-size: 11px;
+  color: #888;
+  letter-spacing: 0.06em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.report-header-right {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ── condition filter button ── */
+.report-filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  background: #fff;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.report-filter-btn:hover {
+  border-color: #860100;
+  color: #860100;
+}
+
+.report-filter-btn svg:last-child {
+  font-size: 10px;
+  margin-left: 2px;
+}
+
+/* ── report incident button ── */
+.report-incident-btn {
+  padding: 8px 18px;
+  background: #860100;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.report-incident-btn:hover {
+  background: #5d0100;
+}
+
+/* ── tabs ── */
+.report-tabs {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.report-tab {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 0 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #999;
+  position: relative;
+  transition: color 0.15s;
+}
+
+.report-tab:hover {
+  color: #860100;
+}
+
+.report-tab--active {
+  color: #860100;
+}
+
+.report-tab--active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: #860100;
+  border-radius: 2px;
+}
+
+/* ── table wrapper ── */
+.report-table-wrap {
+  flex: 1;
+  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+/* ── responsive ── */
+@media (max-width: 960px) {
+  .report-page {
+    padding: 16px;
+  }
+
+  .report-header {
+    flex-direction: column;
+    z-index: 100;
+  }
+
+  .report-tabs {
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}

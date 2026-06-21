@@ -1,9 +1,9 @@
 // InfoCard.stories.jsx
-import InfoCard from "../../../components/ui/card/InfoCard";
-import { formatCurrency } from "../../../utils/formatCurrency";
+import InfoCard from "../../components/panel/InfoCard";
+import { formatCurrency } from "../../utils/formatCurrency";
 
 export default {
-  title: "Cards/InfoCard",
+  title: "Panel/InfoCard",
   component: InfoCard,
 };
 

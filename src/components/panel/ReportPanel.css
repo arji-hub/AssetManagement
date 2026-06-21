@@ -1,0 +1,52 @@
+.report-panel,
+.report-panel-header,
+.report-card-row {
+  --report-grid-columns: 1fr 2fr 1fr 1.3fr 1fr 1fr;
+}
+
+.report-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 720px;
+}
+
+.report-panel-header {
+  display: grid;
+  grid-template-columns: var(--report-grid-columns);
+  background-color: #860100;
+  border-radius: 5px;
+}
+
+.report-panel-header-cell {
+  display: flex;
+  padding: 8px 0;
+  color: #f5aa2c;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  justify-content: center;
+}
+
+.report-panel-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.report-panel-empty {
+  text-align: center;
+  padding: 40px 0;
+  color: #888;
+}
+
+.report-panel-empty svg {
+  font-size: 20px;
+  color: #860100;
+  margin-bottom: 6px;
+}
+
+.report-panel-empty p {
+  margin: 0;
+}

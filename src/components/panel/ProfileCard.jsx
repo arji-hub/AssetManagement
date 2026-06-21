@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { getRole } from "../../../utils/role";
-import ProfileField from "./ProfileField";
+import { getRole } from "../../utils/role";
+import ProfileField from "../ui/card/ProfileField";
 import "./ProfileCard.css";
 
 function ProfileCard({

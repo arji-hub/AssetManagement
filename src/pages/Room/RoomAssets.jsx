@@ -7,7 +7,7 @@ import FilterModal from "../../components/ui/modal/FilterModal";
 import { Status } from "../../components/ui/status/assetStatus";
 import { useAssetFilters } from "../../hooks/useAssetFilters";
 import { useRoomAssets } from "../../hooks/useRoomAssets";
-import { formatDate } from "../../utils/formatDate";
+import { formatDate } from "../../utils/date";
 
 function RoomAssets() {
   const { roomName } = useParams();

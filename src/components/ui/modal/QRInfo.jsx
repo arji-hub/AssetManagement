@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./QRInfo.css";
 import { STATUS_COLORS } from "../../../data/assets";
 import { formatCurrency } from "../../../utils/formatCurrency";
-import { formatDate } from "../../../utils/formatDate";
+import { formatDate } from "../../../utils/date";
 
 function displayValue(value) {
   if (value === null || value === undefined || value === "") return "—";

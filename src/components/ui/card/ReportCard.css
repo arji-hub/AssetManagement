@@ -1,0 +1,50 @@
+/* src/components/ui/card/ReportCard.css */
+
+.report-card-row {
+  display: grid;
+  grid-template-columns: var(--report-grid-columns);
+  align-items: center;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+
+.report-card-row:hover {
+  background: #fafafa;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.report-card-cell {
+  padding: 14px 16px;
+  color: #444;
+  font-size: 13px;
+}
+
+.report-card-id {
+  font-weight: 700;
+  color: #222;
+}
+
+.report-card-desc {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #666;
+}
+
+.report-card-status {
+  display: flex;
+  align-items: center;
+}
+
+.report-card-status-badge {
+  display: inline-block;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: capitalize;
+  white-space: nowrap;
+}

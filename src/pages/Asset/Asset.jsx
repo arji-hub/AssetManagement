@@ -9,7 +9,7 @@ import "./Asset.css";
 import { Status } from "../../components/ui/status/assetStatus";
 import FilterModal from "../../components/ui/modal/FilterModal";
 import { useAssetFilters } from "../../hooks/useAssetFilters";
-import { formatDate } from "../../utils/formatDate";
+import { formatDate, today } from "../../utils/date";
 
 function Asset() {
   const { user, role, currentUser } = useAuth();
@@ -45,15 +45,6 @@ function Asset() {
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, [role, currentUser]);
-
-  const today = new Date()
-    .toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })
-    .toUpperCase();
 
   return (
     <MainLayout>
