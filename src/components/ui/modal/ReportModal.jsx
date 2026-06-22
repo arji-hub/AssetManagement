@@ -1,131 +1,38 @@
-import React, { useEffect, useRef, useState } from "react";
+// components/modal/ReportModal.jsx
+
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { fetchAssetByID } from "../../../services/asset";
+import useReportModal from "../../../hooks/useReportModal";
 import "./ReportModal.css";
+import { REPORT_TYPES } from "../../../data/reports";
 
-const REPORT_TYPES = [
-  { value: "damaged", label: "Damaged" },
-  { value: "missing", label: "Missing" },
-];
-
-function ReportModal({ onClose, onSubmit, isSubmitting = false }) {
-  const assetInputRef = useRef(null);
-
-  const [type, setType] = useState("damaged");
-
-  // asset lookup
-  const [assetId, setAssetId] = useState("");
-  const [asset, setAsset] = useState(null);
-  const [assetLoading, setAssetLoading] = useState(false);
-  const [assetError, setAssetError] = useState(null);
-
-  // form fields
-  const [description, setDescription] = useState("");
-  const [note, setNote] = useState("");
-  const [photo, setPhoto] = useState(null);
-  const [photoPreview, setPhotoPreview] = useState(null);
-
-  const [submitError, setSubmitError] = useState(null);
-
-  useEffect(() => {
-    assetInputRef.current?.focus();
-  }, []);
-
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [onClose]);
-
-  // clean up object URL on unmount / photo change
-  useEffect(() => {
-    return () => {
-      if (photoPreview) URL.revokeObjectURL(photoPreview);
-    };
-  }, [photoPreview]);
-
-  // switching type clears the photo — missing reports shouldn't carry one
-  const handleTypeChange = (nextType) => {
-    setType(nextType);
-    if (nextType === "missing") {
-      if (photoPreview) URL.revokeObjectURL(photoPreview);
-      setPhoto(null);
-      setPhotoPreview(null);
-    }
-  };
-
-  const handleFindAsset = async () => {
-    const trimmedId = assetId.trim();
-    if (!trimmedId) return;
-
-    setAssetLoading(true);
-    setAssetError(null);
-    setAsset(null);
-    setDescription("");
-
-    try {
-      const result = await fetchAssetByID(trimmedId);
-      setAsset(result);
-      setDescription(
-        `${result.description || "Asset"} (${result.category_id || "—"}) located at ${result.room_id || "—"}, assigned to ${result.property_custodian_name || "—"}.`,
-      );
-    } catch (err) {
-      setAssetError(err.message || "Failed to fetch asset.");
-    } finally {
-      setAssetLoading(false);
-    }
-  };
-
-  const handleAssetIdKeyDown = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      handleFindAsset();
-    }
-  };
-
-  const handlePhotoChange = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (photoPreview) URL.revokeObjectURL(photoPreview);
-    setPhoto(file);
-    setPhotoPreview(URL.createObjectURL(file));
-  };
-
-  const handleRemovePhoto = () => {
-    if (photoPreview) URL.revokeObjectURL(photoPreview);
-    setPhoto(null);
-    setPhotoPreview(null);
-  };
-
-  const handleSubmit = () => {
-    setSubmitError(null);
-
-    if (!asset) {
-      setSubmitError("Please find a valid asset before submitting.");
-      return;
-    }
-    if (!note.trim()) {
-      setSubmitError("Please describe what happened.");
-      return;
-    }
-    if (type === "damaged" && !photo) {
-      setSubmitError("Please attach a photo of the damage.");
-      return;
-    }
-
-    onSubmit({
-      type,
-      asset_id: asset.id,
-      description,
-      note: note.trim(),
-      photo: type === "damaged" ? photo : null,
-    });
-  };
-
-  const isFormValid =
-    !!asset && note.trim().length > 0 && (type !== "damaged" || !!photo);
+function ReportModal({
+  onClose,
+  onSubmit,
+  isSubmitting = false,
+  assetID = "",
+}) {
+  const {
+    assetInputRef,
+    type,
+    assetId,
+    asset,
+    assetLoading,
+    assetError,
+    description,
+    note,
+    photoPreview,
+    submitError,
+    isFormValid,
+    setAssetId,
+    setNote,
+    handleTypeChange,
+    handleFindAsset,
+    handleAssetIdKeyDown,
+    handlePhotoChange,
+    handleRemovePhoto,
+    handleSubmit,
+  } = useReportModal({ onClose, assetID });
 
   return (
     <div className="report-modal-overlay">
@@ -182,13 +89,15 @@ function ReportModal({ onClose, onSubmit, isSubmitting = false }) {
                 value={assetId}
                 onChange={(e) => setAssetId(e.target.value)}
                 onKeyDown={handleAssetIdKeyDown}
-                disabled={isSubmitting || assetLoading}
+                disabled={isSubmitting || assetLoading || !!assetID}
               />
               <button
                 type="button"
                 className="report-modal-find-btn"
                 onClick={handleFindAsset}
-                disabled={isSubmitting || assetLoading || !assetId.trim()}
+                disabled={
+                  isSubmitting || assetLoading || !assetId.trim() || !!assetID
+                }
               >
                 {assetLoading ? (
                   <FontAwesomeIcon icon="fa-solid fa-spinner" spin />
@@ -204,7 +113,7 @@ function ReportModal({ onClose, onSubmit, isSubmitting = false }) {
             )}
           </div>
 
-          {/* asset preview — confirms the correct asset was found */}
+          {/* asset preview */}
           {asset && (
             <div className="report-modal-asset-preview">
               <FontAwesomeIcon icon="fa-solid fa-circle-check" />
@@ -233,7 +142,7 @@ function ReportModal({ onClose, onSubmit, isSubmitting = false }) {
             />
           </div>
 
-          {/* note / narrative */}
+          {/* note */}
           <div className="report-modal-field">
             <label htmlFor="report-note-input">Note</label>
             <textarea
@@ -313,7 +222,7 @@ function ReportModal({ onClose, onSubmit, isSubmitting = false }) {
           </button>
           <button
             className="report-modal-btn report-modal-btn--submit"
-            onClick={handleSubmit}
+            onClick={() => handleSubmit(onSubmit)}
             disabled={isSubmitting || !isFormValid}
           >
             {isSubmitting ? "Submitting..." : "Submit Report"}

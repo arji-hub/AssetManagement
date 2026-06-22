@@ -1,33 +1,32 @@
 import React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import MainLayout from "../../components/layout/MainLayout";
 import { ROLES } from "../../data/roles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./Report.css";
 import ReportPanel from "../../components/panel/ReportPanel";
+import ReportModal from "../../components/ui/modal/ReportModal";
 import { today } from "../../utils/date";
-
-const TABS = [
-  { label: "Incident Reports", path: "/report" },
-  { label: "For Repair", path: "/repair" },
-  { label: "Condemnation", path: "/condemn" },
-];
+import useReportPage from "../../hooks/useReportPage";
+import { TABS } from "../../data/reports";
 
 function Report() {
   const { role } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-
   const isAdmin = role === ROLES.ADMIN;
 
-  const handleReportIncident = () => {
-    // TODO: open report incident modal / navigate to form
-  };
+  const {
+    activeTab,
+    setActiveTab,
+    showReportModal,
+    isSubmitting,
+    handleReportIncident,
+    handleModalClose,
+    handleModalSubmit,
+    filter,
+  } = useReportPage();
 
-  const handleConditionFilter = () => {
-    // TODO: condition filter dropdown logic
-  };
+  const isIncidentTab = activeTab === "incident";
+  console.log()
 
   return (
     <MainLayout>
@@ -40,23 +39,44 @@ function Report() {
           </div>
 
           <div className="report-header-right">
-            {/* Condition filter */}
-            <button
-              className="report-filter-btn"
-              onClick={handleConditionFilter}
-            >
-              <FontAwesomeIcon icon="fa-solid fa-sliders" />
-              Condition
-              <FontAwesomeIcon icon="fa-solid fa-chevron-down" />
-            </button>
+            {/* Condition filter — incident tab only */}
+            {isIncidentTab && (
+              <div className="report-filter-wrap" ref={filter.filterRef}>
+                <button
+                  className="report-filter-btn"
+                  onClick={filter.handleStatusFilter}
+                >
+                  <FontAwesomeIcon icon="fa-solid fa-sliders" />
+                  Condition
+                  <FontAwesomeIcon icon="fa-solid fa-chevron-down" />
+                </button>
 
-            {/* Report Incident */}
-            <button
-              className="report-incident-btn"
-              onClick={handleReportIncident}
-            >
-              Report Incident
-            </button>
+                {filter.filterOpen && (
+                  <div className="report-filter-dropdown">
+                    {["damaged", "missing"].map((type) => (
+                      <label key={type} className="report-filter-option">
+                        <input
+                          type="checkbox"
+                          checked={filter.statusFilter.includes(type)}
+                          onChange={() => filter.handleStatusToggle(type)}
+                        />
+                        {type.charAt(0).toUpperCase() + type.slice(1)}
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Report Incident — incident tab only */}
+            {isIncidentTab && (
+              <button
+                className="report-incident-btn"
+                onClick={handleReportIncident}
+              >
+                Report Incident
+              </button>
+            )}
           </div>
         </div>
 
@@ -64,22 +84,53 @@ function Report() {
         <div className="report-tabs">
           {TABS.map((tab) => (
             <button
-              key={tab.path}
+              key={tab.key}
               className={`report-tab${
-                location.pathname === tab.path ? " report-tab--active" : ""
+                activeTab === tab.key ? " report-tab--active" : ""
               }`}
-              onClick={() => navigate(tab.path)}
+              onClick={() => setActiveTab(tab.key)}
             >
               {tab.label}
             </button>
           ))}
         </div>
 
-        {/* table */}
+        {/* content */}
         <div className="report-table-wrap">
-          <ReportPanel />
+          {activeTab === "incident" && (
+            <ReportPanel
+              group="incident"
+              statusFilter={filter.statusFilter}
+            />
+          )}
+          {activeTab === "repair" && (
+            <ReportPanel
+              group="repair"
+              statusFilter={["damaged", "missing", "for_repair", "found"]}
+            />
+          )}
+          {activeTab === "resolved" && (
+            <ReportPanel
+              group="resolved"
+              statusFilter={["working"]}
+            />
+          )}
+          {activeTab === "archive" && (
+            <ReportPanel
+              group="archive"
+              statusFilter={["condemned"]}
+            />
+          )}
         </div>
       </div>
+
+      {showReportModal && (
+        <ReportModal
+          onClose={handleModalClose}
+          onSubmit={handleModalSubmit}
+          isSubmitting={isSubmitting}
+        />
+      )}
     </MainLayout>
   );
 }

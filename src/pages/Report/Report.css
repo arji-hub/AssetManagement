@@ -47,6 +47,7 @@
 }
 
 /* ── condition filter button ── */
+
 .report-filter-btn {
   display: flex;
   align-items: center;
@@ -71,6 +72,50 @@
 .report-filter-btn svg:last-child {
   font-size: 10px;
   margin-left: 2px;
+}
+/* ── condition filter wrap (positions the dropdown) ── */
+.report-filter-wrap {
+  position: relative;
+}
+
+/* ── filter dropdown ── */
+.report-filter-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 100;
+  min-width: 130px;
+}
+
+.report-filter-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  text-transform: capitalize;
+  user-select: none;
+}
+
+.report-filter-option:hover {
+  background: #f5f5f5;
+}
+
+.report-filter-option input[type="checkbox"] {
+  accent-color: #860100;
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
 }
 
 /* ── report incident button ── */
@@ -133,9 +178,8 @@
 /* ── table wrapper ── */
 .report-table-wrap {
   flex: 1;
-  overflow: hidden;
   overflow-y: auto;
-  overflow-x: auto;
+  min-height: 0;
 }
 
 /* ── responsive ── */
