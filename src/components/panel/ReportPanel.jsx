@@ -1,12 +1,10 @@
-// components/panel/ReportPanel.jsx
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ReportCard from "../ui/card/ReportCard";
 import { MOCK_REPORTS, STATUS_GROUPS, COLUMNS } from "../../data/reports";
+import { getReportType } from "../../utils/report";
 import "./ReportPanel.css";
-
 
 function ReportPanel({
   group = "incident",
@@ -20,18 +18,19 @@ function ReportPanel({
 
   const allowedStatuses = STATUS_GROUPS[group] || [];
 
-  const filteredReports = (reports || []).filter(
-    (r) => allowedStatuses.includes(r.status) && statusFilter.includes(r.type),
-  );
+  const filteredReports = (reports || []).filter((r) => {
+    const statusMatch = allowedStatuses.includes(r.status);
+    return statusMatch;
+  });
 
   const handleRowClick = (report) => {
     navigate(`/report/${report.id}`);
   };
 
   return (
-    <div className="report-panel">
+    <div className={`report-panel ${group}`}>
       <div className="report-panel-header">
-        {COLUMNS.map((col) => (
+        {COLUMNS[group].map((col) => (
           <div key={col} className="report-panel-header-cell">
             {col}
           </div>
@@ -59,6 +58,7 @@ function ReportPanel({
             <ReportCard
               key={report.id}
               report={report}
+              group={group}
               onClick={handleRowClick}
             />
           ))

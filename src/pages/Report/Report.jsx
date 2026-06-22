@@ -26,7 +26,6 @@ function Report() {
   } = useReportPage();
 
   const isIncidentTab = activeTab === "incident";
-  console.log()
 
   return (
     <MainLayout>
@@ -47,7 +46,7 @@ function Report() {
                   onClick={filter.handleStatusFilter}
                 >
                   <FontAwesomeIcon icon="fa-solid fa-sliders" />
-                  Condition
+                  Filter
                   <FontAwesomeIcon icon="fa-solid fa-chevron-down" />
                 </button>
 
@@ -68,15 +67,12 @@ function Report() {
               </div>
             )}
 
-            {/* Report Incident — incident tab only */}
-            {isIncidentTab && (
-              <button
-                className="report-incident-btn"
-                onClick={handleReportIncident}
-              >
-                Report Incident
-              </button>
-            )}
+            <button
+              className="report-incident-btn"
+              onClick={handleReportIncident}
+            >
+              Report Incident
+            </button>
           </div>
         </div>
 
@@ -98,10 +94,7 @@ function Report() {
         {/* content */}
         <div className="report-table-wrap">
           {activeTab === "incident" && (
-            <ReportPanel
-              group="incident"
-              statusFilter={filter.statusFilter}
-            />
+            <ReportPanel group="incident" statusFilter={filter.statusFilter} />
           )}
           {activeTab === "repair" && (
             <ReportPanel
@@ -110,16 +103,10 @@ function Report() {
             />
           )}
           {activeTab === "resolved" && (
-            <ReportPanel
-              group="resolved"
-              statusFilter={["working"]}
-            />
+            <ReportPanel group="resolved" statusFilter={["working"]} />
           )}
           {activeTab === "archive" && (
-            <ReportPanel
-              group="archive"
-              statusFilter={["condemned"]}
-            />
+            <ReportPanel group="archive" statusFilter={["condemned"]} />
           )}
         </div>
       </div>
