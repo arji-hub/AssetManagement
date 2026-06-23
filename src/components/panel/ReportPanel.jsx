@@ -1,27 +1,24 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ReportCard from "../ui/card/ReportCard";
-import { MOCK_REPORTS, STATUS_GROUPS, COLUMNS } from "../../data/reports";
-import { getReportType } from "../../utils/report";
+import { STATUS_GROUPS, COLUMNS } from "../../data/reports";
 import "./ReportPanel.css";
 
 function ReportPanel({
   group = "incident",
   statusFilter = ["damaged", "missing"],
+  reports = [],
+  loading = false,
+  error = null,
 }) {
   const navigate = useNavigate();
 
-  const [reports] = useState(MOCK_REPORTS);
-  const [loading] = useState(false);
-  const [error] = useState(null);
-
   const allowedStatuses = STATUS_GROUPS[group] || [];
 
-  const filteredReports = (reports || []).filter((r) => {
-    const statusMatch = allowedStatuses.includes(r.status);
-    return statusMatch;
-  });
+  const filteredReports = reports.filter((r) =>
+    allowedStatuses.includes(r.status),
+  );
 
   const handleRowClick = (report) => {
     navigate(`/report/${report.id}`);
@@ -46,7 +43,7 @@ function ReportPanel({
         ) : error ? (
           <div className="report-panel-empty">
             <FontAwesomeIcon icon="fa-solid fa-triangle-exclamation" />
-            <p>{error}</p>
+            <p>{error?.message || error}</p>
           </div>
         ) : filteredReports.length === 0 ? (
           <div className="report-panel-empty">

@@ -52,7 +52,6 @@
   color: #666;
 }
 
-/* subtle tint — informational only, not alarming */
 .report-card-incident-type.damaged {
   background: #fff0e6;
   color: #a05000;

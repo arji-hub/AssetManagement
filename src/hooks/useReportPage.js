@@ -1,40 +1,24 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import useReportFilter from "./useReportFilter";
 
-function useReportPage() {
+function useReportPage({ refetch } = {}) {
   const [activeTab, setActiveTab] = useState("incident");
   const [showReportModal, setShowReportModal] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const filter = useReportFilter();
 
-  useEffect(() => {
-    console.log("[ReportPage] activeTab:", activeTab);
-  }, [activeTab]);
-
   const handleReportIncident = () => setShowReportModal(true);
-  const handleModalClose = () => setShowReportModal(false);
-
-  const handleModalSubmit = async (formData) => {
-    setIsSubmitting(true);
-    try {
-      console.log("add report: ", formData);
-      setShowReportModal(false);
-    } catch (err) {
-      console.error("Failed to submit report:", err);
-    } finally {
-      setIsSubmitting(false);
-    }
+  const handleModalClose = () => {
+    setShowReportModal(false);
+    refetch?.();
   };
 
   return {
     activeTab,
     setActiveTab,
     showReportModal,
-    isSubmitting,
     handleReportIncident,
     handleModalClose,
-    handleModalSubmit,
     filter,
   };
 }

@@ -1,9 +1,10 @@
-// hooks/useReportModal.js
-
 import { useState, useRef, useEffect } from "react";
 import { fetchAssetByID } from "../services/asset";
+import { addReport } from "../services/report";
+import { useAuth } from "../context/AuthContext";
 
-function useReportModal({ onClose, assetID = "" }) {
+function useReportRegistration({ onClose, assetID = "" }) {
+  const { user } = useAuth();
   const assetInputRef = useRef(null);
 
   const [type, setType] = useState("damaged");
@@ -16,11 +17,21 @@ function useReportModal({ onClose, assetID = "" }) {
 
   // form fields
   const [description, setDescription] = useState("");
-  const [note, setNote] = useState("");
+  const [narrative, setNarrative] = useState("");
   const [photo, setPhoto] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
 
   const [submitError, setSubmitError] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null);
+  const handleStatusClose = () => {
+    if (submitStatus === "success") {
+      setSubmitStatus(null);
+      onClose();
+    } else {
+      setSubmitStatus(null);
+    }
+  };
 
   // --- asset lookup ---
   const lookupAsset = async (id) => {
@@ -104,14 +115,15 @@ function useReportModal({ onClose, assetID = "" }) {
     setPhotoPreview(null);
   };
 
-  const handleSubmit = (onSubmit) => {
+  const handleSubmit = async () => {
     setSubmitError(null);
 
+    // validation
     if (!asset) {
       setSubmitError("Please find a valid asset before submitting.");
       return;
     }
-    if (!note.trim()) {
+    if (!narrative.trim()) {
       setSubmitError("Please describe what happened.");
       return;
     }
@@ -120,17 +132,33 @@ function useReportModal({ onClose, assetID = "" }) {
       return;
     }
 
-    onSubmit({
-      type,
-      asset_id: asset.id,
-      description,
-      note: note.trim(),
-      photo: type === "damaged" ? photo : null,
-    });
+    setSubmitStatus("loading");
+    setIsSubmitting(true);
+    try {
+      const result = await addReport(
+        {
+          type,
+          asset_id: asset.id,
+          asset,
+          description,
+          narrative: narrative.trim(),
+          photo: type === "damaged" ? photo : null,
+        },
+        user.uid,
+        `${user.firstname} ${user.lastname}`,
+      );
+      console.log("Report submitted:", result);
+      setSubmitStatus("success");
+    } catch (err) {
+      setSubmitError(err.message || "Failed to submit report.");
+      setSubmitStatus("error");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const isFormValid =
-    !!asset && note.trim().length > 0 && (type !== "damaged" || !!photo);
+    !!asset && narrative.trim().length > 0 && (type !== "damaged" || !!photo);
 
   return {
     // refs
@@ -142,14 +170,17 @@ function useReportModal({ onClose, assetID = "" }) {
     assetLoading,
     assetError,
     description,
-    note,
+    narrative,
     photo,
     photoPreview,
     submitError,
+    isSubmitting,
+    submitStatus,
+    handleStatusClose,
     isFormValid,
     // setters
     setAssetId,
-    setNote,
+    setNarrative,
     // handlers
     handleTypeChange,
     handleFindAsset,
@@ -160,4 +191,4 @@ function useReportModal({ onClose, assetID = "" }) {
   };
 }
 
-export default useReportModal;
+export default useReportRegistration;

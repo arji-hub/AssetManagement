@@ -21,7 +21,7 @@ export const STATUS_GROUPS = {
 export const COLUMNS = {
   incident: [
     "Asset ID",
-    "Description",
+    "Narrative",
     "Location",
     "Reported By",
     "Date",

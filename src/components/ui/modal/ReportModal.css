@@ -148,39 +148,53 @@
   text-align: right;
 }
 
-/* type toggle */
 .report-modal-type-toggle {
   display: flex;
-  gap: 8px;
+  background: #f3f4f6;
+  border-radius: 10px;
+  padding: 4px;
+  position: relative;
+  width: 100%;
 }
 
 .report-modal-type-btn {
   flex: 1;
-  padding: 10px 0;
-  border: 1.5px solid #d1d5db;
-  border-radius: 8px;
-  background: #ffffff;
+  padding: 8px 0;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
   color: #6b7280;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.report-modal-type-btn:hover:not(:disabled) {
-  border-color: #860100;
-  color: #860100;
+  transition: color 0.2s ease;
+  position: relative;
+  z-index: 1;
 }
 
 .report-modal-type-btn.active {
-  background: #860100;
-  border-color: #860100;
-  color: #ffffff;
+  color: #f5aa2c;
 }
 
 .report-modal-type-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.report-modal-type-toggle::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  width: calc(50% - 4px);
+  background: #860100;
+  border-radius: 7px;
+  transition: transform 0.2s ease;
+  left: 4px;
+}
+
+.report-modal-type-toggle.active-missing::before {
+  transform: translateX(calc(100% + 0px));
 }
 
 /* asset lookup */
@@ -257,7 +271,9 @@
   color: #9ca3af;
   font-size: 13px;
   cursor: pointer;
-  transition: border-color 0.15s ease, color 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .report-modal-photo-upload:hover {

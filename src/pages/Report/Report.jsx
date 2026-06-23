@@ -9,8 +9,10 @@ import ReportModal from "../../components/ui/modal/ReportModal";
 import { today } from "../../utils/date";
 import useReportPage from "../../hooks/useReportPage";
 import { TABS } from "../../data/reports";
+import { useReports } from "../../hooks/useReports";
 
 function Report() {
+  const { data: reports, loading, error, refetch } = useReports();
   const { role } = useAuth();
   const isAdmin = role === ROLES.ADMIN;
 
@@ -18,12 +20,10 @@ function Report() {
     activeTab,
     setActiveTab,
     showReportModal,
-    isSubmitting,
     handleReportIncident,
     handleModalClose,
-    handleModalSubmit,
     filter,
-  } = useReportPage();
+  } = useReportPage({ refetch });
 
   const isIncidentTab = activeTab === "incident";
 
@@ -38,7 +38,6 @@ function Report() {
           </div>
 
           <div className="report-header-right">
-            {/* Condition filter — incident tab only */}
             {isIncidentTab && (
               <div className="report-filter-wrap" ref={filter.filterRef}>
                 <button
@@ -94,30 +93,45 @@ function Report() {
         {/* content */}
         <div className="report-table-wrap">
           {activeTab === "incident" && (
-            <ReportPanel group="incident" statusFilter={filter.statusFilter} />
+            <ReportPanel
+              group="incident"
+              statusFilter={filter.statusFilter}
+              reports={reports}
+              loading={loading}
+              error={error}
+            />
           )}
           {activeTab === "repair" && (
             <ReportPanel
               group="repair"
               statusFilter={["damaged", "missing", "for_repair", "found"]}
+              reports={reports}
+              loading={loading}
+              error={error}
             />
           )}
           {activeTab === "resolved" && (
-            <ReportPanel group="resolved" statusFilter={["working"]} />
+            <ReportPanel
+              group="resolved"
+              statusFilter={["working"]}
+              reports={reports}
+              loading={loading}
+              error={error}
+            />
           )}
           {activeTab === "archive" && (
-            <ReportPanel group="archive" statusFilter={["condemned"]} />
+            <ReportPanel
+              group="archive"
+              statusFilter={["condemned"]}
+              reports={reports}
+              loading={loading}
+              error={error}
+            />
           )}
         </div>
       </div>
 
-      {showReportModal && (
-        <ReportModal
-          onClose={handleModalClose}
-          onSubmit={handleModalSubmit}
-          isSubmitting={isSubmitting}
-        />
-      )}
+      {showReportModal && <ReportModal onClose={handleModalClose} />}
     </MainLayout>
   );
 }
