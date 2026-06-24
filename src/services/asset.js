@@ -73,12 +73,12 @@ export async function fetchAssets(role, currentUserUid) {
 
   const assets = assetData.map((asset) => ({
     ...asset,
-    property_custodian_name: userMap[asset.property_custodian] || "Unknown",
+    property_custodian_name: userMap[asset.property_custodian] || "---",
     //fetch fullname first_name,middle_name,last_name
     property_custodian_fullname:
-      fullname[asset.property_custodian] || "Unknown",
-    local_mr_name: userMap[asset.local_mr] || "Unknown",
-    local_mr_fullname: fullname[asset.property_custodian] || "Unknown",
+      fullname[asset.property_custodian] || "---",
+    local_mr_name: userMap[asset.local_mr] || "---",
+    local_mr_fullname: fullname[asset.property_custodian] || "---",
   }));
 
   return assets;

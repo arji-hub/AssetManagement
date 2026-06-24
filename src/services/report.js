@@ -4,27 +4,86 @@ import {
   doc,
   addDoc,
   getDoc,
+  updateDoc,
   getDocs,
   orderBy,
   query,
+  arrayUnion,
   runTransaction,
   serverTimestamp,
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getName } from "./user";
 
 export async function fetchReports() {
   const q = query(collection(db, "report"), orderBy("created_at", "desc"));
   const snapshot = await getDocs(q);
-  return snapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-  }));
+
+  return snapshot.docs.map((doc) => {
+    const report = { id: doc.id, ...doc.data() };
+    const latestLog = report.status_log?.[report.status_log.length - 1];
+
+    return {
+      id: report.id,
+      asset_id: report.asset_id,
+      report_no: report.report_no,
+      description: report.asset_description,
+      location: report.location,
+      custodian: report.custodian,
+      custodian_name: report.custodian_name,
+      reported_by: report.reported_by,
+      reported_by_name: report.reported_by_name,
+      status: report.status,
+      date_resolved: report.date_resolved,
+      status_log: report.status_log,
+      created_at: report.created_at,
+      updated_at: report.updated_at,
+      // derived from status_log
+      date_reported: report.status_log?.[0]?.date ?? null,
+      narrative: report.status_log?.[0]?.note ?? null,
+      latest_note: latestLog?.note ?? null,
+      latest_date: latestLog?.date ?? null,
+    };
+  });
 }
 
 export async function fetchReportByID(id) {
   const snap = await getDoc(doc(db, "report", id));
   if (!snap.exists()) throw new Error("Report not found.");
-  return { id: snap.id, ...snap.data() };
+
+  const report = { id: snap.id, ...snap.data() };
+  console.log("report:", report);
+
+  const latestLog = report.status_log?.[report.status_log.length - 1];
+
+  const custodianName = report.current_custodian
+    ? await getName(report.current_custodian)
+    : null;
+
+  const filteredReport = {
+    id: report.id,
+    asset_id: report.asset_id,
+    report_no: report.report_no,
+    description: report.asset_description,
+    location: report.location,
+    custodian: report.current_custodian,
+    custodian_name: custodianName?.fullname ?? "---",
+    reported_by: report.reported_by,
+    reported_by_name: report.reported_by_name,
+    status: report.status,
+    date_resolved: report.date_resolved,
+    status_log: report.status_log,
+    created_at: report.created_at,
+    updated_at: report.updated_at,
+    // derived from status_log
+    date_reported: report.status_log?.[0]?.date ?? null,
+    narrative: report.status_log?.[0]?.note ?? null,
+    latest_note: latestLog?.note ?? null,
+    latest_date: latestLog?.date ?? null,
+  };
+  console.log("filteredReport:", filteredReport);
+
+  return filteredReport;
 }
 
 const generateReportNo = async () => {
@@ -61,11 +120,9 @@ export async function addReport(
     asset_id,
     location: asset.room_id ?? null,
     current_custodian: asset.property_custodian ?? null,
-    narrative,
     report_no,
-    date_reported: now,
     date_resolved: null,
-    status: type, // "damaged" | "missing" as initial status
+    status: type,
     reported_by: reportedBy,
     reported_by_name: reportedByName,
     status_log: [
@@ -84,4 +141,40 @@ export async function addReport(
   const docRef = await addDoc(collection(db, "report"), reportData);
 
   return { id: docRef.id, report_no };
+}
+
+export async function updateReportStatus({
+  reportId,
+  reportNo,
+  newStatus,
+  note,
+  photo,
+}) {
+  let photoURL = null;
+
+  if (photo) {
+    const storageRef = ref(
+      storage,
+      `reports/${reportNo}/${Date.now()}_${photo.name}`,
+    );
+    const snapshot = await uploadBytes(storageRef, photo);
+    photoURL = await getDownloadURL(snapshot.ref);
+  }
+
+  const newLog = {
+    status: newStatus,
+    date: new Date().toISOString(),
+    note,
+    img: photoURL,
+  };
+
+  const docRef = doc(db, "report", reportId);
+  await updateDoc(docRef, {
+    status: newStatus,
+    status_log: arrayUnion(newLog),
+    date_resolved: ["working", "condemned"].includes(newStatus)
+      ? new Date().toISOString()
+      : null,
+    updated_at: serverTimestamp(),
+  });
 }

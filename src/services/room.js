@@ -12,7 +12,7 @@ import {
   query,
 } from "firebase/firestore";
 import { toLowerCase } from "../utils/TextCasing";
-import { attachCustodianNames } from "./user";
+import { getName } from "./user";
 
 export async function fetchRooms() {
   const snapshot = await getDocs(collection(db, "room"));
@@ -70,7 +70,26 @@ export async function fetchAssetInRoom(room_id) {
       ...doc.data(),
     }));
 
-    return attachCustodianNames(assetData);
+    // batch fetch unique custodian names
+    const userIds = [
+      ...new Set(assetData.map((a) => a.property_custodian).filter(Boolean)),
+    ];
+
+    const fullnameMap = {};
+    await Promise.all(
+      userIds.map(async (uid) => {
+        const name = await getName(uid);
+        fullnameMap[uid] = name?.fullname ?? "---";
+      }),
+    );
+    return assetData.map((asset) => ({
+      id: asset.id,
+      description: asset.description,
+      category: asset.category_id,
+      name: fullnameMap[asset.property_custodian] ?? "---",
+      status: asset.status,
+      date: asset.date_acquired,
+    }));
   } catch (err) {
     console.error("fetchAssetInRoom error:", err);
     throw err;

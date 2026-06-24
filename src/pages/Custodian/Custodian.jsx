@@ -18,7 +18,10 @@ function Custodian() {
 
   useEffect(() => {
     fetchCustodians()
-      .then(setCustodians)
+      .then((data) => {
+        console.log("custodians:", data);
+        setCustodians(data);
+      })
       .catch((err) => console.error("Failed to fetch custodians:", err))
       .finally(() => setIsFetching(false));
   }, []);
@@ -91,14 +94,13 @@ function Custodian() {
             <p className="custodian-empty">No custodians found.</p>
           ) : (
             custodians.map((c) => {
-              console.log(c);
               return (
                 <CustodianCard
                   key={c.id}
                   name={c.fullname}
                   username={c.username}
                   classification={c.role}
-                  totalAssets={c.totalAssets ?? 0}
+                  totalAssets={c.asset_count ?? 0}
                 />
               );
             })

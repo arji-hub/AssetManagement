@@ -1,13 +1,8 @@
-.report-info-log {
-  display: flex;
-  flex-direction: row; /* horizontal on desktop */
-  gap: 0;
-  padding-top: 8px;
-}
+
 
 .report-info-log-item {
   display: flex;
-  flex-direction: column; /* dot on top, content below */
+  flex-direction: column; 
   align-items: flex-start;
   position: relative;
   padding-right: 24px;
@@ -77,12 +72,7 @@
 }
 
 /* ── Mobile — vertical stack ── */
-@media (max-width: 768px) {
-  .report-info-log {
-    flex-direction: column;
-    padding-top: 0;
-    padding-left: 8px;
-  }
+@media (max-width: 600px) {
 
   .report-info-log-item {
     flex-direction: row;

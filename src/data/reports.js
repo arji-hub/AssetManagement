@@ -4,6 +4,13 @@ export const REPORT_TYPES = [
   { value: "missing", label: "Missing" },
 ];
 
+export const ACTION_LABELS = {
+  for_repair: "Endorse for Repair",
+  found: "Mark as Found",
+  working: "Mark as Working",
+  condemned: "Condemn Asset",
+};
+
 export const TABS = [
   { key: "incident", label: "Incident Reports" },
   { key: "repair", label: "For Repair" },

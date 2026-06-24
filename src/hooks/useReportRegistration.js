@@ -46,9 +46,7 @@ function useReportRegistration({ onClose, assetID = "" }) {
     try {
       const result = await fetchAssetByID(trimmedId);
       setAsset(result);
-      setDescription(
-        `${result.description || "Asset"} (${result.category_id || "—"}) located at ${result.room_id || "—"}, assigned to ${result.property_custodian_name || "—"}.`,
-      );
+      setDescription(result.description || "Asset");
     } catch (err) {
       setAssetError(err.message || "Failed to fetch asset.");
     } finally {

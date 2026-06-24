@@ -10,6 +10,7 @@ import { formatDate } from "../../utils/date";
 import { getReportType } from "../../utils/report";
 import LoadingScreen from "../../components/ui/status/LoadingScreen";
 import ReportLog from "../../components/ui/card/ReportLog";
+import ReportActionModal from "../../components/ui/modal/ReportActionModal";
 import "./ReportInfo.css";
 
 function ReportInfo() {
@@ -22,6 +23,8 @@ function ReportInfo() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [actionModal, setActionModal] = useState(null);
+
   useEffect(() => {
     setLoading(true);
     fetchReportByID(id)
@@ -30,12 +33,7 @@ function ReportInfo() {
       .finally(() => setLoading(false));
   }, [id]);
 
-  if (loading)
-    return (
-      <MainLayout>
-        <LoadingScreen />
-      </MainLayout>
-    );
+  if (loading) return <MainLayout>Loading Report Info</MainLayout>;
 
   if (error)
     return (
@@ -82,9 +80,7 @@ function ReportInfo() {
                   ? "Incident Report"
                   : "Missing Report"}
               </span>
-              <h2 className="report-info-asset-name">
-                {report.asset_description}
-              </h2>
+              <h2 className="report-info-asset-name">{report.description}</h2>
               <p className="report-info-asset-id">{report.asset_id}</p>
             </div>
             <div className="report-info-card-header-right">
@@ -133,6 +129,12 @@ function ReportInfo() {
                 </p>
               </div>
               <div className="report-info-detail-box">
+                <span className="report-info-field-label">CUSTODIAN</span>
+                <p className="report-info-field-value">
+                  {report.custodian_name || "—"}
+                </p>
+              </div>
+              <div className="report-info-detail-box">
                 <span className="report-info-field-label">REPORTED BY</span>
                 <p className="report-info-field-value report-info-field-value--upper">
                   {report.reported_by_name || "—"}
@@ -161,11 +163,17 @@ function ReportInfo() {
               {/* Damaged actions */}
               {isDamaged && (
                 <>
-                  <button className="action-btn" disabled>
+                  <button
+                    className="action-btn action-btn--danger"
+                    onClick={() => setActionModal("for_repair")}
+                  >
                     <i className="ti ti-tool" aria-hidden="true" />
                     Endorse for Repair
                   </button>
-                  <button className="action-btn action-btn--danger" disabled>
+                  <button
+                    className="action-btn"
+                    onClick={() => setActionModal("condemned")}
+                  >
                     <i className="ti ti-ban" aria-hidden="true" />
                     Condemn
                   </button>
@@ -175,39 +183,37 @@ function ReportInfo() {
               {/* Missing actions */}
               {isMissing && (
                 <>
-                  <button className="action-btn" disabled>
+                  <button
+                    className="action-btn action-btn--danger"
+                    onClick={() => setActionModal("found")}
+                  >
                     <i className="ti ti-circle-check" aria-hidden="true" />
                     Mark as Found
                   </button>
-                  <button className="action-btn action-btn--danger" disabled>
+                  <button
+                    className="action-btn"
+                    onClick={() => setActionModal("condemned")}
+                  >
                     <i className="ti ti-ban" aria-hidden="true" />
                     Condemn
                   </button>
                 </>
               )}
 
-              {/* For Repair actions */}
-              {isForRepair && (
+              {/* For Repair or Found actions */}
+              {(isForRepair || isFound) && (
                 <>
-                  <button className="action-btn" disabled>
+                  <button
+                    className="action-btn action-btn--danger"
+                    onClick={() => setActionModal("working")}
+                  >
                     <i className="ti ti-circle-check" aria-hidden="true" />
                     Mark as Working
                   </button>
-                  <button className="action-btn action-btn--danger" disabled>
-                    <i className="ti ti-ban" aria-hidden="true" />
-                    Condemn
-                  </button>
-                </>
-              )}
-
-              {/* Found actions */}
-              {isFound && (
-                <>
-                  <button className="action-btn" disabled>
-                    <i className="ti ti-circle-check" aria-hidden="true" />
-                    Mark as Working
-                  </button>
-                  <button className="action-btn action-btn--danger" disabled>
+                  <button
+                    className="action-btn"
+                    onClick={() => setActionModal("condemned")}
+                  >
                     <i className="ti ti-ban" aria-hidden="true" />
                     Condemn
                   </button>
@@ -227,6 +233,14 @@ function ReportInfo() {
           </div>
         </div>
       </div>
+      {actionModal && (
+        <ReportActionModal
+          report={report}
+          newStatus={actionModal}
+          onClose={() => setActionModal(null)}
+          onSuccess={() => fetchReportByID(id).then(setReport)}
+        />
+      )}
     </MainLayout>
   );
 }

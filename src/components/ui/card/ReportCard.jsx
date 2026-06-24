@@ -14,7 +14,7 @@ function ReportCard({ report, group = "incident", onClick }) {
       {/* shared columns — all groups */}
       <div className="report-card-cell report-card-id">{report.asset_id}</div>
       <div className="report-card-cell report-card-desc">
-        {group === "incident" ? report.narrative : report.asset_description}
+        {group === "incident" ? report.narrative : report.description}
       </div>
       <div className="report-card-cell">{report.location}</div>
       <div className="report-card-cell">{report.reported_by_name}</div>
