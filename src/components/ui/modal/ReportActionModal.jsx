@@ -1,7 +1,7 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useReportAction from "../../../hooks/useReportAction";
-import AddingStatusModal from "../status/AddingStatusModal";
+import AddingStatusModal from "../status/addingStatusModal";
 import { ACTION_LABELS } from "../../../data/reports";
 import "./ReportModal.css";
 
