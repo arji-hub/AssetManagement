@@ -8,7 +8,7 @@ import BasicInfo from "../../components/form/BasicInfo";
 import Media from "../../components/form/Media";
 import Assignment from "../../components/form/Assignment";
 import { useAssetRegistrationForm } from "../../hooks/useAssetRegistration";
-import AddingStatusModal from "../../components/ui/status/addingStatusModal";
+import AddingStatusModal from "../../components/ui/status/AddingStatusModal";
 
 function AssetRegistration() {
   const navigate = useNavigate();

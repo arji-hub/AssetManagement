@@ -1,7 +1,7 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useReportAction from "../../../hooks/useReportAction";
-import addingStatusModal from "../status/addingStatusModal";
+import AddingStatusModal from "../status/AddingStatusModal";
 import { ACTION_LABELS } from "../../../data/reports";
 import "./ReportModal.css";
 
@@ -25,7 +25,7 @@ function ReportActionModal({ report, newStatus, onClose, onSuccess }) {
   return (
     <>
       {submitStatus && (
-        <addingStatusModal
+        <AddingStatusModal
           title="Report"
           status={submitStatus}
           errorMessage={submitError}

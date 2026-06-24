@@ -1,8 +1,8 @@
-import addingStatusModal from "../../../components/ui/status/addingStatusModal";
+import AddingStatusModal from "../../../components/ui/status/AddingStatusModal";
 
 export default {
-  title: "Status/addingStatusModal",
-  component: addingStatusModal,
+  title: "Status/AddingStatusModal",
+  component: AddingStatusModal,
   parameters: {
     layout: "fullscreen",
   },

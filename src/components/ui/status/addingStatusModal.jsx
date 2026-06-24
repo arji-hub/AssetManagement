@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import "./addingStatusModal.css";
+import "./AddingStatusModal.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 /**
