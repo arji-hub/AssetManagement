@@ -1,23 +1,7 @@
 import PropTypes from "prop-types";
-import "./addingStatusModal.css";
+import "./AddingStatusModal.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-/**
- * AddingStatusModal
- *
- * Universal status modal reusable across any add operation.
- *
- * Shows three states:
- *  - "loading"  → spinner while operation runs
- *  - "success"  → green check, operation succeeded
- *  - "error"    → red X, shows the error message
- *
- * Props:
- *  - title: string          — e.g. "Custodian", "Room", "Asset"
- *  - status: "loading" | "success" | "error"
- *  - errorMessage: string   — shown on error state
- *  - onClose: () => void    — called on Done or Try Again
- */
 function AddingStatusModal({ title, status, errorMessage, onClose }) {
   return (
     <div className="status-overlay">

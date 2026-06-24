@@ -7,7 +7,7 @@ import FilterModal from "../../components/ui/modal/FilterModal";
 import { Status } from "../../components/ui/status/assetStatus";
 import { useAssetFilters } from "../../hooks/useAssetFilters";
 import { useRoomAssets } from "../../hooks/useRoomAssets";
-import { formatDate } from "../../utils/formatDate";
+import { formatDate } from "../../utils/date";
 
 function RoomAssets() {
   const { roomName } = useParams();
@@ -29,7 +29,7 @@ function RoomAssets() {
     custodians,
     loadingOptions,
   } = useAssetFilters(assets);
-  console.log("assetINFO", filteredAssets);
+  console.log("asset in room", filteredAssets);
 
   return (
     <MainLayout>
@@ -128,12 +128,12 @@ function RoomAssets() {
                   <tr key={asset.id}>
                     <td className="asset-index">{index + 1}</td>
                     <td className="asset-name">{asset.description}</td>
-                    <td>{asset.category_id}</td>
-                    <td>{asset.property_custodian_name}</td>
+                    <td>{asset.category}</td>
+                    <td>{asset.name}</td>
                     <td>
                       <Status status={asset.status} />
                     </td>
-                    <td>{formatDate(asset.created_at)}</td>
+                    <td>{formatDate(asset.date)}</td>
                     <td>
                       <button
                         className="asset-action-btn"

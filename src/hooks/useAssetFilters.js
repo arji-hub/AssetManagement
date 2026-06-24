@@ -4,7 +4,12 @@ import { fetchRooms } from "../services/room";
 import { fetchCategories } from "../services/category";
 import { toLowerCase } from "../utils/TextCasing";
 
-const INITIAL_FILTERS = { status: "", category: "", room: "", custodian: "" };
+const INITIAL_FILTERS = {
+  status: "",
+  category: "",
+  room: "",
+  custodian: "",
+};
 
 export function useAssetFilters(assets = []) {
   const [showFilter, setShowFilter] = useState(false);
@@ -53,9 +58,10 @@ export function useAssetFilters(assets = []) {
     setFilters(INITIAL_FILTERS);
     setShowFilter(false);
   };
-
+  const normalizeStatus = (str) => str.toLowerCase().replace(/\s+/g, "_");
   const filteredAssets = useMemo(() => {
     return assets.filter((asset) => {
+      if (!filters.status && asset.status === "Condemned") return false;
       if (filters.status && asset.status !== filters.status) return false;
       if (filters.category && asset.category_id !== filters.category)
         return false;

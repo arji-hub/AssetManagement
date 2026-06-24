@@ -7,7 +7,7 @@ import FilterModal from "../../components/ui/modal/FilterModal";
 import { Status } from "../../components/ui/status/assetStatus";
 import { useAssetFilters } from "../../hooks/useAssetFilters";
 import { useCustodianAssets } from "../../hooks/useCustodianAssets";
-import { formatDate } from "../../utils/formatDate";
+import { formatDate } from "../../utils/date";
 
 function CustodianAssets() {
   const { username } = useParams();

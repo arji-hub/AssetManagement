@@ -30,5 +30,13 @@ storybook-static
 #env files
 .env*
 
-# firebase .gitignore
+#functions folder
+functions/node_modules/
+functions/*.local
+functions/.env*
+
+functions/migrate.js
+functions/generateReport.js
+
+#service key firebase
 functions/serviceAccountKey.json

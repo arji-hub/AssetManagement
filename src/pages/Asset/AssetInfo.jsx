@@ -3,8 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useParams, useNavigate } from "react-router-dom";
 import MainLayout from "../../components/layout/MainLayout";
 import { fetchAssetByID } from "../../services/asset";
-import InfoCard from "../../components/ui/card/InfoCard";
-import HistoryCard from "../../components/ui/card/HistoryCard";
+import InfoCard from "../../components/panel/InfoCard";
+import HistoryCard from "../../components/panel/HistoryCard";
 import "./AssetInfo.css";
 
 function AssetInfo() {

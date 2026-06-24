@@ -1,9 +1,9 @@
 import React from "react";
-import { STATUS_COLORS } from "../../../data/assets";
-import LabelCard from "./LabelCard";
-import { formatCurrency } from "../../../utils/formatCurrency";
+import { STATUS_COLORS } from "../../data/assets";
+import LabelCard from "../ui/card/LabelCard";
+import { formatCurrency } from "../../utils/formatCurrency";
 import "./InfoCard.css";
-import { formatDate } from "../../../utils/formatDate";
+import { formatDate } from "../../utils/date";
 
 function StatusBadge({ status }) {
   if (!status) return null;

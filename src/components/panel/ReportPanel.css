@@ -1,0 +1,82 @@
+.report-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 720px;
+  height: 100%;
+}
+
+/* ── grid columns per group ── */
+.report-panel.incident,
+.report-panel.incident .report-panel-header,
+.report-panel.incident .report-card-row {
+  --report-grid-columns: 1fr 2fr 1fr 1.3fr 1fr 1fr;
+}
+
+.report-panel.repair,
+.report-panel.repair .report-panel-header,
+.report-panel.repair .report-card-row {
+  --report-grid-columns: 1fr 2fr 1fr 1.3fr 1fr;
+}
+
+.report-panel.resolved,
+.report-panel.resolved .report-panel-header,
+.report-panel.resolved .report-card-row,
+.report-panel.archive,
+.report-panel.archive .report-panel-header,
+.report-panel.archive .report-card-row {
+  --report-grid-columns: 1fr 2fr 1fr 1.3fr 1fr 0.8fr 1.2fr;
+}
+
+.report-panel-header {
+  display: grid;
+  grid-template-columns: var(--report-grid-columns);
+  background-color: #860100;
+  border-radius: 5px;
+}
+
+.report-panel-header-cell {
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.report-panel-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  box-shadow: inset 0 -8px 8px -8px rgba(0, 0, 0, 0.05);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.report-panel-body::-webkit-scrollbar {
+  display: none;
+}
+
+.report-panel-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 0;
+  color: #888;
+  gap: 8px;
+}
+
+.report-panel-empty svg {
+  font-size: 20px;
+  color: #860100;
+  margin-bottom: 6px;
+}
+
+.report-panel-empty p {
+  margin: 0;
+}

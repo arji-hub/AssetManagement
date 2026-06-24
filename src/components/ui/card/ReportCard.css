@@ -1,0 +1,63 @@
+.report-card-row {
+  display: grid;
+  grid-template-columns: var(--report-grid-columns);
+  align-items: center;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    box-shadow 0.15s;
+}
+
+.report-card-row:hover {
+  background: #fafafa;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.report-card-cell {
+  padding: 14px 16px;
+  color: #444;
+  font-size: 13px;
+}
+
+.report-card-id {
+  font-weight: 700;
+  color: #222;
+}
+
+.report-card-desc {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #666;
+}
+
+.report-card-status {
+  display: flex;
+  align-items: center;
+}
+
+.report-card-incident-type {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  background: #f0f0f0;
+  color: #666;
+}
+
+.report-card-incident-type.damaged {
+  background: #fff0e6;
+  color: #a05000;
+}
+
+.report-card-incident-type.missing {
+  background: #f5f0ff;
+  color: #5a3e8a;
+}
