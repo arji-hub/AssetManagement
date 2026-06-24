@@ -12,14 +12,26 @@ import { getFunctions, httpsCallable } from "firebase/functions";
 
 const functions = getFunctions();
 
+async function assetCount(uid) {
+  const [custodianSnap, localMRSnap] = await Promise.all([
+    getDocs(query(collection(db, "asset"), where("property_custodian", "==", uid))),
+    getDocs(query(collection(db, "asset"), where("local_mr", "==", uid))),
+  ]);
+
+  const allIds = new Set([
+    ...custodianSnap.docs.map((d) => d.id),
+    ...localMRSnap.docs.map((d) => d.id),
+  ]);
+
+  return allIds.size; //total count
+}
+
 export async function fetchCustodians() {
   const q = query(collection(db, "user"), where("role", "!=", "admin"));
-
   const snapshot = await getDocs(q);
 
-  return snapshot.docs.map((doc) => {
+  const custodians = snapshot.docs.map((doc) => {
     const d = doc.data();
-
     const fullname = [d.first_name, d.middle_name, d.last_name]
       .filter(Boolean)
       .join(" ");
@@ -31,12 +43,26 @@ export async function fetchCustodians() {
       role: d.role,
     };
   });
+
+  const counts = await Promise.all(
+    custodians.map(async (c) => ({
+      id: c.id,
+      asset_count: await assetCount(c.id),
+    }))
+  );
+
+  const countMap = Object.fromEntries(counts.map((c) => [c.id, c.asset_count]));
+
+  return custodians.map((c) => ({
+    ...c,
+    asset_count: countMap[c.id] ?? 0,
+  }));
 }
 
 export async function addCustodian(custodianData) {
   const addCustodianFn = httpsCallable(functions, "addCustodian");
   const result = await addCustodianFn(custodianData);
-  return result.data; // { uid }
+  return result.data;
 }
 
 export async function checkUsernameAvailable(username) {
@@ -76,41 +102,6 @@ export async function updateProfile(uid, profileData) {
   });
   return { uid, user_name: normalized_user_name };
 }
-
-export const attachCustodianNames = async (assetData) => {
-  const list = Array.isArray(assetData) ? assetData : [assetData];
-
-  const userIds = [
-    ...new Set(
-      list.flatMap((a) => [a.property_custodian, a.local_mr].filter(Boolean)),
-    ),
-  ];
-
-  const userDocs = await Promise.all(
-    userIds.map((uid) => getDoc(doc(db, "user", uid))),
-  );
-
-  const userMap = {};
-  userDocs.forEach((d) => {
-    if (d.exists()) {
-      userMap[d.id] = d.data().first_name;
-    }
-  });
-
-  const withNames = list.map((asset) => ({
-    ...asset,
-    property_custodian_name: userMap[asset.property_custodian] || "Unknown",
-    local_mr_name: userMap[asset.local_mr] || "Unknown",
-  }));
-
-  return Array.isArray(assetData) ? withNames : withNames[0];
-};
-
-export const findCustodianUidByUsername = async (username) => {
-  const custodians = await fetchCustodians();
-  const match = custodians.find((c) => c.username === username);
-  return match ? match.id : null;
-};
 
 export async function fetchAssetsByCustodian(uid) {
   try {
@@ -160,4 +151,18 @@ export async function fetchAssetsByCustodian(uid) {
     console.error("fetchAssetsByCustodian error:", err);
     throw err;
   }
+}
+
+
+export async function getName(uid) {
+  if (!uid) return null;
+  const docSnap = await getDoc(doc(db, "user", uid));
+  if (!docSnap.exists()) return null;
+  const d = docSnap.data();
+
+  return {
+    username: d.user_name,
+    firstname: d.first_name,
+    fullname: [d.first_name, d.middle_name, d.last_name].filter(Boolean).join(" "),
+  };
 }

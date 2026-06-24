@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { STATUS_COLORS } from "../../../data/assets";
+import { STATUS_COLORS } from "../../data/assets";
 import "./HistoryCard.css";
 
 const HISTORY_FILTERS = ["All Events", "Transfer", "Incident"];

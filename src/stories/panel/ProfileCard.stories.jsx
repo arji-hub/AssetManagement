@@ -1,7 +1,7 @@
-import ProfileCard from "../../../components/ui/card/ProfileCard";
+import ProfileCard from "../../components/panel/ProfileCard";
 
 export default {
-  title: "Cards/ProfileCard",
+  title: "Panel/ProfileCard",
   component: ProfileCard,
   parameters: {
     layout: "centered",

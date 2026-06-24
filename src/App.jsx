@@ -20,6 +20,7 @@ import { ROLES } from "./data/roles";
 import CustodianAssets from "./pages/Custodian/CustodianAssets";
 import RoomAssets from "./pages/Room/RoomAssets";
 import Profile from "./pages/Profile/Profile";
+import ReportInfo from "./pages/Report/ReportInfo";
 
 function App() {
   const { user, loading } = useAuth();
@@ -31,6 +32,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* LANDING PAGE */}
         <Route
           path="/"
           element={user ? <Navigate to="/dashboard" /> : <LandingPage />}
@@ -39,24 +41,43 @@ function App() {
         {/* QR redirects here */}
         <Route path="/asset/:assetId" element={<AssetPreview />} />
 
+        {/* LOGGED IN USER PAGES */}
         <Route element={<ProtectedRoute />}>
+          {/* PROFILE PAGE */}
           <Route path="/profile" element={<Profile />} />
+
+          {/* DASHBOARD PAGE */}
           <Route path="/dashboard" element={<Dashboard />} />
+
+          {/* ASSET PAGE */}
           <Route path="/asset">
             <Route index element={<Asset />} />
             <Route path="registration" element={<AssetRegistration />} />
             <Route path="info/:assetId" element={<AssetInfo />} />
           </Route>
+
+          {/* QR PAGE */}
           <Route path="/qr" element={<QR />} />
-          <Route path="/report" element={<Report />} />
+
+          {/* REPORT PAGE */}
+          <Route path="/report">
+            <Route index element={<Report />} />
+            <Route path=":id" element={<ReportInfo />} />
+          </Route>
           <Route path="/transfer" element={<Transfer />} />
 
+          {/* ADMIN ONLY PAGES */}
           <Route element={<RoleRoute allowed={[ROLES.ADMIN]} />}>
+            {/* AUDIT PAGE */}
             <Route path="/audit" element={<Audit />} />
+
+            {/* CUSTODIAN PAGE */}
             <Route path="/custodian">
               <Route index element={<Custodian />} />
               <Route path=":username" element={<CustodianAssets />} />
             </Route>
+
+            {/* ROOM PAGE */}
             <Route path="/room">
               <Route index element={<Room />} />
               <Route path=":roomName" element={<RoomAssets />} />

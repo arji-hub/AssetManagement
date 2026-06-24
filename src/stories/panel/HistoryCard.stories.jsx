@@ -1,8 +1,8 @@
 // HistoryCard.stories.jsx
-import HistoryCard from "../../../components/ui/card/HistoryCard";
+import HistoryCard from "../../components/panel/HistoryCard";
 
 export default {
-  title: "Cards/HistoryCard",
+  title: "Panel/HistoryCard",
   component: HistoryCard,
 };
 

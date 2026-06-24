@@ -1,12 +1,11 @@
 import { useAuth } from "../../context/AuthContext";
 import MainLayout from "../../components/layout/MainLayout";
-import ProfileCard from "../../components/ui/card/ProfileCard";
+import ProfileCard from "../../components/panel/ProfileCard";
 import useProfileEdit from "../../hooks/userProfileEdit";
 import "./Profile.css";
 
 function Profile() {
   const { user } = useAuth();
-  
 
   const profileEdit = useProfileEdit({
     user,
