@@ -35,6 +35,7 @@ export default function useReportAction({ report, onClose, onSuccess }) {
         newStatus,
         note: note.trim(),
         photo,
+        assetId: report.asset_id,
       });
       setSubmitStatus("success");
     } catch (err) {

@@ -45,7 +45,7 @@ function Asset() {
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, [role, currentUser]);
-
+  console.log("Assets:", assets);
   return (
     <MainLayout>
       <div className="asset-page">

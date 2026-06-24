@@ -45,6 +45,10 @@ function useReportRegistration({ onClose, assetID = "" }) {
 
     try {
       const result = await fetchAssetByID(trimmedId);
+      if (result.status?.toLowerCase() === "condemned") {
+        setAssetError("This asset is archived and cannot be reported.");
+        return;
+      }
       setAsset(result);
       setDescription(result.description || "Asset");
     } catch (err) {

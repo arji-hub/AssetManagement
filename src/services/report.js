@@ -14,6 +14,7 @@ import {
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getName } from "./user";
+import { updateAssetStatus } from "./asset";
 
 export async function fetchReports() {
   const q = query(collection(db, "report"), orderBy("created_at", "desc"));
@@ -140,6 +141,9 @@ export async function addReport(
   // ── Step 4: write to Firestore ───────────────────────────────────────────
   const docRef = await addDoc(collection(db, "report"), reportData);
 
+  // == Step 5: sync asset condition =======================================
+  if (asset_id) await updateAssetStatus(asset_id, type);
+
   return { id: docRef.id, report_no };
 }
 
@@ -149,6 +153,7 @@ export async function updateReportStatus({
   newStatus,
   note,
   photo,
+  assetId,
 }) {
   let photoURL = null;
 
@@ -177,4 +182,6 @@ export async function updateReportStatus({
       : null,
     updated_at: serverTimestamp(),
   });
+
+  if (assetId) await updateAssetStatus(assetId, newStatus);
 }

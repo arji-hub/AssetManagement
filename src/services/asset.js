@@ -6,6 +6,7 @@ import {
   getDocs,
   getDoc,
   setDoc,
+  updateDoc,
   query,
   where,
   orderBy,
@@ -18,7 +19,7 @@ import { categoryCount } from "./category";
 import { roomCount } from "./room";
 import QRCodeStyling from "qr-code-styling";
 import CICTLogo from "../assets/CICTLOGO.png";
-import { toLowerCase } from "../utils/TextCasing";
+import { toLowerCase, toTitleCase } from "../utils/TextCasing";
 
 export async function fetchAssets(role, currentUserUid) {
   const assetsRef = collection(db, "asset");
@@ -39,8 +40,6 @@ export async function fetchAssets(role, currentUserUid) {
     id: doc.id,
     ...doc.data(),
   }));
-
-  console.log("Fetched assetData:", JSON.stringify(assetData, null, 2));
 
   const userIds = [
     ...new Set(
@@ -75,8 +74,7 @@ export async function fetchAssets(role, currentUserUid) {
     ...asset,
     property_custodian_name: userMap[asset.property_custodian] || "---",
     //fetch fullname first_name,middle_name,last_name
-    property_custodian_fullname:
-      fullname[asset.property_custodian] || "---",
+    property_custodian_fullname: fullname[asset.property_custodian] || "---",
     local_mr_name: userMap[asset.local_mr] || "---",
     local_mr_fullname: fullname[asset.property_custodian] || "---",
   }));
@@ -239,5 +237,13 @@ export async function isSerialNumberExist(serialNumber) {
   return snapshot.docs.some((doc) => {
     const existing = doc.data().serial_number;
     return existing && toLowerCase(existing) === normalizedInput;
+  });
+}
+
+export async function updateAssetStatus(assetId, status) {
+  const assetRef = doc(db, "asset", assetId);
+  await updateDoc(assetRef, {
+    status: toTitleCase(status),
+    updated_at: serverTimestamp(),
   });
 }
