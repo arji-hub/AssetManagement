@@ -1,0 +1,29 @@
+/* TransferRoomCard.css */
+.transfer-card-row-room {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr 1fr 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 16px;
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: 8px;
+  background-color: var(--color-surface-hover, #f9fafb);
+}
+
+.transfer-card-row-room .transfer-card-cell {
+  font-size: 14px;
+  color: var(--color-text, #111827);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.transfer-card-row-room .transfer-card-id {
+  font-weight: 600;
+}
+
+.transfer-card-row-room .transfer-card-cell:nth-child(3),
+.transfer-card-row-room .transfer-card-cell:nth-child(4),
+.transfer-card-row-room .transfer-card-cell:nth-child(5) {
+  text-align: center;
+}

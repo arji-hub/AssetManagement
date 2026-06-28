@@ -1,10 +1,13 @@
 const { setGlobalOptions } = require("firebase-functions");
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
+const { onDocumentUpdated } = require("firebase-functions/v2/firestore"); 
 const { defineSecret } = require("firebase-functions/params");
 const { initializeApp } = require("firebase-admin/app");
 const { getAuth } = require("firebase-admin/auth");
 const { getFirestore, FieldValue } = require("firebase-admin/firestore");
 const nodemailer = require("nodemailer");
+
+
 
 initializeApp();
 setGlobalOptions({ maxInstances: 10 });
@@ -233,5 +236,68 @@ exports.addCustodian = onCall(
     }
 
     return { uid: userRecord.uid };
+  },
+);
+
+
+
+/**
+ * Firestore Trigger: onTransferRequestUpdated
+ *
+ * Watches transfer_request/{requestId} for changes. When all three
+ * acknowledgments (admin, from, to) become true — and weren't all
+ * true before this write — marks the request "completed" and
+ * reassigns the asset's custodian to the "to" party.
+ *
+ * This runs with Admin SDK privileges, bypassing Firestore rules,
+ * which is required since /asset writes are admin-only and the
+ * person whose action completes the chain may not be an admin.
+ */
+exports.onTransferRequestUpdated = onDocumentUpdated(
+  { document: "transfer_request/{requestId}", region: "us-central1" },
+  async (event) => {
+    const before = event.data.before.data();
+    const after = event.data.after.data();
+
+    const ackBefore = before.acknowledgments || {};
+    const ackAfter = after.acknowledgments || {};
+
+    const wasComplete =
+      !!ackBefore.admin?.acknowledged &&
+      !!ackBefore.from?.acknowledged &&
+      !!ackBefore.to?.acknowledged;
+
+    const isComplete =
+      !!ackAfter.admin?.acknowledged &&
+      !!ackAfter.from?.acknowledged &&
+      !!ackAfter.to?.acknowledged;
+
+    // Only act on the transition into "all acknowledged"; this also
+    // guards against re-triggering on this function's own write,
+    // since status/completed_at don't affect ack booleans.
+    if (wasComplete || !isComplete) {
+      return;
+    }
+
+    const db = getFirestore();
+    const requestRef = event.data.after.ref;
+    const toUid = ackAfter.to?.uid;
+
+    const batch = db.batch();
+
+    batch.update(requestRef, {
+      status: "completed",
+      completed_at: FieldValue.serverTimestamp(),
+    });
+
+    if (toUid && after.asset_id) {
+      const assetRef = db.collection("asset").doc(after.asset_id);
+      batch.update(assetRef, {
+        property_custodian: toUid,
+        updated_at: FieldValue.serverTimestamp(),
+      });
+    }
+
+    await batch.commit();
   },
 );

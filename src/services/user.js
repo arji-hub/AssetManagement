@@ -9,6 +9,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { getFunctions, httpsCallable } from "firebase/functions";
+import { toLowerCase } from "../utils/TextCasing";
 
 const functions = getFunctions();
 
@@ -57,6 +58,47 @@ export async function fetchCustodians() {
     ...c,
     asset_count: countMap[c.id] ?? 0,
   }));
+}
+
+export async function findCustodian(identifier) {
+  const trimmed = toLowerCase(identifier.trim());
+  const col = collection(db, "user");
+
+  let snap = await getDocs(query(col, where("user_name", "==", trimmed)));
+
+  if (snap.empty) {
+    snap = await getDocs(query(col, where("email", "==", trimmed)));
+  }
+
+  if (snap.empty) {
+    throw new Error("Custodian not found.");
+  }
+
+  const docSnap = snap.docs[0];
+  const d = docSnap.data();
+
+  if (d.role === "admin") {
+    throw new Error("This user is an admin, not a custodian.");
+  }
+
+  if (d.role === "parttime") {
+    throw new Error("This user is only a part time faculty. Select another custodian");
+  }
+
+  const fullname = [d.first_name, d.middle_name, d.last_name]
+    .filter(Boolean)
+    .join(" ");
+
+  const asset_count = await assetCount(docSnap.id);
+
+  return {
+    id: docSnap.id,
+    username: d.user_name,
+    email: d.email,
+    fullname,
+    role: d.role,
+    asset_count,
+  };
 }
 
 export async function addCustodian(custodianData) {
@@ -166,3 +208,5 @@ export async function getName(uid) {
     fullname: [d.first_name, d.middle_name, d.last_name].filter(Boolean).join(" "),
   };
 }
+
+

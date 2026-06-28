@@ -1,0 +1,187 @@
+/* ── page container ── */
+.transfer-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+  padding: 24px;
+}
+
+/* ── header row ── */
+.transfer-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  z-index: 900;
+}
+
+.transfer-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.transfer-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #111;
+  margin: 0;
+  line-height: 1;
+}
+
+.transfer-date {
+  font-size: 11px;
+  color: #888;
+  letter-spacing: 0.06em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.transfer-header-right {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ── action button (New Transfer / Move Asset) ── */
+.transfer-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 18px;
+  background: #860100;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.transfer-action-btn:hover {
+  background: #5d0100;
+}
+
+/* ── top tabs (Transfers | Rooms) ── */
+.transfer-top-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.transfer-top-tab {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #999;
+  border-radius: 8px;
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+
+.transfer-top-tab:hover {
+  color: #860100;
+  background: #fff0f0;
+}
+
+.transfer-top-tab--active {
+  color: #860100;
+  background: #ffeaea;
+}
+
+/* ── sub tabs (Action | Requested | Logs) ── */
+.transfer-sub-tabs {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.transfer-sub-tab {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 0 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #999;
+  position: relative;
+  transition: color 0.15s;
+}
+
+.transfer-sub-tab:hover {
+  color: #860100;
+}
+
+.transfer-sub-tab--active {
+  color: #860100;
+}
+
+.transfer-sub-tab--active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: #860100;
+  border-radius: 2px;
+}
+
+/* ── table wrapper ── */
+.transfer-table-wrap {
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: auto;
+  min-width: 750px;
+  min-height: 0;
+}
+
+/* ── empty state ── */
+.transfer-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  height: 100%;
+  min-height: 240px;
+  color: #ccc;
+}
+
+.transfer-empty-icon {
+  font-size: 36px;
+}
+
+.transfer-empty-text {
+  font-size: 14px;
+  color: #bbb;
+  margin: 0;
+}
+
+/* ── responsive ── */
+@media (max-width: 960px) {
+  .transfer-page {
+    padding: 16px;
+  }
+
+  .transfer-header {
+    flex-direction: column;
+    z-index: 100;
+  }
+
+  .transfer-top-tabs,
+  .transfer-sub-tabs {
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}

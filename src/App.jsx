@@ -13,6 +13,8 @@ import AssetPreview from "./pages/QR/AssetPreview";
 import Custodian from "./pages/Custodian/Custodian";
 import Report from "./pages/Report/Report";
 import Transfer from "./pages/Transfer/Transfer";
+import TransferInfo from "./pages/Transfer/TransferInfo";
+import TransferRoom from "./pages/Transfer/TransferRoom";
 import QR from "./pages/QR/QR";
 import Audit from "./pages/Audit/Audit";
 import Room from "./pages/Room/Room";
@@ -64,7 +66,15 @@ function App() {
             <Route index element={<Report />} />
             <Route path=":id" element={<ReportInfo />} />
           </Route>
-          <Route path="/transfer" element={<Transfer />} />
+
+          {/* TRANSFER PAGE */}
+          <Route path="/transfer">
+            <Route index element={<Transfer />} />
+            <Route element={<RoleRoute allowed={[ROLES.ADMIN]} />}>
+              <Route path="room" element={<TransferRoom />} />
+            </Route>
+            <Route path=":id" element={<TransferInfo />} />
+          </Route>
 
           {/* ADMIN ONLY PAGES */}
           <Route element={<RoleRoute allowed={[ROLES.ADMIN]} />}>
