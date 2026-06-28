@@ -1,13 +1,11 @@
 const { setGlobalOptions } = require("firebase-functions");
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
-const { onDocumentUpdated } = require("firebase-functions/v2/firestore"); 
+const { onDocumentUpdated } = require("firebase-functions/v2/firestore");
 const { defineSecret } = require("firebase-functions/params");
 const { initializeApp } = require("firebase-admin/app");
 const { getAuth } = require("firebase-admin/auth");
 const { getFirestore, FieldValue } = require("firebase-admin/firestore");
 const nodemailer = require("nodemailer");
-
-
 
 initializeApp();
 setGlobalOptions({ maxInstances: 10 });
@@ -239,10 +237,8 @@ exports.addCustodian = onCall(
   },
 );
 
-
-
 /**
- * Firestore Trigger: onTransferRequestUpdated
+ * Firestore Trigger: onUpdateAssetCustodian
  *
  * Watches transfer_request/{requestId} for changes. When all three
  * acknowledgments (admin, from, to) become true — and weren't all
@@ -253,7 +249,7 @@ exports.addCustodian = onCall(
  * which is required since /asset writes are admin-only and the
  * person whose action completes the chain may not be an admin.
  */
-exports.onTransferRequestUpdated = onDocumentUpdated(
+exports.onUpdateAssetCustodian = onDocumentUpdated(
   { document: "transfer_request/{requestId}", region: "us-central1" },
   async (event) => {
     const before = event.data.before.data();
@@ -281,7 +277,6 @@ exports.onTransferRequestUpdated = onDocumentUpdated(
 
     const db = getFirestore();
     const requestRef = event.data.after.ref;
-    const toUid = ackAfter.to?.uid;
 
     const batch = db.batch();
 
@@ -290,12 +285,108 @@ exports.onTransferRequestUpdated = onDocumentUpdated(
       completed_at: FieldValue.serverTimestamp(),
     });
 
-    if (toUid && after.asset_id) {
+    if (after.asset_id) {
       const assetRef = db.collection("asset").doc(after.asset_id);
-      batch.update(assetRef, {
-        property_custodian: toUid,
-        updated_at: FieldValue.serverTimestamp(),
-      });
+
+      // assign_custodian / transfer_custodian: set custodian to the "to" party
+      // remove_custodian: "to" is never set, so clear the custodian instead
+      const toUid = ackAfter.to?.uid;
+      const isRemoval = after.type === "remove_custodian";
+
+      if (isRemoval) {
+        batch.update(assetRef, {
+          property_custodian: null,
+          updated_at: FieldValue.serverTimestamp(),
+        });
+      } else if (toUid) {
+        batch.update(assetRef, {
+          property_custodian: toUid,
+          updated_at: FieldValue.serverTimestamp(),
+        });
+      }
+    }
+
+    await batch.commit();
+  },
+);
+
+
+/**
+ * Firestore Trigger: onUpdateAssetLocalMR
+ *
+ * Watches transfer_request/{requestId} for changes. When all three
+ * acknowledgments (admin, custodian, localmr) become true — and weren't
+ * all true before this write — marks the request "completed" and
+ * updates the asset's local_mr accordingly:
+ *   - assign_localmr → sets local_mr to acknowledgments.localmr.uid
+ *   - remove_localmr → clears local_mr to null
+ *
+ * Only fires for transfer_request docs whose type is assign_localmr or
+ * remove_localmr; custodian-transfer requests are handled separately
+ * by onUpdateAssetCustodian.
+ *
+ * This runs with Admin SDK privileges, bypassing Firestore rules,
+ * which is required since /asset writes are admin-only and the
+ * person whose action completes the chain may not be an admin.
+ */
+exports.onUpdateAssetLocalMR = onDocumentUpdated(
+  { document: "transfer_request/{requestId}", region: "us-central1" },
+  async (event) => {
+    const before = event.data.before.data();
+    const after = event.data.after.data();
+
+    // This trigger only handles the local_mr transfer types
+    if (!["assign_localmr", "remove_localmr"].includes(after.type)) {
+      return;
+    }
+
+    const ackBefore = before.acknowledgments || {};
+    const ackAfter = after.acknowledgments || {};
+
+    const wasComplete =
+      !!ackBefore.admin?.acknowledged &&
+      !!ackBefore.custodian?.acknowledged &&
+      !!ackBefore.localmr?.acknowledged;
+
+    const isComplete =
+      !!ackAfter.admin?.acknowledged &&
+      !!ackAfter.custodian?.acknowledged &&
+      !!ackAfter.localmr?.acknowledged;
+
+    // Only act on the transition into "all acknowledged"; this also
+    // guards against re-triggering on this function's own write,
+    // since status/completed_at don't affect ack booleans.
+    if (wasComplete || !isComplete) {
+      return;
+    }
+
+    const db = getFirestore();
+    const requestRef = event.data.after.ref;
+
+    const batch = db.batch();
+
+    batch.update(requestRef, {
+      status: "completed",
+      completed_at: FieldValue.serverTimestamp(),
+    });
+
+    if (after.asset_id) {
+      const assetRef = db.collection("asset").doc(after.asset_id);
+
+      const localmrUid = ackAfter.localmr?.uid;
+      const isRemoval = after.type === "remove_localmr";
+
+      if (isRemoval) {
+        batch.update(assetRef, {
+          local_mr: null,
+          updated_at: FieldValue.serverTimestamp(),
+        });
+      } else if (localmrUid) {
+        batch.update(assetRef, {
+          local_mr: localmrUid,
+          updated_at: FieldValue.serverTimestamp(),
+        });
+      }
     }
 
     await batch.commit();
