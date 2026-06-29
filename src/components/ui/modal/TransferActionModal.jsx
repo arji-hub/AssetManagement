@@ -1,39 +1,18 @@
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useTransferAction } from "../../../hooks/useTransferAction";
 import "./TransferActionModal.css";
 
-const COUNTDOWN = 5;
-
 function TransferActionModal({ type, onClose, onConfirm }) {
-  const [remarks, setRemarks] = useState("");
-  const [seconds, setSeconds] = useState(COUNTDOWN);
-  const [ready, setReady] = useState(false);
-  const textareaRef = useRef(null);
-
-  const isApprove = type === "approve";
-
-  useEffect(() => {
-    textareaRef.current?.focus();
-  }, []);
-
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [onClose]);
-
-  // countdown
-  useEffect(() => {
-    if (ready) return;
-    if (seconds === 0) {
-      setReady(true);
-      return;
-    }
-    const timer = setTimeout(() => setSeconds((s) => s - 1), 1000);
-    return () => clearTimeout(timer);
-  }, [seconds, ready]);
+  const {
+    remarks,
+    setRemarks,
+    seconds,
+    ready,
+    textareaRef,
+    isApprove,
+    handleConfirm,
+  } = useTransferAction(type, onClose, onConfirm);
 
   return (
     <div className="transfer-action-overlay" onClick={onClose}>
@@ -106,7 +85,7 @@ function TransferActionModal({ type, onClose, onConfirm }) {
           </button>
           <button
             className={`transfer-action-modal-btn ${isApprove ? "transfer-action-modal-btn--approve" : "transfer-action-modal-btn--decline"}`}
-            onClick={() => onConfirm(remarks.trim())}
+            onClick={handleConfirm}
             disabled={!ready}
           >
             {!ready

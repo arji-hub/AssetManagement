@@ -12,7 +12,6 @@ import {
 export function useTransferPanel(group, { skip = false } = {}) {
   const { user, role } = useAuth();
   const uid = user?.uid;
-  const isAdmin = role === ROLES.ADMIN;
   const navigate = useNavigate();
 
   const [items, setItems] = React.useState([]);
@@ -60,7 +59,7 @@ export function useTransferPanel(group, { skip = false } = {}) {
     return () => {
       cancelled = true;
     };
-  }, [group, uid, role, isAdmin, skip]);
+  }, [group, uid, role, skip]);
 
   return { items, loading, error, handleRowClick };
 }

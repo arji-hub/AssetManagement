@@ -294,3 +294,67 @@
 .transfer-modal-btn--submit:hover:not(:disabled) {
   background: #e09a1e;
 }
+
+/* Mode toggle (Transfer vs Remove) */
+.transfer-modal-mode {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: #f3f4f6;
+  border-radius: 10px;
+}
+
+.transfer-modal-mode-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 12px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.transfer-modal-mode-btn svg {
+  font-size: 12px;
+}
+
+.transfer-modal-mode-btn:hover:not(:disabled):not(.is-active) {
+  color: #374151;
+}
+
+.transfer-modal-mode-btn.is-active {
+  background: #ffffff;
+  color: #860100;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.transfer-modal-mode-btn.is-active.is-remove {
+  color: #dc2626;
+}
+
+.transfer-modal-mode-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Remove-mode warning variant of the info box */
+.modal-info.is-warning {
+  background: rgba(220, 38, 38, 0.06);
+  border-color: rgba(220, 38, 38, 0.25);
+}
+
+.modal-info.is-warning .info-icon,
+.modal-info.is-warning .info-text {
+  color: #dc2626;
+}

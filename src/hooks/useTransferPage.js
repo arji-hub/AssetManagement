@@ -6,7 +6,7 @@ import { SUB_TABS } from "../data/transfer";
 
 export function useTransferPage({ currentTop = "transfers" } = {}) {
   const { role } = useAuth();
-  const isAdmin = role === ROLES.ADMIN;
+  const isRole = role;
   const navigate = useNavigate();
 
   const [activeTop, setActiveTop] = React.useState("transfers");
@@ -44,7 +44,7 @@ export function useTransferPage({ currentTop = "transfers" } = {}) {
 
   return {
     // role / permissions
-    isAdmin,
+    isRole,
 
     // tab state
     activeTop,

@@ -1,11 +1,12 @@
+// components/modal/TransferMR.jsx
 
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import useTransferRequest from "../../../hooks/useTransferRequest";
+import useTransferMR from "../../../hooks/useTransferMR";
 import "./TransferModal.css";
 import AddingStatusModal from "../status/AddingStatusModal";
 
-function TransferModal({ onClose, assetID = "" }) {
+function TransferMR({ onClose, assetID = "" }) {
   const {
     mode,
     setMode,
@@ -14,27 +15,27 @@ function TransferModal({ onClose, assetID = "" }) {
     asset,
     assetLoading,
     assetError,
-    custodianId,
-    custodian,
-    custodianLoading,
-    custodianError,
+    mrId,
+    mr,
+    mrLoading,
+    mrError,
     description,
-    currentCustodian,
+    currentMR,
     notes,
     submitError,
     isSubmitting,
     isFormValid,
     setAssetId,
-    setCustodianId,
+    setMrId,
     setNotes,
     handleFindAsset,
     handleAssetIdKeyDown,
-    handleFindCustodian,
-    handleCustodianIdKeyDown,
+    handleFindMR,
+    handleMrIdKeyDown,
     handleSubmit,
     submitStatus,
     handleStatusClose,
-  } = useTransferRequest({ onClose, assetID });
+  } = useTransferMR({ onClose, assetID });
 
   const isRemoveMode = mode === "remove";
 
@@ -42,7 +43,7 @@ function TransferModal({ onClose, assetID = "" }) {
     <>
       {submitStatus && (
         <AddingStatusModal
-          title={isRemoveMode ? "Remove Custodian" : "Transfer"}
+          title={isRemoveMode ? "Remove Local MR" : "Assign Local MR"}
           status={submitStatus}
           errorMessage={submitError}
           onClose={handleStatusClose}
@@ -54,12 +55,12 @@ function TransferModal({ onClose, assetID = "" }) {
           onClick={(e) => e.stopPropagation()}
           role="dialog"
           aria-modal="true"
-          aria-labelledby="transfer-modal-title"
+          aria-labelledby="mr-modal-title"
         >
           {/* Header */}
           <div className="transfer-modal-header">
-            <h2 id="transfer-modal-title">
-              {isRemoveMode ? "Remove Custodian" : "Transfer Custodian"}
+            <h2 id="mr-modal-title">
+              {isRemoveMode ? "Remove Local MR" : "Assign Local MR"}
             </h2>
             <button
               className="transfer-modal-close"
@@ -76,18 +77,18 @@ function TransferModal({ onClose, assetID = "" }) {
             <div
               className="transfer-modal-mode"
               role="tablist"
-              aria-label="Custodian action"
+              aria-label="Local MR action"
             >
               <button
                 type="button"
                 role="tab"
                 aria-selected={!isRemoveMode}
                 className={`transfer-modal-mode-btn${!isRemoveMode ? " is-active" : ""}`}
-                onClick={() => setMode("transfer")}
+                onClick={() => setMode("assign")}
                 disabled={isSubmitting}
               >
-                <FontAwesomeIcon icon="fa-solid fa-right-left" />
-                Transfer
+                <FontAwesomeIcon icon="fa-solid fa-user-plus" />
+                Assign
               </button>
               <button
                 type="button"
@@ -106,10 +107,10 @@ function TransferModal({ onClose, assetID = "" }) {
             <div
               className={`transfer-modal-field ${assetError ? "has-error" : ""}`}
             >
-              <label htmlFor="transfer-asset-id-input">Asset ID</label>
+              <label htmlFor="mr-asset-id-input">Asset ID</label>
               <div className="transfer-modal-lookup">
                 <input
-                  id="transfer-asset-id-input"
+                  id="mr-asset-id-input"
                   ref={assetInputRef}
                   type="text"
                   placeholder="e.g. cict-1002"
@@ -158,9 +159,9 @@ function TransferModal({ onClose, assetID = "" }) {
 
             {/* auto-generated description */}
             <div className="transfer-modal-field">
-              <label htmlFor="transfer-description-input">Description</label>
+              <label htmlFor="mr-description-input">Description</label>
               <input
-                id="transfer-description-input"
+                id="mr-description-input"
                 type="text"
                 value={description}
                 readOnly
@@ -169,72 +170,79 @@ function TransferModal({ onClose, assetID = "" }) {
               />
             </div>
 
-            {/* current custodian */}
+            {/* property custodian — read-only context, this flow never changes it */}
             <div className="transfer-modal-field">
-              <label htmlFor="transfer-current-custodian-input">
-                Current Custodian
-              </label>
+              <label htmlFor="mr-custodian-input">Property Custodian</label>
               <input
-                id="transfer-current-custodian-input"
+                id="mr-custodian-input"
                 type="text"
-                value={currentCustodian || "—"}
+                value={asset?.property_custodian_name || "—"}
                 readOnly
                 placeholder="Auto-generated once asset is found"
                 disabled={!asset}
               />
             </div>
 
-            {/* custodian ("to") lookup — hidden entirely in remove mode */}
+            {/* current local mr */}
+            {isRemoveMode && (
+              <div className="transfer-modal-field">
+                <label htmlFor="mr-current-input">Current Local MR</label>
+                <input
+                  id="mr-current-input"
+                  type="text"
+                  value={currentMR || "—"}
+                  readOnly
+                  placeholder="Auto-generated once asset is found"
+                  disabled={!asset}
+                />
+              </div>
+            )}
+
+            {/* local mr ("to") lookup — hidden in remove mode */}
             {!isRemoveMode && (
               <div
-                className={`transfer-modal-field ${custodianError ? "has-error" : ""}`}
+                className={`transfer-modal-field ${mrError ? "has-error" : ""}`}
               >
-                <label htmlFor="transfer-custodian-id-input">
-                  Transfer To (Custodian)
-                </label>
+                <label htmlFor="mr-id-input">Assign Local MR</label>
                 <div className="transfer-modal-lookup">
                   <input
-                    id="transfer-custodian-id-input"
+                    id="mr-id-input"
                     type="text"
                     placeholder="Search by username or email"
-                    value={custodianId}
-                    onChange={(e) => setCustodianId(e.target.value)}
-                    onKeyDown={handleCustodianIdKeyDown}
-                    disabled={isSubmitting || custodianLoading}
+                    value={mrId}
+                    onChange={(e) => setMrId(e.target.value)}
+                    onKeyDown={handleMrIdKeyDown}
+                    disabled={isSubmitting || mrLoading}
                   />
                   <button
                     type="button"
                     className="transfer-modal-find-btn"
-                    onClick={handleFindCustodian}
-                    disabled={
-                      isSubmitting || custodianLoading || !custodianId.trim()
-                    }
+                    onClick={handleFindMR}
+                    disabled={isSubmitting || mrLoading || !mrId.trim()}
                   >
-                    {custodianLoading ? (
+                    {mrLoading ? (
                       <FontAwesomeIcon icon="fa-solid fa-spinner" spin />
                     ) : (
                       <FontAwesomeIcon icon="fa-solid fa-magnifying-glass" />
                     )}
                   </button>
                 </div>
-                {custodianError && (
+                {mrError && (
                   <span className="transfer-modal-error" role="alert">
-                    {custodianError}
+                    {mrError}
                   </span>
                 )}
               </div>
             )}
 
-            {/* custodian preview — only relevant in transfer mode */}
-            {!isRemoveMode && custodian && (
+            {/* mr preview — only relevant in assign mode */}
+            {!isRemoveMode && mr && (
               <div className="transfer-modal-preview">
                 <FontAwesomeIcon icon="fa-solid fa-circle-check" />
                 <div>
-                  <p className="transfer-modal-preview-title">
-                    {custodian.fullname}
-                  </p>
+                  <p className="transfer-modal-preview-title">{mr.fullname}</p>
                   <p className="transfer-modal-preview-sub">
-                    {custodian.username || "—"} · {custodian.email || "—"}
+                    {mr.username || "—"} · {mr.email || "—"}
                   </p>
                 </div>
               </div>
@@ -242,9 +250,9 @@ function TransferModal({ onClose, assetID = "" }) {
 
             {/* notes */}
             <div className="transfer-modal-field">
-              <label htmlFor="transfer-notes-input">Notes (optional)</label>
+              <label htmlFor="mr-notes-input">Notes (optional)</label>
               <textarea
-                id="transfer-notes-input"
+                id="mr-notes-input"
                 placeholder="Add any additional notes..."
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
@@ -263,7 +271,7 @@ function TransferModal({ onClose, assetID = "" }) {
               </div>
             )}
 
-            {/* Info box — copy + tone change based on mode */}
+            {/* Info box */}
             <div className={`modal-info${isRemoveMode ? " is-warning" : ""}`}>
               <FontAwesomeIcon
                 icon={
@@ -275,8 +283,8 @@ function TransferModal({ onClose, assetID = "" }) {
               />
               <p className="info-text">
                 {isRemoveMode
-                  ? "This will unassign the asset from its current custodian. It will have no custodian until reassigned."
-                  : "Find the asset and the receiving custodian first — both custodians will need to acknowledge the transfer before it's completed."}
+                  ? "This will unassign the local MR from this asset. The asset's property custodian will still need to acknowledge."
+                  : "Only the asset's property custodian can assign a local MR. They'll need to acknowledge this assignment."}
               </p>
             </div>
           </div>
@@ -299,7 +307,7 @@ function TransferModal({ onClose, assetID = "" }) {
                 ? "Submitting..."
                 : isRemoveMode
                   ? "Submit Removal"
-                  : "Submit Transfer"}
+                  : "Submit Assignment"}
             </button>
           </div>
         </div>
@@ -308,4 +316,4 @@ function TransferModal({ onClose, assetID = "" }) {
   );
 }
 
-export default TransferModal;
+export default TransferMR;

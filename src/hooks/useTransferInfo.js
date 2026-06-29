@@ -9,7 +9,6 @@ export function useTransferInfo() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { role, user } = useAuth();
-  const isAdmin = role === ROLES.ADMIN;
 
   const [request, setRequest] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -30,8 +29,6 @@ export function useTransferInfo() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  const isPending = request?.status === "pending";
-  const isForApproval = request?.status === "for_approval";
   const isCompleted = request?.status === "completed";
   const isDenied = request?.status === "denied";
   const isResolved = isCompleted || isDenied;
@@ -41,19 +38,31 @@ export function useTransferInfo() {
     : null;
 
   const ackAdmin = request?.acknowledgments?.admin ?? null;
-  const ackFrom = request?.acknowledgments?.from ?? null;
-  const ackTo = request?.acknowledgments?.to ?? null;
+  console.log("ackAdmin: ", ackAdmin);
 
-  const userAck =
-    user?.uid === ackAdmin?.uid
-      ? ackAdmin
-      : user?.uid === ackFrom?.uid
-        ? ackFrom
-        : user?.uid === ackTo?.uid
-          ? ackTo
-          : null;
+  const ackFrom = request?.acknowledgments?.from ?? null;
+  console.log("ackFrom: ", ackFrom);
+
+  const ackTo = request?.acknowledgments?.to ?? null;
+  console.log("ackTo: ", ackTo);
+
+  console.log("user?.uid: ", user?.uid);
+
+  let userAck;
+  if (user?.uid === ackAdmin?.uid) {
+    userAck = ackAdmin;
+  } else if (user?.uid === ackFrom?.uid) {
+    userAck = ackFrom;
+  } else if (user?.uid === ackTo?.uid) {
+    userAck = ackTo;
+  } else {
+    userAck = null;
+  }
+
+  console.log("userAck: ", userAck);
 
   const showActions = !isResolved && userAck?.acknowledged === false;
+  console.log("isResolved: ", isResolved, "| showActions: ", showActions);
 
   const [actionModal, setActionModal] = useState(null);
   const [submitStatus, setSubmitStatus] = useState(null); // "loading" | "success" | "error" | null
@@ -91,13 +100,6 @@ export function useTransferInfo() {
     request,
     loading,
     error,
-    isAdmin,
-    user,
-    isPending,
-    isForApproval,
-    isCompleted,
-    isDenied,
-    isResolved,
     typeLabel,
     ackAdmin,
     ackFrom,
@@ -111,4 +113,4 @@ export function useTransferInfo() {
     handleSubmitAction,
     closeActionFlow,
   };
-}   
+}

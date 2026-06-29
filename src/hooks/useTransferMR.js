@@ -5,13 +5,13 @@ import { addTransferRequest } from "../services/transfer";
 import { useAuth } from "../context/AuthContext";
 import ROLES from "../data/roles";
 
-function useTransferRequest({ onClose, assetID = "" } = {}) {
+function useTransferMR({ onClose, assetID = "" } = {}) {
   const { user, role } = useAuth();
   const isAdmin = role === ROLES.ADMIN;
   const assetInputRef = useRef(null);
 
-  //transfer or remove
-  const [mode, setMode] = useState("transfer");
+  // assign or remove
+  const [mode, setMode] = useState("assign");
 
   // asset lookup
   const [assetId, setAssetId] = useState("");
@@ -19,27 +19,27 @@ function useTransferRequest({ onClose, assetID = "" } = {}) {
   const [assetLoading, setAssetLoading] = useState(false);
   const [assetError, setAssetError] = useState(null);
 
-  // custodian ("to") lookup
-  const [custodianId, setCustodianId] = useState("");
-  const [custodian, setCustodian] = useState(null);
-  const [custodianLoading, setCustodianLoading] = useState(false);
-  const [custodianError, setCustodianError] = useState(null);
+  // local_mr ("to") lookup — only relevant in assign mode
+  const [mrId, setMrId] = useState("");
+  const [mr, setMr] = useState(null);
+  const [mrLoading, setMrLoading] = useState(false);
+  const [mrError, setMrError] = useState(null);
 
   // form fields
   const [description, setDescription] = useState("");
-  const [currentCustodian, setCurrentCustodian] = useState(null);
+  const [currentMR, setCurrentMR] = useState(null);
   const [notes, setNotes] = useState("");
 
   const [submitError, setSubmitError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
 
-  //if mode remove
+  // clear mr lookup state when switching to remove mode
   useEffect(() => {
     if (mode === "remove") {
-      setCustodianId("");
-      setCustodian(null);
-      setCustodianError(null);
+      setMrId("");
+      setMr(null);
+      setMrError(null);
     }
   }, [mode]);
 
@@ -52,6 +52,11 @@ function useTransferRequest({ onClose, assetID = "" } = {}) {
     }
   };
 
+  // is the current user the asset's property_custodian?
+  const isCustodian = (a) => !!a && user.uid === a.property_custodian;
+  // is the current user the asset's current local_mr?
+  const isCurrentLocalMR = (a) => !!a && user.uid === a.local_mr;
+
   // --- asset lookup ---
   const lookupAsset = async (id) => {
     const trimmedId = id.trim();
@@ -61,22 +66,25 @@ function useTransferRequest({ onClose, assetID = "" } = {}) {
     setAssetError(null);
     setAsset(null);
     setDescription("");
-    setCurrentCustodian(null);
+    setCurrentMR(null);
 
     try {
       const result = await fetchAssetByID(trimmedId);
       if (result.status?.toLowerCase() === "condemned") {
-        setAssetError("This asset is archived and cannot be transferred.");
+        setAssetError("This asset is archived and cannot be modified.");
         return;
       }
-      const isAssigned = user.uid === result.property_custodian;
-      if (!isAdmin && !isAssigned) {
-        setAssetError("This asset is currently not in your custody.");
+
+      // only the asset's property_custodian (or an admin) may manage its local_mr
+      const allowed = isAdmin || isCustodian(result) || isCurrentLocalMR(result);
+      if (!allowed) {
+        setAssetError("You don't have permission to manage the local MR for this asset.");
         return;
       }
+
       setAsset(result);
       setDescription(result.description || "Asset");
-      setCurrentCustodian(result.property_custodian_name || null);
+      setCurrentMR(result.local_mr_name || null);
     } catch (err) {
       setAssetError(err.message || "Failed to fetch asset.");
     } finally {
@@ -84,31 +92,32 @@ function useTransferRequest({ onClose, assetID = "" } = {}) {
     }
   };
 
-  // --- custodian lookup ---
-  const lookupCustodian = async (id) => {
+  // --- local_mr ("to") lookup ---
+  const lookupMR = async (id) => {
     const trimmedId = id.trim();
     if (!trimmedId) return;
 
-    setCustodianLoading(true);
-    setCustodianError(null);
-    setCustodian(null);
+    setMrLoading(true);
+    setMrError(null);
+    setMr(null);
 
     try {
       const result = await findCustodian(trimmedId);
 
-      const isAssigned = user.uid === result.id;
-      if (isAssigned) {
-        setCustodianError(
-          "You are already the custodian of this asset and cannot transfer it to yourself.",
-        );
+      if (user.uid === result.id) {
+        setMrError("You cannot assign yourself as the local MR.");
+        return;
+      }
+      if (asset?.local_mr && result.id === asset.local_mr) {
+        setMrError("This person is already the local MR for this asset.");
         return;
       }
 
-      setCustodian(result);
+      setMr(result);
     } catch (err) {
-      setCustodianError(err.message || "Failed to fetch custodian.");
+      setMrError(err.message || "Failed to fetch user.");
     } finally {
-      setCustodianLoading(false);
+      setMrLoading(false);
     }
   };
 
@@ -140,11 +149,11 @@ function useTransferRequest({ onClose, assetID = "" } = {}) {
     }
   };
 
-  const handleFindCustodian = () => lookupCustodian(custodianId);
-  const handleCustodianIdKeyDown = (e) => {
+  const handleFindMR = () => lookupMR(mrId);
+  const handleMrIdKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      handleFindCustodian();
+      handleFindMR();
     }
   };
 
@@ -155,21 +164,31 @@ function useTransferRequest({ onClose, assetID = "" } = {}) {
       setSubmitError("Please find a valid asset before submitting.");
       return;
     }
-    if (mode !== "remove" && !custodian) {
-      setSubmitError("Please find a valid custodian to transfer to.");
+    if (mode === "assign" && !mr) {
+      setSubmitError("Please find a valid person to assign as local MR.");
       return;
     }
-    if (mode === "remove" && !asset.property_custodian) {
-      setSubmitError("This asset has no custodian assigned to remove.");
+    if (mode === "remove" && !asset.local_mr) {
+      setSubmitError("This asset has no local MR assigned to remove.");
+      return;
+    }
+
+    // Permission rules:
+    // - assign: only the property_custodian (or admin) may assign a local_mr
+    // - remove: the property_custodian (or admin) may remove it, OR the current
+    //   local_mr may remove their own assignment
+    if (mode === "assign" && !isAdmin && !isCustodian(asset)) {
+      setSubmitError("Only the property custodian can assign a local MR.");
       return;
     }
     if (
       mode === "remove" &&
       !isAdmin &&
-      user.uid !== asset.property_custodian
+      !isCustodian(asset) &&
+      !isCurrentLocalMR(asset)
     ) {
       setSubmitError(
-        "You can only remove custody of an asset currently assigned to you.",
+        "Only the property custodian or the current local MR can remove this assignment.",
       );
       return;
     }
@@ -177,32 +196,25 @@ function useTransferRequest({ onClose, assetID = "" } = {}) {
     setSubmitStatus("loading");
     setIsSubmitting(true);
     try {
-      const to =
-        mode === "remove"
-          ? null
-          : custodian
-            ? {
-                uid: custodian.id,
-                name: custodian.fullname,
-                role: custodian.role,
-              }
-            : null;
+      const from = mode === "remove" ? asset.local_mr : null;
+      const to = mode === "assign" ? { uid: mr.id, name: mr.fullname, role: mr.role } : null;
 
       const result = await addTransferRequest(
         {
           asset_id: asset.id,
           asset_description: description,
-          from: asset.property_custodian || null,
+          from,
           to,
           notes: notes.trim(),
         },
         user.uid,
         `${user.firstname} ${user.lastname}`,
         user.role,
+        "local_mr",
       );
       setSubmitStatus("success");
     } catch (err) {
-      setSubmitError(err.message || "Failed to submit transfer request.");
+      setSubmitError(err.message || "Failed to submit MR request.");
       setSubmitStatus("error");
     } finally {
       setIsSubmitting(false);
@@ -210,14 +222,14 @@ function useTransferRequest({ onClose, assetID = "" } = {}) {
   };
 
   const isFormValid =
-    mode === "remove"
-      ? !!asset &&
-        !!asset.property_custodian &&
-        (isAdmin || user.uid === asset.property_custodian)
-      : !!asset && !!custodian;
+    mode === "assign"
+      ? !!asset && !!mr && (isAdmin || isCustodian(asset))
+      : !!asset &&
+        !!asset.local_mr &&
+        (isAdmin || isCustodian(asset) || isCurrentLocalMR(asset));
 
   return {
-    //mode
+    // mode
     mode,
     setMode,
     // refs
@@ -227,14 +239,14 @@ function useTransferRequest({ onClose, assetID = "" } = {}) {
     asset,
     assetLoading,
     assetError,
-    // custodian state
-    custodianId,
-    custodian,
-    custodianLoading,
-    custodianError,
+    // mr state
+    mrId,
+    mr,
+    mrLoading,
+    mrError,
     // form fields
     description,
-    currentCustodian,
+    currentMR,
     notes,
     // submit state
     submitError,
@@ -244,15 +256,15 @@ function useTransferRequest({ onClose, assetID = "" } = {}) {
     isFormValid,
     // setters
     setAssetId,
-    setCustodianId,
+    setMrId,
     setNotes,
     // handlers
     handleFindAsset,
     handleAssetIdKeyDown,
-    handleFindCustodian,
-    handleCustodianIdKeyDown,
+    handleFindMR,
+    handleMrIdKeyDown,
     handleSubmit,
   };
 }
 
-export default useTransferRequest;
+export default useTransferMR;

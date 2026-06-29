@@ -15,6 +15,9 @@ import {
 import { db, storage } from "./firebase-config";
 import { updateAssetRoom } from "./asset";
 import { getName } from "./user";
+import ROLES from "../data/roles";
+import { TRANSFER_TYPES, STATUS } from "../data/transfer";
+import { getAdmin } from "./user";
 
 const COLLECTION = "transfer_request";
 
@@ -111,6 +114,24 @@ export async function fetchLogs(user) {
   });
 }
 
+function resolveTransferType(from, to) {
+  if (!from && to) return TRANSFER_TYPES.ASSIGN;
+  if (from && to) return TRANSFER_TYPES.TRANSFER;
+  if (from && !to) return TRANSFER_TYPES.REMOVE;
+  throw new Error(
+    "Invalid transfer request: 'from' and 'to' cannot both be empty.",
+  );
+}
+
+function buildAck(acknowledged, uid, name) {
+  return {
+    acknowledged,
+    acknowledged_at: acknowledged ? serverTimestamp() : null,
+    uid: uid || null,
+    ...(name !== undefined ? { name: name || null } : {}),
+  };
+}
+
 export async function addTransferRequest(
   { asset_id, asset_description, from, to, notes },
   requestedByUid,
@@ -119,14 +140,29 @@ export async function addTransferRequest(
 ) {
   const col = collection(db, COLLECTION);
 
-  let type;
-  if (!from && to) type = "assign_custodian";
-  else if (from && to) type = "transfer_custodian";
-  else if (from && !to) type = "remove_custodian";
-  else type = "assign_custodian";
+  if (!requestedByUid || !requestedByRole) {
+    throw new Error(
+      "addTransferRequest: requestedByUid and requestedByRole are required.",
+    );
+  }
 
-  const fromName = from ? (await getName(from))?.fullname || null : null;
-  const toName = to?.uid ? (await getName(to.uid))?.fullname || null : null;
+  const isAdmin = requestedByRole === ROLES.ADMIN;
+  const type = resolveTransferType(from, to);
+  const status =
+    type === TRANSFER_TYPES.ASSIGN && !isAdmin
+      ? STATUS.FOR_APPROVAL
+      : STATUS.PENDING;
+
+  // Fire independent lookups concurrently instead of sequentially
+  const [admin, fromInfo, toInfo] = await Promise.all([
+    isAdmin ? Promise.resolve(null) : getAdmin(),
+    from ? getName(from) : Promise.resolve(null),
+    to?.uid ? getName(to.uid) : Promise.resolve(null),
+  ]);
+
+  const uidAdmin = isAdmin ? requestedByUid : (admin?.uid ?? null);
+  const fromName = fromInfo?.fullname || null;
+  const toName = toInfo?.fullname || null;
 
   const docData = {
     asset_id,
@@ -135,29 +171,15 @@ export async function addTransferRequest(
     requested_by_name: requestedByName,
     requested_by_role: requestedByRole,
     notes: notes || "",
-    status: "pending",
+    status,
     type,
     completed_at: null,
     created_at: serverTimestamp(),
     updated_at: serverTimestamp(),
     acknowledgments: {
-      admin: {
-        acknowledged: true,
-        acknowledged_at: serverTimestamp(),
-        uid: requestedByUid,
-      },
-      from: {
-        acknowledged: from ? false : true,
-        acknowledged_at: from ? null : serverTimestamp(),
-        uid: from || null,
-        name: fromName || null,
-      },
-      to: {
-        acknowledged: to ? false : true,
-        acknowledged_at: to ? null : serverTimestamp(),
-        uid: to?.uid || null,
-        name: toName || null,
-      },
+      admin: buildAck(isAdmin, uidAdmin),
+      from: buildAck(!isAdmin, from, fromName),
+      to: buildAck(!to, to?.uid, toName),
     },
     status_log: [
       {
@@ -165,8 +187,7 @@ export async function addTransferRequest(
         by: requestedByRole,
         by_name: requestedByName,
         date: new Date(),
-        note: "",
-        role: requestedByRole,
+        note: notes || "",
       },
     ],
   };

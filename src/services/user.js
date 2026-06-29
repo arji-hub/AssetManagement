@@ -1,21 +1,25 @@
 import { db } from "../services/firebase-config";
 import {
   collection,
+  doc,
   getDocs,
   getDoc,
+  updateDoc,
   query,
   where,
-  doc,
-  updateDoc,
+  limit,
 } from "firebase/firestore";
 import { getFunctions, httpsCallable } from "firebase/functions";
 import { toLowerCase } from "../utils/TextCasing";
+import ROLES from "../data/roles";
 
 const functions = getFunctions();
 
 async function assetCount(uid) {
   const [custodianSnap, localMRSnap] = await Promise.all([
-    getDocs(query(collection(db, "asset"), where("property_custodian", "==", uid))),
+    getDocs(
+      query(collection(db, "asset"), where("property_custodian", "==", uid)),
+    ),
     getDocs(query(collection(db, "asset"), where("local_mr", "==", uid))),
   ]);
 
@@ -49,7 +53,7 @@ export async function fetchCustodians() {
     custodians.map(async (c) => ({
       id: c.id,
       asset_count: await assetCount(c.id),
-    }))
+    })),
   );
 
   const countMap = Object.fromEntries(counts.map((c) => [c.id, c.asset_count]));
@@ -82,7 +86,9 @@ export async function findCustodian(identifier) {
   }
 
   if (d.role === "parttime") {
-    throw new Error("This user is only a part time faculty. Select another custodian");
+    throw new Error(
+      "This user is only a part time faculty. Select another custodian",
+    );
   }
 
   const fullname = [d.first_name, d.middle_name, d.last_name]
@@ -195,6 +201,28 @@ export async function fetchAssetsByCustodian(uid) {
   }
 }
 
+export async function getAdmin() {
+  const q = query(
+    collection(db, "user"),
+    where("role", "==", ROLES.ADMIN),
+    limit(1),
+  );
+
+  const snap = await getDocs(q);
+  if (snap.empty) return null;
+
+  const docSnap = snap.docs[0];
+  const d = docSnap.data();
+
+  return {
+    uid: docSnap.id,
+    username: d.user_name,
+    firstname: d.first_name,
+    fullname: [d.first_name, d.middle_name, d.last_name]
+      .filter(Boolean)
+      .join(" "),
+  };
+}
 
 export async function getName(uid) {
   if (!uid) return null;
@@ -205,8 +233,8 @@ export async function getName(uid) {
   return {
     username: d.user_name,
     firstname: d.first_name,
-    fullname: [d.first_name, d.middle_name, d.last_name].filter(Boolean).join(" "),
+    fullname: [d.first_name, d.middle_name, d.last_name]
+      .filter(Boolean)
+      .join(" "),
   };
 }
-
-

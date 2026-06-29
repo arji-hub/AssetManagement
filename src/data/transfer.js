@@ -19,6 +19,17 @@ export const TRANSFER_TYPE_LABELS = {
   remove_local_mr: "Remove Local MR",
 };
 
+export const TRANSFER_TYPES = {
+  ASSIGN: "assign_custodian",
+  TRANSFER: "transfer_custodian",
+  REMOVE: "remove_custodian",
+};
+
+export const STATUS = {
+  PENDING: "pending",
+  FOR_APPROVAL: "for_approval",
+};
+
 export const EMPTY_STATE_CONFIG = {
   action: {
     icon: "fa-solid fa-inbox",
