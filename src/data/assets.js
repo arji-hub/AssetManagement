@@ -29,4 +29,10 @@ export const STATUS_COLORS = {
   "For Repair": { bg: "rgba(255, 200, 0, 0.7)", color: "#3d2e00" },
   Missing: { bg: "rgba(255, 50, 80, 0.7)", color: "#1a0008" },
   Found: { bg: "rgba(0, 255, 128, 0.7)", color: "#003d1f" },
+
+  //transfer statuses
+  Pending: { bg: "rgba(255, 200, 0, 0.7)", color: "#3d2e00" },
+  "For Approval": { bg: "rgba(120, 130, 255, 0.7)", color: "#10103d" },
+  Completed: { bg: "rgba(0, 255, 128, 0.7)", color: "#003d1f" },
+  Denied: { bg: "rgba(255, 50, 80, 0.7)", color: "#1a0008" },
 };
