@@ -8,13 +8,14 @@ import ReportPanel from "../../components/panel/ReportPanel";
 import ReportModal from "../../components/ui/modal/ReportModal";
 import { today } from "../../utils/date";
 import useReportPage from "../../hooks/useReportPage";
-import { TABS } from "../../data/reports";
+import { TABS, TABS_ADMIN } from "../../data/reports";
 import { useReports } from "../../hooks/useReports";
 
 function Report() {
   const { data: reports, loading, error, refetch } = useReports();
   const { role } = useAuth();
   const isAdmin = role === ROLES.ADMIN;
+  const tabs = isAdmin ? TABS_ADMIN : TABS;
 
   const {
     activeTab,
@@ -77,7 +78,7 @@ function Report() {
 
         {/* tabs */}
         <div className="report-tabs">
-          {TABS.map((tab) => (
+          {tabs.map((tab) => (
             <button
               key={tab.key}
               className={`report-tab${
@@ -92,41 +93,66 @@ function Report() {
 
         {/* content */}
         <div className="report-table-wrap">
-          {activeTab === "incident" && (
-            <ReportPanel
-              group="incident"
-              statusFilter={filter.statusFilter}
-              reports={reports}
-              loading={loading}
-              error={error}
-            />
-          )}
-          {activeTab === "repair" && (
-            <ReportPanel
-              group="repair"
-              statusFilter={["damaged", "missing", "for_repair", "found"]}
-              reports={reports}
-              loading={loading}
-              error={error}
-            />
-          )}
-          {activeTab === "resolved" && (
-            <ReportPanel
-              group="resolved"
-              statusFilter={["working"]}
-              reports={reports}
-              loading={loading}
-              error={error}
-            />
-          )}
-          {activeTab === "archive" && (
-            <ReportPanel
-              group="archive"
-              statusFilter={["condemned"]}
-              reports={reports}
-              loading={loading}
-              error={error}
-            />
+          {isAdmin ? (
+            <>
+              {activeTab === "incident" && (
+                <ReportPanel
+                  group="incident"
+                  statusFilter={filter.statusFilter}
+                  reports={reports}
+                  loading={loading}
+                  error={error}
+                />
+              )}
+              {activeTab === "repair" && (
+                <ReportPanel
+                  group="repair"
+                  statusFilter={["damaged", "missing", "for_repair", "found"]}
+                  reports={reports}
+                  loading={loading}
+                  error={error}
+                />
+              )}
+              {activeTab === "resolved" && (
+                <ReportPanel
+                  group="resolved"
+                  statusFilter={["working"]}
+                  reports={reports}
+                  loading={loading}
+                  error={error}
+                />
+              )}
+              {activeTab === "archive" && (
+                <ReportPanel
+                  group="archive"
+                  statusFilter={["condemned"]}
+                  reports={reports}
+                  loading={loading}
+                  error={error}
+                />
+              )}
+            </>
+          ) : (
+            <>
+              {activeTab === "incident" && (
+                <ReportPanel
+                  group="incident"
+                  statusFilter={["damaged", "missing", "for_repair", "found"]}
+                  reports={reports}
+                  loading={loading}
+                  error={error}
+                />
+              )}
+              {activeTab === "logs" && (
+                <ReportPanel
+                  group="logs"
+                  statusFilter={["working", "condemned"]}
+                  reports={reports}
+                  loading={loading}
+                  error={error}
+                />
+              )}
+            </>
           )}
         </div>
       </div>
