@@ -37,15 +37,13 @@ function Asset() {
   } = useAssetFilters(assets);
   // fetch assets
   useEffect(() => {
-    console.log("Current user:", currentUser.uid, "Role:", role);
     if (!currentUser) return;
     setLoading(true);
     fetchAssets(role, currentUser.uid)
       .then(setAssets)
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
-  }, [role, currentUser]);
-  console.log("Assets:", assets);
+  }, [role, currentUser]);  
   return (
     <MainLayout>
       <div className="asset-page">

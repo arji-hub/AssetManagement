@@ -62,14 +62,13 @@ export function useAssetRegistrationForm() {
     loadOptions();
   }, []);
 
-  const isAssigned =
-    form.primary_custodian || form.local_custodian || form.room_id;
+  const isAssigned = form.primary_custodian || form.room_id;
 
   useEffect(() => {
     if (showSkipWarning && isAssigned) {
       setShowSkipWarning(false);
     }
-  }, [form.primary_custodian, form.local_custodian, form.room_id]);
+  }, [form.primary_custodian, form.room_id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -152,7 +151,6 @@ export function useAssetRegistrationForm() {
   };
 
   const fulltimeCustodians = custodians.filter((c) => c.role === "fulltime");
-  const parttimeCustodians = custodians.filter((c) => c.role === "parttime");
 
   return {
     step,
@@ -173,7 +171,6 @@ export function useAssetRegistrationForm() {
     categories,
     rooms,
     fulltimeCustodians,
-    parttimeCustodians,
     loadingOptions,
     handleChange,
     canProceed,
