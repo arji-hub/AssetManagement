@@ -7,7 +7,6 @@ function Assignment({
   onChange,
   skippedWarning,
   fulltimeCustodians,
-  parttimeCustodians,
   rooms,
   loadingOptions,
 }) {
@@ -28,47 +27,27 @@ function Assignment({
       )}
 
       <div className="reg-grid">
-        <div className="reg-field">
-          <label className="reg-label">Primary Custodian</label>
-          <select
-            className="reg-select"
-            name="primary_custodian"
-            value={form.primary_custodian}
-            onChange={onChange}
-            disabled={loadingOptions}
-          >
-            <option value="">
-              {loadingOptions ? "Loading…" : "Select Custodian"}
-            </option>
-            {fulltimeCustodians.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.fullname}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="reg-field">
-          <label className="reg-label">Local Custodian</label>
-          <select
-            className="reg-select"
-            name="local_custodian"
-            value={form.local_custodian}
-            onChange={onChange}
-            disabled={loadingOptions}
-          >
-            <option value="">
-              {loadingOptions ? "Loading…" : "Select Custodian"}
-            </option>
-            {parttimeCustodians.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.fullname}
-              </option>
-            ))}
-          </select>
-        </div>
-
         <div className="reg-field reg-field--full">
+          <div className="reg-field">
+            <label className="reg-label">Primary Custodian</label>
+            <select
+              className="reg-select"
+              name="primary_custodian"
+              value={form.primary_custodian}
+              onChange={onChange}
+              disabled={loadingOptions}
+            >
+              <option value="">
+                {loadingOptions ? "Loading…" : "Select Custodian"}
+              </option>
+              {fulltimeCustodians.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.fullname}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <label className="reg-label">Location</label>
           <select
             className="reg-select"

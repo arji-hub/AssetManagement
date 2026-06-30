@@ -31,7 +31,6 @@ function AssetRegistration() {
     categories,
     rooms,
     fulltimeCustodians,
-    parttimeCustodians,
     loadingOptions,
     handleChange,
     canProceed,
@@ -89,7 +88,6 @@ function AssetRegistration() {
               onChange={handleChange}
               skippedWarning={showSkipWarning}
               fulltimeCustodians={fulltimeCustodians}
-              parttimeCustodians={parttimeCustodians}
               rooms={rooms}
               loadingOptions={loadingOptions}
             />
