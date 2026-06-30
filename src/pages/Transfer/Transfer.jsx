@@ -6,6 +6,7 @@ import { TOP_TABS } from "../../data/transfer";
 import { useTransferPage } from "../../hooks/useTransferPage";
 import TransferPanel from "../../components/panel/TransferPanel";
 import TransferModal from "../../components/ui/modal/TransferModal";
+import TransferMR from "../../components/ui/modal/TransferMR";
 import ROLES from "../../data/roles";
 import "./Transfer.css";
 
@@ -19,6 +20,9 @@ function Transfer() {
     showTransferModal,
     handleTransferRequest,
     handleTransferModalClose,
+    showTransferMR,
+    handleTransferMR,
+    handleTransferMRClose,
   } = useTransferPage({ currentTop: "transfers" });
 
   return (
@@ -32,10 +36,22 @@ function Transfer() {
           </div>
 
           <div className="transfer-header-right">
+            {isRole != ROLES.ADMIN && (
+              <button
+                className="transfer-action-btn"
+                onClick={handleTransferMR}
+              >
+                <FontAwesomeIcon icon="fa-solid fa-user-group" />
+                Local MR
+              </button>
+            )}
             {isRole != ROLES.PARTTIME && (
-              <button className="transfer-action-btn" onClick={handleTransferRequest}>
-                <FontAwesomeIcon icon="fa-solid fa-plus" />
-                New Transfer
+              <button
+                className="transfer-action-btn"
+                onClick={handleTransferRequest}
+              >
+                <FontAwesomeIcon icon="fa-solid fa-user-tag" />
+                Transfer Custodian
               </button>
             )}
           </div>
@@ -76,13 +92,16 @@ function Transfer() {
         {/* content */}
         <div className="transfer-table-wrap">
           {activeTransferSub === "action" && <TransferPanel group="action" />}
-          {activeTransferSub === "requested" && <TransferPanel group="requested" />}
+          {activeTransferSub === "requested" && (
+            <TransferPanel group="requested" />
+          )}
           {activeTransferSub === "logs" && <TransferPanel group="logs" />}
         </div>
 
-         {showTransferModal && (
+        {showTransferModal && (
           <TransferModal onClose={handleTransferModalClose} />
         )}
+        {showTransferMR && <TransferMR onClose={handleTransferMRClose} />}
       </div>
     </MainLayout>
   );

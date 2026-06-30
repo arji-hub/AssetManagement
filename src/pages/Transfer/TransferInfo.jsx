@@ -8,6 +8,7 @@ import TransferLogEntry from "../../components/ui/card/TransferLogEntry";
 import { useTransferInfo } from "../../hooks/useTransferInfo";
 import TransferActionModal from "../../components/ui/modal/TransferActionModal";
 import AddingStatusModal from "../../components/ui/status/AddingStatusModal";
+import { TRANSFER_TYPES } from "../../data/transfer";
 import "./TransferInfo.css";
 
 function TransferInfo() {
@@ -39,7 +40,13 @@ function TransferInfo() {
     );
 
   const actionTitle = actionModal === "approve" ? "Approval" : "Decline";
-
+  const isLocalMRType =
+    request?.type === TRANSFER_TYPES.ASSIGNMR ||
+    request?.type === TRANSFER_TYPES.REMOVEMR;
+  const fromLabel = isLocalMRType ? "CUSTODIAN" : "TRANSFER FROM";
+  const toLabel = isLocalMRType ? "LOCAL MR" : "TRANSFER TO";
+  const ackFromLabel = isLocalMRType ? "Custodian" : "From";
+  const ackToLabel = isLocalMRType ? "Local MR" : "To";
   return (
     <MainLayout>
       <div className="transfer-info-page">
@@ -125,7 +132,7 @@ function TransferInfo() {
             </div>
 
             <div className="transfer-info-detail-box">
-              <span className="transfer-info-field-label">TRANSFER FROM</span>
+              <span className="transfer-info-field-label">{fromLabel}</span>
               <p className="transfer-info-field-value">
                 {ackFrom?.name || (
                   <em className="transfer-info-unassigned">No Custodian</em>
@@ -134,7 +141,7 @@ function TransferInfo() {
             </div>
 
             <div className="transfer-info-detail-box">
-              <span className="transfer-info-field-label">TRANSFER TO</span>
+              <span className="transfer-info-field-label">{toLabel}</span>
               <p className="transfer-info-field-value">
                 {ackTo?.name || (
                   <em className="transfer-info-unassigned">No Custodian</em>
@@ -169,9 +176,9 @@ function TransferInfo() {
                 ACKNOWLEDGMENTS
               </span>
               <div className="transfer-info-ack-row">
-                <AckBadge label="Admin" ack={ackAdmin} />
-                <AckBadge label="From" ack={ackFrom} />
-                <AckBadge label="To" ack={ackTo} />
+                {ackAdmin && <AckBadge label="Admin" ack={ackAdmin} />}
+                {ackFrom && <AckBadge label={ackFromLabel} ack={ackFrom} />}
+                {ackTo && <AckBadge label={ackToLabel} ack={ackTo} />}
               </div>
             </div>
           )}

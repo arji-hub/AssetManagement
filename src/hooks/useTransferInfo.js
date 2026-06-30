@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { ROLES } from "../data/roles";
 import { fetchTransferByID, updateTransferRequest } from "../services/transfer";
-import { TRANSFER_TYPE_LABELS } from "../data/transfer";
+import { TRANSFER_TYPE_LABELS, TRANSFER_TYPES } from "../data/transfer";
 
 export function useTransferInfo() {
   const navigate = useNavigate();
@@ -38,15 +38,18 @@ export function useTransferInfo() {
     : null;
 
   const ackAdmin = request?.acknowledgments?.admin ?? null;
-  console.log("ackAdmin: ", ackAdmin);
 
-  const ackFrom = request?.acknowledgments?.from ?? null;
-  console.log("ackFrom: ", ackFrom);
+  // Local MR requests store from=localmr, to=custodian. reverse the display for REMOVEMR 
+  // "custodian -> mr" display regardless of assign/remove direction.
+  const isRemoveMR = request?.type === TRANSFER_TYPES.REMOVEMR;
 
-  const ackTo = request?.acknowledgments?.to ?? null;
-  console.log("ackTo: ", ackTo);
+  const ackFrom = isRemoveMR
+    ? (request?.acknowledgments?.to ?? null)
+    : (request?.acknowledgments?.from ?? null);
 
-  console.log("user?.uid: ", user?.uid);
+  const ackTo = isRemoveMR
+    ? (request?.acknowledgments?.from ?? null)
+    : (request?.acknowledgments?.to ?? null);
 
   let userAck;
   if (user?.uid === ackAdmin?.uid) {
@@ -59,10 +62,7 @@ export function useTransferInfo() {
     userAck = null;
   }
 
-  console.log("userAck: ", userAck);
-
   const showActions = !isResolved && userAck?.acknowledged === false;
-  console.log("isResolved: ", isResolved, "| showActions: ", showActions);
 
   const [actionModal, setActionModal] = useState(null);
   const [submitStatus, setSubmitStatus] = useState(null); // "loading" | "success" | "error" | null

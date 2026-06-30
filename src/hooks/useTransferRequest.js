@@ -95,6 +95,12 @@ function useTransferRequest({ onClose, assetID = "" } = {}) {
 
     try {
       const result = await findCustodian(trimmedId);
+      if (result.role !== ROLES.FULLTIME) {
+        setCustodianError(
+          "You cannot assign Custodian to a Parttime faculty. Select another",
+        );
+        return;
+      }
 
       const isAssigned = user.uid === result.id;
       if (isAssigned) {
