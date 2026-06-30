@@ -8,9 +8,12 @@ permissions:
   contents: read
   pull-requests: write
 jobs:
+  jobs:
   build_and_preview:
     if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
+    env:
+      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
     concurrency:
       group: firebase-hosting-pr-${{ github.event.pull_request.number }}
       cancel-in-progress: true
