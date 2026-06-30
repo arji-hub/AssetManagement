@@ -11,11 +11,16 @@ export const ACTION_LABELS = {
   condemned: "Condemn Asset",
 };
 
-export const TABS = [
+export const TABS_ADMIN = [
   { key: "incident", label: "Incident Reports" },
   { key: "repair", label: "For Repair" },
   { key: "resolved", label: "Resolved" },
   { key: "archive", label: "Archive" },
+];
+
+export const TABS = [
+  { key: "incident", label: "Incident Reports" },
+  { key: "logs", label: "Logs" },
 ];
 
 export const STATUS_GROUPS = {
@@ -23,6 +28,7 @@ export const STATUS_GROUPS = {
   repair: ["for_repair", "found"],
   resolved: ["working"],
   archive: ["condemned"],
+  logs: ["working", "condemned"],
 };
 
 export const COLUMNS = {
@@ -45,6 +51,15 @@ export const COLUMNS = {
     "Date Resolved",
   ],
   archive: [
+    "Asset ID",
+    "Description",
+    "Location",
+    "Reported By",
+    "Date",
+    "Incident",
+    "Date Resolved",
+  ],
+  logs: [
     "Asset ID",
     "Description",
     "Location",
