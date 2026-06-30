@@ -14,15 +14,17 @@ export const ROOM_SUB_TABS = [{ key: "logs", label: "Logs" }];
 export const TRANSFER_TYPE_LABELS = {
   assign_custodian: "Assign Custodian",
   transfer_custodian: "Transfer Custodian",
-  assign_local_mr: "Assign Local MR",
+  assign_localmr: "Assign Local MR",
   remove_custodian: "Remove Custodian",
-  remove_local_mr: "Remove Local MR",
+  remove_localmr: "Remove Local MR",
 };
 
 export const TRANSFER_TYPES = {
   ASSIGN: "assign_custodian",
   TRANSFER: "transfer_custodian",
   REMOVE: "remove_custodian",
+  ASSIGNMR: "assign_localmr",
+  REMOVEMR: "remove_localmr",
 };
 
 export const STATUS = {

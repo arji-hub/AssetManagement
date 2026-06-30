@@ -85,12 +85,6 @@ export async function findCustodian(identifier) {
     throw new Error("This user is an admin, not a custodian.");
   }
 
-  if (d.role === "parttime") {
-    throw new Error(
-      "This user is only a part time faculty. Select another custodian",
-    );
-  }
-
   const fullname = [d.first_name, d.middle_name, d.last_name]
     .filter(Boolean)
     .join(" ");

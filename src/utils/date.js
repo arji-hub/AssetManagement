@@ -29,6 +29,29 @@ export function formatDate(value) {
   }
 }
 
+export function formatDateTime(value) {
+  const date =
+    value?.seconds !== undefined
+      ? new Date(value.seconds * 1000 + Math.floor(value.nanoseconds / 1_000_000))
+      : new Date(value);
+
+  if (isNaN(date)) return "Invalid date";
+
+  const datePart = date.toLocaleString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  const timePart = date.toLocaleString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+  });
+
+  return `${datePart} -- ${timePart}`;
+}
 
 export const today = new Date()
     .toLocaleDateString("en-US", {

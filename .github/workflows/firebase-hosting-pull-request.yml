@@ -11,6 +11,9 @@ jobs:
   build_and_preview:
     if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
+    concurrency:
+      group: firebase-hosting-pr-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4
       - run: npm ci && npm run build
@@ -27,3 +30,4 @@ jobs:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_AMS_CICT }}
           projectId: ams-cict
+          channelId: pr-${{ github.event.pull_request.number }}-dev

@@ -10,6 +10,7 @@ function TransferMR({ onClose, assetID = "" }) {
   const {
     mode,
     setMode,
+    isPartTime,
     assetInputRef,
     assetId,
     asset,
@@ -79,17 +80,19 @@ function TransferMR({ onClose, assetID = "" }) {
               role="tablist"
               aria-label="Local MR action"
             >
-              <button
-                type="button"
-                role="tab"
-                aria-selected={!isRemoveMode}
-                className={`transfer-modal-mode-btn${!isRemoveMode ? " is-active" : ""}`}
-                onClick={() => setMode("assign")}
-                disabled={isSubmitting}
-              >
-                <FontAwesomeIcon icon="fa-solid fa-user-plus" />
-                Assign
-              </button>
+              {!isPartTime && (
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={!isRemoveMode}
+                  className={`transfer-modal-mode-btn${!isRemoveMode ? " is-active" : ""}`}
+                  onClick={() => setMode("assign")}
+                  disabled={isSubmitting}
+                >
+                  <FontAwesomeIcon icon="fa-solid fa-user-plus" />
+                  Assign
+                </button>
+              )}
               <button
                 type="button"
                 role="tab"

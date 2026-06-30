@@ -12,7 +12,9 @@ export function useTransferPage({ currentTop = "transfers" } = {}) {
   const [activeTop, setActiveTop] = React.useState("transfers");
   const [activeTransferSub, setActiveTransferSub] = React.useState("action");
   const [activeRoomSub, setActiveRoomSub] = React.useState("logs");
+
   const [showTransferModal, setShowTransferModal] = React.useState(false);
+  const [showTransferMR, setShowTransferMR] = React.useState(false);
   const [showTransferRoomModal, setShowTransferRoomModal] = React.useState(false);
 
   const activeSub =
@@ -33,6 +35,9 @@ export function useTransferPage({ currentTop = "transfers" } = {}) {
 
   const handleTransferRequest = () => setShowTransferModal(true);
   const handleTransferModalClose = () => setShowTransferModal(false);
+
+  const handleTransferMR = () => setShowTransferMR(true);
+  const handleTransferMRClose = () => setShowTransferMR(false);
 
   const handleTransferRoom = () => setShowTransferRoomModal(true);
   const handleTransferRoomModalClose = () => setShowTransferRoomModal(false);
@@ -62,6 +67,9 @@ export function useTransferPage({ currentTop = "transfers" } = {}) {
     showTransferModal,
     handleTransferRequest,
     handleTransferModalClose,
+    showTransferMR,
+    handleTransferMR,
+    handleTransferMRClose,
 
     // transfer room modal
     showTransferRoomModal,

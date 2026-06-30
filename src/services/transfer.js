@@ -115,12 +115,26 @@ export async function fetchLogs(user) {
 }
 
 function resolveTransferType(from, to) {
-  if (!from && to) return TRANSFER_TYPES.ASSIGN;
-  if (from && to) return TRANSFER_TYPES.TRANSFER;
-  if (from && !to) return TRANSFER_TYPES.REMOVE;
-  throw new Error(
-    "Invalid transfer request: 'from' and 'to' cannot both be empty.",
-  );
+  if (!from && !to) {
+    throw new Error(
+      "Invalid transfer request: 'from' and 'to' cannot both be empty.",
+    );
+  }
+
+  //custodian
+  if (!from) return TRANSFER_TYPES.ASSIGN;
+  if (!to) return TRANSFER_TYPES.REMOVE;
+
+  //local mr 
+  if (from.role === ROLES.FULLTIME && to.role === ROLES.PARTTIME) {
+    return TRANSFER_TYPES.ASSIGNMR;
+  }
+  if (from.role === ROLES.PARTTIME && to.role === ROLES.FULLTIME) {
+    return TRANSFER_TYPES.REMOVEMR;
+  }
+
+  //custodian to custodian
+  return TRANSFER_TYPES.TRANSFER;
 }
 
 function buildAck(acknowledged, uid, name) {
@@ -132,6 +146,7 @@ function buildAck(acknowledged, uid, name) {
   };
 }
 
+// transfer.js
 export async function addTransferRequest(
   { asset_id, asset_description, from, to, notes },
   requestedByUid,
@@ -156,7 +171,7 @@ export async function addTransferRequest(
   // Fire independent lookups concurrently instead of sequentially
   const [admin, fromInfo, toInfo] = await Promise.all([
     isAdmin ? Promise.resolve(null) : getAdmin(),
-    from ? getName(from) : Promise.resolve(null),
+    from ? getName(from.uid) : Promise.resolve(null),
     to?.uid ? getName(to.uid) : Promise.resolve(null),
   ]);
 
@@ -195,8 +210,6 @@ export async function addTransferRequest(
   const docRef = await addDoc(col, docData);
   return { id: docRef.id, ...docData };
 }
-
-// transfer.js
 
 export async function updateTransferRequest(requestId, user, note, isApprove) {
   const docRef = doc(db, COLLECTION, requestId);

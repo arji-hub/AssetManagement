@@ -8,10 +8,11 @@ import ROLES from "../data/roles";
 function useTransferMR({ onClose, assetID = "" } = {}) {
   const { user, role } = useAuth();
   const isAdmin = role === ROLES.ADMIN;
+  const isPartTime = role === ROLES.PARTTIME;
   const assetInputRef = useRef(null);
 
   // assign or remove
-  const [mode, setMode] = useState("assign");
+  const [mode, setMode] = useState(isPartTime ? "remove" : "assign");
 
   // asset lookup
   const [assetId, setAssetId] = useState("");
@@ -33,6 +34,11 @@ function useTransferMR({ onClose, assetID = "" } = {}) {
   const [submitError, setSubmitError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
+
+  const handleSetMode = (next) => {
+    if (isPartTime) return;
+    setMode(next);
+  };
 
   // clear mr lookup state when switching to remove mode
   useEffect(() => {
@@ -76,9 +82,12 @@ function useTransferMR({ onClose, assetID = "" } = {}) {
       }
 
       // only the asset's property_custodian (or an admin) may manage its local_mr
-      const allowed = isAdmin || isCustodian(result) || isCurrentLocalMR(result);
+      const allowed =
+        isAdmin || isCustodian(result) || isCurrentLocalMR(result);
       if (!allowed) {
-        setAssetError("You don't have permission to manage the local MR for this asset.");
+        setAssetError(
+          "You don't have permission to manage the local MR for this asset.",
+        );
         return;
       }
 
@@ -103,6 +112,20 @@ function useTransferMR({ onClose, assetID = "" } = {}) {
 
     try {
       const result = await findCustodian(trimmedId);
+
+      console.log("role: ", result.role);
+      //console log is role:  fulltime
+      /*export const ROLES = {
+  ADMIN: "admin",
+  PARTTIME: "parttime",
+  FULLTIME: "fulltime",
+};*/
+      if (result.role !== ROLES.PARTTIME) {
+        setMrError(
+          "You cannot assign local MR to a Fulltime faculty. Select another",
+        );
+        return;
+      }
 
       if (user.uid === result.id) {
         setMrError("You cannot assign yourself as the local MR.");
@@ -174,19 +197,14 @@ function useTransferMR({ onClose, assetID = "" } = {}) {
     }
 
     // Permission rules:
-    // - assign: only the property_custodian (or admin) may assign a local_mr
-    // - remove: the property_custodian (or admin) may remove it, OR the current
+    // - assign: only the property_custodian may assign a local_mr
+    // - remove: property_custodian or the current
     //   local_mr may remove their own assignment
-    if (mode === "assign" && !isAdmin && !isCustodian(asset)) {
+    if (mode === "assign" && !isCustodian(asset)) {
       setSubmitError("Only the property custodian can assign a local MR.");
       return;
     }
-    if (
-      mode === "remove" &&
-      !isAdmin &&
-      !isCustodian(asset) &&
-      !isCurrentLocalMR(asset)
-    ) {
+    if (mode === "remove" && !isCustodian(asset) && !isCurrentLocalMR(asset)) {
       setSubmitError(
         "Only the property custodian or the current local MR can remove this assignment.",
       );
@@ -196,8 +214,17 @@ function useTransferMR({ onClose, assetID = "" } = {}) {
     setSubmitStatus("loading");
     setIsSubmitting(true);
     try {
-      const from = mode === "remove" ? asset.local_mr : null;
-      const to = mode === "assign" ? { uid: mr.id, name: mr.fullname, role: mr.role } : null;
+      // assign:  from = custodian (fulltime)  -> to = mr (parttime)
+      // remove:  from = current mr (parttime) -> to = custodian (fulltime)
+      const from =
+        mode === "assign"
+          ? { uid: asset.property_custodian, role: ROLES.FULLTIME }
+          : { uid: asset.local_mr, role: ROLES.PARTTIME };
+
+      const to =
+        mode === "assign"
+          ? { uid: mr.id, name: mr.fullname, role: mr.role }
+          : { uid: asset.property_custodian, role: ROLES.FULLTIME };
 
       const result = await addTransferRequest(
         {
@@ -206,11 +233,11 @@ function useTransferMR({ onClose, assetID = "" } = {}) {
           from,
           to,
           notes: notes.trim(),
+          isLocalMR: true,
         },
         user.uid,
         `${user.firstname} ${user.lastname}`,
         user.role,
-        "local_mr",
       );
       setSubmitStatus("success");
     } catch (err) {
@@ -231,7 +258,9 @@ function useTransferMR({ onClose, assetID = "" } = {}) {
   return {
     // mode
     mode,
-    setMode,
+    setMode: handleSetMode,
+    //part time state
+    isPartTime,
     // refs
     assetInputRef,
     // asset state
