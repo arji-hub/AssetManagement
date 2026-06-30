@@ -16,21 +16,22 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getName } from "./user";
 import { updateAssetStatus } from "./asset";
 
-export async function fetchReports(uid) {
+export async function fetchReports() {
   const q = query(collection(db, "report"), orderBy("created_at", "desc"));
   const snapshot = await getDocs(q);
 
-  const reports = snapshot.docs.map((doc) => {
+  return snapshot.docs.map((doc) => {
     const report = { id: doc.id, ...doc.data() };
     const latestLog = report.status_log?.[report.status_log.length - 1];
+
     return {
       id: report.id,
       asset_id: report.asset_id,
       report_no: report.report_no,
       description: report.asset_description,
       location: report.location,
-      custodian: report.current_custodian,
-      local_mr: report.current_localmr,
+      custodian: report.custodian,
+      custodian_name: report.custodian_name,
       reported_by: report.reported_by,
       reported_by_name: report.reported_by_name,
       status: report.status,
@@ -45,17 +46,6 @@ export async function fetchReports(uid) {
       latest_date: latestLog?.date ?? null,
     };
   });
-
-  if (uid === undefined) {
-    return reports;
-  }
-
-  return reports.filter(
-    (report) =>
-      report.custodian === uid ||
-      report.local_mr === uid ||
-      report.reported_by === uid,
-  );
 }
 
 export async function fetchReportByID(id) {
@@ -63,6 +53,7 @@ export async function fetchReportByID(id) {
   if (!snap.exists()) throw new Error("Report not found.");
 
   const report = { id: snap.id, ...snap.data() };
+  console.log("report:", report);
 
   const latestLog = report.status_log?.[report.status_log.length - 1];
 
@@ -91,6 +82,7 @@ export async function fetchReportByID(id) {
     latest_note: latestLog?.note ?? null,
     latest_date: latestLog?.date ?? null,
   };
+  console.log("filteredReport:", filteredReport);
 
   return filteredReport;
 }
