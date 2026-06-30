@@ -2,22 +2,6 @@ import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./QRStatusModal.css";
 
-/**
- * QRStatusModal
- *
- * Status feedback modal for QR scanning/decoding operations.
- *
- * Shows four states:
- *  - "loading"   → spinner while decoding the image
- *  - "success"   → green check, valid asset QR found (briefly shown before redirect)
- *  - "notfound"  → QR decoded but doesn't point to a valid asset
- *  - "error"     → decoding failed (no QR found, unreadable image, etc.)
- *
- * Props:
- *  - status: "loading" | "success" | "notfound" | "error"
- *  - errorMessage: string   — shown on "error" or "notfound" state
- *  - onClose: () => void    — called on Try Again / dismiss
- */
 function QRStatusModal({ status, errorMessage, onClose }) {
   return (
     <div className="qr-status-overlay">

@@ -104,14 +104,18 @@ export async function fetchAssetByID(assetId) {
   const userMap = {};
   userDocs.forEach((d) => {
     if (d.exists()) {
-      userMap[d.id] = d.data().first_name;
+      const data = d.data();
+      const fullname = [data.first_name, data.middle_name, data.last_name]
+        .filter(Boolean)
+        .join(" ");
+      userMap[d.id] = fullname;
     }
   });
 
   return {
     ...assetData,
-    property_custodian_name: userMap[assetData.property_custodian] || "Unknown",
-    local_mr_name: userMap[assetData.local_mr] || "Unknown",
+    property_custodian_name: userMap[assetData.property_custodian] || "---",
+    local_mr_name: userMap[assetData.local_mr] || "---",
   };
 }
 
@@ -245,5 +249,12 @@ export async function updateAssetStatus(assetId, status) {
   await updateDoc(assetRef, {
     status: toTitleCase(status),
     updated_at: serverTimestamp(),
+  });
+}
+
+export async function updateAssetRoom(assetId, room) {
+  const docRef = doc(db, "asset", assetId);
+  await updateDoc(docRef, {
+    room_id: room,
   });
 }

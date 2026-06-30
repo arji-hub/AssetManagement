@@ -1,0 +1,70 @@
+.transfer-log-entry {
+  display: flex;
+  gap: 16px;
+  position: relative;
+  padding-bottom: 20px;
+}
+
+.transfer-log-entry:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 12px;
+  bottom: 0;
+  width: 1px;
+  background: #e5e7eb;
+}
+
+.transfer-log-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #860100;
+  border: 2px solid #ffffff;
+  outline: 1px solid #860100;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.transfer-log-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.transfer-log-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.transfer-log-action {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a1a1a;
+  text-transform: capitalize;
+}
+
+.transfer-log-date {
+  font-size: 11px;
+  color: #9ca3af;
+  white-space: nowrap;
+}
+
+.transfer-log-by {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.transfer-log-note {
+  font-size: 13px;
+  color: #374151;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin: 6px 0 0;
+  line-height: 1.6;
+}
