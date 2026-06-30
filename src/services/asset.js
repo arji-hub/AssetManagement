@@ -217,18 +217,19 @@ export async function addAsset(data, role) {
     doc_image_url: docImageUrl || null,
     qr_code_url: qrCodeUrl || null,
     property_custodian: data.primary_custodian || null,
-    local_mr: data.local_custodian || null,
+    local_mr: null,
     room_id: data.room_id || null,
     created_at: serverTimestamp(),
     updated_at: serverTimestamp(),
   };
+
+  await setDoc(doc(db, "asset", assetId), payload);
 
   const countUpdates = [categoryCount(data.category_id)];
   if (data.room_id) {
     countUpdates.push(roomCount(data.room_id));
   }
   await Promise.all(countUpdates);
-
   return assetId;
 }
 
