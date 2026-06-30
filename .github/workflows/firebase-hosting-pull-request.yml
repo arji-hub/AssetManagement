@@ -22,9 +22,10 @@ jobs:
           VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
           VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
           VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
-      - uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_AMS_CICT }}
-          channelId: live
-          projectId: ams-cict
+      - - uses: FirebaseExtended/action-hosting-deploy@v0
+          with:
+            repoToken: ${{ secrets.GITHUB_TOKEN }}
+            firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+            channelId: live
+            projectId: ams-cict
+            firebaseToolsVersion: 15.22.3
