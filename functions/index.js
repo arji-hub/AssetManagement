@@ -254,6 +254,9 @@ exports.onUpdateAssetCustodian = onDocumentUpdated(
   async (event) => {
     const before = event.data.before.data();
     const after = event.data.after.data();
+    if (["assign_localmr", "remove_localmr"].includes(after.type)) {
+      return;
+    }
 
     const ackBefore = before.acknowledgments || {};
     const ackAfter = after.acknowledgments || {};
@@ -268,9 +271,6 @@ exports.onUpdateAssetCustodian = onDocumentUpdated(
       !!ackAfter.from?.acknowledged &&
       !!ackAfter.to?.acknowledged;
 
-    // Only act on the transition into "all acknowledged"; this also
-    // guards against re-triggering on this function's own write,
-    // since status/completed_at don't affect ack booleans.
     if (wasComplete || !isComplete) {
       return;
     }
@@ -310,15 +310,14 @@ exports.onUpdateAssetCustodian = onDocumentUpdated(
   },
 );
 
-
 /**
  * Firestore Trigger: onUpdateAssetLocalMR
  *
  * Watches transfer_request/{requestId} for changes. When all three
- * acknowledgments (admin, custodian, localmr) become true — and weren't
+ * acknowledgments (admin, from, to) become true — and weren't
  * all true before this write — marks the request "completed" and
  * updates the asset's local_mr accordingly:
- *   - assign_localmr → sets local_mr to acknowledgments.localmr.uid
+ *   - assign_localmr → sets local_mr to acknowledgments.to.uid
  *   - remove_localmr → clears local_mr to null
  *
  * Only fires for transfer_request docs whose type is assign_localmr or
@@ -345,17 +344,14 @@ exports.onUpdateAssetLocalMR = onDocumentUpdated(
 
     const wasComplete =
       !!ackBefore.admin?.acknowledged &&
-      !!ackBefore.custodian?.acknowledged &&
-      !!ackBefore.localmr?.acknowledged;
+      !!ackBefore.from?.acknowledged &&
+      !!ackBefore.to?.acknowledged;
 
     const isComplete =
       !!ackAfter.admin?.acknowledged &&
-      !!ackAfter.custodian?.acknowledged &&
-      !!ackAfter.localmr?.acknowledged;
+      !!ackAfter.from?.acknowledged &&
+      !!ackAfter.to?.acknowledged;
 
-    // Only act on the transition into "all acknowledged"; this also
-    // guards against re-triggering on this function's own write,
-    // since status/completed_at don't affect ack booleans.
     if (wasComplete || !isComplete) {
       return;
     }
@@ -373,8 +369,9 @@ exports.onUpdateAssetLocalMR = onDocumentUpdated(
     if (after.asset_id) {
       const assetRef = db.collection("asset").doc(after.asset_id);
 
-      const localmrUid = ackAfter.localmr?.uid;
       const isRemoval = after.type === "remove_localmr";
+
+      const localmrUid = isRemoval ? null : (ackAfter.to?.uid ?? null);
 
       if (isRemoval) {
         batch.update(assetRef, {
