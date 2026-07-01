@@ -1,6 +1,4 @@
-// components/modal/TransferMR.jsx
-
-import React from "react";
+import { React, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useTransferMR from "../../../hooks/useTransferMR";
 import "./TransferModal.css";
@@ -32,6 +30,7 @@ function TransferMR({ onClose, assetID = "" }) {
     handleFindAsset,
     handleAssetIdKeyDown,
     handleFindMR,
+    localmrOptions,
     handleMrIdKeyDown,
     handleSubmit,
     submitStatus,
@@ -39,6 +38,12 @@ function TransferMR({ onClose, assetID = "" }) {
   } = useTransferMR({ onClose, assetID });
 
   const isRemoveMode = mode === "remove";
+  const [showDropdown, setShowDropdown] = useState(false);
+  const filteredOptions = localmrOptions.filter(
+    (c) =>
+      c.email.toLowerCase().includes(mrId.toLowerCase()) ||
+      c.fullname.toLowerCase().includes(mrId.toLowerCase()),
+  );
 
   return (
     <>
@@ -207,16 +212,42 @@ function TransferMR({ onClose, assetID = "" }) {
                 className={`transfer-modal-field ${mrError ? "has-error" : ""}`}
               >
                 <label htmlFor="mr-id-input">Assign Local MR</label>
-                <div className="transfer-modal-lookup">
+                <div className="transfer-modal-lookup transfer-autocomplete-wrapper">
                   <input
                     id="mr-id-input"
                     type="text"
+                    autoComplete="off"
                     placeholder="Search by username or email"
                     value={mrId}
-                    onChange={(e) => setMrId(e.target.value)}
+                    onChange={(e) => {
+                      setMrId(e.target.value);
+                      setShowDropdown(true);
+                    }}
+                    onFocus={() => setShowDropdown(true)}
+                    onBlur={() => setTimeout(() => setShowDropdown(false), 120)}
                     onKeyDown={handleMrIdKeyDown}
                     disabled={isSubmitting || mrLoading}
                   />
+                  {showDropdown && filteredOptions.length > 0 && (
+                    <ul className="transfer-autocomplete-list">
+                      {filteredOptions.map((c) => (
+                        <li
+                          key={c.uid}
+                          onMouseDown={() => {
+                            setMrId(c.email);
+                            setShowDropdown(false);
+                          }}
+                        >
+                          <span className="transfer-autocomplete-name">
+                            {c.fullname}
+                          </span>
+                          <span className="transfer-autocomplete-email">
+                            {c.email}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                   <button
                     type="button"
                     className="transfer-modal-find-btn"

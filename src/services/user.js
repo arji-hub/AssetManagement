@@ -195,6 +195,24 @@ export async function fetchAssetsByCustodian(uid) {
   }
 }
 
+export async function fetchUsersByRole(role) {
+  const q = query(collection(db, "user"), where("role", "==", role));
+
+  const snap = await getDocs(q);
+  if (snap.empty) return [];
+
+  return snap.docs.map((docSnap) => {
+    const d = docSnap.data();
+    return {
+      uid: docSnap.id,
+      email: d.email,
+      fullname: [d.first_name, d.middle_name, d.last_name]
+        .filter(Boolean)
+        .join(" "),
+    };
+  });
+}
+
 export async function getAdmin() {
   const q = query(
     collection(db, "user"),
