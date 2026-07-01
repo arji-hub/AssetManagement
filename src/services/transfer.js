@@ -125,7 +125,7 @@ function resolveTransferType(from, to) {
   if (!from) return TRANSFER_TYPES.ASSIGN;
   if (!to) return TRANSFER_TYPES.REMOVE;
 
-  //local mr 
+  //local mr
   if (from.role === ROLES.FULLTIME && to.role === ROLES.PARTTIME) {
     return TRANSFER_TYPES.ASSIGNMR;
   }
@@ -154,7 +154,6 @@ export async function addTransferRequest(
   requestedByRole,
 ) {
   const col = collection(db, COLLECTION);
-
   if (!requestedByUid || !requestedByRole) {
     throw new Error(
       "addTransferRequest: requestedByUid and requestedByRole are required.",
@@ -168,12 +167,18 @@ export async function addTransferRequest(
       ? STATUS.FOR_APPROVAL
       : STATUS.PENDING;
 
+  console.log("from", from);
+  console.log("to", to);
   // Fire independent lookups concurrently instead of sequentially
   const [admin, fromInfo, toInfo] = await Promise.all([
     isAdmin ? Promise.resolve(null) : getAdmin(),
-    from ? getName(from.uid) : Promise.resolve(null),
+    from?.uid ? getName(from.uid) : Promise.resolve(null),
     to?.uid ? getName(to.uid) : Promise.resolve(null),
   ]);
+  //log infos
+  console.log("fromInfo", fromInfo);
+  console.log("toInfo", toInfo);
+  console.log("admin", admin);
 
   const uidAdmin = isAdmin ? requestedByUid : (admin?.uid ?? null);
   const fromName = fromInfo?.fullname || null;

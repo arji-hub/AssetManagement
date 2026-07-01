@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { fetchAssetByID } from "../services/asset";
-import { findCustodian } from "../services/user";
+import { findCustodian, fetchUsersByRole } from "../services/user";
 import { addTransferRequest } from "../services/transfer";
 import { useAuth } from "../context/AuthContext";
 import ROLES from "../data/roles";
+import { toLowerCase } from "../utils/TextCasing";
 
 function useTransferMR({ onClose, assetID = "" } = {}) {
   const { user, role } = useAuth();
@@ -25,6 +26,7 @@ function useTransferMR({ onClose, assetID = "" } = {}) {
   const [mr, setMr] = useState(null);
   const [mrLoading, setMrLoading] = useState(false);
   const [mrError, setMrError] = useState(null);
+  const [localmrOptions, setLocalmrOptions] = useState([]);
 
   // form fields
   const [description, setDescription] = useState("");
@@ -65,7 +67,7 @@ function useTransferMR({ onClose, assetID = "" } = {}) {
 
   // --- asset lookup ---
   const lookupAsset = async (id) => {
-    const trimmedId = id.trim();
+    const trimmedId = toLowerCase(id.trim());
     if (!trimmedId) return;
 
     setAssetLoading(true);
@@ -112,14 +114,6 @@ function useTransferMR({ onClose, assetID = "" } = {}) {
 
     try {
       const result = await findCustodian(trimmedId);
-
-      console.log("role: ", result.role);
-      //console log is role:  fulltime
-      /*export const ROLES = {
-  ADMIN: "admin",
-  PARTTIME: "parttime",
-  FULLTIME: "fulltime",
-};*/
       if (result.role !== ROLES.PARTTIME) {
         setMrError(
           "You cannot assign local MR to a Fulltime faculty. Select another",
@@ -143,6 +137,13 @@ function useTransferMR({ onClose, assetID = "" } = {}) {
       setMrLoading(false);
     }
   };
+
+  //fetch custodian options
+  useEffect(() => {
+    fetchUsersByRole(ROLES.PARTTIME)
+      .then(setLocalmrOptions)
+      .catch((err) => console.error("Failed to load local mr list:", err));
+  }, []);
 
   // focus input on mount, auto-fill + lookup if assetID was passed in
   useEffect(() => {
@@ -273,6 +274,7 @@ function useTransferMR({ onClose, assetID = "" } = {}) {
     mr,
     mrLoading,
     mrError,
+    localmrOptions,
     // form fields
     description,
     currentMR,

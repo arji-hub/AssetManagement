@@ -135,7 +135,7 @@ function TransferInfo() {
               <span className="transfer-info-field-label">{fromLabel}</span>
               <p className="transfer-info-field-value">
                 {ackFrom?.name || (
-                  <em className="transfer-info-unassigned">No Custodian</em>
+                  <em className="transfer-info-unassigned">Unallocated</em>
                 )}
               </p>
             </div>
@@ -144,7 +144,7 @@ function TransferInfo() {
               <span className="transfer-info-field-label">{toLabel}</span>
               <p className="transfer-info-field-value">
                 {ackTo?.name || (
-                  <em className="transfer-info-unassigned">No Custodian</em>
+                  <em className="transfer-info-unassigned">Unallocated</em>
                 )}
               </p>
             </div>

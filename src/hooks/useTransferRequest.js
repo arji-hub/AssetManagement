@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { fetchAssetByID } from "../services/asset";
-import { findCustodian } from "../services/user";
+import { findCustodian, fetchUsersByRole } from "../services/user";
 import { addTransferRequest } from "../services/transfer";
 import { useAuth } from "../context/AuthContext";
 import ROLES from "../data/roles";
+import { toLowerCase } from "../utils/TextCasing";
 
 function useTransferRequest({ onClose, assetID = "" } = {}) {
   const { user, role } = useAuth();
@@ -24,6 +25,7 @@ function useTransferRequest({ onClose, assetID = "" } = {}) {
   const [custodian, setCustodian] = useState(null);
   const [custodianLoading, setCustodianLoading] = useState(false);
   const [custodianError, setCustodianError] = useState(null);
+  const [custodianOptions, setCustodianOptions] = useState([]);
 
   // form fields
   const [description, setDescription] = useState("");
@@ -54,7 +56,7 @@ function useTransferRequest({ onClose, assetID = "" } = {}) {
 
   // --- asset lookup ---
   const lookupAsset = async (id) => {
-    const trimmedId = id.trim();
+    const trimmedId = toLowerCase(id.trim());
     if (!trimmedId) return;
 
     setAssetLoading(true);
@@ -117,6 +119,13 @@ function useTransferRequest({ onClose, assetID = "" } = {}) {
       setCustodianLoading(false);
     }
   };
+
+  //fetch custodian options
+  useEffect(() => {
+    fetchUsersByRole(ROLES.FULLTIME)
+      .then(setCustodianOptions)
+      .catch((err) => console.error("Failed to load custodian list:", err));
+  }, []);
 
   // focus input on mount, auto-fill + lookup if assetID was passed in
   useEffect(() => {
@@ -193,12 +202,19 @@ function useTransferRequest({ onClose, assetID = "" } = {}) {
                 role: custodian.role,
               }
             : null;
-
+      console.log("to", to);
+      const from = asset.property_custodian
+        ? {
+            uid: asset.property_custodian,
+            name: asset.property_custodian_name || null,
+            role: ROLES.FULLTIME,
+          }
+        : null;
       const result = await addTransferRequest(
         {
           asset_id: asset.id,
           asset_description: description,
-          from: asset.property_custodian || null,
+          from,
           to,
           notes: notes.trim(),
         },
@@ -206,6 +222,8 @@ function useTransferRequest({ onClose, assetID = "" } = {}) {
         `${user.firstname} ${user.lastname}`,
         user.role,
       );
+      //log result for debugging
+      console.log("Transfer request submitted:", result);
       setSubmitStatus("success");
     } catch (err) {
       setSubmitError(err.message || "Failed to submit transfer request.");
@@ -238,6 +256,7 @@ function useTransferRequest({ onClose, assetID = "" } = {}) {
     custodian,
     custodianLoading,
     custodianError,
+    custodianOptions,
     // form fields
     description,
     currentCustodian,
