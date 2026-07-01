@@ -39,17 +39,27 @@ export function useTransferInfo() {
 
   const ackAdmin = request?.acknowledgments?.admin ?? null;
 
-  // Local MR requests store from=localmr, to=custodian. reverse the display for REMOVEMR 
+  // Local MR requests store from=localmr, to=custodian. reverse the display for REMOVEMR
   // "custodian -> mr" display regardless of assign/remove direction.
   const isRemoveMR = request?.type === TRANSFER_TYPES.REMOVEMR;
+  console.log("isRemoveMR", isRemoveMR);
+  console.log("request?.acknowledgments", request?.acknowledgments);
 
   const ackFrom = isRemoveMR
-    ? (request?.acknowledgments?.to ?? null)
-    : (request?.acknowledgments?.from ?? null);
+    ? request?.acknowledgments?.to?.uid
+      ? request.acknowledgments.to
+      : null
+    : request?.acknowledgments?.from?.uid
+      ? request.acknowledgments.from
+      : null;
 
   const ackTo = isRemoveMR
-    ? (request?.acknowledgments?.from ?? null)
-    : (request?.acknowledgments?.to ?? null);
+    ? request?.acknowledgments?.from?.uid
+      ? request.acknowledgments.from
+      : null
+    : request?.acknowledgments?.to?.uid
+      ? request.acknowledgments.to
+      : null;
 
   let userAck;
   if (user?.uid === ackAdmin?.uid) {
@@ -61,7 +71,9 @@ export function useTransferInfo() {
   } else {
     userAck = null;
   }
-
+  console.log("userAck", userAck);
+  console.log("ackFrom", ackFrom);
+  console.log("ackTo", ackTo);
   const showActions = !isResolved && userAck?.acknowledged === false;
 
   const [actionModal, setActionModal] = useState(null);

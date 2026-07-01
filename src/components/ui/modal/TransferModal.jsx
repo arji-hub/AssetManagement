@@ -1,5 +1,4 @@
-
-import React from "react";
+import { React, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useTransferRequest from "../../../hooks/useTransferRequest";
 import "./TransferModal.css";
@@ -30,6 +29,7 @@ function TransferModal({ onClose, assetID = "" }) {
     handleFindAsset,
     handleAssetIdKeyDown,
     handleFindCustodian,
+    custodianOptions,
     handleCustodianIdKeyDown,
     handleSubmit,
     submitStatus,
@@ -37,6 +37,13 @@ function TransferModal({ onClose, assetID = "" }) {
   } = useTransferRequest({ onClose, assetID });
 
   const isRemoveMode = mode === "remove";
+
+  const [showDropdown, setShowDropdown] = useState(false);
+  const filteredOptions = custodianOptions.filter(
+    (c) =>
+      c.email.toLowerCase().includes(custodianId.toLowerCase()) ||
+      c.fullname.toLowerCase().includes(custodianId.toLowerCase()),
+  );
 
   return (
     <>
@@ -192,16 +199,42 @@ function TransferModal({ onClose, assetID = "" }) {
                 <label htmlFor="transfer-custodian-id-input">
                   Transfer To (Custodian)
                 </label>
-                <div className="transfer-modal-lookup">
+                <div className="transfer-modal-lookup transfer-autocomplete-wrapper">
                   <input
                     id="transfer-custodian-id-input"
                     type="text"
+                    autoComplete="off"
                     placeholder="Search by username or email"
                     value={custodianId}
-                    onChange={(e) => setCustodianId(e.target.value)}
+                    onChange={(e) => {
+                      setCustodianId(e.target.value);
+                      setShowDropdown(true);
+                    }}
+                    onFocus={() => setShowDropdown(true)}
+                    onBlur={() => setTimeout(() => setShowDropdown(false), 120)}
                     onKeyDown={handleCustodianIdKeyDown}
                     disabled={isSubmitting || custodianLoading}
                   />
+                  {showDropdown && filteredOptions.length > 0 && (
+                    <ul className="transfer-autocomplete-list">
+                      {filteredOptions.map((c) => (
+                        <li
+                          key={c.uid}
+                          onMouseDown={() => {
+                            setCustodianId(c.email);
+                            setShowDropdown(false);
+                          }}
+                        >
+                          <span className="transfer-autocomplete-name">
+                            {c.fullname}
+                          </span>
+                          <span className="transfer-autocomplete-email">
+                            {c.email}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                   <button
                     type="button"
                     className="transfer-modal-find-btn"
@@ -217,6 +250,8 @@ function TransferModal({ onClose, assetID = "" }) {
                     )}
                   </button>
                 </div>
+                {/* ↑↑↑ END replacement ↑↑↑ */}
+
                 {custodianError && (
                   <span className="transfer-modal-error" role="alert">
                     {custodianError}
