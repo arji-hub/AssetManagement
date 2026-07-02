@@ -112,8 +112,6 @@ function Asset() {
                 <th>Description</th>
                 <th>Category</th>
                 <th>Location</th>
-                <th>Custodian</th>
-                <th>Local MR</th>
                 <th>Qty</th>
                 <th>Unit Value</th>
                 <th>Status</th>
@@ -150,8 +148,6 @@ function Asset() {
                     <td className="asset-desc">{asset.description || "—"}</td>
                     <td>{asset.category_id || "—"}</td>
                     <td>{asset.room_id || "—"}</td>
-                    <td>{asset.property_custodian_name || "—"}</td>
-                    <td>{asset.local_mr_name || "—"}</td>
                     <td>{asset.qty ?? 1}</td>
                     <td>{asset.unit_value?.toLocaleString() ?? "—"}</td>
                     <td>
