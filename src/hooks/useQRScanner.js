@@ -2,28 +2,10 @@ import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import jsQR from "jsqr";
 
-/**
- * useQRScanner
- *
- * Decodes QR codes from uploaded image files, navigates to the decoded
- * asset preview route, and exposes status state for QRStatusModal.
- *
- * Usage:
- *   const { status, errorMessage, handleImageUpload, reset } = useQRScanner();
- *
- *   <QRModal onImageUpload={handleImageUpload} />
- *   {status && (
- *     <QRStatusModal
- *       status={status}
- *       errorMessage={errorMessage}
- *       onClose={reset}
- *     />
- *   )}
- */
+
 export function useQRScanner() {
   const navigate = useNavigate();
 
-  // null = idle (no modal shown)
   const [status, setStatus] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -68,9 +50,6 @@ export function useQRScanner() {
     });
   }, []);
 
-  // Only navigate if the decoded value points to a valid asset
-  // This prevents non-asset QR codes (wifi, contact cards, plain URLs, etc.)
-  // from accidentally matching the catch-all route and redirecting to "/".
   const ASSET_PREVIEW_PATTERN = /^\/asset\/[^/]+\/?$/;
 
   const navigateFromDecodedValue = useCallback(

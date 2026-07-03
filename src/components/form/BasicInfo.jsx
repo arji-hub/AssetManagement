@@ -1,9 +1,9 @@
 import "./Form.css";
 import "./BasicInfo.css";
 import { ASSET_CATEGORIES } from "../../data/assets";
+import { todayISO } from "../../utils/date";
 
 function BasicInfo({ form, onChange, categories, loadingOptions, error }) {
-  const today = new Date().toISOString().split("T")[0];
 
   return (
     <div className="reg-card">
@@ -71,7 +71,7 @@ function BasicInfo({ form, onChange, categories, loadingOptions, error }) {
             className={`reg-input ${error.date_acquired ? "reg-input--error" : ""}`}
             type="date"
             name="date_acquired"
-            max={today}
+            max={todayISO}
             value={form.date_acquired}
             onChange={onChange}
           />

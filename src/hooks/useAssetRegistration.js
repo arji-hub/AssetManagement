@@ -6,13 +6,14 @@ import { fetchCustodians } from "../services/user";
 import { fetchRooms } from "../services/room";
 import { fetchCategories } from "../services/category";
 import { useBasicInfo } from "./useBasicInfo";
+import { todayISO } from "../utils/date";
 
 const INITIAL_FORM = {
   serial_number: "",
   category_id: "",
-  date_acquired: "",
+  date_acquired: todayISO,
   description: "",
-  unit_value: "",
+  unit_value: "1.00",
   remarks: "",
   qty: "1",
   primary_custodian: "",

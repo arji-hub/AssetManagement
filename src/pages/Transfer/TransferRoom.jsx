@@ -1,7 +1,7 @@
 import React from "react";
 import MainLayout from "../../components/layout/MainLayout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { today } from "../../utils/date";
+import { displayDate } from "../../utils/date";
 import { TOP_TABS } from "../../data/transfer";
 import { useTransferPage } from "../../hooks/useTransferPage";
 import TransferPanel from "../../components/panel/TransferPanel";
@@ -24,7 +24,7 @@ function TransferRoom() {
         <div className="transfer-header">
           <div className="transfer-header-left">
             <h1 className="transfer-title">Transfers</h1>
-            <p className="transfer-date">{today}</p>
+            <p className="transfer-date">{displayDate}</p>
           </div>
 
           <div className="transfer-header-right">
