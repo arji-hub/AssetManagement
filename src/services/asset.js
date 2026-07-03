@@ -78,6 +78,12 @@ export function subscribeToAssets(role, currentUserUid, callback, onError) {
           local_mr_fullname: fullname[asset.property_custodian] || "---",
         }));
 
+         assets.sort((a, b) => {
+          const aMillis = a.created_at?.toMillis?.() ?? 0;
+          const bMillis = b.created_at?.toMillis?.() ?? 0;
+          return bMillis - aMillis;
+        });
+
         callback(assets);
       } catch (err) {
         onError?.(err);

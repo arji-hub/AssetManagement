@@ -17,6 +17,10 @@ export const ASSET_STATUS = [
   "Condemned",
 ];
 
+// asset assignment
+export const UNALLOCATED_ROOM = "Unallocated";
+export const UNASSIGNED_CUSTODIAN = "Unassigned";
+
 // data/status.js
 
 export const STATUS_COLORS = {
