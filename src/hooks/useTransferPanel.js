@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { ROLES } from "../data/roles";
 import {
-  fetchAction,
-  fetchRequested,
-  fetchLogs,
-  fetchRoomLogs,
+  subscribeToAction,
+  subscribeToRequested,
+  subscribeToLogs,
+  subscribeToRoomLogs,
 } from "../services/transfer";
 
 export function useTransferPanel(group, { skip = false } = {}) {
@@ -27,38 +27,34 @@ export function useTransferPanel(group, { skip = false } = {}) {
   React.useEffect(() => {
     if (skip || !uid) return;
 
-    let cancelled = false;
-    const user = { uid, role };
+    const authedUser = { uid, role };
 
     setLoading(true);
     setError(null);
 
-    async function load() {
-      try {
-        let data = [];
+    const onData = (data) => {
+      setItems(data);
+      setLoading(false);
+    };
 
-        if (group === "action") data = await fetchAction(user);
-        else if (group === "requested") data = await fetchRequested(user);
-        else if (group === "logs") data = await fetchLogs(user);
-        else if (group === "room_logs") data = await fetchRoomLogs();
+    const onErr = (err) => {
+      setError(err);
+      setLoading(false);
+    };
 
-        if (!cancelled) {
-          setItems(data);
-          setLoading(false);
-        }
-      } catch (err) {
-        if (!cancelled) {
-          setError(err);
-          setLoading(false);
-        }
-      }
+    let unsubscribe = () => {};
+
+    if (group === "action") {
+      unsubscribe = subscribeToAction(authedUser, onData, onErr);
+    } else if (group === "requested") {
+      unsubscribe = subscribeToRequested(authedUser, onData, onErr);
+    } else if (group === "logs") {
+      unsubscribe = subscribeToLogs(authedUser, onData, onErr);
+    } else if (group === "room_logs") {
+      unsubscribe = subscribeToRoomLogs(onData, onErr);
     }
 
-    load();
-
-    return () => {
-      cancelled = true;
-    };
+    return () => unsubscribe();
   }, [group, uid, role, skip]);
 
   return { items, loading, error, handleRowClick };

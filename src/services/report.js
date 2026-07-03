@@ -6,6 +6,7 @@ import {
   getDoc,
   updateDoc,
   getDocs,
+  onSnapshot,
   orderBy,
   query,
   arrayUnion,
@@ -16,36 +17,59 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getName } from "./user";
 import { updateAssetStatus } from "./asset";
 
-export async function fetchReports() {
+export function subscribeToReports(uid, callback, onError) {
   const q = query(collection(db, "report"), orderBy("created_at", "desc"));
-  const snapshot = await getDocs(q);
 
-  return snapshot.docs.map((doc) => {
-    const report = { id: doc.id, ...doc.data() };
-    const latestLog = report.status_log?.[report.status_log.length - 1];
+  const unsubscribe = onSnapshot(
+    q,
+    (snapshot) => {
+      try {
+        const reports = snapshot.docs.map((doc) => {
+          const report = { id: doc.id, ...doc.data() };
+          const latestLog = report.status_log?.[report.status_log.length - 1];
+          return {
+            id: report.id,
+            asset_id: report.asset_id,
+            report_no: report.report_no,
+            description: report.asset_description,
+            location: report.location,
+            custodian: report.current_custodian,
+            local_mr: report.current_localmr,
+            reported_by: report.reported_by,
+            reported_by_name: report.reported_by_name,
+            status: report.status,
+            date_resolved: report.date_resolved,
+            status_log: report.status_log,
+            created_at: report.created_at,
+            updated_at: report.updated_at,
+            date_reported: report.status_log?.[0]?.date ?? null,
+            narrative: report.status_log?.[0]?.note ?? null,
+            latest_note: latestLog?.note ?? null,
+            latest_date: latestLog?.date ?? null,
+          };
+        });
 
-    return {
-      id: report.id,
-      asset_id: report.asset_id,
-      report_no: report.report_no,
-      description: report.asset_description,
-      location: report.location,
-      custodian: report.custodian,
-      custodian_name: report.custodian_name,
-      reported_by: report.reported_by,
-      reported_by_name: report.reported_by_name,
-      status: report.status,
-      date_resolved: report.date_resolved,
-      status_log: report.status_log,
-      created_at: report.created_at,
-      updated_at: report.updated_at,
-      // derived from status_log
-      date_reported: report.status_log?.[0]?.date ?? null,
-      narrative: report.status_log?.[0]?.note ?? null,
-      latest_note: latestLog?.note ?? null,
-      latest_date: latestLog?.date ?? null,
-    };
-  });
+        const filtered =
+          uid === undefined
+            ? reports
+            : reports.filter(
+                (report) =>
+                  report.custodian === uid ||
+                  report.local_mr === uid ||
+                  report.reported_by === uid,
+              );
+
+        callback(filtered);
+      } catch (err) {
+        onError?.(err);
+      }
+    },
+    (err) => {
+      onError?.(err);
+    },
+  );
+
+  return unsubscribe;
 }
 
 export async function fetchReportByID(id) {

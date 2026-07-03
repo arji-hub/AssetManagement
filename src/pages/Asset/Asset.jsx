@@ -1,25 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import MainLayout from "../../components/layout/MainLayout";
-import { fetchAssets } from "../../services/asset";
 import { ROLES } from "../../data/roles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./Asset.css";
 import { Status } from "../../components/ui/status/assetStatus";
 import FilterModal from "../../components/ui/modal/FilterModal";
 import { useAssetFilters } from "../../hooks/useAssetFilters";
+import { useAssets } from "../../hooks/useAssets";
 import { formatDate, today } from "../../utils/date";
 
 function Asset() {
-  const { user, role, currentUser } = useAuth();
+  const { role, currentUser } = useAuth();
   const navigate = useNavigate();
 
-  const [assets, setAssets] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
   const isAdmin = role === ROLES.ADMIN;
+
+  const { assets, loading, error } = useAssets(role, currentUser);
 
   const {
     showFilter,
@@ -35,15 +33,7 @@ function Asset() {
     custodians,
     loadingOptions,
   } = useAssetFilters(assets);
-  // fetch assets
-  useEffect(() => {
-    if (!currentUser) return;
-    setLoading(true);
-    fetchAssets(role, currentUser.uid)
-      .then(setAssets)
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
-  }, [role, currentUser]);  
+
   return (
     <MainLayout>
       <div className="asset-page">
@@ -55,7 +45,6 @@ function Asset() {
           </div>
 
           <div className="asset-header-right">
-            {/* Filter button */}
             <button
               className={`asset-filter-btn${activeFilterCount > 0 ? " asset-filter-btn--active" : ""}`}
               onClick={() => setShowFilter(true)}
@@ -67,7 +56,6 @@ function Asset() {
               )}
             </button>
 
-            {/* Add Asset — admin only */}
             {isAdmin && (
               <button
                 className="asset-add-btn"
@@ -79,7 +67,6 @@ function Asset() {
           </div>
         </div>
 
-        {/* active filter pills */}
         {activeFilterCount > 0 && (
           <div className="asset-active-filters">
             {Object.entries(filters).map(([key, val]) =>
@@ -103,7 +90,6 @@ function Asset() {
           </div>
         )}
 
-        {/* table */}
         <div className="asset-table-wrap">
           <table className="asset-table">
             <thead>
@@ -170,7 +156,6 @@ function Asset() {
           </table>
         </div>
 
-        {/* footer bar */}
         <div className="asset-footer-bar">
           <span>
             {filteredAssets.length} asset
@@ -179,7 +164,6 @@ function Asset() {
           </span>
         </div>
 
-        {/* filter modal */}
         {showFilter && (
           <FilterModal
             context="asset"

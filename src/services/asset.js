@@ -10,6 +10,7 @@ import {
   query,
   where,
   orderBy,
+  onSnapshot,
   serverTimestamp,
 } from "firebase/firestore";
 import { ROLES } from "../data/roles";
@@ -21,7 +22,7 @@ import QRCodeStyling from "qr-code-styling";
 import CICTLogo from "../assets/CICTLOGO.png";
 import { toLowerCase, toTitleCase } from "../utils/TextCasing";
 
-export async function fetchAssets(role, currentUserUid) {
+export function subscribeToAssets(role, currentUserUid, callback, onError) {
   const assetsRef = collection(db, "asset");
 
   let q;
@@ -34,52 +35,60 @@ export async function fetchAssets(role, currentUserUid) {
   } else {
     throw new Error("Invalid user role: " + role);
   }
-  const snapshot = await getDocs(q);
 
-  const assetData = snapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-  }));
+  const unsubscribe = onSnapshot(
+    q,
+    async (snapshot) => {
+      try {
+        const assetData = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
 
-  const userIds = [
-    ...new Set(
-      assetData.flatMap((a) =>
-        [a.property_custodian, a.local_mr].filter(Boolean),
-      ),
-    ),
-  ];
+        const userIds = [
+          ...new Set(
+            assetData.flatMap((a) =>
+              [a.property_custodian, a.local_mr].filter(Boolean),
+            ),
+          ),
+        ];
 
-  const userDocs = await Promise.all(
-    userIds.map((uid) => getDoc(doc(db, "user", uid))),
+        const userDocs = await Promise.all(
+          userIds.map((uid) => getDoc(doc(db, "user", uid))),
+        );
+
+        const userMap = {};
+        const fullname = {};
+        userDocs.forEach((d) => {
+          if (d.exists()) {
+            const data = d.data();
+            userMap[d.id] = data.first_name;
+            fullname[d.id] = [data.first_name, data.middle_name, data.last_name]
+              .filter(Boolean)
+              .join(" ");
+          }
+        });
+
+        const assets = assetData.map((asset) => ({
+          ...asset,
+          property_custodian_name: userMap[asset.property_custodian] || "---",
+          property_custodian_fullname:
+            fullname[asset.property_custodian] || "---",
+          local_mr_name: userMap[asset.local_mr] || "---",
+          local_mr_fullname: fullname[asset.property_custodian] || "---",
+        }));
+
+        callback(assets);
+      } catch (err) {
+        onError?.(err);
+      }
+    },
+    (err) => {
+      onError?.(err);
+    },
   );
 
-  const userMap = {};
-  userDocs.forEach((d) => {
-    if (d.exists()) {
-      userMap[d.id] = d.data().first_name;
-    }
-  });
-
-  const fullname = {};
-  userDocs.forEach((d) => {
-    if (d.exists()) {
-      const data = d.data();
-      fullname[d.id] = [data.first_name, data.middle_name, data.last_name]
-        .filter(Boolean)
-        .join(" ");
-    }
-  });
-
-  const assets = assetData.map((asset) => ({
-    ...asset,
-    property_custodian_name: userMap[asset.property_custodian] || "---",
-    //fetch fullname first_name,middle_name,last_name
-    property_custodian_fullname: fullname[asset.property_custodian] || "---",
-    local_mr_name: userMap[asset.local_mr] || "---",
-    local_mr_fullname: fullname[asset.property_custodian] || "---",
-  }));
-
-  return assets;
+  return unsubscribe;
 }
 
 export async function fetchAssetByID(assetId) {

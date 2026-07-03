@@ -1,29 +1,30 @@
 import { useState, useEffect } from "react";
-import { subscribeToAssetsInRoom } from "../services/room";
+import { subscribeToAssets } from "../services/asset";
 
-export function useRoomAssets(room_id) {
+export function useAssets(role, currentUser) {
   const [assets, setAssets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (!currentUser) return;
     setLoading(true);
-    setError(null);
 
-    const unsubscribe = subscribeToAssetsInRoom(
-      room_id,
+    const unsubscribe = subscribeToAssets(
+      role,
+      currentUser.uid,
       (assets) => {
         setAssets(assets);
         setLoading(false);
       },
       (err) => {
-        setError(err);
+        setError(err.message);
         setLoading(false);
       },
     );
 
     return () => unsubscribe();
-  }, [room_id]);
+  }, [role, currentUser]);
 
   return { assets, loading, error };
 }
