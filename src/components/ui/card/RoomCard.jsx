@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 
 function RoomCard({ roomName, roomID, totalAssets = 0 }) {
   const navigate = useNavigate();
-  console.log("Id", roomID, "RoomName", roomName, "Total", totalAssets);
   return (
     <div className="room-card" onClick={() => navigate(`/room/${roomID}`)}>
       <div className="room-card-header">

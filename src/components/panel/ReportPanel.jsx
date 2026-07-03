@@ -23,7 +23,6 @@ function ReportPanel({
   const handleRowClick = (report) => {
     navigate(`/report/${report.id}`);
   };
-  console.log("filtered reports: ", filteredReports);
   return (
     <div className={`report-panel ${group}`}>
       <div className="report-panel-header">

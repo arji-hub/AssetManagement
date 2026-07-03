@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MainLayout from "../../components/layout/MainLayout";
 import { Status } from "../../components/ui/status/assetStatus";
@@ -12,6 +13,7 @@ import { TRANSFER_TYPES } from "../../data/transfer";
 import "./TransferInfo.css";
 
 function TransferInfo() {
+  const navigate = useNavigate();
   const {
     request,
     loading,
@@ -20,7 +22,6 @@ function TransferInfo() {
     ackAdmin,
     ackFrom,
     ackTo,
-    handleBack,
     showActions,
     actionModal,
     setActionModal,
@@ -53,7 +54,7 @@ function TransferInfo() {
         {/* ── Header ── */}
         <div className="asset-info-header">
           <div className="asset-info-breadcrumb">
-            <button className="return-button" onClick={handleBack}>
+            <button className="return-button" onClick={() => navigate(-1)}>
               <FontAwesomeIcon icon="fa-solid fa-arrow-left" />
               Back
             </button>

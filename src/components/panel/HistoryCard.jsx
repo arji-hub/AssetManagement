@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { STATUS_COLORS } from "../../data/assets";
 import { useAssetHistory } from "../../hooks/useAssetHistory";
 import "./HistoryCard.css";
+import { toTitleCase } from "../../utils/TextCasing";
 
 const HISTORY_FILTERS = ["All Events", "Transfer", "Incident"];
 
 function StatusBadge({ status }) {
   if (!status) return null;
-  const style = STATUS_COLORS[status] || {
+  const style = STATUS_COLORS[toTitleCase(status)] || {
     bg: "rgba(136,136,136,0.7)",
     color: "#1f1f1f",
   };
@@ -23,7 +24,7 @@ function StatusBadge({ status }) {
 
 function HistoryCard({ assetId }) {
   const [filter, setFilter] = useState("All Events");
-  const { history, loading, error } = useAssetHistory(assetId);
+  const { history, loading, error, handleItemClick } = useAssetHistory(assetId);
 
   const filtered =
     filter === "All Events"
@@ -56,7 +57,11 @@ function HistoryCard({ assetId }) {
           <div className="history-card-empty">No events found.</div>
         ) : (
           filtered.map((item) => (
-            <div key={item.id} className="history-card-item">
+            <div
+              key={item.id}
+              className="history-card-item"
+              onClick={() => handleItemClick(item)}
+            >
               <div className="history-card-item-icon">
                 <i
                   className={`ti ${item.type === "Transfer" ? "ti-arrow-right" : "ti-alert-circle"}`}
