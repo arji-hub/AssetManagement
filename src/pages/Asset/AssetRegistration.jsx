@@ -15,9 +15,7 @@ function AssetRegistration() {
   const {
     step,
     form,
-    serialError,
-    checkingSerial,
-    checkSerialNumber,
+    error,
     assetImage,
     setAssetImage,
     docImage,
@@ -45,10 +43,6 @@ function AssetRegistration() {
       <div className="reg-page">
         {/* ── header ── */}
         <div className="reg-header">
-          <button className="return-button" onClick={() => navigate("/asset")}>
-            <FontAwesomeIcon icon="fa-solid fa-arrow-left" />
-            Back
-          </button>
           <div className="reg-header-text">
             <div className="reg-header-eyebrow">
               <FontAwesomeIcon icon="fa-solid fa-layer-group" />
@@ -69,9 +63,7 @@ function AssetRegistration() {
               onChange={handleChange}
               categories={categories}
               loadingOptions={loadingOptions}
-              serialError={serialError}
-              checkingSerial={checkingSerial}
-              onSerialBlur={checkSerialNumber}
+              error={error}
             />
           )}
           {step === 2 && (
