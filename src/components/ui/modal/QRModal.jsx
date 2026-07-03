@@ -7,10 +7,12 @@ import {
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
 import "./QRModal.css";
+import { useCamera } from "../../../hooks/useCamera";
 
-function QRModal({ onCameraScan, onImageUpload }) {
+function QRModal({ onImageUpload }) {
   const fileInputRef = useRef(null);
 
+  const { openCamera, inputProps: cameraInputProps } = useCamera(onImageUpload);
   const handleUploadClick = () => {
     fileInputRef.current?.click();
   };
@@ -46,7 +48,7 @@ function QRModal({ onCameraScan, onImageUpload }) {
         <button
           type="button"
           className="qr-modal-btn qr-modal-btn-primary"
-          onClick={onCameraScan}
+          onClick={openCamera}
         >
           <FontAwesomeIcon icon={faCamera} />
           Camera Scan
@@ -68,6 +70,7 @@ function QRModal({ onCameraScan, onImageUpload }) {
           className="qr-modal-file-input"
           onChange={handleFileChange}
         />
+        <input {...cameraInputProps} />
       </div>
 
       <p className="qr-modal-hint">

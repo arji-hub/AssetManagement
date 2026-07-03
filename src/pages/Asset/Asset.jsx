@@ -9,7 +9,7 @@ import { Status } from "../../components/ui/status/assetStatus";
 import FilterModal from "../../components/ui/modal/FilterModal";
 import { useAssetFilters } from "../../hooks/useAssetFilters";
 import { useAssets } from "../../hooks/useAssets";
-import { formatDate, today } from "../../utils/date";
+import { formatDate, displayDate } from "../../utils/date";
 
 function Asset() {
   const { role, currentUser } = useAuth();
@@ -41,7 +41,7 @@ function Asset() {
         <div className="asset-header">
           <div className="asset-header-left">
             <h1 className="asset-title">Assets</h1>
-            <p className="asset-date">{today}</p>
+            <p className="asset-date">{displayDate}</p>
           </div>
 
           <div className="asset-header-right">
