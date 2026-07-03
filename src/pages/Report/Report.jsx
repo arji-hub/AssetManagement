@@ -25,8 +25,6 @@ function Report() {
     filter,
   } = useReportPage();
 
-  const isIncidentTab = activeTab === "incident";
-
   return (
     <MainLayout>
       <div className="report-page">
@@ -38,33 +36,25 @@ function Report() {
           </div>
 
           <div className="report-header-right">
-            {isIncidentTab && (
-              <div className="report-filter-wrap" ref={filter.filterRef}>
+            <div className="report-filter-segment">
+              {[
+                { value: "all", label: "All" },
+                { value: "damaged", label: "Damaged" },
+                { value: "missing", label: "Missing" },
+              ].map((opt) => (
                 <button
-                  className="report-filter-btn"
-                  onClick={filter.handleStatusFilter}
+                  key={opt.value}
+                  className={`report-filter-option ${
+                    filter.statusFilter === opt.value
+                      ? "report-filter-option--active"
+                      : ""
+                  }`}
+                  onClick={() => filter.handleStatusFilter(opt.value)}
                 >
-                  <FontAwesomeIcon icon="fa-solid fa-sliders" />
-                  Filter
-                  <FontAwesomeIcon icon="fa-solid fa-chevron-down" />
+                  {opt.label}
                 </button>
-
-                {filter.filterOpen && (
-                  <div className="report-filter-dropdown">
-                    {["damaged", "missing"].map((type) => (
-                      <label key={type} className="report-filter-option">
-                        <input
-                          type="checkbox"
-                          checked={filter.statusFilter.includes(type)}
-                          onChange={() => filter.handleStatusToggle(type)}
-                        />
-                        {type.charAt(0).toUpperCase() + type.slice(1)}
-                      </label>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
+              ))}
+            </div>
 
             <button
               className="report-incident-btn"
