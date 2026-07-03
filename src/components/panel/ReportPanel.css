@@ -24,10 +24,7 @@
 .report-panel.resolved .report-card-row,
 .report-panel.archive,
 .report-panel.archive .report-panel-header,
-.report-panel.archive .report-card-row,
-.report-panel.logs,
-.report-panel.logs .report-panel-header,
-.report-panel.logs .report-card-row {
+.report-panel.archive .report-card-row {
   --report-grid-columns: 1fr 2fr 1fr 1.3fr 1fr 0.8fr 1.2fr;
 }
 
