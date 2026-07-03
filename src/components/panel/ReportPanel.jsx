@@ -7,7 +7,7 @@ import "./ReportPanel.css";
 
 function ReportPanel({
   group = "incident",
-  statusFilter = ["damaged", "missing"],
+  statusFilter = "all",
   reports = [],
   loading = false,
   error = null,
@@ -16,9 +16,11 @@ function ReportPanel({
 
   const allowedStatuses = STATUS_GROUPS[group] || [];
 
-  const filteredReports = reports.filter((r) =>
-    allowedStatuses.includes(r.status),
-  );
+  const filteredReports = reports.filter((r) => {
+    if (!allowedStatuses.includes(r.status)) return false;
+    if (statusFilter === "all") return true;
+    return r.status === statusFilter;
+  });
 
   const handleRowClick = (report) => {
     navigate(`/report/${report.id}`);
