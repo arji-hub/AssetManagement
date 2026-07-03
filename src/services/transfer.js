@@ -325,7 +325,7 @@ export async function addTransferRequest(
     updated_at: serverTimestamp(),
     acknowledgments: {
       admin: buildAck(isAdmin, uidAdmin),
-      from: buildAck(!isAdmin, from, fromName),
+      from: buildAck(!isAdmin, from.uid, fromName),
       to: buildAck(!to, to?.uid, toName),
     },
     status_log: [
