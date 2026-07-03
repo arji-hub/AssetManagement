@@ -394,6 +394,9 @@ export async function updateTransferRequest(requestId, user, note, isApprove) {
 
   if (!isApprove) {
     updates.status = "denied";
+  } else if (ackState.admin && ackState.from && ackState.to) {
+    updates.status = "completed";
+    updates.completed_at = now;
   } else if (!ackState.admin && ackState.from && ackState.to) {
     updates.status = "for_approval";
   }
