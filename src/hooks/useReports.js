@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import ROLES from "../data/roles";
 
 export function useReports() {
+  const { user, role } = useAuth();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

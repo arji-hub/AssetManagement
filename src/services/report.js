@@ -9,6 +9,7 @@ import {
   onSnapshot,
   orderBy,
   query,
+  where,
   arrayUnion,
   runTransaction,
   serverTimestamp,
@@ -208,4 +209,58 @@ export async function updateReportStatus({
   });
 
   if (assetId) await updateAssetStatus(assetId, newStatus);
+}
+
+export function subscribeToReportsByAsset(assetId, callback, onError) {
+  if (!assetId) {
+    callback([]);
+    return () => {};
+  }
+
+  const q = query(
+    collection(db, "report"),
+    where("asset_id", "==", assetId),
+    orderBy("created_at", "desc"),
+  );
+
+  const unsubscribe = onSnapshot(
+    q,
+    (snapshot) => {
+      try {
+        const reports = snapshot.docs.map((doc) => {
+          const report = { id: doc.id, ...doc.data() };
+          const latestLog = report.status_log?.[report.status_log.length - 1];
+          return {
+            id: report.id,
+            asset_id: report.asset_id,
+            report_no: report.report_no,
+            description: report.asset_description,
+            location: report.location,
+            custodian: report.current_custodian,
+            local_mr: report.current_localmr,
+            reported_by: report.reported_by,
+            reported_by_name: report.reported_by_name,
+            status: report.status,
+            date_resolved: report.date_resolved,
+            status_log: report.status_log,
+            created_at: report.created_at,
+            updated_at: report.updated_at,
+            date_reported: report.status_log?.[0]?.date ?? null,
+            narrative: report.status_log?.[0]?.note ?? null,
+            latest_note: latestLog?.note ?? null,
+            latest_date: latestLog?.date ?? null,
+          };
+        });
+
+        callback(reports);
+      } catch (err) {
+        onError?.(err);
+      }
+    },
+    (err) => {
+      onError?.(err);
+    },
+  );
+
+  return unsubscribe;
 }
