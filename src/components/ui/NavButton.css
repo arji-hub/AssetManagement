@@ -1,28 +1,79 @@
 .nav-button {
   display: flex;
   align-items: center;
-  width: 100%;
-  padding: 12px 16px;
-  border: none;
-  cursor: pointer;
-  border-radius: 8px;
-  margin: 2px 8px;
   width: calc(100% - 16px);
+  padding: 12px 16px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  border-radius: 10px;
+  margin: 2px 8px;
   text-align: left;
-  transition: all 0.2s ease;
   white-space: nowrap;
-  background: #c8c7c7;
-  color: #000000;
+  position: relative;
+  overflow: hidden;
+
+  background: rgba(0, 0, 0, 0.03);
+  color: #3a3a3a;
+
+  transition:
+    background 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.15s ease,
+    color 0.25s ease;
 }
 
+.nav-button:active {
+  transform: scale(0.98);
+}
+
+/* ── Hover: soft tint, no full gradient yet — restraint is the premium signal ── */
 .nav-button:hover {
-  background: #5d0302;
-  color: #ffcdcd;
+  background: rgba(134, 1, 0, 0.08);
+  color: #860100;
 }
 
+/* ── Active: deep tonal gradient, glow instead of hard color blocks ── */
 .nav-button-active {
-  background: #860100; /* red */
+  background: linear-gradient(135deg, #9c0201 0%, #6b0000 100%);
   color: #ffffff;
+  border-color: rgba(245, 170, 44, 0.25);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.1),
+    0 8px 20px -6px rgba(134, 1, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* subtle glow bleeding outward — the "premium" tell, not a hard accent bar */
+.nav-button-active::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 24px rgba(245, 170, 44, 0.15);
+  pointer-events: none;
+}
+
+/* thin gold underline instead of a left bar — quieter, more editorial */
+.nav-button-active::before {
+  content: "";
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 6px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #f5aa2c, transparent);
+  opacity: 0.6;
+}
+
+.nav-button-active:hover {
+  background: linear-gradient(135deg, #ac0201 0%, #7a0000 100%);
+  color: #ffffff;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.1),
+    0 10px 24px -6px rgba(134, 1, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 @font-face {
@@ -44,4 +95,6 @@
   font-family: "Sansation";
   font-weight: bold;
   font-size: 12px;
+  position: relative;
+  z-index: 1;
 }
