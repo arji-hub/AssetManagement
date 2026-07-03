@@ -3,6 +3,7 @@ import { fetchCustodians } from "../services/user";
 import { fetchRooms } from "../services/room";
 import { fetchCategories } from "../services/category";
 import { toLowerCase } from "../utils/TextCasing";
+import { UNALLOCATED_ROOM, UNASSIGNED_CUSTODIAN } from "../data/assets";
 
 const INITIAL_FILTERS = {
   status: "",
@@ -61,17 +62,32 @@ export function useAssetFilters(assets = []) {
 
   const filteredAssets = useMemo(() => {
     return assets.filter((asset) => {
+      //status if condemn
       if (!filters.status && asset.status === "Condemned") return false;
+
+      //status
       if (filters.status && asset.status !== filters.status) return false;
+
+      //category
       if (filters.category && asset.category_id !== filters.category)
         return false;
-      if (filters.room && asset.room_id !== toLowerCase(filters.room))
+
+      //custodian
+      if (filters.room === UNALLOCATED_ROOM) {
+        if (asset.room_id) return false;
+      } else if (filters.room && asset.room_id !== toLowerCase(filters.room)) {
         return false;
-      if (
+      }
+
+      //custodian
+      if (filters.custodian === UNASSIGNED_CUSTODIAN) {
+        if (asset.property_custodian) return false;
+      } else if (
         filters.custodian &&
         asset.property_custodian_fullname !== filters.custodian
-      )
+      ) {
         return false;
+      }
       return true;
     });
   }, [assets, filters]);
