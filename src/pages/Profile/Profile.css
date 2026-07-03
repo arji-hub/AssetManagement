@@ -2,10 +2,21 @@
   display: flex;
   justify-content: center;
   padding: 24px;
-  background: #ffffff;
+  background-image: url("../../assets/elib.png");
   height: 100%;
 }
 
+.profile-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(1, 1, 1, 0.5); /* adjust opacity as needed */
+  z-index: 0;
+}
+.profile-page > * {
+  position: relative;
+  z-index: 1;
+}
 /* ── Mobile ── */
 
 @media (max-width: 640px) {
