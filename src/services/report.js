@@ -77,6 +77,7 @@ export async function fetchReportByID(id) {
   if (!snap.exists()) throw new Error("Report not found.");
 
   const report = { id: snap.id, ...snap.data() };
+  console.log("report:", report);
 
   const latestLog = report.status_log?.[report.status_log.length - 1];
 
@@ -105,6 +106,7 @@ export async function fetchReportByID(id) {
     latest_note: latestLog?.note ?? null,
     latest_date: latestLog?.date ?? null,
   };
+  console.log("filteredReport:", filteredReport);
 
   return filteredReport;
 }
