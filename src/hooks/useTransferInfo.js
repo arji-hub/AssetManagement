@@ -42,8 +42,6 @@ export function useTransferInfo() {
   // Local MR requests store from=localmr, to=custodian. reverse the display for REMOVEMR
   // "custodian -> mr" display regardless of assign/remove direction.
   const isRemoveMR = request?.type === TRANSFER_TYPES.REMOVEMR;
-  console.log("isRemoveMR", isRemoveMR);
-  console.log("request?.acknowledgments", request?.acknowledgments);
 
   const ackFrom = isRemoveMR
     ? request?.acknowledgments?.to?.uid
@@ -71,16 +69,11 @@ export function useTransferInfo() {
   } else {
     userAck = null;
   }
-  console.log("userAck", userAck);
-  console.log("ackFrom", ackFrom);
-  console.log("ackTo", ackTo);
   const showActions = !isResolved && userAck?.acknowledged === false;
 
   const [actionModal, setActionModal] = useState(null);
   const [submitStatus, setSubmitStatus] = useState(null); // "loading" | "success" | "error" | null
   const [submitError, setSubmitError] = useState(null);
-
-  const handleBack = () => navigate("/transfer");
 
   const handleSubmitAction = async (note) => {
     const isApprove = actionModal === "approve";
@@ -116,7 +109,6 @@ export function useTransferInfo() {
     ackAdmin,
     ackFrom,
     ackTo,
-    handleBack,
     showActions,
     actionModal,
     setActionModal,

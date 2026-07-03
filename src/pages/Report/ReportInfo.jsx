@@ -59,16 +59,13 @@ function ReportInfo() {
         {/* ── Header ── */}
         <div className="asset-info-header">
           <div className="asset-info-breadcrumb">
-            <button
-              className="return-button"
-              onClick={() => navigate("/report")}
-            >
+            <button className="return-button" onClick={() => navigate(-1)}>
               <FontAwesomeIcon icon="fa-solid fa-arrow-left" />
               Back
             </button>
             <span className="breadcrumb-parent">Report Information</span>
           </div>
-           {/* ── Actions ── */}
+          {/* ── Actions ── */}
           {isAdmin && !isResolved && (
             <div className="report-info-actions">
               {/* Damaged actions */}
