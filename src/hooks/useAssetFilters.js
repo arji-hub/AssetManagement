@@ -58,7 +58,7 @@ export function useAssetFilters(assets = []) {
     setFilters(INITIAL_FILTERS);
     setShowFilter(false);
   };
-  const normalizeStatus = (str) => str.toLowerCase().replace(/\s+/g, "_");
+
   const filteredAssets = useMemo(() => {
     return assets.filter((asset) => {
       if (!filters.status && asset.status === "Condemned") return false;
@@ -68,7 +68,7 @@ export function useAssetFilters(assets = []) {
       if (filters.room && asset.room_id !== toLowerCase(filters.room))
         return false;
       if (
-        filters.custodian && //username vs fullname
+        filters.custodian &&
         asset.property_custodian_fullname !== filters.custodian
       )
         return false;

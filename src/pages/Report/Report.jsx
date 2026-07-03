@@ -12,7 +12,7 @@ import { TABS, TABS_ADMIN } from "../../data/reports";
 import { useReports } from "../../hooks/useReports";
 
 function Report() {
-  const { data: reports, loading, error, refetch } = useReports();
+  const { data: reports, loading, error } = useReports();
   const { role } = useAuth();
   const isAdmin = role === ROLES.ADMIN;
   const tabs = isAdmin ? TABS_ADMIN : TABS;
@@ -24,7 +24,7 @@ function Report() {
     handleReportIncident,
     handleModalClose,
     filter,
-  } = useReportPage({ refetch });
+  } = useReportPage();
 
   const isIncidentTab = activeTab === "incident";
 
