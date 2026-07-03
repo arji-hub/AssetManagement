@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { subscribeToReportsByAsset } from "../services/report";
 import {
   subscribeToTransfersByAsset,
@@ -68,6 +69,7 @@ function normalizeRoomTransfer(roomTransfer) {
 }
 
 export function useAssetHistory(assetId) {
+  const navigate = useNavigate();
   const [reports, setReports] = useState([]);
   const [transfers, setTransfers] = useState([]);
   const [roomTransfers, setRoomTransfers] = useState([]);
@@ -79,66 +81,47 @@ export function useAssetHistory(assetId) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    console.log("[useAssetHistory] effect start, assetId:", assetId);
-
     if (!assetId) {
-      console.log("[useAssetHistory] no assetId, skipping subscriptions");
       return;
     }
 
     setLoadedFlags({ reports: false, transfers: false, roomTransfers: false });
 
     const handleError = (source) => (err) => {
-      console.error(`[useAssetHistory] ${source} ERROR:`, err);
       setError(err);
     };
 
-    console.log("[useAssetHistory] subscribing to reports...");
     const unsub1 = subscribeToReportsByAsset(
       assetId,
       (data) => {
-        console.log("[useAssetHistory] reports received:", data.length, data);
         setReports(data);
         setLoadedFlags((prev) => {
           const next = { ...prev, reports: true };
-          console.log("[useAssetHistory] loadedFlags after reports:", next);
           return next;
         });
       },
       handleError("reports"),
     );
 
-    console.log("[useAssetHistory] subscribing to transfers...");
     const unsub2 = subscribeToTransfersByAsset(
       assetId,
       (data) => {
-        console.log("[useAssetHistory] transfers received:", data.length, data);
         setTransfers(data);
         setLoadedFlags((prev) => {
           const next = { ...prev, transfers: true };
-          console.log("[useAssetHistory] loadedFlags after transfers:", next);
           return next;
         });
       },
       handleError("transfers"),
     );
 
-    console.log("[useAssetHistory] subscribing to roomTransfers...");
     const unsub3 = subscribeToRoomTransfersByAsset(
       assetId,
       (data) => {
-        console.log(
-          "[useAssetHistory] roomTransfers received:",
-          data.length,
-          data,
-        );
         setRoomTransfers(data);
         setLoadedFlags((prev) => {
           const next = { ...prev, roomTransfers: true };
-          console.log(
-            "[useAssetHistory] loadedFlags after roomTransfers:",
-            next,
-          );
+
           return next;
         });
       },
@@ -146,7 +129,6 @@ export function useAssetHistory(assetId) {
     );
 
     return () => {
-      console.log("[useAssetHistory] cleanup, unsubscribing all");
       unsub1();
       unsub2();
       unsub3();
@@ -171,12 +153,16 @@ export function useAssetHistory(assetId) {
     loadedFlags.roomTransfers
   );
 
-  console.log(
-    "[useAssetHistory] render — loadedFlags:",
-    loadedFlags,
-    "loading:",
-    loading,
-  );
+  function handleItemClick(item) {
+    if (item.id.startsWith("report-")) {
+      const uid = item.id.replace("report-", "");
+      navigate(`/report/${uid}`);
+    } else if (item.id.startsWith("transfer-")) {
+      const uid = item.id.replace("transfer-", "");
+      navigate(`/transfer/${uid}`);
+    }
+    // room- prefixed items: no navigation, intentionally left as no-op
+  }
 
-  return { history, loading, error };
+  return { history, loading, error, handleItemClick };
 }
