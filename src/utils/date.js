@@ -61,3 +61,18 @@ export const today = new Date()
       day: "numeric",
     })
     .toUpperCase();
+
+export function splitDateTime(value) {
+  const combined = formatDateTime(value);
+  if (combined === "Invalid date") return { date: "—", time: "" };
+
+  const [date, time] = combined.split(" -- ");
+  return { date, time };
+}
+
+export function toSortableDate(value) {
+  if (value?.toDate) return value.toDate();
+  if (value?.seconds !== undefined) return new Date(value.seconds * 1000);
+  const d = new Date(value);
+  return isNaN(d) ? new Date(0) : d;
+}
