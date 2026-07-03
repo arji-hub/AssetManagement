@@ -11,6 +11,7 @@ import {
   orderBy,
   arrayUnion,
   serverTimestamp,
+  onSnapshot,
 } from "firebase/firestore";
 import { db, storage } from "./firebase-config";
 import { updateAssetRoom } from "./asset";
@@ -31,6 +32,8 @@ function isAcknowledged(requestDoc, uid) {
     (key) => acks[key]?.uid === uid && acks[key]?.acknowledged === false,
   );
 }
+
+// ─── one-time merged fetch (kept for any other callers)
 
 async function fetchMergedByFields({ statusFilter, fields, uid }) {
   const col = collection(db, COLLECTION);
@@ -57,6 +60,49 @@ async function fetchMergedByFields({ statusFilter, fields, uid }) {
   return Array.from(merged.values());
 }
 
+function subscribeMergedByFields({
+  statusFilter,
+  fields,
+  uid,
+  callback,
+  onError,
+}) {
+  const col = collection(db, COLLECTION);
+
+  const latestByField = fields.map(() => []);
+
+  const mergeAndEmit = () => {
+    try {
+      const merged = new Map();
+      latestByField.forEach((docs) => {
+        docs.forEach((doc) =>
+          merged.set(doc.id, { id: doc.id, ...doc.data() }),
+        );
+      });
+      callback(Array.from(merged.values()));
+    } catch (err) {
+      onError?.(err);
+    }
+  };
+
+  const unsubscribers = fields.map((field, i) =>
+    onSnapshot(
+      query(
+        col,
+        where("status", statusFilter.op, statusFilter.value),
+        where(field, "==", uid),
+      ),
+      (snap) => {
+        latestByField[i] = snap.docs;
+        mergeAndEmit();
+      },
+      (err) => onError?.(err),
+    ),
+  );
+
+  return () => unsubscribers.forEach((unsub) => unsub());
+}
+
 export async function fetchAction(user) {
   if (!user) return [];
 
@@ -65,8 +111,7 @@ export async function fetchAction(user) {
     const snap = await getDocs(
       query(col, where("status", "==", "for_approval")),
     );
-    const result = snapshotToItems(snap);
-    return result;
+    return snapshotToItems(snap);
   }
 
   const uid = user.uid;
@@ -77,9 +122,7 @@ export async function fetchAction(user) {
     uid,
   });
 
-  const filtered = items.filter((doc) => isAcknowledged(doc, uid));
-
-  return filtered;
+  return items.filter((doc) => isAcknowledged(doc, uid));
 }
 
 export async function fetchRequested(user) {
@@ -114,6 +157,101 @@ export async function fetchLogs(user) {
   });
 }
 
+export async function fetchRoomLogs() {
+  const col = collection(db, "transfer_room");
+  const snap = await getDocs(query(col, orderBy("created_at", "desc")));
+  return snapshotToItems(snap);
+}
+
+//get transfer request by id
+export function subscribeToAction(user, callback, onError) {
+  if (!user) {
+    callback([]);
+    return () => {};
+  }
+
+  if (user.role === "admin") {
+    const col = collection(db, COLLECTION);
+    return onSnapshot(
+      query(col, where("status", "==", "for_approval")),
+      (snap) => callback(snapshotToItems(snap)),
+      (err) => onError?.(err),
+    );
+  }
+
+  const uid = user.uid;
+
+  return subscribeMergedByFields({
+    statusFilter: { op: "==", value: "pending" },
+    fields: ["acknowledgments.from.uid", "acknowledgments.to.uid"],
+    uid,
+    callback: (items) => {
+      const filtered = items.filter((doc) => isAcknowledged(doc, uid));
+      callback(filtered);
+    },
+    onError,
+  });
+}
+
+export function subscribeToRequested(user, callback, onError) {
+  if (!user) {
+    callback([]);
+    return () => {};
+  }
+
+  const col = collection(db, COLLECTION);
+  return onSnapshot(
+    query(col, where("requested_by", "==", user.uid)),
+    (snap) => {
+      const items = snapshotToItems(snap);
+      callback(
+        items.filter((item) => !["completed", "denied"].includes(item.status)),
+      );
+    },
+    (err) => onError?.(err),
+  );
+}
+
+export function subscribeToLogs(user, callback, onError) {
+  if (!user) {
+    callback([]);
+    return () => {};
+  }
+
+  const statusFilter = ["completed", "denied"];
+
+  if (user.role === "admin") {
+    const col = collection(db, COLLECTION);
+    return onSnapshot(
+      query(col, where("status", "in", statusFilter)),
+      (snap) => callback(snapshotToItems(snap)),
+      (err) => onError?.(err),
+    );
+  }
+
+  const uid = user.uid;
+  return subscribeMergedByFields({
+    statusFilter: { op: "in", value: statusFilter },
+    fields: [
+      "requested_by",
+      "acknowledgments.from.uid",
+      "acknowledgments.to.uid",
+    ],
+    uid,
+    callback,
+    onError,
+  });
+}
+
+export function subscribeToRoomLogs(callback, onError) {
+  const col = collection(db, "transfer_room");
+  return onSnapshot(
+    query(col, orderBy("created_at", "desc")),
+    (snap) => callback(snapshotToItems(snap)),
+    (err) => onError?.(err),
+  );
+}
+
 function resolveTransferType(from, to) {
   if (!from && !to) {
     throw new Error(
@@ -121,11 +259,9 @@ function resolveTransferType(from, to) {
     );
   }
 
-  //custodian
   if (!from) return TRANSFER_TYPES.ASSIGN;
   if (!to) return TRANSFER_TYPES.REMOVE;
 
-  //local mr
   if (from.role === ROLES.FULLTIME && to.role === ROLES.PARTTIME) {
     return TRANSFER_TYPES.ASSIGNMR;
   }
@@ -133,7 +269,6 @@ function resolveTransferType(from, to) {
     return TRANSFER_TYPES.REMOVEMR;
   }
 
-  //custodian to custodian
   return TRANSFER_TYPES.TRANSFER;
 }
 
@@ -146,7 +281,6 @@ function buildAck(acknowledged, uid, name) {
   };
 }
 
-// transfer.js
 export async function addTransferRequest(
   { asset_id, asset_description, from, to, notes },
   requestedByUid,
@@ -167,18 +301,11 @@ export async function addTransferRequest(
       ? STATUS.FOR_APPROVAL
       : STATUS.PENDING;
 
-  console.log("from", from);
-  console.log("to", to);
-  // Fire independent lookups concurrently instead of sequentially
   const [admin, fromInfo, toInfo] = await Promise.all([
     isAdmin ? Promise.resolve(null) : getAdmin(),
     from?.uid ? getName(from.uid) : Promise.resolve(null),
     to?.uid ? getName(to.uid) : Promise.resolve(null),
   ]);
-  //log infos
-  console.log("fromInfo", fromInfo);
-  console.log("toInfo", toInfo);
-  console.log("admin", admin);
 
   const uidAdmin = isAdmin ? requestedByUid : (admin?.uid ?? null);
   const fromName = fromInfo?.fullname || null;
@@ -240,7 +367,6 @@ export async function updateTransferRequest(requestId, user, note, isApprove) {
     }),
   };
 
-  // Work out the post-update acknowledged state for each slot
   const ackState = {};
   ["admin", "from", "to"].forEach((slot) => {
     const isMatch = acknowledgments[slot]?.uid === user.uid;
@@ -257,10 +383,6 @@ export async function updateTransferRequest(requestId, user, note, isApprove) {
   } else if (!ackState.admin && ackState.from && ackState.to) {
     updates.status = "for_approval";
   }
-  // Note: the "all three acknowledged" → status: "completed" + asset
-  // custodian reassignment is now handled server-side by the
-  // onTransferRequestUpdated Cloud Function trigger, since /asset
-  // writes require admin privileges this client can't have.
 
   await updateDoc(docRef, updates);
 }
@@ -283,12 +405,6 @@ export async function addTransferRoom(
   const docRef = await addDoc(col, docData);
   await updateAssetRoom(asset_id, move_to);
   return { id: docRef.id, ...docData };
-}
-
-export async function fetchRoomLogs() {
-  const col = collection(db, "transfer_room");
-  const snap = await getDocs(query(col, orderBy("created_at", "desc")));
-  return snapshotToItems(snap);
 }
 
 export async function fetchTransferByID(id) {

@@ -184,7 +184,6 @@
   justify-content: flex-end;
   gap: 8px;
   padding-top: 8px;
-  border-top: 1px solid #e5e7eb;
 }
 /* ── Action Buttons ── */
 .action-btn {
@@ -216,7 +215,7 @@
 
 .action-btn--danger {
   background: #860100;
-  color: #ffffff; 
+  color: #ffffff;
 }
 
 .action-btn--danger:hover {

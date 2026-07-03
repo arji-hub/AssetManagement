@@ -1,7 +1,7 @@
 import { useState } from "react";
 import useReportFilter from "./useReportFilter";
 
-function useReportPage({ refetch } = {}) {
+function useReportPage() {
   const [activeTab, setActiveTab] = useState("incident");
   const [showReportModal, setShowReportModal] = useState(false);
 
@@ -10,7 +10,6 @@ function useReportPage({ refetch } = {}) {
   const handleReportIncident = () => setShowReportModal(true);
   const handleModalClose = () => {
     setShowReportModal(false);
-    refetch?.();
   };
 
   return {
