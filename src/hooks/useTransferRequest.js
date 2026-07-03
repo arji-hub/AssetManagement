@@ -112,6 +112,14 @@ function useTransferRequest({ onClose, assetID = "" } = {}) {
         return;
       }
 
+      const isCurrentCustodian = result.id === asset?.property_custodian;
+      if (isCurrentCustodian) {
+        setCustodianError(
+          "This custodian is already assigned to this asset. Select a different custodian.",
+        );
+        return;
+      }
+
       setCustodian(result);
     } catch (err) {
       setCustodianError(err.message || "Failed to fetch custodian.");
