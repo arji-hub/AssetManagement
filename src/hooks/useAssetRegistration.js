@@ -6,13 +6,12 @@ import { fetchCustodians } from "../services/user";
 import { fetchRooms } from "../services/room";
 import { fetchCategories } from "../services/category";
 import { useBasicInfo } from "./useBasicInfo";
-
-const today = new Date().toISOString().split("T")[0];
+import { todayISO } from "../utils/date";
 
 const INITIAL_FORM = {
   serial_number: "",
   category_id: "",
-  date_acquired: today  ,
+  date_acquired: todayISO,
   description: "",
   unit_value: "1.00",
   remarks: "",

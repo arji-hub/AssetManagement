@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./Report.css";
 import ReportPanel from "../../components/panel/ReportPanel";
 import ReportModal from "../../components/ui/modal/ReportModal";
-import { today } from "../../utils/date";
+import { displayDate } from "../../utils/date";
 import useReportPage from "../../hooks/useReportPage";
 import { TABS } from "../../data/reports";
 import { useReports } from "../../hooks/useReports";
@@ -32,7 +32,7 @@ function Report() {
         <div className="report-header">
           <div className="report-header-left">
             <h1 className="report-title">Reports</h1>
-            <p className="report-date">{today}</p>
+            <p className="report-date">{displayDate}</p>
           </div>
 
           <div className="report-header-right">

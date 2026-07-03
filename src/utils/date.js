@@ -53,7 +53,7 @@ export function formatDateTime(value) {
   return `${datePart} -- ${timePart}`;
 }
 
-export const today = new Date()
+export const displayDate = new Date()
     .toLocaleDateString("en-US", {
       weekday: "long",
       year: "numeric",
@@ -61,6 +61,8 @@ export const today = new Date()
       day: "numeric",
     })
     .toUpperCase();
+
+export const todayISO = new Date().toISOString().split("T")[0];
 
 export function splitDateTime(value) {
   const combined = formatDateTime(value);
