@@ -212,6 +212,20 @@ export function subscribeToRequested(user, callback, onError) {
   );
 }
 
+function getMillis(value) {
+  if (!value) return 0; // still-pending serverTimestamp() — treat as "oldest" until it resolves
+  if (typeof value.toMillis === "function") return value.toMillis(); // Firestore Timestamp
+  if (typeof value === "string") return new Date(value).getTime(); // ISO string fallback
+  if (value instanceof Date) return value.getTime();
+  return 0;
+}
+
+function sortByCreatedAtDesc(items) {
+  return [...items].sort(
+    (a, b) => getMillis(b.created_at) - getMillis(a.created_at),
+  );
+}
+
 export function subscribeToLogs(user, callback, onError) {
   if (!user) {
     callback([]);
@@ -224,7 +238,7 @@ export function subscribeToLogs(user, callback, onError) {
     const col = collection(db, COLLECTION);
     return onSnapshot(
       query(col, where("status", "in", statusFilter)),
-      (snap) => callback(snapshotToItems(snap)),
+      (snap) => callback(sortByCreatedAtDesc(snapshotToItems(snap))),
       (err) => onError?.(err),
     );
   }
@@ -238,7 +252,7 @@ export function subscribeToLogs(user, callback, onError) {
       "acknowledgments.to.uid",
     ],
     uid,
-    callback,
+    callback: (items) => callback(sortByCreatedAtDesc(items)),
     onError,
   });
 }
@@ -247,7 +261,7 @@ export function subscribeToRoomLogs(callback, onError) {
   const col = collection(db, "transfer_room");
   return onSnapshot(
     query(col, orderBy("created_at", "desc")),
-    (snap) => callback(snapshotToItems(snap)),
+    (snap) => callback(sortByCreatedAtDesc(snapshotToItems(snap))),
     (err) => onError?.(err),
   );
 }
@@ -411,4 +425,48 @@ export async function fetchTransferByID(id) {
   const snap = await getDoc(doc(db, "transfer_request", id));
   if (!snap.exists()) throw new Error("Transfer request not found.");
   return { id: snap.id, ...snap.data() };
+}
+
+export function subscribeToTransfersByAsset(assetId, callback, onError) {
+  if (!assetId) {
+    callback([]);
+    return () => {};
+  }
+
+  const col = collection(db, COLLECTION);
+  const q = query(
+    col,
+    where("asset_id", "==", assetId),
+    orderBy("created_at", "desc"),
+  );
+
+  const unsubscribe = onSnapshot(
+    q,
+    (snap) => callback(snapshotToItems(snap)),
+    (err) => onError?.(err),
+  );
+
+  return unsubscribe;
+}
+
+export function subscribeToRoomTransfersByAsset(assetId, callback, onError) {
+  if (!assetId) {
+    callback([]);
+    return () => {};
+  }
+
+  const col = collection(db, "transfer_room");
+  const q = query(
+    col,
+    where("asset_id", "==", assetId),
+    orderBy("created_at", "desc"),
+  );
+
+  const unsubscribe = onSnapshot(
+    q,
+    (snap) => callback(snapshotToItems(snap)),
+    (err) => onError?.(err),
+  );
+
+  return unsubscribe;
 }

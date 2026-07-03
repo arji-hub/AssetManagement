@@ -1,100 +1,9 @@
 import React, { useState } from "react";
 import { STATUS_COLORS } from "../../data/assets";
+import { useAssetHistory } from "../../hooks/useAssetHistory";
 import "./HistoryCard.css";
 
 const HISTORY_FILTERS = ["All Events", "Transfer", "Incident"];
-const MOCK_HISTORY = [
-  {
-    id: 1,
-    type: "Incident",
-    status: "Working",
-    description: "All good and in working condition.",
-    reported_by: "Admin",
-    date: "Oct 16, 2023",
-    time: "11:13am",
-  },
-  {
-    id: 2,
-    type: "Incident",
-    status: "For Repair",
-    description: "Screen flickering intermittently. Needs technician check.",
-    reported_by: "Juan Dela Cruz",
-    date: "Oct 15, 2023",
-    time: "9:45am",
-  },
-  {
-    id: 3,
-    type: "Transfer",
-    status: null,
-    description: "Transferred from Room 301 to SDL I.",
-    reported_by: "Admin",
-    date: "Sep 10, 2023",
-    time: "2:00pm",
-  },
-  {
-    id: 4,
-    type: "Incident",
-    status: "Damaged",
-    description: "Power cable damaged. Replacement requested.",
-    reported_by: "Maria Santos",
-    date: "Aug 22, 2023",
-    time: "10:30am",
-  },
-  {
-    id: 5,
-    type: "Transfer",
-    status: null,
-    description: "Initial deployment to Room 301.",
-    reported_by: "Admin",
-    date: "Mar 21, 2017",
-    time: "8:00am",
-  },
-  {
-    id: 6,
-    type: "Incident",
-    status: "Missing",
-    description: "Asset not found during routine inventory check.",
-    reported_by: "Lance Reyes",
-    date: "Jul 5, 2023",
-    time: "3:15pm",
-  },
-  {
-    id: 7,
-    type: "Incident",
-    status: "Working",
-    description: "Asset recovered and returned to its assigned room.",
-    reported_by: "Admin",
-    date: "Jul 8, 2023",
-    time: "9:00am",
-  },
-  {
-    id: 8,
-    type: "Transfer",
-    status: null,
-    description: "Temporarily moved to Room 205 for semester use.",
-    reported_by: "Ralph Jasper",
-    date: "Jun 12, 2023",
-    time: "1:30pm",
-  },
-  {
-    id: 9,
-    type: "Incident",
-    status: "Condemned",
-    description: "Unit assessed as beyond repair. Recommended for disposal.",
-    reported_by: "Admin",
-    date: "May 3, 2023",
-    time: "10:00am",
-  },
-  {
-    id: 10,
-    type: "Incident",
-    status: "For Repair",
-    description: "Keyboard unresponsive. Sent to ICT technician for servicing.",
-    reported_by: "Maria Santos",
-    date: "Apr 18, 2023",
-    time: "2:45pm",
-  },
-];
 
 function StatusBadge({ status }) {
   if (!status) return null;
@@ -114,7 +23,7 @@ function StatusBadge({ status }) {
 
 function HistoryCard({ assetId }) {
   const [filter, setFilter] = useState("All Events");
-  const [history, setHistory] = useState(MOCK_HISTORY);
+  const { history, loading, error } = useAssetHistory(assetId);
 
   const filtered =
     filter === "All Events"
@@ -139,7 +48,11 @@ function HistoryCard({ assetId }) {
       </div>
 
       <div className="history-card-list">
-        {filtered.length === 0 ? (
+        {loading ? (
+          <div className="history-card-empty">Loading history…</div>
+        ) : error ? (
+          <div className="history-card-empty">Failed to load history.</div>
+        ) : filtered.length === 0 ? (
           <div className="history-card-empty">No events found.</div>
         ) : (
           filtered.map((item) => (
