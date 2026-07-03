@@ -19,7 +19,7 @@ import { getName } from "./user";
 import { updateAssetStatus } from "./asset";
 
 export function subscribeToReports(uid, callback, onError) {
-  const q = query(collection(db, "report"), orderBy("created_at", "desc"));
+  const q = query(collection(db, "report"), orderBy("updated_at", "desc"));
 
   const unsubscribe = onSnapshot(
     q,

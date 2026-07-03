@@ -165,21 +165,23 @@ function ReportInfo() {
           {/* Evidence + Details Grid */}
           <div className="report-info-grid">
             {/* Evidence — damaged only */}
-            <div className="report-info-evidence">
-              <span className="report-info-field-label">EVIDENCE</span>
-              {evidencePhoto ? (
-                <img
-                  src={evidencePhoto}
-                  alt="Evidence"
-                  className="report-info-evidence-img"
-                />
-              ) : (
-                <div className="report-info-evidence-placeholder">
-                  <FontAwesomeIcon icon="fa-solid fa-image" />
-                  <span>No photo</span>
-                </div>
-              )}
-            </div>
+            {isDamaged && (
+              <div className="report-info-evidence">
+                <span className="report-info-field-label">EVIDENCE</span>
+                {evidencePhoto ? (
+                  <img
+                    src={evidencePhoto}
+                    alt="Evidence"
+                    className="report-info-evidence-img"
+                  />
+                ) : (
+                  <div className="report-info-evidence-placeholder">
+                    <FontAwesomeIcon icon="fa-solid fa-image" />
+                    <span>No photo</span>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Details */}
             <div className="report-info-details">

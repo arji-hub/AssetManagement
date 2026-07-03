@@ -448,7 +448,7 @@ export function subscribeToTransfersByAsset(assetId, callback, onError) {
   const q = query(
     col,
     where("asset_id", "==", assetId),
-    orderBy("created_at", "desc"),
+    orderBy("updated_at", "desc"),
   );
 
   const unsubscribe = onSnapshot(
