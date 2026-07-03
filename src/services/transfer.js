@@ -392,11 +392,19 @@ export async function updateTransferRequest(requestId, user, note, isApprove) {
     }
   });
 
-  if (action === "decline") {
+  if (!isApprove) {
     updates.status = "denied";
   } else if (!ackState.admin && ackState.from && ackState.to) {
     updates.status = "for_approval";
   }
+  console.log(
+    "isApprove:",
+    isApprove,
+    "ackState:",
+    ackState,
+    "updates:",
+    updates,
+  );
 
   await updateDoc(docRef, updates);
 }

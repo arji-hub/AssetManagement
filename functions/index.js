@@ -254,59 +254,35 @@ exports.onUpdateAssetCustodian = onDocumentUpdated(
   async (event) => {
     const before = event.data.before.data();
     const after = event.data.after.data();
+
     if (["assign_localmr", "remove_localmr"].includes(after.type)) {
       return;
     }
 
-    const ackBefore = before.acknowledgments || {};
-    const ackAfter = after.acknowledgments || {};
-
-    const wasComplete =
-      !!ackBefore.admin?.acknowledged &&
-      !!ackBefore.from?.acknowledged &&
-      !!ackBefore.to?.acknowledged;
-
-    const isComplete =
-      !!ackAfter.admin?.acknowledged &&
-      !!ackAfter.from?.acknowledged &&
-      !!ackAfter.to?.acknowledged;
-
-    if (wasComplete || !isComplete) {
+    // only act on the transition INTO "completed"
+    if (before.status === "completed" || after.status !== "completed") {
       return;
     }
 
+    if (!after.asset_id) return;
+
     const db = getFirestore();
-    const requestRef = event.data.after.ref;
+    const assetRef = db.collection("asset").doc(after.asset_id);
 
-    const batch = db.batch();
+    const toUid = after.acknowledgments?.to?.uid;
+    const isRemoval = after.type === "remove_custodian";
 
-    batch.update(requestRef, {
-      status: "completed",
-      completed_at: FieldValue.serverTimestamp(),
-    });
-
-    if (after.asset_id) {
-      const assetRef = db.collection("asset").doc(after.asset_id);
-
-      // assign_custodian / transfer_custodian: set custodian to the "to" party
-      // remove_custodian: "to" is never set, so clear the custodian instead
-      const toUid = ackAfter.to?.uid;
-      const isRemoval = after.type === "remove_custodian";
-
-      if (isRemoval) {
-        batch.update(assetRef, {
-          property_custodian: null,
-          updated_at: FieldValue.serverTimestamp(),
-        });
-      } else if (toUid) {
-        batch.update(assetRef, {
-          property_custodian: toUid,
-          updated_at: FieldValue.serverTimestamp(),
-        });
-      }
+    if (isRemoval) {
+      await assetRef.update({
+        property_custodian: null,
+        updated_at: FieldValue.serverTimestamp(),
+      });
+    } else if (toUid) {
+      await assetRef.update({
+        property_custodian: toUid,
+        updated_at: FieldValue.serverTimestamp(),
+      });
     }
-
-    await batch.commit();
   },
 );
 
@@ -334,58 +310,33 @@ exports.onUpdateAssetLocalMR = onDocumentUpdated(
     const before = event.data.before.data();
     const after = event.data.after.data();
 
-    // This trigger only handles the local_mr transfer types
     if (!["assign_localmr", "remove_localmr"].includes(after.type)) {
       return;
     }
 
-    const ackBefore = before.acknowledgments || {};
-    const ackAfter = after.acknowledgments || {};
-
-    const wasComplete =
-      !!ackBefore.admin?.acknowledged &&
-      !!ackBefore.from?.acknowledged &&
-      !!ackBefore.to?.acknowledged;
-
-    const isComplete =
-      !!ackAfter.admin?.acknowledged &&
-      !!ackAfter.from?.acknowledged &&
-      !!ackAfter.to?.acknowledged;
-
-    if (wasComplete || !isComplete) {
+    // only act on the transition INTO "completed"
+    if (before.status === "completed" || after.status !== "completed") {
       return;
     }
 
+    if (!after.asset_id) return;
+
     const db = getFirestore();
-    const requestRef = event.data.after.ref;
+    const assetRef = db.collection("asset").doc(after.asset_id);
 
-    const batch = db.batch();
+    const toUid = after.acknowledgments?.to?.uid;
+    const isRemoval = after.type === "remove_localmr";
 
-    batch.update(requestRef, {
-      status: "completed",
-      completed_at: FieldValue.serverTimestamp(),
-    });
-
-    if (after.asset_id) {
-      const assetRef = db.collection("asset").doc(after.asset_id);
-
-      const isRemoval = after.type === "remove_localmr";
-
-      const localmrUid = isRemoval ? null : (ackAfter.to?.uid ?? null);
-
-      if (isRemoval) {
-        batch.update(assetRef, {
-          local_mr: null,
-          updated_at: FieldValue.serverTimestamp(),
-        });
-      } else if (localmrUid) {
-        batch.update(assetRef, {
-          local_mr: localmrUid,
-          updated_at: FieldValue.serverTimestamp(),
-        });
-      }
+    if (isRemoval) {
+      await assetRef.update({
+        local_mr: null,
+        updated_at: FieldValue.serverTimestamp(),
+      });
+    } else if (toUid) {
+      await assetRef.update({
+        local_mr: toUid,
+        updated_at: FieldValue.serverTimestamp(),
+      });
     }
-
-    await batch.commit();
   },
 );

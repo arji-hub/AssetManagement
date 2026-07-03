@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ASSET_STATUS } from "../../../data/assets";
 import { useAuth } from "../../../context/AuthContext";
 import { ROLES } from "../../../data/roles";
+import { UNALLOCATED_ROOM, UNASSIGNED_CUSTODIAN } from "../../../data/assets";
 
 function FilterModal({
   filters,
@@ -130,6 +131,7 @@ function FilterModal({
                       size={4}
                     >
                       <option value="">All Rooms</option>
+                      <option value={UNALLOCATED_ROOM}>Unallocated</option>
                       {safeRooms
                         .filter((room) =>
                           room.toLowerCase().includes(roomSearch.toLowerCase()),
@@ -183,6 +185,7 @@ function FilterModal({
                       size={4}
                     >
                       <option value="">All Custodians</option>
+                      <option value={UNASSIGNED_CUSTODIAN}>Unassigned</option>
                       {safeCustodians
                         .filter((name) =>
                           name

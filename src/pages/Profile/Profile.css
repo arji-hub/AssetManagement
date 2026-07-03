@@ -1,9 +1,14 @@
 .profile-page {
+  position: relative; /* fixes the ::before positioning bug */
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
   padding: 24px;
   background-image: url("../../assets/elib.png");
-  height: 100%;
+  background-size: cover;
+  background-position: center;
+  min-height: 100%;
 }
 
 .profile-page::before {
@@ -13,10 +18,16 @@
   background: rgba(1, 1, 1, 0.5); /* adjust opacity as needed */
   z-index: 0;
 }
+
 .profile-page > * {
   position: relative;
   z-index: 1;
 }
+
+.profile-page .return-button {
+  align-self: flex-start; /* pins it to the left even though the parent centers items */
+}
+
 /* ── Mobile ── */
 
 @media (max-width: 640px) {
