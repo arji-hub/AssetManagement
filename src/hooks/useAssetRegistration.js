@@ -7,12 +7,14 @@ import { fetchRooms } from "../services/room";
 import { fetchCategories } from "../services/category";
 import { useBasicInfo } from "./useBasicInfo";
 
+const today = new Date().toISOString().split("T")[0];
+
 const INITIAL_FORM = {
   serial_number: "",
   category_id: "",
-  date_acquired: "",
+  date_acquired: today  ,
   description: "",
-  unit_value: "",
+  unit_value: "1.00",
   remarks: "",
   qty: "1",
   primary_custodian: "",

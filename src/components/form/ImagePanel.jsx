@@ -1,9 +1,16 @@
 import "./ImagePanel.css";
 import { useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useCamera } from "../../hooks/useCamera";
 
 function ImagePanel({ title, image, onImageChange, required }) {
   const fileRef = useRef(null);
+
+  const handleCapture = (file) => {
+    onImageChange({ file, preview: URL.createObjectURL(file) });
+  };
+
+  const { openCamera, inputProps: cameraInputProps } = useCamera(handleCapture);
 
   const handleFile = (e) => {
     const file = e.target.files?.[0];
@@ -44,11 +51,7 @@ function ImagePanel({ title, image, onImageChange, required }) {
       </div>
 
       <div className="reg-image-actions">
-        <button
-          type="button"
-          className="reg-image-btn"
-          onClick={() => alert("Camera access not yet implemented.")}
-        >
+        <button type="button" className="reg-image-btn" onClick={openCamera}>
           <FontAwesomeIcon icon="fa-solid fa-camera" />
           Scan via camera
         </button>
@@ -70,6 +73,7 @@ function ImagePanel({ title, image, onImageChange, required }) {
         style={{ display: "none" }}
         onChange={handleFile}
       />
+      <input {...cameraInputProps} />
     </div>
   );
 }

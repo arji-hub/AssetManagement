@@ -26,10 +26,6 @@ function LandingPage({ previewAsset, assetNotFound }) {
 
   const { status, errorMessage, handleImageUpload, reset } = useQRScanner();
 
-  const handleCameraScan = () => {
-    alert("Camera scan not implemented yet.");
-  };
-
   const toggleView = () => {
     setView((prev) => (prev === "qr" ? "login" : "qr"));
   };
@@ -57,7 +53,6 @@ function LandingPage({ previewAsset, assetNotFound }) {
             <QRInfo asset={previewAsset} /> 
           ) : (
             <QRModal
-              onCameraScan={handleCameraScan}
               onImageUpload={handleImageUpload}
             />
           )
