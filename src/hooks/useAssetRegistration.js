@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { addAsset, isSerialNumberExist } from "../services/asset";
+import { addAsset } from "../services/asset";
 import { useAuth } from "../context/AuthContext";
 import { fetchCustodians } from "../services/user";
 import { fetchRooms } from "../services/room";
 import { fetchCategories } from "../services/category";
+import { useBasicInfo } from "./useBasicInfo";
 
 const INITIAL_FORM = {
   serial_number: "",
@@ -31,8 +32,13 @@ export function useAssetRegistrationForm() {
   const [saveStatus, setSaveStatus] = useState(null);
   const [saveError, setSaveError] = useState(null);
   const [showSkipWarning, setShowSkipWarning] = useState(false);
-  const [serialError, setSerialError] = useState("");
-  const [checkingSerial, setCheckingSerial] = useState(false);
+
+  // ── step 1 validation (fields + serial number check) ──────────────────────
+  const {
+    error: basicInfoError,
+    checkingSerial,
+    isValid: basicInfoValid,
+  } = useBasicInfo(form);
 
   // ── dropdown data ────────────────────────────────────────────────────────
   const [custodians, setCustodians] = useState([]);
@@ -75,35 +81,8 @@ export function useAssetRegistrationForm() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const checkSerialNumber = async (value) => {
-    if (!value.trim()) {
-      setSerialError("");
-      return;
-    }
-
-    setCheckingSerial(true);
-    try {
-      const exists = await isSerialNumberExist(value);
-      setSerialError(exists ? "This serial number is already registered." : "");
-    } catch (err) {
-      console.error("Serial number check failed:", err);
-      setSerialError("Could not verify serial number. Please try again.");
-    } finally {
-      setCheckingSerial(false);
-    }
-  };
-
   const canProceed = () => {
-    if (step === 1)
-      return (
-        form.description.trim() !== "" &&
-        form.category_id !== "" &&
-        form.date_acquired !== "" &&
-        form.unit_value !== "" &&
-        form.qty !== "" &&
-        serialError === "" &&
-        !checkingSerial
-      );
+    if (step === 1) return basicInfoValid;
     if (step === 2) return assetImage !== null && docImage !== null;
     return true;
   };
@@ -128,6 +107,12 @@ export function useAssetRegistrationForm() {
   };
 
   const handleSave = async (skipped = false) => {
+    if (!basicInfoValid) {
+      setSaveError("Please fix the errors in Basic Info before saving.");
+      setSaveStatus("error");
+      return;
+    }
+
     setSaving(true);
     setSaveStatus("loading");
     setSaveError(null);
@@ -155,9 +140,8 @@ export function useAssetRegistrationForm() {
   return {
     step,
     form,
-    serialError,
+    error: basicInfoError,
     checkingSerial,
-    checkSerialNumber,
     assetImage,
     setAssetImage,
     docImage,
