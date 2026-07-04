@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "./ViewAssetQR.css";
+import "./ViewAssetQr.css";
 
 function ViewAssetQR({ qr_code_url, assetID }) {
   const [isQRActive, setIsQRActive] = useState(false);
