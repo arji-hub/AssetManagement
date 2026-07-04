@@ -5,6 +5,8 @@ import MainLayout from "../../components/layout/MainLayout";
 import { fetchAssetByID } from "../../services/asset";
 import InfoCard from "../../components/panel/InfoCard";
 import HistoryCard from "../../components/panel/HistoryCard";
+import ViewAssetQR from "../../components/ui/modal/ViewAssetQr";
+import ViewAssetDocument from "../../components/ui/modal/ViewAssetDocument";
 import "./AssetInfo.css";
 
 function AssetInfo() {
@@ -21,7 +23,6 @@ function AssetInfo() {
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, [assetId]);
-
   if (loading)
     return (
       <MainLayout>
@@ -37,6 +38,10 @@ function AssetInfo() {
 
   return (
     <MainLayout>
+      {
+        //show asset
+        console.log("Asset Info:", asset)
+      }
       <div className="asset-info-page">
         {/* ── Header ── */}
         <div className="asset-info-header">
@@ -51,19 +56,14 @@ function AssetInfo() {
             <span className="breadcrumb-parent">Asset Information</span>
           </div>
           <div className="asset-info-actions">
-            <button className="action-btn" disabled>
-              <i className="ti ti-file-description" aria-hidden="true" />{" "}
-              Document
-            </button>
+            <ViewAssetDocument doc_image_url={asset.doc_image_url} />
             <button className="action-btn" disabled>
               <i className="ti ti-download" aria-hidden="true" /> Export
             </button>
             <button className="action-btn" disabled>
               <i className="ti ti-printer" aria-hidden="true" /> Print
             </button>
-            <button className="action-btn" disabled>
-              <i className="ti ti-edit" aria-hidden="true" /> Edit
-            </button>
+            <ViewAssetQR qr_code_url={asset.qr_code_url} assetID={assetId} />
             <button className="action-btn action-btn--danger" disabled>
               <i className="ti ti-alert-triangle" aria-hidden="true" /> Report
               Incident

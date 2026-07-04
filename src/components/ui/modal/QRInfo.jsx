@@ -1,14 +1,27 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./QRInfo.css";
 import { STATUS_COLORS } from "../../../data/assets";
 import { formatCurrency } from "../../../utils/formatCurrency";
 import { formatDate } from "../../../utils/date";
+import cictLogo from "../../../assets/CICTLOGO.png";
+import ViewAssetDocument from "../modal/ViewAssetDocument";
 
 function displayValue(value) {
   if (value === null || value === undefined || value === "") return "—";
   return value;
 }
+
+const FIELD_ICONS = {
+  serial: "fa-solid fa-barcode",
+  category: "fa-solid fa-tag",
+  date: "fa-solid fa-calendar-days",
+  value: "fa-solid fa-coins",
+  qty: "fa-solid fa-layer-group",
+  room: "fa-solid fa-door-open",
+  custodian: "fa-solid fa-user-shield",
+};
 
 function QRInfo({ asset }) {
   const navigate = useNavigate();
@@ -17,12 +30,18 @@ function QRInfo({ asset }) {
 
   if (!asset) {
     return (
-      <div className="qr-info-overlay">
-        <div className="qr-info-box">
-          <div className="qr-info-title">ASSET INFO</div>
-          <p className="qr-info-empty">Asset information unavailable.</p>
-          <button className="qr-info-return-btn" onClick={handleReturn}>
-            Return
+      <div className="qri-overlay">
+        <div className="qri-plaque qri-plaque--empty">
+          <div className="qri-empty-icon">
+            <FontAwesomeIcon icon="fa-solid fa-triangle-exclamation" />
+          </div>
+          <h2 className="qri-empty-title">Asset Not Found</h2>
+          <p className="qri-empty-text">
+            We couldn't load information for this asset.
+          </p>
+          <button className="qri-btn" onClick={handleReturn}>
+            <FontAwesomeIcon icon="fa-solid fa-arrow-left" />
+            Return Home
           </button>
         </div>
       </div>
@@ -40,7 +59,6 @@ function QRInfo({ asset }) {
     remarks,
     asset_image_url,
     property_custodian_name,
-    local_mr_name,
     room_id,
   } = asset;
 
@@ -49,99 +67,123 @@ function QRInfo({ asset }) {
     color: "#1f1f1f",
   };
 
+  const fields = [
+    { key: "serial", label: "Serial No.", value: displayValue(serial_number) },
+    { key: "category", label: "Category", value: displayValue(category_id) },
+    { key: "date", label: "Date Acquired", value: formatDate(date_acquired) },
+    { key: "value", label: "Unit Value", value: formatCurrency(unit_value) },
+    { key: "qty", label: "Quantity", value: displayValue(qty) },
+    { key: "room", label: "Room", value: displayValue(room_id) },
+    {
+      key: "custodian",
+      label: "Property Custodian",
+      value: displayValue(property_custodian_name),
+    },
+  ];
+
   return (
-    <div className="qr-info-overlay">
-      <div className="qr-info-box">
-        <div className="qr-info-title">ASSET INFO</div>
+    <div className="qri-overlay">
+      <div className="qri-plaque">
+        {/* ── Header: seal + institutional titles ── */}
+        <div className="qri-header">
+          <div className="qri-seal">
+            <img src={cictLogo} alt="CICT Logo" className="qri-seal-img" />
+          </div>
+          <div className="qri-header-text">
+            <div className="qri-title">
+              <h2>Bulacan State University</h2>
+              <p className="qri-tag">BulSU Property</p>
+            </div>
+            <p className="qri-subtitle">
+              College of Information and Communications Technology
+            </p>
+          </div>
+        </div>
 
-        {/*Scrollable part na*/}
-        <div className="qr-info-scroll">
-          <div className="qr-info-image-wrapper">
-            {asset_image_url ? (
-              <img
-                src={asset_image_url}
-                alt={description || "Asset image"}
-                className="qr-info-image"
-              />
-            ) : (
-              <div className="qr-info-image-placeholder">No Image</div>
-            )}
-            {status && (
-              <span
-                className="qr-info-status-badge"
-                style={{
-                  backgroundColor: statusStyle.bg,
-                  color: statusStyle.color,
-                }}
+        {/* ── Fixed image (not part of scroll area) ── */}
+        <ViewAssetDocument doc_image_url={asset_image_url}>
+          {(openModal) => (
+            <div className="qri-media-container">
+              <div
+                className="qri-media"
+                onClick={asset_image_url ? openModal : undefined}
+                role={asset_image_url ? "button" : undefined}
+                tabIndex={asset_image_url ? 0 : undefined}
               >
-                {status}
-              </span>
-            )}
-          </div>
+                {asset_image_url ? (
+                  <img
+                    src={asset_image_url}
+                    alt={description || "Asset image"}
+                    className="qri-media-img"
+                  />
+                ) : (
+                  <div className="qri-media-placeholder">
+                    <FontAwesomeIcon icon="fa-solid fa-image" />
+                    <span>No Image</span>
+                  </div>
+                )}
 
-          <h3 className="qr-info-description">{displayValue(description)}</h3>
+                {status && (
+                  <span
+                    className="qri-status-badge"
+                    style={{
+                      backgroundColor: statusStyle.bg,
+                      color: statusStyle.color,
+                    }}
+                  >
+                    <span className="qri-status-dot" />
+                    {status}
+                  </span>
+                )}
 
-          <div className="qr-info-grid">
-            <div className="qr-info-row">
-              <span className="qr-info-label">Serial No.</span>
-              <span className="qr-info-value">
-                {displayValue(serial_number)}
-              </span>
+                {asset_image_url && (
+                  <span className="qri-media-hint">
+                    <FontAwesomeIcon icon="fa-solid fa-magnifying-glass-plus" />
+                    Tap to enlarge
+                  </span>
+                )}
+              </div>
+              <div className="qri-description-container">
+                <h2 className="qri-description">{displayValue(description)}</h2>
+              </div>
             </div>
+          )}
+        </ViewAssetDocument>
 
-            <div className="qr-info-row">
-              <span className="qr-info-label">Category</span>
-              <span className="qr-info-value">{displayValue(category_id)}</span>
-            </div>
+        {/* ── Scrollable asset info (the only scrollable section) ── */}
+        <div className="qri-scroll">
+          <div className="qri-scroll-watermark" aria-hidden="true" />
 
-            <div className="qr-info-row">
-              <span className="qr-info-label">Date Acquired</span>
-              <span className="qr-info-value">{formatDate(date_acquired)}</span>
-            </div>
-
-            <div className="qr-info-row">
-              <span className="qr-info-label">Unit Value</span>
-              <span className="qr-info-value">
-                {formatCurrency(unit_value)}
-              </span>
-            </div>
-
-            <div className="qr-info-row">
-              <span className="qr-info-label">Quantity</span>
-              <span className="qr-info-value">{displayValue(qty)}</span>
-            </div>
-
-            <div className="qr-info-row">
-              <span className="qr-info-label">Room</span>
-              <span className="qr-info-value">{displayValue(room_id)}</span>
-            </div>
-
-            <div className="qr-info-row">
-              <span className="qr-info-label">Property Custodian</span>
-              <span className="qr-info-value">
-                {displayValue(property_custodian_name)}
-              </span>
-            </div>
-
-            <div className="qr-info-row">
-              <span className="qr-info-label">Local MR</span>
-              <span className="qr-info-value">
-                {displayValue(local_mr_name)}
-              </span>
-            </div>
-          </div>
+          <dl className="qri-fields">
+            {fields.map((f) => (
+              <div className="qri-field" key={f.key}>
+                <dt className="qri-field-label">
+                  <FontAwesomeIcon icon={FIELD_ICONS[f.key]} />
+                  <span>{f.label}</span>
+                </dt>
+                <dd className="qri-field-value">{f.value}</dd>
+              </div>
+            ))}
+          </dl>
 
           {remarks && (
-            <div className="qr-info-remarks">
-              <span className="qr-info-label">Remarks</span>
-              <p className="qr-info-remarks-text">{remarks}</p>
+            <div className="qri-remarks">
+              <div className="qri-remarks-label">
+                <FontAwesomeIcon icon="fa-solid fa-note-sticky" />
+                <span>Remarks</span>
+              </div>
+              <p className="qri-remarks-text">{remarks}</p>
             </div>
           )}
         </div>
 
-        <button className="qr-info-return-btn" onClick={handleReturn}>
-          Return
-        </button>
+        {/* ── Footer ── */}
+        <div className="qri-footer">
+          <button className="qri-btn" onClick={handleReturn}>
+            <FontAwesomeIcon icon="fa-solid fa-arrow-left" />
+            Return
+          </button>
+        </div>
       </div>
     </div>
   );

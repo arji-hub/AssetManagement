@@ -112,7 +112,9 @@ export function useAssetHistory(assetId) {
           return next;
         });
       },
-      handleError("transfers"),
+      (err) => {
+        return handleError("transfers")(err);
+      },
     );
 
     const unsub3 = subscribeToRoomTransfersByAsset(

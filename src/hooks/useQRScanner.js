@@ -2,6 +2,28 @@ import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import jsQR from "jsqr";
 
+function boostContrastFromBlueChannel(imageData) {
+  const { data, width, height } = imageData;
+  const out = new Uint8ClampedArray(data.length);
+
+  let sum = 0;
+  for (let i = 0; i < data.length; i += 4) {
+    sum += data[i + 2];
+  }
+  const avgBlue = sum / (data.length / 4);
+  const threshold = avgBlue * 0.85;
+
+  for (let i = 0; i < data.length; i += 4) {
+    const blue = data[i + 2];
+    const value = blue < threshold ? 0 : 255;
+    out[i] = value; // R
+    out[i + 1] = value; // G
+    out[i + 2] = value; // B
+    out[i + 3] = 255; // A
+  }
+
+  return new ImageData(out, width, height);
+}
 
 export function useQRScanner() {
   const navigate = useNavigate();
@@ -34,7 +56,13 @@ export function useQRScanner() {
           ctx.drawImage(img, 0, 0);
 
           const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+          let code = jsQR(imageData.data, imageData.width, imageData.height);
+
+          if (!code) {
+            const boosted = boostContrastFromBlueChannel(imageData);
+            code = jsQR(boosted.data, boosted.width, boosted.height);
+          }
 
           if (code) {
             resolve(code.data);
