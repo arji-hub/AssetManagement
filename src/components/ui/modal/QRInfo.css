@@ -22,7 +22,8 @@
   width: 100%;
   margin-top: 70px;
   max-width: 440px;
-  max-height: 92vh;
+  max-height: 80vh;
+  max-height: 80dvh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -64,12 +65,11 @@
   width: 54px;
   height: 54px;
   border-radius: 50%;
-  background: #fffdf6;
+  background: #f5aa2c;
   border: 2px solid #860100;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 6px;
   box-shadow:
     0 2px 6px rgba(0, 0, 0, 0.25),
     inset 0 0 0 3px rgba(245, 170, 44, 0.5);
@@ -489,7 +489,7 @@
    ═══════════════════════════════════════ */
 @media (min-width: 600px) {
   .qri-plaque {
-    max-width: 560px;
+    max-width: 580px;
     margin-top: 40px;
     max-height: 85vh;
     border-radius: 24px;
@@ -567,7 +567,7 @@
 
 @media (min-width: 1024px) {
   .qri-plaque {
-    max-width: 680px;
+    max-width: 720px;
   }
 
   .qri-media {
