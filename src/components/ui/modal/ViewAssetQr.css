@@ -1,19 +1,5 @@
-/* ViewAssetQR.css — remove the @font-face block, keep the rest */
-@font-face {
-  font-family: "Sansation";
-  src: url("../../../assets/fonts/Sansation/Sansation-Bold.ttf")
-    format("truetype");
-  font-weight: bold;
-  font-style: normal;
-}
+/* ViewAssetQR.css */
 
-@font-face {
-  font-family: "Sansation";
-  src: url("../../../assets/fonts/Sansation/Sansation-Regular.ttf")
-    format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
 /* ── Overlay ── */
 .qr-modal-overlay {
   position: fixed;
@@ -59,17 +45,6 @@
   animation: qr-modal-pop 0.22s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@keyframes qr-modal-pop {
-  from {
-    opacity: 0;
-    transform: scale(0.96) translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
 .qr-modal-content::before {
   content: "";
   position: absolute;
@@ -82,6 +57,18 @@
   opacity: 0.7;
 }
 
+@keyframes qr-modal-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ── QR image ── */
 .qr-modal-image {
   width: 220px;
   height: 220px;
@@ -92,24 +79,61 @@
   padding: 12px;
 }
 
-.qr-modal-close {
+/* ── Action buttons row ── */
+.qr-modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+  width: 100%;
+}
+
+.qr-modal-close,
+.qr-modal-download {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 0;
+  border-radius: 10px;
   font-family: "Sansation";
   font-weight: bold;
   font-size: 12px;
+  letter-spacing: 0.02em;
   color: #ffffff;
-  background: linear-gradient(135deg, #9c0201 0%, #6b0000 100%);
-  border: 1px solid rgba(245, 170, 44, 0.25);
-  border-radius: 10px;
-  padding: 10px 24px;
+  border: none;
   cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+}
+
+.qr-modal-download {
+  background: linear-gradient(135deg, #e6931a 0%, #a8480f 100%);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.1),
+    0 6px 16px -6px rgba(168, 72, 15, 0.5);
+}
+
+.qr-modal-download:hover:not(:disabled) {
+  background: linear-gradient(135deg, #f0a022 0%, #b8540f 100%);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.1),
+    0 8px 20px -6px rgba(168, 72, 15, 0.55);
+}
+
+.qr-modal-download:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.qr-modal-close {
+  background: linear-gradient(135deg, #9c0201 0%, #6b0000 100%);
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.1),
     0 8px 20px -6px rgba(134, 1, 0, 0.5);
-
-  transition:
-    background 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 0.3s ease,
-    transform 0.15s ease;
 }
 
 .qr-modal-close:hover {
@@ -119,6 +143,7 @@
     0 10px 24px -6px rgba(134, 1, 0, 0.55);
 }
 
-.qr-modal-close:active {
+.qr-modal-close:active,
+.qr-modal-download:active:not(:disabled) {
   transform: scale(0.98);
 }

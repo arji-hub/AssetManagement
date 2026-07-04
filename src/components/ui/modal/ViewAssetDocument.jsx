@@ -6,7 +6,7 @@ const MIN_ZOOM = 1;
 const MAX_ZOOM = 4;
 const ZOOM_STEP = 0.5;
 
-function ViewAssetDocument({ doc_image_url }) {
+function ViewAssetDocument({ doc_image_url, children }) {
   const [isDocActive, setIsDocActive] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
@@ -70,9 +70,13 @@ function ViewAssetDocument({ doc_image_url }) {
 
   return (
     <>
-      <button className="action-btn" onClick={openModal}>
-        <i className="ti ti-file-description" aria-hidden="true" /> Document
-      </button>
+      {children ? (
+        children(openModal)
+      ) : (
+        <button className="action-btn" onClick={openModal}>
+          <FontAwesomeIcon icon="fa-solid fa-file-lines" /> Document
+        </button>
+      )}
 
       {isDocActive && (
         <div className="doc-modal-overlay" onClick={closeModal}>

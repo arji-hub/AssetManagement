@@ -63,7 +63,7 @@ function AssetInfo() {
             <button className="action-btn" disabled>
               <i className="ti ti-printer" aria-hidden="true" /> Print
             </button>
-            <ViewAssetQR qr_code_url={asset.qr_code_url} />
+            <ViewAssetQR qr_code_url={asset.qr_code_url} assetID={assetId} />
             <button className="action-btn action-btn--danger" disabled>
               <i className="ti ti-alert-triangle" aria-hidden="true" /> Report
               Incident
