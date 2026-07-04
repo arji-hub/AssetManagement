@@ -1,0 +1,124 @@
+/* ViewAssetQR.css — remove the @font-face block, keep the rest */
+@font-face {
+  font-family: "Sansation";
+  src: url("../../../assets/fonts/Sansation/Sansation-Bold.ttf")
+    format("truetype");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Sansation";
+  src: url("../../../assets/fonts/Sansation/Sansation-Regular.ttf")
+    format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+/* ── Overlay ── */
+.qr-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: qr-overlay-fade 0.2s ease;
+}
+
+@keyframes qr-overlay-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ── Modal content ── */
+.qr-modal-content {
+  position: relative;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 28px;
+  max-width: 360px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  z-index: 10000;
+
+  border: 1px solid rgba(134, 1, 0, 0.1);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.1),
+    0 20px 40px -10px rgba(134, 1, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+
+  animation: qr-modal-pop 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes qr-modal-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.qr-modal-content::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 16px;
+  right: 16px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #f5aa2c, transparent);
+  opacity: 0.7;
+}
+
+.qr-modal-image {
+  width: 220px;
+  height: 220px;
+  object-fit: contain;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #fafafa;
+  padding: 12px;
+}
+
+.qr-modal-close {
+  font-family: "Sansation";
+  font-weight: bold;
+  font-size: 12px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #9c0201 0%, #6b0000 100%);
+  border: 1px solid rgba(245, 170, 44, 0.25);
+  border-radius: 10px;
+  padding: 10px 24px;
+  cursor: pointer;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.1),
+    0 8px 20px -6px rgba(134, 1, 0, 0.5);
+
+  transition:
+    background 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s ease,
+    transform 0.15s ease;
+}
+
+.qr-modal-close:hover {
+  background: linear-gradient(135deg, #ac0201 0%, #7a0000 100%);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.1),
+    0 10px 24px -6px rgba(134, 1, 0, 0.55);
+}
+
+.qr-modal-close:active {
+  transform: scale(0.98);
+}

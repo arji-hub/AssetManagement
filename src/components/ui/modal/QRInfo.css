@@ -1,4 +1,7 @@
+/* QRInfo.css — refined */
+
 .qr-info-overlay {
+  position: fixed;
   inset: 0;
   display: flex;
   align-items: center;
@@ -6,51 +9,93 @@
   z-index: 9900;
   padding: 16px;
   box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(3px);
   animation: qrInfoFadeIn 0.2s ease;
 }
 
 .qr-info-box {
-  background: #f5aa2c;
-  border-radius: 4px;
-  padding: clamp(24px, 6vw, 40px) clamp(20px, 5vw, 36px) clamp(20px, 5vw, 32px);
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 0;
   width: 100%;
-  max-width: 320px;
-  max-height: 80vh;
-  overflow-y: hidden;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
-  animation: qrInfoSlideUp 0.25s ease;
+  max-width: 360px;
+  max-height: 85vh;
+  overflow: hidden;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.1),
+    0 24px 48px -12px rgba(134, 1, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  animation: qrInfoSlideUp 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  border: 1px solid rgba(134, 1, 0, 0.08);
+}
+
+/* ── header band ── */
+.qr-info-title {
+  text-align: center;
+  font-size: clamp(15px, 4vw, 17px);
+  font-weight: 700;
+  font-family: "Sansation";
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: linear-gradient(135deg, #9c0201 0%, #6b0000 100%);
+  padding: 16px 20px;
+  margin: 0;
+  position: relative;
+}
+
+.qr-info-title::after {
+  content: "";
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 6px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #f5aa2c, transparent);
+  opacity: 0.7;
 }
 
 .qr-info-scroll {
   flex: 1;
   overflow-y: auto;
-  padding-right: 4px;
+  padding: 20px clamp(18px, 5vw, 28px) clamp(18px, 5vw, 24px);
   background: #ffffff;
 }
 
-.qr-info-title {
-  text-align: center;
-  font-size: clamp(18px, 5vw, 22px);
-  font-weight: 700;
-  font-family: "Sansation";
-  color: #860100;
-  margin-bottom: 5px;
+.qr-info-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.qr-info-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.qr-info-scroll::-webkit-scrollbar-thumb {
+  background: rgba(134, 1, 0, 0.2);
+  border-radius: 999px;
+}
+
+.qr-info-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(134, 1, 0, 0.4);
 }
 
 /* ── image ── */
 .qr-info-image-wrapper {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 8;
+  aspect-ratio: 16 / 9;
   max-height: 180px;
-  background: #f1f1f3;
-  border-radius: 4px;
+  background: #f4f4f6;
+  border-radius: 10px;
   overflow: hidden;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .qr-info-image {
@@ -58,6 +103,11 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 0.3s ease;
+}
+
+.qr-info-image-wrapper:hover .qr-info-image {
+  transform: scale(1.03);
 }
 
 .qr-info-image-placeholder {
@@ -71,27 +121,38 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  background: repeating-linear-gradient(
+    45deg,
+    #f4f4f6,
+    #f4f4f6 10px,
+    #efeff1 10px,
+    #efeff1 20px
+  );
 }
 
 .qr-info-status-badge {
   position: absolute;
-  top: 0px;
-  right: 0px;
-  padding: 2px 8px;
-  font-size: 14px;
+  top: 10px;
+  right: 10px;
+  padding: 4px 12px;
+  font-size: 11px;
   font-weight: 800;
-  letter-spacing: 0.05em;
-  border-radius: 4px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: 999px;
   font-family: "Sansation";
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 /* ── description ── */
 .qr-info-description {
-  margin: 0 0 16px;
-  font-size: clamp(14px, 4vw, 15px);
+  margin: 0 0 18px;
+  font-size: clamp(14px, 4vw, 15.5px);
   font-weight: 700;
-  color: #111;
-  line-height: 1.4;
+  color: #1a1a1a;
+  line-height: 1.45;
+  padding-left: 12px;
+  border-left: 3px solid #f5aa2c;
 }
 
 /* ── data grid ── */
@@ -100,6 +161,10 @@
   flex-direction: column;
   gap: 0;
   position: relative;
+  background: #fafafa;
+  border-radius: 10px;
+  padding: 4px 14px;
+  border: 1px solid #f0f0f0;
 }
 
 .qr-info-grid::before {
@@ -112,7 +177,7 @@
   background-size: contain;
   background-origin: content-box;
   padding: 40px;
-  opacity: 0.2;
+  opacity: 0.06;
   pointer-events: none;
   z-index: 0;
 }
@@ -122,10 +187,11 @@
   justify-content: space-between;
   align-items: baseline;
   gap: 12px;
-  padding: 8px 0;
-  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+  border-bottom: 1px solid #ececec;
   position: relative;
   z-index: 1;
+  transition: background 0.15s ease;
 }
 
 .qr-info-row:last-child {
@@ -134,19 +200,20 @@
 
 .qr-info-label {
   font-family: "Sansation";
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 700;
+  letter-spacing: 0.03em;
   color: #860100;
-  background: rgba(134, 1, 0, 0.05);
-  padding: 2px 4px;
-  border-radius: 3px;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
   display: inline-block;
 }
 
 .qr-info-value {
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 600;
-  color: #333;
+  color: #2a2a2a;
   text-align: right;
   word-break: break-word;
 }
@@ -156,50 +223,67 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin-top: 8px;
-  padding-top: 10px;
-  border-top: 1px solid #eee;
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: rgba(245, 170, 44, 0.08);
+  border-left: 3px solid #f5aa2c;
+  border-radius: 6px;
+}
+
+.qr-info-remarks .qr-info-label {
+  color: #7a5700;
 }
 
 .qr-info-remarks-text {
   margin: 0;
   font-size: 13px;
   color: #555;
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
 /* ── empty state ── */
 .qr-info-empty {
-  margin: 0;
+  margin: 0 0 20px;
   text-align: center;
-  font-size: 13px;
-  color: #ff0000;
+  font-size: 13.5px;
+  color: #860100;
+  font-weight: 500;
 }
 
 /* ── return button ── */
 .qr-info-return-btn {
   display: block;
-  width: 100%;
-  margin-top: 5px;
-  padding: 12px 0;
-  background: #860100;
+  width: calc(100% - 40px);
+  margin: 0 20px 20px;
+  padding: 13px 0;
+  background: linear-gradient(135deg, #9c0201 0%, #6b0000 100%);
   color: #fff;
-  border: none;
-  border-radius: 4px;
-  font-size: 14px;
+  border: 1px solid rgba(245, 170, 44, 0.25);
+  border-radius: 10px;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.05em;
+  font-family: "Sansation";
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: background 0.15s ease;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.1),
+    0 8px 20px -6px rgba(134, 1, 0, 0.5);
+  transition:
+    background 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s ease,
+    transform 0.15s ease;
 }
 
 .qr-info-return-btn:hover {
-  background: #6e0100;
+  background: linear-gradient(135deg, #ac0201 0%, #7a0000 100%);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.1),
+    0 10px 24px -6px rgba(134, 1, 0, 0.55);
 }
 
 .qr-info-return-btn:active {
-  background: #5a0000;
+  transform: scale(0.98);
 }
 
 @keyframes qrInfoFadeIn {
@@ -214,11 +298,11 @@
 @keyframes qrInfoSlideUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(20px) scale(0.98);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
@@ -229,7 +313,7 @@
   }
 
   .qr-info-image-wrapper {
-    max-height: 160px;
+    max-height: 200px;
   }
 
   .qr-info-grid {
@@ -239,6 +323,11 @@
   }
 
   .qr-info-grid::before {
-    background-size: 40% auto;
+    background-size: 30% auto;
+  }
+
+  .qr-info-return-btn {
+    width: calc(100% - 56px);
+    margin: 0 28px 24px;
   }
 }

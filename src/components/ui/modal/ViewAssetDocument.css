@@ -1,0 +1,192 @@
+/* ViewAssetDocument.css */
+/* ── Viewport (clips the zoomed/panned image) ── */
+.doc-modal-viewport {
+  width: 100%;
+  max-height: 65vh;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #fafafa;
+  position: relative;
+  user-select: none;
+}
+
+.doc-modal-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform-origin: center center;
+  transition: transform 0.05s linear;
+  pointer-events: none;
+}
+
+/* ── Zoom controls ── */
+.doc-modal-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.doc-modal-zoom-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid rgba(134, 1, 0, 0.25);
+  background: #ffffff;
+  color: #860100;
+  cursor: pointer;
+  font-size: 14px;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.doc-modal-zoom-btn:hover:not(:disabled) {
+  background: #860100;
+  color: #ffffff;
+}
+
+.doc-modal-zoom-btn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.doc-modal-zoom-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.doc-modal-zoom-reset {
+  border-color: rgba(245, 170, 44, 0.4);
+  color: #d99520;
+}
+
+.doc-modal-zoom-reset:hover {
+  background: #f5aa2c;
+  color: #ffffff;
+}
+
+.doc-modal-zoom-level {
+  font-family: "Sansation";
+  font-weight: bold;
+  font-size: 12px;
+  color: #555;
+  min-width: 42px;
+  text-align: center;
+}
+/* ── Overlay ── */
+.doc-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: doc-overlay-fade 0.2s ease;
+}
+
+@keyframes doc-overlay-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ── Modal content ── */
+.doc-modal-content {
+  position: relative;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 28px;
+  max-width: 640px;
+  width: 90%;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  z-index: 10000;
+
+  border: 1px solid rgba(134, 1, 0, 0.1);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.1),
+    0 20px 40px -10px rgba(134, 1, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+
+  animation: doc-modal-pop 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes doc-modal-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* thin gold underline accent, echoing nav-button-active */
+.doc-modal-content::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 16px;
+  right: 16px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #f5aa2c, transparent);
+  opacity: 0.7;
+}
+
+/* ── Document image ── */
+.doc-modal-image {
+  max-width: 100%;
+  max-height: 65vh;
+  object-fit: contain;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #fafafa;
+  padding: 8px;
+}
+
+/* ── Close button ── */
+.doc-modal-close {
+  font-family: "Sansation";
+  font-weight: bold;
+  font-size: 12px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #9c0201 0%, #6b0000 100%);
+  border: 1px solid rgba(245, 170, 44, 0.25);
+  border-radius: 10px;
+  padding: 10px 24px;
+  cursor: pointer;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.1),
+    0 8px 20px -6px rgba(134, 1, 0, 0.5);
+
+  transition:
+    background 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s ease,
+    transform 0.15s ease;
+}
+
+.doc-modal-close:hover {
+  background: linear-gradient(135deg, #ac0201 0%, #7a0000 100%);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.1),
+    0 10px 24px -6px rgba(134, 1, 0, 0.55);
+}
+
+.doc-modal-close:active {
+  transform: scale(0.98);
+}
