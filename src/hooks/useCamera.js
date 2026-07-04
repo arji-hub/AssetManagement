@@ -1,10 +1,8 @@
 // hooks/useCamera.js
 import { useRef } from "react";
-import { useQRScanner } from "./useQRScanner";
 
-export function useCamera() {
+export function useCamera(onCapture) {
   const inputRef = useRef(null);
-  const { status, errorMessage, handleImageUpload, reset } = useQRScanner();
 
   const openCamera = () => {
     inputRef.current?.click();
@@ -13,7 +11,7 @@ export function useCamera() {
   const handleChange = (e) => {
     const file = e.target.files?.[0];
     if (file) {
-      handleImageUpload(file);
+      onCapture?.(file);
     }
     e.target.value = "";
   };
@@ -27,5 +25,5 @@ export function useCamera() {
     style: { display: "none" },
   };
 
-  return { openCamera, inputProps, status, errorMessage, reset };
+  return { openCamera, inputProps };
 }
