@@ -10,17 +10,10 @@ function QR() {
   const { user } = useAuth();
   const { status, errorMessage, handleImageUpload, reset } = useQRScanner();
 
-  const handleCameraScan = () => {
-    alert("Camera scan not implemented yet.");
-  };
-
   return (
     <MainLayout>
       <div className="qr-page">
-        <QRModal
-          onCameraScan={handleCameraScan}
-          onImageUpload={handleImageUpload}
-        />
+        <QRModal onImageUpload={handleImageUpload} />
         {status && (
           <QRStatusModal
             status={status}
