@@ -128,8 +128,15 @@
 
 .report-info-details {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 12px;
+}
+
+/* when there's no evidence box (non-damaged reports), .report-info-details
+   is the ONLY item in .report-info-grid — without this it lands in the
+   160px evidence column instead of spanning the full row. */
+.report-info-details:only-child {
+  grid-column: 1 / -1;
 }
 
 .report-info-detail-box {
@@ -223,6 +230,7 @@
   border-color: #f87171;
   color: #f5aa2c;
 }
+
 /* ── Responsive ── */
 @media (max-width: 650px) {
   .report-info-log {
@@ -235,15 +243,30 @@
     grid-template-columns: 1fr;
   }
 
+  .report-info-evidence {
+    max-width: 200px;
+    margin: 0 auto;
+  }
+
   .report-info-details {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   }
 
   .report-info-card-header {
     flex-direction: column;
   }
 
+  .report-info-date {
+    white-space: normal;
+  }
+
   .report-info-actions {
     flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 400px) {
+  .report-info-details {
+    grid-template-columns: 1fr;
   }
 }

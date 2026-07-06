@@ -19,6 +19,7 @@ function ReportPanel({
   const filteredReports = reports.filter((r) => {
     if (!allowedStatuses.includes(r.status)) return false;
     if (statusFilter === "all") return true;
+    if (Array.isArray(statusFilter)) return statusFilter.includes(r.status);
     return r.status === statusFilter;
   });
 
