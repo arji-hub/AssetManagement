@@ -7,6 +7,7 @@ import InfoCard from "../../components/panel/InfoCard";
 import HistoryCard from "../../components/panel/HistoryCard";
 import ViewAssetQR from "../../components/ui/modal/ViewAssetQr";
 import ViewAssetDocument from "../../components/ui/modal/ViewAssetDocument";
+import ManageAsset from "../../components/ui/dropdown/ManageAsset";
 import "./AssetInfo.css";
 
 function AssetInfo() {
@@ -56,18 +57,12 @@ function AssetInfo() {
             <span className="breadcrumb-parent">Asset Information</span>
           </div>
           <div className="asset-info-actions">
+            <button className="action-btn" disabled>
+              <i className="ti ti-download" aria-hidden="true" /> wala pa
+            </button>
             <ViewAssetDocument doc_image_url={asset.doc_image_url} />
-            <button className="action-btn" disabled>
-              <i className="ti ti-download" aria-hidden="true" /> Export
-            </button>
-            <button className="action-btn" disabled>
-              <i className="ti ti-printer" aria-hidden="true" /> Print
-            </button>
             <ViewAssetQR qr_code_url={asset.qr_code_url} assetID={assetId} />
-            <button className="action-btn action-btn--danger" disabled>
-              <i className="ti ti-alert-triangle" aria-hidden="true" /> Report
-              Incident
-            </button>
+            <ManageAsset assetID={assetId} />
           </div>
         </div>
 

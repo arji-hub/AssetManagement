@@ -30,7 +30,7 @@ function ViewAssetQR({ qr_code_url, assetID }) {
   return (
     <>
       <button className="action-btn" onClick={() => setIsQRActive(true)}>
-        <i className="ti ti-qrcode" aria-hidden="true" /> QR Code
+        <FontAwesomeIcon icon="fa-solid fa-qrcode" /> QR Code
       </button>
 
       {isQRActive && (
