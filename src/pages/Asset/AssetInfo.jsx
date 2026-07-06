@@ -62,7 +62,7 @@ function AssetInfo() {
             </button>
             <ViewAssetDocument doc_image_url={asset.doc_image_url} />
             <ViewAssetQR qr_code_url={asset.qr_code_url} assetID={assetId} />
-            <ManageAsset assetID={assetId} />
+            <ManageAsset asset={asset} />
           </div>
         </div>
 
