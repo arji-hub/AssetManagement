@@ -2,6 +2,7 @@ import React from "react";
 import { STATUS_COLORS } from "../../data/assets";
 import LabelCard from "../ui/card/LabelCard";
 import { formatCurrency } from "../../utils/formatCurrency";
+import ViewAssetDocument from "../ui/modal/ViewAssetDocument";
 import "./InfoCard.css";
 import { formatDate } from "../../utils/date";
 
@@ -72,18 +73,26 @@ function InfoCard({ asset }) {
 
       {/* Right: asset image */}
       <div className="info-card-image-col">
-        {asset.asset_image_url ? (
-          <img
-            src={asset.asset_image_url}
-            alt={asset.description || "Asset"}
-            className="info-card-main-img"
-          />
-        ) : (
-          <div className="info-card-main-img-placeholder">
-            <i className="ti ti-photo" aria-hidden="true" />
-            <span>IMAGE</span>
-          </div>
-        )}
+        <ViewAssetDocument doc_image_url={asset.asset_image_url}>
+          {(openModal) =>
+            asset.asset_image_url ? (
+              <img
+                src={asset.asset_image_url}
+                alt={asset.description || "Asset"}
+                className="info-card-main-img"
+                onClick={openModal}
+                role="button"
+                tabIndex={0}
+                style={{ cursor: "pointer" }}
+              />
+            ) : (
+              <div className="info-card-main-img-placeholder">
+                <i className="ti ti-photo" aria-hidden="true" />
+                <span>IMAGE</span>
+              </div>
+            )
+          }
+        </ViewAssetDocument>
       </div>
     </div>
   );
