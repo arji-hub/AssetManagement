@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ReportCard from "../ui/card/ReportCard";
 import { STATUS_GROUPS, COLUMNS } from "../../data/reports";
+import { getReportType } from "../../utils/report";
 import "./ReportPanel.css";
 
 function ReportPanel({
@@ -19,7 +20,9 @@ function ReportPanel({
   const filteredReports = reports.filter((r) => {
     if (!allowedStatuses.includes(r.status)) return false;
     if (statusFilter === "all") return true;
-    if (Array.isArray(statusFilter)) return statusFilter.includes(r.status);
+    if (Array.isArray(statusFilter))
+      return statusFilter.includes(getReportType(r));
+    return getReportType(r) === statusFilter;
     return r.status === statusFilter;
   });
 

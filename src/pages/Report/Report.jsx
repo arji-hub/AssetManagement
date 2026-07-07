@@ -10,6 +10,7 @@ import { displayDate } from "../../utils/date";
 import useReportPage from "../../hooks/useReportPage";
 import { TABS } from "../../data/reports";
 import { useReports } from "../../hooks/useReports";
+import { getReportType } from "../../utils/report";
 
 function Report() {
   const { data: reports, loading, error } = useReports();
@@ -36,25 +37,27 @@ function Report() {
           </div>
 
           <div className="report-header-right">
-            <div className="report-filter-segment">
-              {[
-                { value: "all", label: "All" },
-                { value: "damaged", label: "Damaged" },
-                { value: "missing", label: "Missing" },
-              ].map((opt) => (
-                <button
-                  key={opt.value}
-                  className={`report-filter-option ${
-                    filter.statusFilter === opt.value
-                      ? "report-filter-option--active"
-                      : ""
-                  }`}
-                  onClick={() => filter.handleStatusFilter(opt.value)}
-                >
-                  {opt.label}
-                </button>
-              ))}
-            </div>
+            {activeTab !== "repair" && (
+              <div className="report-filter-segment">
+                {[
+                  { value: "all", label: "All" },
+                  { value: "damaged", label: "Damaged" },
+                  { value: "missing", label: "Missing" },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    className={`report-filter-option ${
+                      filter.statusFilter === opt.value
+                        ? "report-filter-option--active"
+                        : ""
+                    }`}
+                    onClick={() => filter.handleStatusFilter(opt.value)}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            )}
 
             <button
               className="report-incident-btn"
@@ -94,7 +97,7 @@ function Report() {
           {activeTab === "repair" && (
             <ReportPanel
               group="repair"
-              statusFilter={["damaged", "missing", "for_repair"]}
+              statusFilter="damaged"
               reports={reports}
               loading={loading}
               error={error}
@@ -103,7 +106,7 @@ function Report() {
           {activeTab === "resolved" && (
             <ReportPanel
               group="resolved"
-              statusFilter={["working", "found"]}
+              statusFilter={filter.statusFilter}
               reports={reports}
               loading={loading}
               error={error}
@@ -112,7 +115,7 @@ function Report() {
           {activeTab === "archive" && (
             <ReportPanel
               group="archive"
-              statusFilter={["condemned"]}
+              statusFilter={filter.statusFilter}
               reports={reports}
               loading={loading}
               error={error}
