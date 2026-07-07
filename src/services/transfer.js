@@ -295,6 +295,23 @@ function buildAck(acknowledged, uid, name) {
   };
 }
 
+async function assertNoOpenTransferForAsset(assetId) {
+  const col = collection(db, COLLECTION);
+  const snap = await getDocs(
+    query(
+      col,
+      where("asset_id", "==", assetId),
+      where("completed_at", "==", null),
+    ),
+  );
+
+  if (!snap.empty) {
+    throw new Error(
+      "This asset already has an ongoing transfer request. Please resolve it before filing a new one.",
+    );
+  }
+}
+
 export async function addTransferRequest(
   { asset_id, asset_description, from, to, notes },
   requestedByUid,
@@ -307,6 +324,9 @@ export async function addTransferRequest(
       "addTransferRequest: requestedByUid and requestedByRole are required.",
     );
   }
+
+  // == Step 0: block duplicate open transfer request =======
+  await assertNoOpenTransferForAsset(asset_id);
 
   const isAdmin = requestedByRole === ROLES.ADMIN;
   const type = resolveTransferType(from, to);
@@ -339,7 +359,7 @@ export async function addTransferRequest(
     updated_at: serverTimestamp(),
     acknowledgments: {
       admin: buildAck(isAdmin, uidAdmin),
-      from: buildAck(!isAdmin, from.uid, fromName),
+      from: buildAck(!from, from?.uid, fromName),
       to: buildAck(!to, to?.uid, toName),
     },
     status_log: [
