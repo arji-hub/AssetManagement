@@ -5,7 +5,7 @@ function NavButton({ label, icon, isActive = false, onClick = () => {} }) {
   return (
     <button
       className={`nav-button ${isActive ? "nav-button-active" : ""}`}
-      onClick={isActive ? undefined : onClick}
+      onClick={onClick}
       aria-current={isActive ? "page" : undefined}
     >
       <span className="nav-button-label">{label}</span>

@@ -94,7 +94,7 @@ function Report() {
           {activeTab === "repair" && (
             <ReportPanel
               group="repair"
-              statusFilter={["damaged", "missing", "for_repair", "found"]}
+              statusFilter={["damaged", "missing", "for_repair"]}
               reports={reports}
               loading={loading}
               error={error}
@@ -103,7 +103,7 @@ function Report() {
           {activeTab === "resolved" && (
             <ReportPanel
               group="resolved"
-              statusFilter={["working"]}
+              statusFilter={["working", "found"]}
               reports={reports}
               loading={loading}
               error={error}

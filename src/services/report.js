@@ -17,6 +17,12 @@ import {
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getName } from "./user";
 import { updateAssetStatus } from "./asset";
+import {
+  OPEN_REPORT_STATUSES,
+  ASSET_CLEARING_STATUSES,
+  DAMAGE_STATUSES,
+  MISSING_STATUSES,
+} from "../data/reports";
 
 export function subscribeToReports(uid, callback, onError) {
   const q = query(collection(db, "report"), orderBy("updated_at", "desc"));
@@ -122,11 +128,38 @@ const generateReportNo = async () => {
   });
 };
 
+async function assertNoDuplicateOpenReport(assetId, type) {
+  const relevantStatuses =
+    type === "damaged" ? DAMAGE_STATUSES : MISSING_STATUSES;
+
+  const col = collection(db, "report");
+  const snap = await getDocs(
+    query(
+      col,
+      where("asset_id", "==", assetId),
+      where("date_resolved", "==", null),
+    ),
+  );
+
+  const hasOpenSameCategory = snap.docs.some((d) =>
+    relevantStatuses.includes(d.data().status),
+  );
+
+  if (hasOpenSameCategory) {
+    throw new Error(
+      `This asset already has an open ${type} report. Please resolve it before filing a new one.`,
+    );
+  }
+}
+
 export async function addReport(
   { type, asset_id, asset, description, narrative, photo },
   reportedBy,
   reportedByName,
 ) {
+  // == Step 0: block duplicate open report of the same type ===============
+  await assertNoDuplicateOpenReport(asset_id, type);
+
   // == Step 1: generate report_no via counter transaction =================
   const report_no = await generateReportNo();
 
@@ -172,6 +205,34 @@ export async function addReport(
   return { id: docRef.id, report_no };
 }
 
+async function resolveAssetStatus(assetId, currentReportId, newStatus) {
+  if (newStatus === "condemned") return "condemned";
+
+  if (!ASSET_CLEARING_STATUSES.includes(newStatus)) {
+    return newStatus;
+  }
+
+  const col = collection(db, "report");
+  const snap = await getDocs(
+    query(
+      col,
+      where("asset_id", "==", assetId),
+      where("date_resolved", "==", null),
+    ),
+  );
+
+  const otherOpenReports = snap.docs.filter((d) => d.id !== currentReportId);
+
+  if (otherOpenReports.length === 0) {
+    return newStatus === "found" ? "working" : newStatus;
+  }
+
+  const statuses = otherOpenReports.map((d) => d.data().status);
+  if (statuses.includes("for_repair")) return "for_repair";
+  if (statuses.includes("damaged")) return "damaged";
+  return "missing";
+}
+
 export async function updateReportStatus({
   reportId,
   reportNo,
@@ -202,13 +263,20 @@ export async function updateReportStatus({
   await updateDoc(docRef, {
     status: newStatus,
     status_log: arrayUnion(newLog),
-    date_resolved: ["working", "condemned"].includes(newStatus)
+    date_resolved: ASSET_CLEARING_STATUSES.includes(newStatus)
       ? new Date().toISOString()
       : null,
     updated_at: serverTimestamp(),
   });
 
-  if (assetId) await updateAssetStatus(assetId, newStatus);
+  if (assetId) {
+    const resolvedAssetStatus = await resolveAssetStatus(
+      assetId,
+      reportId,
+      newStatus,
+    );
+    await updateAssetStatus(assetId, resolvedAssetStatus);
+  }
 }
 
 export function subscribeToReportsByAsset(assetId, callback, onError) {

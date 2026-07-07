@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-const COUNTDOWN = 5;
+const COUNTDOWN = 3;
 
 export function useTransferAction(type, onClose, onConfirm) {
   const [remarks, setRemarks] = useState("");
