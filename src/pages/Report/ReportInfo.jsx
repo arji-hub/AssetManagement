@@ -109,7 +109,7 @@ function ReportInfo() {
               )}
 
               {/* For Repair or Found actions */}
-              {(isForRepair || isFound) && (
+              {isForRepair && (
                 <>
                   <button
                     className="action-btn action-btn--danger"

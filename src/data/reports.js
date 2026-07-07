@@ -20,8 +20,8 @@ export const TABS = [
 
 export const STATUS_GROUPS = {
   incident: ["damaged", "missing"],
-  repair: ["for_repair", "found"],
-  resolved: ["working"],
+  repair: ["for_repair"],
+  resolved: ["working", "found"],
   archive: ["condemned"],
 };
 
@@ -54,6 +54,11 @@ export const COLUMNS = {
     "Date Resolved",
   ],
 };
+
+export const DAMAGE_STATUSES = ["damaged", "for_repair"];
+export const MISSING_STATUSES = ["missing", "found"];
+export const OPEN_REPORT_STATUSES = [...DAMAGE_STATUSES, ...MISSING_STATUSES];
+export const ASSET_CLEARING_STATUSES = ["found", "working", "condemned"];
 
 export const MOCK_REPORTS = [
   // ── INCIDENT (new — no status log progression) ──────────────────────────

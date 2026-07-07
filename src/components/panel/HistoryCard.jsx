@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { STATUS_COLORS } from "../../data/assets";
 import { useAssetHistory } from "../../hooks/useAssetHistory";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./HistoryCard.css";
 import { toTitleCase } from "../../utils/TextCasing";
 
@@ -63,9 +64,12 @@ function HistoryCard({ assetId }) {
               onClick={() => handleItemClick(item)}
             >
               <div className="history-card-item-icon">
-                <i
-                  className={`ti ${item.type === "Transfer" ? "ti-arrow-right" : "ti-alert-circle"}`}
-                  aria-hidden="true"
+                <FontAwesomeIcon
+                  icon={
+                    item.type === "Transfer"
+                      ? "fa-solid fa-arrow-right"
+                      : "fa-solid fa-circle-exclamation"
+                  }
                 />
               </div>
               <div className="history-card-item-body">
