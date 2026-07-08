@@ -19,7 +19,6 @@ function Custodian() {
   useEffect(() => {
     fetchCustodians()
       .then((data) => {
-        console.log("custodians:", data);
         setCustodians(data);
       })
       .catch((err) => console.error("Failed to fetch custodians:", err))
