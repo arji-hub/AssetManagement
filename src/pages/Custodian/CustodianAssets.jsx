@@ -8,12 +8,14 @@ import { Status } from "../../components/ui/status/assetStatus";
 import { useAssetFilters } from "../../hooks/useAssetFilters";
 import { useCustodianAssets } from "../../hooks/useCustodianAssets";
 import { formatDate } from "../../utils/date";
+import { PDFPreviewModal } from "../../components/ui/modal/PDFPreviewModal";
+import { CustodianInventoryPDF } from "../../pdf/templates/CustodianInventoryPDF";
 
 function CustodianAssets() {
   const { username } = useParams();
   const navigate = useNavigate();
 
-  const { assets, loading, error } = useCustodianAssets(username);
+  const { assets, loading, error, fullname } = useCustodianAssets(username);
 
   const {
     showFilter,
@@ -29,6 +31,9 @@ function CustodianAssets() {
     custodians,
     loadingOptions,
   } = useAssetFilters(assets);
+
+  console.log("custodian name:", fullname);
+  console.log("custodian assets:", assets);
 
   return (
     <MainLayout>
@@ -46,12 +51,23 @@ function CustodianAssets() {
             <div>
               <h1 className="assets-title">Assets in Custody</h1>
               <p className="assets-subtitle">
-                Showing assets registered For <strong>{username}</strong>
+                Showing assets registered For <strong>{fullname}</strong>
               </p>
             </div>
           </div>
 
           <div className="assets-settings">
+            <PDFPreviewModal
+              title="Custodian Inventory Form"
+              fileName={`custodian-inventory-${fullname}.pdf`}
+              document={
+                <CustodianInventoryPDF
+                  custodianName={fullname}
+                  assets={filteredAssets}
+                />
+              }
+              triggerLabel="Custodian Inventory Form"
+            />
             <button
               className={`filter-button ${activeFilterCount > 0 ? "filter-button--active" : ""}`}
               onClick={() => setShowFilter(true)}
