@@ -29,6 +29,19 @@ export async function fetchRooms() {
   });
 }
 
+export async function fetchRoom(id) {
+  const snap = await getDoc(doc(db, "room", id));
+  if (!snap.exists()) throw new Error("Room not found.");
+
+  const data = snap.data();
+
+  return {
+    id: snap.id,
+    name: data.name,
+    assetCount: data.assetCount ?? 0,
+  };
+}
+
 export async function addRoom(data, role) {
   if (role !== "admin") {
     throw new Error("Permission denied: only admins can register rooms.");
@@ -92,6 +105,7 @@ export function subscribeToAssetsInRoom(room_id, callback, onError) {
         const assets = assetData.map((asset) => ({
           id: asset.id,
           description: asset.description,
+          serial_number: asset.serial_number,
           category: asset.category_id,
           name: fullnameMap[asset.property_custodian] ?? "---",
           status: asset.status,

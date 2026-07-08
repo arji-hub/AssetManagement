@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import {
   subscribeToAssetsByCustodian,
-  fetchCustodians,
+  findCustodian,
 } from "../services/user";
 
 export function useCustodianAssets(username) {
   const [assets, setAssets] = useState([]);
+  const [fullname, setFullname] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -16,21 +17,23 @@ export function useCustodianAssets(username) {
     async function start() {
       setLoading(true);
       setError(null);
+      setFullname(null);
 
       try {
-        const custodians = await fetchCustodians();
-        const match = custodians.find((c) => c.username === username);
+        const custodian = await findCustodian(username);
 
         if (cancelled) return;
 
-        if (!match) {
+        if (!custodian) {
           setError(new Error("Custodian not found."));
           setLoading(false);
           return;
         }
 
+        setFullname(custodian.fullname);
+
         unsubscribe = subscribeToAssetsByCustodian(
-          match.id,
+          custodian.id,
           (assets) => {
             setAssets(assets);
             setLoading(false);
@@ -48,7 +51,7 @@ export function useCustodianAssets(username) {
       }
     }
 
-    start();
+    if (username) start();
 
     return () => {
       cancelled = true;
@@ -56,5 +59,5 @@ export function useCustodianAssets(username) {
     };
   }, [username]);
 
-  return { assets, loading, error };
+  return { assets, fullname, loading, error };
 }

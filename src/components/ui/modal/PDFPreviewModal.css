@@ -1,0 +1,223 @@
+/* PDFPreviewModal.css */
+
+/* ── Overlay ── */
+.pdf-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: pdf-overlay-in 0.15s ease;
+}
+
+@keyframes pdf-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ── Modal container ── */
+.pdf-modal-content {
+  background: #ffffff;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 900px;
+  height: 88vh;
+  margin: 16px;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: pdf-modal-in 0.2s ease;
+}
+
+@keyframes pdf-modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ── Header — red bg, title left, close right ── */
+.pdf-modal-header {
+  background: #860100;
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.pdf-modal-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-family: "Sansation";
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.01em;
+}
+
+.pdf-modal-close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease;
+}
+
+.pdf-modal-close:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* ── Action bar ── */
+.pdf-modal-actions {
+  display: flex;
+  gap: 10px;
+  padding: 16px 24px;
+  border-bottom: 1px solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+.pdf-modal-actions > a {
+  text-decoration: none;
+  display: inline-flex;
+}
+
+.pdf-download-btn,
+.pdf-print-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-family: "Sansation";
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.1s ease,
+    opacity 0.2s ease;
+}
+
+.pdf-download-btn:active:not(:disabled),
+.pdf-print-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.pdf-download-btn:disabled,
+.pdf-print-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Download — solid accent (#F5AA2C), matches submit-style emphasis */
+.pdf-download-btn {
+  background: #f5aa2c;
+  color: #860100;
+}
+
+.pdf-download-btn:hover:not(:disabled) {
+  background: #e09a1e;
+}
+
+/* Print — outlined, matches cancel-style secondary action */
+.pdf-print-btn {
+  background: #ffffff;
+  color: #860100;
+  border: 1.5px solid #860100;
+}
+
+.pdf-print-btn:hover:not(:disabled) {
+  background: rgba(134, 1, 0, 0.05);
+}
+
+/* ── Viewer ── */
+.pdf-modal-viewer {
+  flex: 1;
+  padding: 0 24px 24px;
+  min-height: 0;
+}
+
+.pdf-modal-viewer iframe {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+/* ── Trigger button ── */
+.pdf-trigger-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-family: "Sansation";
+  font-weight: bold;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  background: linear-gradient(135deg, #9c0201 0%, #6b0000 100%);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.1),
+    0 6px 16px -6px rgba(134, 1, 0, 0.5);
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+}
+
+.pdf-trigger-btn:hover {
+  background: linear-gradient(135deg, #ac0201 0%, #7a0000 100%);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.1),
+    0 8px 20px -6px rgba(134, 1, 0, 0.55);
+}
+
+.pdf-trigger-btn:active {
+  transform: scale(0.98);
+}
+
+/* ── Mobile ── */
+@media (max-width: 640px) {
+  .pdf-modal-content {
+    width: 95%;
+    height: 92vh;
+  }
+
+  .pdf-modal-actions {
+    flex-wrap: wrap;
+  }
+
+  .pdf-download-btn,
+  .pdf-print-btn {
+    flex: 1;
+  }
+}

@@ -8,12 +8,14 @@ import { Status } from "../../components/ui/status/assetStatus";
 import { useAssetFilters } from "../../hooks/useAssetFilters";
 import { useRoomAssets } from "../../hooks/useRoomAssets";
 import { formatDate } from "../../utils/date";
+import { PDFPreviewModal } from "../../components/ui/modal/PDFPreviewModal";
+import { RoomInventoryPDF } from "../../pdf/templates/RoomInventoryPDF";
 
 function RoomAssets() {
-  const { roomName } = useParams();
+  const { roomName: roomId } = useParams();
   const navigate = useNavigate();
 
-  const { assets, loading, error } = useRoomAssets(roomName);
+  const { assets, loading, error, roomName } = useRoomAssets(roomId);
 
   const {
     showFilter,
@@ -29,7 +31,6 @@ function RoomAssets() {
     custodians,
     loadingOptions,
   } = useAssetFilters(assets);
-  console.log("asset in room", filteredAssets);
 
   return (
     <MainLayout>
@@ -50,6 +51,14 @@ function RoomAssets() {
           </div>
 
           <div className="room-assets-settings">
+            <PDFPreviewModal
+              title="Room Inventory Form"
+              fileName={`room-inventory-${roomId}.pdf`}
+              document={
+                <RoomInventoryPDF roomName={roomName} assets={filteredAssets} />
+              }
+              triggerLabel="Room Inventory Form"
+            />
             <button
               className={`filter-button ${activeFilterCount > 0 ? "filter-button--active" : ""}`}
               onClick={() => setShowFilter(true)}
