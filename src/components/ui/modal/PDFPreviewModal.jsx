@@ -1,8 +1,13 @@
 // src/components/ui/modal/PDFPreviewModal.jsx
-import React, { useState } from "react";
-import { PDFViewer, PDFDownloadLink, pdf } from "@react-pdf/renderer";
+import React, { useState, useEffect } from "react";
+import { PDFDownloadLink, pdf } from "@react-pdf/renderer";
+import { Document, Page, pdfjs } from "react-pdf";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import "react-pdf/dist/Page/AnnotationLayer.css";
+import "react-pdf/dist/Page/TextLayer.css";
 import "./PDFPreviewModal.css";
+
+pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 export function PDFPreviewModal({
   document: pdfDocument,
@@ -12,6 +17,38 @@ export function PDFPreviewModal({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [printing, setPrinting] = useState(false);
+  const [blobUrl, setBlobUrl] = useState(null);
+  const [numPages, setNumPages] = useState(null);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [containerWidth, setContainerWidth] = useState(600);
+
+  // Generate the blob once the modal opens
+  useEffect(() => {
+    if (!isOpen) return;
+    let cancelled = false;
+
+    pdf(pdfDocument)
+      .toBlob()
+      .then((blob) => {
+        if (cancelled) return;
+        setBlobUrl(URL.createObjectURL(blob));
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen, pdfDocument]);
+
+  // Clean up blob URL + reset page state on close
+  useEffect(() => {
+    if (!isOpen && blobUrl) {
+      URL.revokeObjectURL(blobUrl);
+      setBlobUrl(null);
+      setNumPages(null);
+      setPageNumber(1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   const handlePrint = async () => {
     setPrinting(true);
@@ -40,7 +77,6 @@ export function PDFPreviewModal({
             className="pdf-modal-content"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* ── Header ── */}
             <div className="pdf-modal-header">
               <h2>{title}</h2>
               <button
@@ -52,7 +88,6 @@ export function PDFPreviewModal({
               </button>
             </div>
 
-            {/* ── Action bar ── */}
             <div className="pdf-modal-actions">
               <PDFDownloadLink document={pdfDocument} fileName={fileName}>
                 {({ loading }) => (
@@ -74,10 +109,49 @@ export function PDFPreviewModal({
             </div>
 
             {/* ── Viewer ── */}
-            <div className="pdf-modal-viewer">
-              <PDFViewer width="100%" height="100%" showToolbar={false}>
-                {pdfDocument}
-              </PDFViewer>
+            <div
+              className="pdf-modal-viewer"
+              ref={(el) => el && setContainerWidth(el.clientWidth)}
+            >
+              {blobUrl ? (
+                <Document
+                  file={blobUrl}
+                  onLoadSuccess={({ numPages }) => setNumPages(numPages)}
+                  loading={<p className="pdf-loading-text">Loading preview…</p>}
+                  error={
+                    <p className="pdf-loading-text">Couldn't load preview.</p>
+                  }
+                >
+                  <Page
+                    pageNumber={pageNumber}
+                    width={Math.min(containerWidth - 20, 700)}
+                  />
+                </Document>
+              ) : (
+                <p className="pdf-loading-text">Preparing preview…</p>
+              )}
+
+              {numPages > 1 && (
+                <div className="pdf-page-nav">
+                  <button
+                    onClick={() => setPageNumber((p) => Math.max(1, p - 1))}
+                    disabled={pageNumber <= 1}
+                  >
+                    <FontAwesomeIcon icon="fa-solid fa-chevron-left" />
+                  </button>
+                  <span>
+                    Page {pageNumber} of {numPages}
+                  </span>
+                  <button
+                    onClick={() =>
+                      setPageNumber((p) => Math.min(numPages, p + 1))
+                    }
+                    disabled={pageNumber >= numPages}
+                  >
+                    <FontAwesomeIcon icon="fa-solid fa-chevron-right" />
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -185,17 +185,31 @@
   font-style: normal;
 }
 
-.app-title {
-  font-family: "Cinzel";
-  font-size: clamp(18px, 3vw, 30px) !important;
+.layout-wrapper h1.app-title {
+  font-size: clamp(14px, 4.5vw, 30px);
   flex: 1;
+  min-width: 0;
   color: #f5aa2c;
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* limit to 2 lines */
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   line-height: 1.2;
 }
+
+@media (max-width: 480px) {
+  .layout-wrapper h1.app-title {
+    font-size: clamp(12px, 1.5vw, 16px);
+    -webkit-line-clamp: 3;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  .layout-wrapper h1.app-title {
+    font-size: 20px;
+  }
+}
+
 /* #endregion */
 
 /* #region ─── NAVBAR RIGHT ───  */
