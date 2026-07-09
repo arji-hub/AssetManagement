@@ -157,15 +157,50 @@
 /* ── Viewer ── */
 .pdf-modal-viewer {
   flex: 1;
-  padding: 0 24px 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px 24px;
   min-height: 0;
 }
 
-.pdf-modal-viewer iframe {
-  width: 100%;
-  height: 100%;
+.pdf-modal-viewer canvas {
   border-radius: 8px;
   border: 1px solid #e5e7eb;
+  max-width: 100%;
+}
+
+.pdf-loading-text {
+  color: #666;
+  font-size: 13px;
+  margin-top: 40px;
+}
+
+.pdf-page-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  color: #444;
+  padding-top: 4px;
+  flex-shrink: 0;
+}
+
+.pdf-page-nav button {
+  background: #860100;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+}
+
+.pdf-page-nav button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 /* ── Trigger button ── */
@@ -209,7 +244,7 @@
 @media (max-width: 640px) {
   .pdf-modal-content {
     width: 95%;
-    height: 92vh;
+    height: 80dvh;
   }
 
   .pdf-modal-actions {
@@ -219,5 +254,9 @@
   .pdf-download-btn,
   .pdf-print-btn {
     flex: 1;
+  }
+
+  .pdf-modal-viewer {
+    padding: 12px 12px 20px;
   }
 }
