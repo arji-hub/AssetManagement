@@ -12,6 +12,7 @@ import LoadingScreen from "../../components/ui/status/LoadingScreen";
 import ReportLog from "../../components/ui/card/ReportLog";
 import ReportActionModal from "../../components/ui/modal/ReportActionModal";
 import "./ReportInfo.css";
+import BackButton from "../../components/ui/button/BackButton";
 
 function ReportInfo() {
   const navigate = useNavigate();
@@ -59,10 +60,7 @@ function ReportInfo() {
         {/* ── Header ── */}
         <div className="asset-info-header">
           <div className="asset-info-breadcrumb">
-            <button className="return-button" onClick={() => navigate(-1)}>
-              <FontAwesomeIcon icon="fa-solid fa-arrow-left" />
-              Back
-            </button>
+            <BackButton/>
             <span className="breadcrumb-parent">Report Information</span>
           </div>
           {/* ── Actions ── */}

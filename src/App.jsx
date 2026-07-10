@@ -17,6 +17,7 @@ import TransferInfo from "./pages/Transfer/TransferInfo";
 import TransferRoom from "./pages/Transfer/TransferRoom";
 import QR from "./pages/QR/QR";
 import Audit from "./pages/Audit/Audit";
+import AuditRoom from "./pages/Audit/AuditRoom";
 import Room from "./pages/Room/Room";
 import { ROLES } from "./data/roles";
 import CustodianAssets from "./pages/Custodian/CustodianAssets";
@@ -79,7 +80,10 @@ function App() {
           {/* ADMIN ONLY PAGES */}
           <Route element={<RoleRoute allowed={[ROLES.ADMIN]} />}>
             {/* AUDIT PAGE */}
-            <Route path="/audit" element={<Audit />} />
+            <Route path="/audit">
+              <Route index element={<Audit />} />
+              <Route path="room" element={<AuditRoom />} />
+            </Route>
 
             {/* CUSTODIAN PAGE */}
             <Route path="/custodian">

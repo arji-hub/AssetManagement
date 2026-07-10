@@ -5,6 +5,7 @@ import MainLayout from "../../components/layout/MainLayout";
 import ProfileCard from "../../components/panel/ProfileCard";
 import useProfileEdit from "../../hooks/userProfileEdit";
 import "./Profile.css";
+import BackButton from "../../components/ui/button/BackButton";
 
 function Profile() {
   const { user } = useAuth();
@@ -22,10 +23,10 @@ function Profile() {
   return (
     <MainLayout>
       <div className="profile-page">
-        <button className="return-button" onClick={() => navigate(-1)}>
-          <FontAwesomeIcon icon="fa-solid fa-arrow-left" />
-          Back
-        </button>
+        <div className="back-button">
+          <BackButton />
+        </div>
+
         <ProfileCard user={user} {...profileEdit} />
       </div>
     </MainLayout>

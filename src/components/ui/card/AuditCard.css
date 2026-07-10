@@ -1,0 +1,41 @@
+.audit-card {
+  background: #ffffff;
+  border: 1px solid #e2beb9;
+  border-left: 4px solid #8e706b;
+  border-radius: 4px;
+  padding: 20px;
+}
+
+.audit-card--secondary {
+  border-left-color: #825500;
+}
+
+.audit-card--primary {
+  border-left-color: #860100;
+}
+
+.audit-card--neutral {
+  border-left-color: #8e706b;
+}
+
+.audit-card-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #5a413c;
+  margin: 0;
+}
+
+.audit-card-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: #121c2a;
+  margin: 4px 0 0;
+}
+
+.audit-card-hint {
+  font-size: 12px;
+  color: #5a413c;
+  margin: 4px 0 0;
+}

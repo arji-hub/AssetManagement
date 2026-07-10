@@ -69,7 +69,7 @@
 
 .nav-button-active:hover {
   background: linear-gradient(135deg, #ac0201 0%, #7a0000 100%);
-    color: #ffffff;
+  color: #ffffff;
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.1),
     0 10px 24px -6px rgba(134, 1, 0, 0.55),
@@ -78,14 +78,15 @@
 
 @font-face {
   font-family: "Sansation";
-  src: url("../../assets/fonts/Sansation/Sansation-Bold.ttf") format("truetype");
+  src: url("../../../assets/fonts/Sansation/Sansation-Bold.ttf")
+    format("truetype");
   font-weight: bold;
   font-style: normal;
 }
 
 @font-face {
   font-family: "Sansation";
-  src: url("../../assets/fonts/Sansation/Sansation-Regular.ttf")
+  src: url("../../../assets/fonts/Sansation/Sansation-Regular.ttf")
     format("truetype");
   font-weight: normal;
   font-style: normal;
