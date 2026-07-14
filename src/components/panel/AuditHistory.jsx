@@ -51,11 +51,11 @@ function AuditHistory({ sessions = [], onViewAll, onRowClick }) {
             ) : (
               sessions.map((session) => (
                 <tr
-                  key={session.audit_no}
+                  key={session.id}
                   className="audit-history-row"
                   onClick={() => onRowClick?.(session)}
                 >
-                  <td className="audit-history-audit-no">{session.id}</td>
+                  <td className="audit-history-audit-no">{session.audit_no}</td>
                   <td>{session.room_id}</td>
                   <td>{session.audited_by_name}</td>
                   <td className="audit-history-muted">

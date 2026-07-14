@@ -18,7 +18,8 @@ import TransferRoom from "./pages/Transfer/TransferRoom";
 import QR from "./pages/QR/QR";
 import Audit from "./pages/Audit/Audit";
 import AuditRoom from "./pages/Audit/AuditRoom";
-import AuditRoomSession from "./pages/Audit/AuditRoomSession";
+import AuditRoomOverview from "./pages/Audit/AuditRoomOverview";
+import AuditRoomInfo from "./pages/Audit/AuditRoomInfo";
 import AuditReport from "./pages/Audit/AuditReport";
 import Room from "./pages/Room/Room";
 import { ROLES } from "./data/roles";
@@ -86,7 +87,8 @@ function App() {
               <Route index element={<Audit />} />
               <Route path="room">
                 <Route index element={<AuditRoom />} />
-                <Route path=":auditID" element={<AuditRoomSession />} />
+                <Route path=":roomID" element={<AuditRoomOverview />} />
+                <Route path=":roomID/:auditID" element={<AuditRoomInfo />} />
               </Route>
               <Route path="report">
                 <Route index element={<AuditReport />} />

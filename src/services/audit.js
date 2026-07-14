@@ -9,34 +9,66 @@ import {
   serverTimestamp,
   orderBy,
   query,
+  where,
+  runTransaction,
 } from "firebase/firestore";
+
+const AUDIT_NO_CONFIG = {
+  room: { counterId: "audit_room", prefix: "ARM" },
+  report: { counterId: "audit_report", prefix: "ARPT" },
+};
+
+export async function generateAuditNo(type) {
+  const config = AUDIT_NO_CONFIG[type];
+  if (!config) {
+    throw new Error(
+      `Invalid audit type "${type}". Expected "room" or "report".`,
+    );
+  }
+
+  const counterRef = doc(db, "counters", config.counterId);
+
+  return await runTransaction(db, async (transaction) => {
+    const counter = await transaction.get(counterRef);
+    const next = (counter.data()?.count ?? 0) + 1;
+    transaction.set(counterRef, { count: next }, { merge: true });
+    return `${config.prefix}-${String(next).padStart(4, "0")}`;
+  });
+}
 
 export async function addAuditRoom({
   roomId,
   assets,
   auditedAssetIds,
+  misplacedAssets = [],
   auditedBy,
   auditedByName,
-  hasDiscrepancies = false,
 }) {
   if (!roomId) throw new Error("roomId is required.");
   if (!assets || assets.length === 0) {
     throw new Error("No assets provided for this audit.");
   }
 
+  const auditNo = await generateAuditNo("room");
+
   const auditedIdSet =
     auditedAssetIds instanceof Set
       ? auditedAssetIds
       : new Set(auditedAssetIds ?? []);
 
-  // == Step 1: create the audit_room parent doc ===========================
+  const missingCount = assets.length - auditedIdSet.size;
+  const misplacedCount = misplacedAssets.length;
+  const discrepancyCount = missingCount + misplacedCount;
+
   const auditRoomData = {
+    audit_no: auditNo,
     room_id: roomId,
     audited_by: auditedBy ?? null,
     audited_by_name: auditedByName ?? null,
     total_assets: assets.length,
     audited_count: auditedIdSet.size,
-    has_discrepancies: hasDiscrepancies,
+    discrepancy_count: discrepancyCount,
+    has_discrepancies: discrepancyCount > 0,
     created_at: serverTimestamp(),
     completed_at: serverTimestamp(),
   };
@@ -46,7 +78,6 @@ export async function addAuditRoom({
     auditRoomData,
   );
 
-  // == Step 2: batch-write each asset into the audit_item subcollection ===
   const batch = writeBatch(db);
   const now = new Date().toISOString();
 
@@ -55,23 +86,39 @@ export async function addAuditRoom({
       collection(db, "audit_room", auditRoomRef.id, "audit_item"),
       asset.id,
     );
-
     batch.set(itemRef, {
       asset_id: asset.id,
       description: asset.description ?? null,
       serial_number: asset.serial_number ?? null,
       category: asset.category ?? null,
       custodian: asset.name ?? null,
-      status: auditedIdSet.has(asset.id) ? "audited" : "not_audited",
+      asset_status: asset.status ?? null,
+      audit_status: auditedIdSet.has(asset.id) ? "audited" : "not_audited",
       audited_at: auditedIdSet.has(asset.id) ? now : null,
+    });
+  });
+
+  misplacedAssets.forEach((asset) => {
+    const itemRef = doc(
+      collection(db, "audit_room", auditRoomRef.id, "audit_item"),
+      asset.id,
+    );
+    batch.set(itemRef, {
+      asset_id: asset.id,
+      description: asset.description ?? null,
+      serial_number: asset.serial_number ?? null,
+      category: asset.category ?? null,
+      custodian: asset.name ?? null,
+      asset_status: asset.status ?? null, // ← same snapshot
+      audit_status: "misplaced",
+      audited_at: now,
     });
   });
 
   await batch.commit();
 
-  return { id: auditRoomRef.id };
+  return { id: auditRoomRef.id, discrepancyCount };
 }
-
 
 export async function fetchAuditRooms() {
   const q = query(collection(db, "audit_room"), orderBy("created_at", "desc"));
@@ -81,6 +128,7 @@ export async function fetchAuditRooms() {
     const data = docSnap.data();
     return {
       id: docSnap.id,
+      audit_no: data.audit_no,
       room_id: data.room_id,
       audited_by: data.audited_by,
       audited_by_name: data.audited_by_name,
@@ -93,31 +141,50 @@ export async function fetchAuditRooms() {
   });
 }
 
-export async function fetchAuditRoomByID(id) {
-  const roomSnap = await getDoc(doc(db, "audit_room", id));
-  if (!roomSnap.exists()) throw new Error("Audit room not found.");
-
-  const roomData = roomSnap.data();
-
-  const itemsSnap = await getDocs(
-    collection(db, "audit_room", id, "audit_item"),
+export async function fetchAuditRoomsByRoomID(roomId) {
+  const q = query(
+    collection(db, "audit_room"),
+    where("room_id", "==", roomId),
+    orderBy("created_at", "desc"),
   );
+  const snapshot = await getDocs(q);
 
-  const items = itemsSnap.docs.map((itemSnap) => ({
-    id: itemSnap.id,
-    ...itemSnap.data(),
-  }));
+  return snapshot.docs.map((docSnap) => {
+    const data = docSnap.data();
+    return {
+      id: docSnap.id,
+      audit_no: data.audit_no,
+      room_id: data.room_id,
+      audited_by: data.audited_by,
+      audited_by_name: data.audited_by_name,
+      total_assets: data.total_assets,
+      audited_count: data.audited_count,
+      discrepancy_count: data.discrepancy_count,
+      has_discrepancies: data.has_discrepancies,
+      created_at: data.created_at,
+      completed_at: data.completed_at,
+    };
+  });
+}
+
+export async function fetchAuditByID(auditID) {
+  if (!auditID) throw new Error("auditID is required.");
+
+  const auditRef = doc(db, "audit_room", auditID);
+  const auditSnap = await getDoc(auditRef);
+
+  if (!auditSnap.exists()) {
+    return null;
+  }
+
+  const itemsRef = collection(db, "audit_room", auditID, "audit_item");
+  const itemsSnap = await getDocs(itemsRef);
+
+  const items = itemsSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
 
   return {
-    id: roomSnap.id,
-    room_id: roomData.room_id,
-    audited_by: roomData.audited_by,
-    audited_by_name: roomData.audited_by_name,
-    total_assets: roomData.total_assets,
-    audited_count: roomData.audited_count,
-    has_discrepancies: roomData.has_discrepancies,
-    created_at: roomData.created_at,
-    completed_at: roomData.completed_at,
+    id: auditSnap.id,
+    ...auditSnap.data(),
     items,
   };
 }
