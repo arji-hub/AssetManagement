@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { checkUsernameAvailable, updateProfile } from "../services/user";
-import { toLowerCase } from "../utils/TextCasing";
+import { checkUsernameAvailable, updateProfile } from "../../services/user";
+import { toLowerCase } from "../../utils/TextCasing";
 
 const DEBOUNCE_MS = 500;
 const REQUIRED_MESSAGE = "This field is required.";

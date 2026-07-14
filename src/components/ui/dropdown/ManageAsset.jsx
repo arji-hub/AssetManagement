@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import TransferModal from "../modal/TransferModal";
 import ReportModal from "../modal/ReportModal";
 import TransferMR from "../modal/TransferMR";
-import useManageAsset from "../../../hooks/useManageAsset";
+import useManageAsset from "../../../hooks/asset/useManageAsset";
 import "./ManageAsset.css";
 
 function ManageAsset({ asset }) {

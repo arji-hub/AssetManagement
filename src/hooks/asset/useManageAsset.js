@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { useAuth } from "../context/AuthContext";
-import ROLES from "../data/roles";
+import { useAuth } from "../../context/AuthContext";
+import ROLES from "../../data/roles";
 
 const CLOSE_ANIM_MS = 160;
 

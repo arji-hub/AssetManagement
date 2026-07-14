@@ -18,6 +18,8 @@ import TransferRoom from "./pages/Transfer/TransferRoom";
 import QR from "./pages/QR/QR";
 import Audit from "./pages/Audit/Audit";
 import AuditRoom from "./pages/Audit/AuditRoom";
+import AuditRoomSession from "./pages/Audit/AuditRoomSession";
+import AuditReport from "./pages/Audit/AuditReport";
 import Room from "./pages/Room/Room";
 import { ROLES } from "./data/roles";
 import CustodianAssets from "./pages/Custodian/CustodianAssets";
@@ -82,7 +84,13 @@ function App() {
             {/* AUDIT PAGE */}
             <Route path="/audit">
               <Route index element={<Audit />} />
-              <Route path="room" element={<AuditRoom />} />
+              <Route path="room">
+                <Route index element={<AuditRoom />} />
+                <Route path=":auditID" element={<AuditRoomSession />} />
+              </Route>
+              <Route path="report">
+                <Route index element={<AuditReport />} />
+              </Route>
             </Route>
 
             {/* CUSTODIAN PAGE */}

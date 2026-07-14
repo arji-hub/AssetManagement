@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { STATUS_COLORS } from "../../data/assets";
-import { useAssetHistory } from "../../hooks/useAssetHistory";
+import { useAssetHistory } from "../../hooks/asset/useAssetHistory";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./HistoryCard.css";
 import { toTitleCase } from "../../utils/TextCasing";

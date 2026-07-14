@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
-import { addRoom } from "../services/room";
-import { toProperCase, toLowerCase } from "../utils/TextCasing";
+import { useAuth } from "../../context/AuthContext";
+import { addRoom } from "../../services/room";
+import { toProperCase, toLowerCase } from "../../utils/TextCasing";
 
 export function useRoomRegistration({ onSuccess, existingRooms = [] } = {}) {
   const { role } = useAuth();

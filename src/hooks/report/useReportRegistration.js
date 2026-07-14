@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
-import { fetchAssetByID } from "../services/asset";
-import { addReport } from "../services/report";
-import { useAuth } from "../context/AuthContext";
+import { fetchAssetByID } from "../../services/asset";
+import { addReport } from "../../services/report";
+import { useAuth } from "../../context/AuthContext";
 
 function useReportRegistration({ onClose, assetID = "" }) {
   const { user } = useAuth();

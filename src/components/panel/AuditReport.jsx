@@ -1,12 +1,16 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./AuditReport.css";
 
 function AuditReport() {
-  const lastEntry = "2 hours ago"; // Example value, replace with actual data
-  const onClick = "";
+  const navigate = useNavigate();
+  const lastEntry = "2 hours ago";
+  function handleClick() {
+    navigate("/audit/report");
+  }
   return (
-    <button className="audit-panel-card" onClick={onClick} type="button">
+    <button className="audit-panel-card" onClick={handleClick} type="button">
       <div className="audit-panel-icon">
         <FontAwesomeIcon icon="clipboard-check" aria-hidden="true" />
       </div>

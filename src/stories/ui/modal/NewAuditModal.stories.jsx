@@ -2,9 +2,6 @@ import { MemoryRouter } from "react-router-dom";
 import { within, userEvent, waitFor, sb } from "storybook/test";
 import NewAuditModal from "../../../components/ui/modal/NewAuditModal";
 
-// Mock services/room.js inline — Storybook's Vite builder intercepts this
-// import path for every story in this file, so useAuditStart never touches
-// real Firestore.
 sb.mock(import("../../../services/room"), () => {
   const mockAllRooms = [
     {

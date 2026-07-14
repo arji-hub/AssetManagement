@@ -1,9 +1,9 @@
 import { useState, useEffect, useMemo } from "react";
-import { fetchCustodians } from "../services/user";
-import { fetchRooms } from "../services/room";
-import { fetchCategories } from "../services/category";
-import { toLowerCase } from "../utils/TextCasing";
-import { UNALLOCATED_ROOM, UNASSIGNED_CUSTODIAN } from "../data/assets";
+import { fetchCustodians } from "../../services/user";
+import { fetchRooms } from "../../services/room";
+import { fetchCategories } from "../../services/category";
+import { toLowerCase } from "../../utils/TextCasing";
+import { UNALLOCATED_ROOM, UNASSIGNED_CUSTODIAN } from "../../data/assets";
 
 const INITIAL_FILTERS = {
   status: "",

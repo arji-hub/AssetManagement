@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import useAuditStart from "../../../hooks/useAuditStart";
+import useAuditStart from "../../../hooks/audit/useAuditStart";
 import "./NewAuditModal.css";
 
 function NewAuditModal() {

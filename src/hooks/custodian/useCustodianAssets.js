@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import {
   subscribeToAssetsByCustodian,
   findCustodian,
-} from "../services/user";
+} from "../../services/user";
 
 export function useCustodianAssets(username) {
   const [assets, setAssets] = useState([]);

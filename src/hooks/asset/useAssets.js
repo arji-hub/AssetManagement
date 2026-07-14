@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { subscribeToAssets } from "../services/asset";
+import { subscribeToAssets } from "../../services/asset";
 
 export function useAssets(role, currentUser) {
   const [assets, setAssets] = useState([]);

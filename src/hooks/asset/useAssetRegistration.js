@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { addAsset } from "../services/asset";
-import { useAuth } from "../context/AuthContext";
-import { fetchCustodians } from "../services/user";
-import { fetchRooms } from "../services/room";
-import { fetchCategories } from "../services/category";
+import { addAsset } from "../../services/asset";
+import { useAuth } from "../../context/AuthContext";
+import { fetchCustodians } from "../../services/user";
+import { fetchRooms } from "../../services/room";
+import { fetchCategories } from "../../services/category";
 import { useBasicInfo } from "./useBasicInfo";
-import { todayISO } from "../utils/date";
+import { todayISO } from "../../utils/date";
 
 const INITIAL_FORM = {
   serial_number: "",

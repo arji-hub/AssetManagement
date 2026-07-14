@@ -6,7 +6,7 @@ import { Status } from "../../components/ui/status/assetStatus";
 import { formatDate } from "../../utils/date";
 import AckBadge from "../../components/ui/card/AckBadge";
 import TransferLogEntry from "../../components/ui/card/TransferLogEntry";
-import { useTransferInfo } from "../../hooks/useTransferInfo";
+import { useTransferInfo } from "../../hooks/transfer/useTransferInfo";
 import TransferActionModal from "../../components/ui/modal/TransferActionModal";
 import AddingStatusModal from "../../components/ui/status/AddingStatusModal";
 import { TRANSFER_TYPES } from "../../data/transfer";

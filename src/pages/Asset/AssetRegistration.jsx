@@ -7,7 +7,7 @@ import StepIndicator from "../../components/form/StepIndicator";
 import BasicInfo from "../../components/form/BasicInfo";
 import Media from "../../components/form/Media";
 import Assignment from "../../components/form/Assignment";
-import { useAssetRegistrationForm } from "../../hooks/useAssetRegistration";
+import { useAssetRegistrationForm } from "../../hooks/asset/useAssetRegistration";
 import AddingStatusModal from "../../components/ui/status/AddingStatusModal";
 
 function AssetRegistration() {

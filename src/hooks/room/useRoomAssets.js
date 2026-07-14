@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { subscribeToAssetsInRoom, fetchRoom } from "../services/room";
+import { subscribeToAssetsInRoom, fetchRoom } from "../../services/room";
 
 export function useRoomAssets(room_id) {
   const [assets, setAssets] = useState([]);

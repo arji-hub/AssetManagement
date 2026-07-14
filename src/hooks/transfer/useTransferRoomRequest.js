@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import { fetchAssetByID } from "../services/asset";
-import { fetchRooms } from "../services/room";
-import { addTransferRoom } from "../services/transfer";
-import { useAuth } from "../context/AuthContext";
+import { fetchAssetByID } from "../../services/asset";
+import { fetchRooms } from "../../services/room";
+import { addTransferRoom } from "../../services/transfer";
+import { useAuth } from "../../context/AuthContext";
 
 function useTransferRoomRequest({ onClose, assetID = "" } = {}) {
   const { user } = useAuth();

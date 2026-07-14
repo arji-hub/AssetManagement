@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import {
   checkUsernameAvailable,
   checkEmailAvailable,
-} from "../services/user";
+} from "../../services/user";
 
 const INITIAL_FORM = {
   email: "",

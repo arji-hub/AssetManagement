@@ -1,0 +1,427 @@
+/* AuditScanModal.css */
+
+/* ── Trigger button (closed state) ── */
+.audit-scan-trigger-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #860100;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(134, 1, 0, 0.25);
+  transition:
+    filter 0.15s ease,
+    transform 0.1s ease;
+}
+
+.audit-scan-trigger-btn:hover {
+  filter: brightness(1.1);
+}
+
+.audit-scan-trigger-btn:active {
+  transform: scale(0.98);
+}
+
+/* ── Overlay (full-screen for camera) ── */
+.audit-scan-modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  background: rgba(0, 0, 0, 0.8);
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: audit-scan-overlay-fade 0.2s ease;
+}
+
+@keyframes audit-scan-overlay-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ── Modal (fills screen on mobile) ── */
+.audit-scan-modal {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 480px;
+  max-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #000000;
+
+  animation: audit-scan-modal-pop 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes audit-scan-modal-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ── Live video feed ── */
+.audit-scan-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ── Close button ── */
+.audit-scan-close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  z-index: 10001;
+
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  color: #ffffff;
+  font-size: 16px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease;
+}
+
+.audit-scan-close-btn:hover {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.audit-scan-close-btn:active {
+  transform: scale(0.94);
+}
+
+/* ── Scan reticle (maroon/gold theme, all 4 corners) ── */
+.audit-scan-reticle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 240px;
+  height: 240px;
+  z-index: 10000;
+  pointer-events: none;
+
+  border-radius: 20px;
+  box-shadow: 0 0 0 2000px rgba(0, 0, 0, 0.35);
+  /* no overflow: hidden here — corners render outside the box at -3px */
+}
+
+.audit-scan-reticle-corner {
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  z-index: 10001;
+}
+
+.audit-scan-reticle-corner--tl {
+  top: -3px;
+  left: -3px;
+  border-top: 4px solid #f5aa2c;
+  border-left: 4px solid #9c0201;
+  border-top-left-radius: 14px;
+}
+
+.audit-scan-reticle-corner--tr {
+  top: -3px;
+  right: -3px;
+  border-top: 4px solid #f5aa2c;
+  border-right: 4px solid #9c0201;
+  border-top-right-radius: 14px;
+}
+
+.audit-scan-reticle-corner--bl {
+  bottom: -3px;
+  left: -3px;
+  border-bottom: 4px solid #f5aa2c;
+  border-left: 4px solid #9c0201;
+  border-bottom-left-radius: 14px;
+}
+
+.audit-scan-reticle-corner--br {
+  bottom: -3px;
+  right: -3px;
+  border-bottom: 4px solid #f5aa2c;
+  border-right: 4px solid #9c0201;
+  border-bottom-right-radius: 14px;
+}
+
+/* separate wrapper just for the sweep line — this is what gets clipped,
+   NOT the reticle container itself (that would cut off the corners) */
+.audit-scan-reticle-sweep {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+.audit-scan-reticle-sweep::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #f5aa2c 35%,
+    #9c0201 65%,
+    transparent
+  );
+  opacity: 0.85;
+  animation: audit-scan-line-sweep 2.2s ease-in-out infinite;
+}
+
+@keyframes audit-scan-line-sweep {
+  0% {
+    top: 12px;
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.85;
+  }
+  85% {
+    opacity: 0.85;
+  }
+  100% {
+    top: calc(100% - 12px);
+    opacity: 0;
+  }
+}
+
+/* ── Hint text ── */
+.audit-scan-hint {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+
+  font-family: "Sansation";
+  font-weight: bold;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  text-align: center;
+  padding: 8px 18px;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+}
+
+/* ── Upload image button  ── */
+.audit-scan-upload-btn {
+  position: absolute;
+  bottom: 96px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: 1px solid rgba(245, 170, 44, 0.5);
+  cursor: pointer;
+
+  font-family: "Sansation";
+  font-weight: bold;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.audit-scan-upload-btn:hover {
+  background: rgba(0, 0, 0, 0.6);
+  border-color: #f5aa2c;
+}
+
+.audit-scan-upload-btn:active {
+  transform: translateX(-50%) scale(0.97);
+}
+
+/* ── Feedback toast (success / error) ── */
+.audit-scan-feedback {
+  position: absolute;
+  top: 88px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10001;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-family: "Sansation";
+  font-weight: bold;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.1),
+    0 6px 16px -6px rgba(0, 0, 0, 0.5);
+
+  animation: audit-scan-feedback-pop 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes audit-scan-feedback-pop {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.audit-scan-feedback--success {
+  background: linear-gradient(135deg, #2e8b3d 0%, #1d5c28 100%);
+}
+
+.audit-scan-feedback--error {
+  background: linear-gradient(135deg, #9c0201 0%, #6b0000 100%);
+}
+
+/* ── Camera error state ── */
+.audit-scan-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 32px;
+  max-width: 300px;
+
+  font-family: "Sansation";
+  font-weight: bold;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+}
+
+/* ── Discrepancy overlay (asset not in this room) ── */
+.audit-scan-discrepancy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  padding: 32px;
+  max-width: 300px;
+}
+
+.audit-scan-discrepancy-icon {
+  font-size: 32px;
+  color: #f5aa2c;
+  margin-bottom: 4px;
+}
+
+.audit-scan-discrepancy-title {
+  font-family: "Sansation";
+  font-weight: bold;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  margin: 0;
+}
+
+.audit-scan-discrepancy-detail {
+  font-family: "Sansation";
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.75);
+  margin: 0;
+}
+
+.audit-scan-discrepancy-detail strong {
+  color: #f5aa2c;
+}
+
+.audit-scan-discrepancy-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.audit-scan-discrepancy-dismiss,
+.audit-scan-discrepancy-report {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+
+  font-family: "Sansation";
+  font-weight: bold;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.audit-scan-discrepancy-dismiss {
+  border: 1px solid rgba(245, 170, 44, 0.5);
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+}
+
+.audit-scan-discrepancy-dismiss:hover {
+  background: rgba(0, 0, 0, 0.6);
+  border-color: #f5aa2c;
+}
+
+.audit-scan-discrepancy-report {
+  border: 1px solid #9c0201;
+  color: #ffffff;
+  background: linear-gradient(135deg, #9c0201 0%, #6b0000 100%);
+}
+
+.audit-scan-discrepancy-report:hover {
+  filter: brightness(1.1);
+}
+
+.audit-scan-discrepancy-dismiss:active,
+.audit-scan-discrepancy-report:active {
+  transform: scale(0.97);
+}

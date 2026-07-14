@@ -4,7 +4,7 @@ import {
   fetchRoom,
   fetchRooms,
   fetchRoomsByLastAudited,
-} from "../services/room";
+} from "../../services/room";
 
 function useAuditStart() {
   const navigate = useNavigate();

@@ -78,7 +78,7 @@ export function subscribeToAssets(role, currentUserUid, callback, onError) {
           local_mr_fullname: fullname[asset.property_custodian] || "---",
         }));
 
-         assets.sort((a, b) => {
+        assets.sort((a, b) => {
           const aMillis = a.created_at?.toMillis?.() ?? 0;
           const bMillis = b.created_at?.toMillis?.() ?? 0;
           return bMillis - aMillis;
@@ -129,6 +129,8 @@ export async function fetchAssetByID(assetId) {
 
   return {
     ...assetData,
+    category: assetData.category_id,
+    name: userMap[assetData.property_custodian],
     property_custodian_name: userMap[assetData.property_custodian] || "---",
     local_mr_name: userMap[assetData.local_mr] || "---",
   };

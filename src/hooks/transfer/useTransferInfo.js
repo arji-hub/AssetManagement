@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { ROLES } from "../data/roles";
-import { fetchTransferByID, updateTransferRequest } from "../services/transfer";
-import { TRANSFER_TYPE_LABELS, TRANSFER_TYPES } from "../data/transfer";
+import { useAuth } from "../../context/AuthContext";
+import { ROLES } from "../../data/roles";
+import {
+  fetchTransferByID,
+  updateTransferRequest,
+} from "../../services/transfer";
+import { TRANSFER_TYPE_LABELS, TRANSFER_TYPES } from "../../data/transfer";
 
 export function useTransferInfo() {
   const navigate = useNavigate();

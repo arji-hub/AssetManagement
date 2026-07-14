@@ -3,17 +3,17 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./BackButton.css";
 
-function BackButton() {
+function BackButton({ nav = "" }) {
   const navigate = useNavigate();
 
   function handleClick() {
-    const canGoBack = window.history.state?.idx > 0;
-
-    if (canGoBack) {
-      navigate(-1);
-    } else {
-      navigate("/dashboard");
+    if (nav) {
+      navigate(nav);
+      return;
     }
+
+    const canGoBack = window.history.state?.idx > 0;
+    navigate(canGoBack ? -1 : "/dashboard");
   }
 
   return (

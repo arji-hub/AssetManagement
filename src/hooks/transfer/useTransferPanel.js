@@ -1,13 +1,13 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { ROLES } from "../data/roles";
+import { useAuth } from "../../context/AuthContext";
+import { ROLES } from "../../data/roles";
 import {
   subscribeToAction,
   subscribeToRequested,
   subscribeToLogs,
   subscribeToRoomLogs,
-} from "../services/transfer";
+} from "../../services/transfer";
 
 export function useTransferPanel(group, { skip = false } = {}) {
   const { user, role } = useAuth();

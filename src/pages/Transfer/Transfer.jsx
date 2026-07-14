@@ -3,7 +3,7 @@ import MainLayout from "../../components/layout/MainLayout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { displayDate } from "../../utils/date";
 import { TOP_TABS } from "../../data/transfer";
-import { useTransferPage } from "../../hooks/useTransferPage";
+import { useTransferPage } from "../../hooks/transfer/useTransferPage";
 import TransferPanel from "../../components/panel/TransferPanel";
 import TransferModal from "../../components/ui/modal/TransferModal";
 import TransferMR from "../../components/ui/modal/TransferMR";

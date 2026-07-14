@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { updateReportStatus } from "../services/report";
+import { updateReportStatus } from "../../services/report";
 
 export default function useReportAction({ report, onClose, onSuccess }) {
   const [note, setNote] = useState("");

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MainLayout from "../../components/layout/MainLayout";
 import ProfileCard from "../../components/panel/ProfileCard";
-import useProfileEdit from "../../hooks/userProfileEdit";
+import useProfileEdit from "../../hooks/profile/userProfileEdit";
 import "./Profile.css";
 import BackButton from "../../components/ui/button/BackButton";
 

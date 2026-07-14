@@ -6,7 +6,7 @@ import QRModal from "../../components/ui/modal/QRModal";
 import QRInfo from "../../components/ui/modal/QRInfo";
 import logo from "../../assets/CICTLOGO.png";
 import elib from "../../assets/elib.png";
-import { useQRScanner } from "../../hooks/useQRScanner";
+import { useQRScanner } from "../../hooks/camera/useQRScanner";
 import QRStatusModal from "../../components/ui/status/QRStatusModal";
 import "./LandingPage.css";
 
@@ -49,12 +49,10 @@ function LandingPage({ previewAsset, assetNotFound }) {
       {/* Modal floats over the background */}
       <div className="login-main">
         {view === "qr" ? (
-          previewAsset !== undefined ? ( 
-            <QRInfo asset={previewAsset} /> 
+          previewAsset !== undefined ? (
+            <QRInfo asset={previewAsset} />
           ) : (
-            <QRModal
-              onImageUpload={handleImageUpload}
-            />
+            <QRModal onImageUpload={handleImageUpload} />
           )
         ) : (
           <LoginModal onLogin={handleLogin} />

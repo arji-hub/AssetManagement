@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { isSerialNumberExist } from "../services/asset";
+import { isSerialNumberExist } from "../../services/asset";
 
 const initialErrors = {
   serial_number: "",

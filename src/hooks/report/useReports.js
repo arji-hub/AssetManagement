@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { subscribeToReports } from "../services/report";
-import { useAuth } from "../context/AuthContext";
-import ROLES from "../data/roles";
+import { subscribeToReports } from "../../services/report";
+import { useAuth } from "../../context/AuthContext";
+import ROLES from "../../data/roles";
 
 export function useReports() {
   const { user, role } = useAuth();
