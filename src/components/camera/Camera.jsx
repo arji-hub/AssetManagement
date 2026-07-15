@@ -12,6 +12,7 @@ const Camera = ({ onScan, onImageUpload, onClose, isOpen = true }) => {
     torchOn,
     torchSupported,
     focusPoint,
+    focusSupported,
     toggleTorch,
     switchCamera,
     openFilePicker,
@@ -83,7 +84,9 @@ const Camera = ({ onScan, onImageUpload, onClose, isOpen = true }) => {
           {error
             ? error
             : isReady
-              ? "Tap to focus, align the QR code within the frame"
+              ? focusSupported
+                ? "Tap to focus, align the QR code within the frame"
+                : "Align the QR code within the frame"
               : "Starting camera..."}
         </p>
 
