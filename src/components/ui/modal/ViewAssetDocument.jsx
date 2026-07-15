@@ -1,72 +1,28 @@
-import React, { useState, useRef, useCallback } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import useDocumentViewer from "../../../hooks/camera/useDocumentViewer";
 import "./ViewAssetDocument.css";
 
-const MIN_ZOOM = 1;
-const MAX_ZOOM = 4;
-const ZOOM_STEP = 0.5;
-
 function ViewAssetDocument({ doc_image_url, children }) {
-  const [isDocActive, setIsDocActive] = useState(false);
-  const [zoom, setZoom] = useState(1);
-  const [pan, setPan] = useState({ x: 0, y: 0 });
-  const isDragging = useRef(false);
-  const dragStart = useRef({ x: 0, y: 0 });
-  const panStart = useRef({ x: 0, y: 0 });
-
-  const openModal = () => {
-    setIsDocActive(true);
-    setZoom(1);
-    setPan({ x: 0, y: 0 });
-  };
-
-  const closeModal = () => {
-    setIsDocActive(false);
-    setZoom(1);
-    setPan({ x: 0, y: 0 });
-  };
-
-  const clampZoom = (value) => Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, value));
-
-  const zoomIn = () => setZoom((z) => clampZoom(z + ZOOM_STEP));
-  const zoomOut = () =>
-    setZoom((z) => {
-      const next = clampZoom(z - ZOOM_STEP);
-      if (next === MIN_ZOOM) setPan({ x: 0, y: 0 });
-      return next;
-    });
-  const resetZoom = () => {
-    setZoom(1);
-    setPan({ x: 0, y: 0 });
-  };
-
-  const handleWheel = useCallback((e) => {
-    e.preventDefault();
-    const delta = e.deltaY < 0 ? ZOOM_STEP : -ZOOM_STEP;
-    setZoom((z) => {
-      const next = clampZoom(z + delta);
-      if (next === MIN_ZOOM) setPan({ x: 0, y: 0 });
-      return next;
-    });
-  }, []);
-
-  const handleMouseDown = (e) => {
-    if (zoom === MIN_ZOOM) return;
-    isDragging.current = true;
-    dragStart.current = { x: e.clientX, y: e.clientY };
-    panStart.current = { ...pan };
-  };
-
-  const handleMouseMove = (e) => {
-    if (!isDragging.current) return;
-    const dx = e.clientX - dragStart.current.x;
-    const dy = e.clientY - dragStart.current.y;
-    setPan({ x: panStart.current.x + dx, y: panStart.current.y + dy });
-  };
-
-  const handleMouseUp = () => {
-    isDragging.current = false;
-  };
+  const {
+    isDocActive,
+    zoom,
+    pan,
+    MIN_ZOOM,
+    MAX_ZOOM,
+    openModal,
+    closeModal,
+    zoomIn,
+    zoomOut,
+    resetZoom,
+    handleWheel,
+    handleMouseDown,
+    handleMouseMove,
+    handleMouseUp,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
+  } = useDocumentViewer();
 
   return (
     <>
@@ -91,7 +47,13 @@ function ViewAssetDocument({ doc_image_url, children }) {
               onMouseMove={handleMouseMove}
               onMouseUp={handleMouseUp}
               onMouseLeave={handleMouseUp}
-              style={{ cursor: zoom > MIN_ZOOM ? "grab" : "default" }}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+              style={{
+                cursor: zoom > MIN_ZOOM ? "grab" : "default",
+                touchAction: "none",
+              }}
             >
               <img
                 src={doc_image_url}
