@@ -8,12 +8,12 @@ import "./QR.css";
 
 function QR() {
   const { user } = useAuth();
-  const { status, errorMessage, handleImageUpload, reset } = useQRScanner();
+  const { status, errorMessage, handleImageUpload, handleScan, reset } = useQRScanner();
 
   return (
     <MainLayout>
       <div className="qr-page">
-        <QRModal onImageUpload={handleImageUpload} />
+        <QRModal onScan={handleScan} onImageUpload={handleImageUpload} />
         {status && (
           <QRStatusModal
             status={status}
