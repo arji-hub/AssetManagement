@@ -12,6 +12,7 @@ export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
   const streamRef = useRef(null);
   const rafRef = useRef(null);
   const fileInputRef = useRef(null);
+  const frameCountRef = useRef(0);
 
   const [isReady, setIsReady] = useState(false);
   const [error, setError] = useState(null);
@@ -83,7 +84,11 @@ export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const code = decodeImageData(imageData);
+
+      frameCountRef.current++;
+      const tryAdaptive = frameCountRef.current % 3 === 0; // expensive pass every 3rd frame only
+
+      const code = decodeImageData(imageData, { tryAdaptive });
 
       if (code?.data) {
         if (navigator.vibrate) navigator.vibrate(80);
@@ -97,6 +102,7 @@ export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
 
   useEffect(() => {
     if (isReady) {
+      frameCountRef.current = 0;
       rafRef.current = requestAnimationFrame(scanFrame);
     }
     return () => {

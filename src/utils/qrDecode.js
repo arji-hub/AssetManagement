@@ -3,8 +3,6 @@ import jsQR from "jsqr";
 export const MAX_DIMENSION = 1000;
 export const DECODE_TIMEOUT_MS = 5000;
 
-// qrDecode.js — replace boostContrastFromBlueChannel
-
 export function boostContrastFromLuminance(imageData) {
   const { data, width, height } = imageData;
   const out = new Uint8ClampedArray(data.length);
@@ -32,12 +30,78 @@ export function boostContrastFromLuminance(imageData) {
   return new ImageData(out, width, height);
 }
 
-export function decodeImageData(imageData) {
+// Adaptive (local-mean) thresholding via integral image — handles gradients
+// and uneven color/lighting far better than a single global threshold.
+export function adaptiveThreshold(imageData, blockSize = 16, sensitivity = 0.9) {
+  const { data, width, height } = imageData;
+  const gray = new Float64Array(width * height);
+
+  for (let i = 0, p = 0; i < data.length; i += 4, p++) {
+    gray[p] = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+  }
+
+  // Integral image for fast local-average lookups
+  const integral = new Float64Array((width + 1) * (height + 1));
+  for (let y = 0; y < height; y++) {
+    let rowSum = 0;
+    for (let x = 0; x < width; x++) {
+      rowSum += gray[y * width + x];
+      integral[(y + 1) * (width + 1) + (x + 1)] =
+        integral[y * (width + 1) + (x + 1)] + rowSum;
+    }
+  }
+
+  const half = Math.floor(blockSize / 2);
+  const out = new Uint8ClampedArray(data.length);
+
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const x1 = Math.max(0, x - half);
+      const y1 = Math.max(0, y - half);
+      const x2 = Math.min(width - 1, x + half);
+      const y2 = Math.min(height - 1, y + half);
+      const count = (x2 - x1 + 1) * (y2 - y1 + 1);
+
+      const sum =
+        integral[(y2 + 1) * (width + 1) + (x2 + 1)] -
+        integral[y1 * (width + 1) + (x2 + 1)] -
+        integral[(y2 + 1) * (width + 1) + x1] +
+        integral[y1 * (width + 1) + x1];
+
+      const localAvg = sum / count;
+      const p = y * width + x;
+      const value = gray[p] < localAvg * sensitivity ? 0 : 255;
+
+      const idx = p * 4;
+      out[idx] = value;
+      out[idx + 1] = value;
+      out[idx + 2] = value;
+      out[idx + 3] = 255;
+    }
+  }
+
+  return new ImageData(out, width, height);
+}
+
+// Try a standard decode first, then fall back to a luminance-boosted pass,
+// then a slower adaptive-threshold pass for gradient/colorful QR codes.
+// tryAdaptive lets callers (e.g. the live camera loop) skip the expensive
+// stage on most frames and only run it periodically.
+export function decodeImageData(imageData, { tryAdaptive = true } = {}) {
   let code = jsQR(imageData.data, imageData.width, imageData.height);
 
   if (!code) {
-    const boosted = boostContrastFromLuminance(imageData);
-    code = jsQR(boosted.data, boosted.width, boosted.height);
+    const luminanceBoosted = boostContrastFromLuminance(imageData);
+    code = jsQR(
+      luminanceBoosted.data,
+      luminanceBoosted.width,
+      luminanceBoosted.height,
+    );
+  }
+
+  if (!code && tryAdaptive) {
+    const adaptive = adaptiveThreshold(imageData);
+    code = jsQR(adaptive.data, adaptive.width, adaptive.height);
   }
 
   return code;
@@ -72,7 +136,7 @@ export function decodeImageFile(file) {
         ctx.drawImage(img, 0, 0, width, height);
 
         const imageData = ctx.getImageData(0, 0, width, height);
-        const code = decodeImageData(imageData);
+        const code = decodeImageData(imageData); // tryAdaptive defaults true — full pipeline on upload
 
         if (code) {
           resolve(code.data);
