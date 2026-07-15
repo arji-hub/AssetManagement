@@ -6,7 +6,7 @@ import {
   fetchRoomsByLastAudited,
 } from "../../services/room";
 
-function useAuditStart() {
+function useAuditRoomStart() {
   const navigate = useNavigate();
   const roomInputRef = useRef(null);
 
@@ -129,4 +129,4 @@ function useAuditStart() {
   };
 }
 
-export default useAuditStart;
+export default useAuditRoomStart;

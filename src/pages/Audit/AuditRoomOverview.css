@@ -1,4 +1,4 @@
-.audit-session-page {
+.audit-overview-page {
   padding: 24px;
   display: flex;
   flex-direction: column;
@@ -6,15 +6,14 @@
 }
 
 /* header */
-.audit-session-header {
+.audit-overview-header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 16px;
-  flex-wrap: wrap;
 }
 
-.audit-session-title-group {
+.audit-overview-title-group {
   background: #fdfdfd;
   border: 1px solid #e2beb9;
   border-bottom: 2px solid #f5aa2c;
@@ -27,7 +26,7 @@
   flex-wrap: wrap;
 }
 
-.audit-session-eyebrow {
+.audit-overview-eyebrow {
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.05em;
@@ -36,7 +35,7 @@
   margin: 0;
 }
 
-.audit-session-room-name {
+.audit-overview-room-name {
   font-size: 22px;
   font-weight: 700;
   color: #121c2a;
@@ -44,46 +43,19 @@
   margin: 0;
 }
 
-.audit-session-error {
+.audit-overview-error {
   flex-basis: 100%;
 }
 
-/* "Create new audit" button */
-.audit-session-scan-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  border: none;
-  border-radius: 8px;
-  background: #860100;
-  color: #ffffff;
-  font-weight: 700;
-  font-size: 14px;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(134, 1, 0, 0.25);
-  transition:
-    filter 0.15s ease,
-    transform 0.1s ease;
-}
-
-.audit-session-scan-btn:hover {
-  filter: brightness(1.1);
-}
-
-.audit-session-scan-btn:active {
-  transform: scale(0.98);
-}
-
 /* stats */
-.audit-session-stats {
+.audit-overview-stats {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
 }
 
 /* section titles above tables */
-.audit-session-section-title {
+.audit-overview-section-title {
   font-size: 15px;
   font-weight: 700;
   color: #860100;
@@ -91,7 +63,7 @@
 }
 
 /* table wrap */
-.audit-session-table-wrap {
+.audit-overview-table-wrap {
   background: #ffffff;
   border: 1px solid #e2beb9;
   border-radius: 10px;
@@ -101,7 +73,7 @@
   min-width: 0;
 }
 
-.audit-session-scroll-area {
+.audit-overview-scroll-area {
   overflow-x: auto;
   overflow-y: auto;
   max-height: 60dvh;
@@ -109,7 +81,7 @@
   -webkit-overflow-scrolling: touch;
 }
 
-.audit-session-empty {
+.audit-overview-empty {
   font-size: 14px;
   color: #8e706b;
   text-align: center;
@@ -118,14 +90,14 @@
 }
 
 /* ── Desktop table (hidden on mobile) ── */
-.audit-session-table {
+.audit-overview-table {
   width: 100%;
   min-width: 640px;
   border-collapse: collapse;
   font-size: 14px;
 }
 
-.audit-session-table th {
+.audit-overview-table th {
   text-align: left;
   font-size: 12px;
   font-weight: 700;
@@ -136,7 +108,7 @@
   border-bottom: 1px solid #e2beb9;
 }
 
-.audit-session-table td {
+.audit-overview-table td {
   padding: 12px;
   border-bottom: 1px solid #f3e9e8;
   color: #121c2a;
@@ -219,41 +191,52 @@
   color: #8e706b;
 }
 
-.audit-session-header-left {
+.audit-overview-header-left {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.audit-session-back-btn {
+.audit-overview-back-btn {
   flex-shrink: 0;
   margin-top: 2px;
 }
 
 /* ── Responsive breakpoint ── */
-@media (max-width: 768px) {
-  .audit-session-header-left {
-    width: 100%;
+@media (max-width: 480px) {
+  .audit-overview-header {
+    flex-direction: column;
+    align-items: flex-start;
   }
-  .audit-session-page {
-    padding: 16px;
-  }
-
-  .audit-session-table-wrap {
-    padding: 12px;
-  }
-
-  .audit-session-title-group {
+  .audit-overview-title-group {
     flex-direction: column;
     align-items: flex-start;
     gap: 2px;
   }
+}
+@media (max-width: 768px) {
+  .audit-overview-page {
+    padding: 16px;
+  }
 
-  .audit-session-scroll-area {
+  .audit-overview-table-wrap {
+    padding: 12px;
+  }
+
+  .audit-overview-room-name {
+    font-size: 20px;
+    line-height: 1.3;
+  }
+
+  .audit-overview-eyebrow {
+    font-size: 12px;
+  }
+
+  .audit-overview-scroll-area {
     max-height: 50dvh;
   }
 
-  .audit-session-table {
+  .audit-overview-table {
     display: none;
   }
 
@@ -261,10 +244,5 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-  }
-
-  .audit-session-scan-btn {
-    width: 100%;
-    justify-content: center;
   }
 }

@@ -2,17 +2,13 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import MainLayout from "../../components/layout/MainLayout";
 import useRoomOverview from "../../hooks/audit/useRoomOverview";
+import AuditConfirmRoomModal from "../../components/ui/modal/AuditConfirmRoomModal";
 import AuditCard from "../../components/ui/card/AuditCard";
 import { Status } from "../../components/ui/status/assetStatus";
 import { formatDate } from "../../utils/date";
 import BackButton from "../../components/ui/button/BackButton";
+import useAuditRoomSession from "../../hooks/audit/useAuditRoomSession";
 import "./AuditRoomOverview.css";
-
-function statusBadgeClass(status) {
-  if (status === "completed") return "audit-history-badge--completed";
-  if (status === "in_progress") return "audit-history-badge--progress";
-  return "audit-history-badge--neutral";
-}
 
 function AuditRoomOverview() {
   const navigate = useNavigate();
@@ -33,34 +29,37 @@ function AuditRoomOverview() {
     lastAuditedAt,
   } = useRoomOverview(roomID);
 
+  const { handleCreateAudit } = useAuditRoomSession(roomID);
+
   return (
     <MainLayout>
-      <div className="audit-session-page">
+      <div className="audit-overview-page">
         {/* Header */}
-        <div className="audit-session-header">
-          <div className="audit-session-header-left">
-            <BackButton className="audit-session-back-btn" />
+        <div className="audit-overview-header">
+          <div className="audit-overview-header-left">
+            <BackButton className="audit-overview-back-btn" />
 
-            <div className="audit-session-title-group">
-              <p className="audit-session-eyebrow">Room overview</p>
-              <h1 className="audit-session-room-name">
+            <div className="audit-overview-title-group">
+              <p className="audit-overview-eyebrow">Room overview</p>
+              <h1 className="audit-overview-room-name">
                 {roomLoading ? "Loading room…" : (room?.name ?? "Unknown room")}
               </h1>
               {roomError && (
-                <p className="audit-session-error" role="alert">
+                <p className="audit-overview-error" role="alert">
                   {roomError}
                 </p>
               )}
             </div>
           </div>
 
-          <button type="button" className="audit-session-scan-btn">
-            Create new audit
-          </button>
+          <AuditConfirmRoomModal
+            roomName={room?.name}
+            onConfirm={handleCreateAudit}
+          />
         </div>
 
         {/* Stats */}
-        <div className="audit-session-stats">
+        <div className="audit-overview-stats">
           <AuditCard
             variant="primary"
             icon="fa-solid fa-boxes-stacked"
@@ -107,23 +106,25 @@ function AuditRoomOverview() {
         </div>
 
         {/* Asset list */}
-        <div className="audit-session-table-wrap">
-          <h3 className="audit-session-section-title">Assets in this room</h3>
+        <div className="audit-overview-table-wrap">
+          <h3 className="audit-overview-section-title">Assets in this room</h3>
 
           {assetsError && (
-            <p className="audit-session-error" role="alert">
+            <p className="audit-overview-error" role="alert">
               {assetsError}
             </p>
           )}
 
           {assetsLoading ? (
-            <p className="audit-session-empty">Loading assets…</p>
+            <p className="audit-overview-empty">Loading assets…</p>
           ) : assets.length === 0 ? (
-            <p className="audit-session-empty">No assets found in this room.</p>
+            <p className="audit-overview-empty">
+              No assets found in this room.
+            </p>
           ) : (
-            <div className="audit-session-scroll-area">
+            <div className="audit-overview-scroll-area">
               {/* Desktop table */}
-              <table className="audit-session-table">
+              <table className="audit-overview-table">
                 <thead>
                   <tr>
                     <th>Description</th>
@@ -182,23 +183,23 @@ function AuditRoomOverview() {
         </div>
 
         {/* Previous audits */}
-        <div className="audit-session-table-wrap">
-          <h3 className="audit-session-section-title">Previous audits</h3>
+        <div className="audit-overview-table-wrap">
+          <h3 className="audit-overview-section-title">Previous audits</h3>
 
           {auditsError && (
-            <p className="audit-session-error" role="alert">
+            <p className="audit-overview-error" role="alert">
               {auditsError}
             </p>
           )}
 
           {auditsLoading ? (
-            <p className="audit-session-empty">Loading audit history…</p>
+            <p className="audit-overview-empty">Loading audit history…</p>
           ) : previousAudits.length === 0 ? (
-            <p className="audit-session-empty">No audits conducted yet.</p>
+            <p className="audit-overview-empty">No audits conducted yet.</p>
           ) : (
-            <div className="audit-session-scroll-area">
+            <div className="audit-overview-scroll-area">
               {/* Desktop table */}
-              <table className="audit-session-table">
+              <table className="audit-overview-table">
                 <thead>
                   <tr>
                     <th>Audit No.</th>

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import useAuditStart from "../../../hooks/audit/useAuditStart";
-import "./NewAuditModal.css";
+import useAuditRoomStart from "../../../hooks/audit/useAuditRoomStart";
+import "./NewAuditRoomModal.css";
 
-function NewAuditModal() {
+function NewAuditRoomModal() {
   const {
     roomInputRef,
     isOpen,
@@ -23,7 +23,7 @@ function NewAuditModal() {
     handleRoomSearchKeyDown,
     handleSelectRoom,
     handleProceed,
-  } = useAuditStart();
+  } = useAuditRoomStart();
 
   const [showDropdown, setShowDropdown] = useState(false);
   const foundRoom = roomResults[0] ?? null;
@@ -223,4 +223,4 @@ function NewAuditModal() {
   );
 }
 
-export default NewAuditModal;
+export default NewAuditRoomModal;

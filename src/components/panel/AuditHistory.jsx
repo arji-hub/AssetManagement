@@ -1,18 +1,7 @@
 import React from "react";
-import "./AuditHistory.css";
+import { Status } from "../ui/status/assetStatus";
 import { formatDate } from "../../utils/date";
-
-function statusBadgeClass(status) {
-  if (status === "completed") return "audit-history-badge--completed";
-  if (status === "in_progress") return "audit-history-badge--progress";
-  return "audit-history-badge--neutral";
-}
-
-function statusLabel(status) {
-  if (status === "completed") return "Completed";
-  if (status === "in_progress") return "In progress";
-  return status ?? "N/A";
-}
+import "./AuditHistory.css";
 
 function AuditHistory({ sessions = [], onViewAll, onRowClick }) {
   console.log(sessions);
@@ -62,13 +51,8 @@ function AuditHistory({ sessions = [], onViewAll, onRowClick }) {
                     {formatDate(session.created_at)}
                   </td>
                   <td>
-                    <span
-                      className={`audit-history-badge ${statusBadgeClass(
-                        session.status,
-                      )}`}
-                    >
-                      {statusLabel(session.status)}
-                    </span>
+                    <Status status={session.status} />
+                    {console.log("status", session.status)}
                   </td>
                   <td
                     className={

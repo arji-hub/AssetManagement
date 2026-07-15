@@ -36,14 +36,7 @@ export async function generateAuditNo(type) {
   });
 }
 
-export async function addAuditRoom({
-  roomId,
-  assets,
-  auditedAssetIds,
-  misplacedAssets = [],
-  auditedBy,
-  auditedByName,
-}) {
+export async function addAuditRoom({ roomId, assets, auditedBy, auditedByName }) {
   if (!roomId) throw new Error("roomId is required.");
   if (!assets || assets.length === 0) {
     throw new Error("No assets provided for this audit.");
@@ -51,35 +44,23 @@ export async function addAuditRoom({
 
   const auditNo = await generateAuditNo("room");
 
-  const auditedIdSet =
-    auditedAssetIds instanceof Set
-      ? auditedAssetIds
-      : new Set(auditedAssetIds ?? []);
-
-  const missingCount = assets.length - auditedIdSet.size;
-  const misplacedCount = misplacedAssets.length;
-  const discrepancyCount = missingCount + misplacedCount;
-
   const auditRoomData = {
     audit_no: auditNo,
     room_id: roomId,
+    status: "Ongoing",
     audited_by: auditedBy ?? null,
     audited_by_name: auditedByName ?? null,
     total_assets: assets.length,
-    audited_count: auditedIdSet.size,
-    discrepancy_count: discrepancyCount,
-    has_discrepancies: discrepancyCount > 0,
+    audited_count: 0,
+    discrepancy_count: 0,
+    has_discrepancies: false,
     created_at: serverTimestamp(),
-    completed_at: serverTimestamp(),
+    completed_at: null,
   };
 
-  const auditRoomRef = await addDoc(
-    collection(db, "audit_room"),
-    auditRoomData,
-  );
+  const auditRoomRef = await addDoc(collection(db, "audit_room"), auditRoomData);
 
   const batch = writeBatch(db);
-  const now = new Date().toISOString();
 
   assets.forEach((asset) => {
     const itemRef = doc(
@@ -93,31 +74,14 @@ export async function addAuditRoom({
       category: asset.category ?? null,
       custodian: asset.name ?? null,
       asset_status: asset.status ?? null,
-      audit_status: auditedIdSet.has(asset.id) ? "audited" : "not_audited",
-      audited_at: auditedIdSet.has(asset.id) ? now : null,
-    });
-  });
-
-  misplacedAssets.forEach((asset) => {
-    const itemRef = doc(
-      collection(db, "audit_room", auditRoomRef.id, "audit_item"),
-      asset.id,
-    );
-    batch.set(itemRef, {
-      asset_id: asset.id,
-      description: asset.description ?? null,
-      serial_number: asset.serial_number ?? null,
-      category: asset.category ?? null,
-      custodian: asset.name ?? null,
-      asset_status: asset.status ?? null, // ← same snapshot
-      audit_status: "misplaced",
-      audited_at: now,
+      audit_status: "not_audited",
+      audited_at: null,
     });
   });
 
   await batch.commit();
 
-  return { id: auditRoomRef.id, discrepancyCount };
+  return { id: auditRoomRef.id, auditNo };
 }
 
 export async function fetchAuditRooms() {

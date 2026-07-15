@@ -1,7 +1,7 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MainLayout from "../../components/layout/MainLayout";
-import NewAuditModal from "../../components/ui/modal/NewAuditModal";
+import NewAuditRoomModal from "../../components/ui/modal/NewAuditRoomModal";
 import AuditCard from "../../components/ui/card/AuditCard";
 import AuditHistory from "../../components/panel/AuditHistory";
 import BackButton from "../../components/ui/button/BackButton";
@@ -34,7 +34,7 @@ function AuditRoom() {
           </div>
 
           <div className="audit-room-header-actions">
-            <NewAuditModal />
+            <NewAuditRoomModal />
           </div>
         </div>
 

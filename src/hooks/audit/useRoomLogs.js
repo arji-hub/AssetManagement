@@ -64,11 +64,7 @@ function useRoomLogs() {
 
   const handleLogAction = useCallback(
     (log) => {
-      if (log.status === "in_progress") {
-        navigate(`/audit/room/session/${log.room_id}`);
-      } else {
-        navigate(`/audit/room/${log.audit_no}`);
-      }
+      navigate(`/audit/room/${log.room_id}`);
     },
     [navigate],
   );
