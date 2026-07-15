@@ -6,11 +6,12 @@ import { Status } from "../../components/ui/status/assetStatus";
 import { formatDate } from "../../utils/date";
 import AckBadge from "../../components/ui/card/AckBadge";
 import TransferLogEntry from "../../components/ui/card/TransferLogEntry";
-import { useTransferInfo } from "../../hooks/useTransferInfo";
+import { useTransferInfo } from "../../hooks/transfer/useTransferInfo";
 import TransferActionModal from "../../components/ui/modal/TransferActionModal";
 import AddingStatusModal from "../../components/ui/status/AddingStatusModal";
 import { TRANSFER_TYPES } from "../../data/transfer";
 import "./TransferInfo.css";
+import BackButton from "../../components/ui/button/BackButton";
 
 function TransferInfo() {
   const navigate = useNavigate();
@@ -54,10 +55,7 @@ function TransferInfo() {
         {/* ── Header ── */}
         <div className="asset-info-header">
           <div className="asset-info-breadcrumb">
-            <button className="return-button" onClick={() => navigate(-1)}>
-              <FontAwesomeIcon icon="fa-solid fa-arrow-left" />
-              Back
-            </button>
+            <BackButton />
             <span className="breadcrumb-parent">Transfer Request</span>
           </div>
           {/* ── Actions ── */}

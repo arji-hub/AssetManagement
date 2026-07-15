@@ -3,7 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 import MainLayout from "../../components/layout/MainLayout";
 import QRModal from "../../components/ui/modal/QRModal";
 import QRStatusModal from "../../components/ui/status/QRStatusModal";
-import { useQRScanner } from "../../hooks/useQRScanner";
+import { useQRScanner } from "../../hooks/camera/useQRScanner";
 import "./QR.css";
 
 function QR() {

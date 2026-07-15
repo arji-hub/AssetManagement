@@ -1,0 +1,169 @@
+.audit-room-page {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.audit-room-header {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.audit-room-header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.audit-room-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #5c0100;
+  margin: 0 0 8px;
+}
+
+.audit-room-subtitle {
+  font-size: 16px;
+  color: #5a413c;
+  margin: 0;
+}
+
+.audit-room-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.audit-room-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: 1px solid #8e706b;
+  border-radius: 8px;
+  background: transparent;
+  color: #121c2a;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    transform 0.1s ease;
+}
+
+.audit-room-btn-secondary:hover {
+  background: #e6eeff;
+}
+
+.audit-room-btn-secondary:active {
+  transform: scale(0.96);
+}
+
+.audit-room-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border: none;
+  border-radius: 8px;
+  background: #860100;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(134, 1, 0, 0.25);
+  transition:
+    filter 0.15s ease,
+    transform 0.1s ease;
+}
+
+.audit-room-btn-primary:hover {
+  filter: brightness(1.1);
+}
+
+.audit-room-btn-primary:active {
+  transform: scale(0.96);
+}
+
+.audit-room-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.audit-room-filter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.audit-room-search {
+  position: relative;
+  max-width: 420px;
+  flex: 1;
+}
+
+.audit-room-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #5a413c;
+  font-size: 14px;
+}
+
+.audit-room-search input {
+  width: 100%;
+  padding: 10px 12px 10px 36px;
+  border: 1px solid #e2beb9;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #ffffff;
+}
+
+.audit-room-search input:focus {
+  outline: none;
+  border-color: #860100;
+}
+
+@media (max-width: 768px) {
+  .audit-room-page {
+    padding: 16px;
+  }
+
+  .audit-room-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .audit-room-header-actions {
+    width: 30%;
+    min-width: 160px;
+  }
+
+  .audit-room-btn-secondary,
+  .audit-room-btn-primary {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .audit-room-filter {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .audit-room-search {
+    max-width: none;
+  }
+}
+
+@media (max-width: 370px) {
+  .audit-room-header-left {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

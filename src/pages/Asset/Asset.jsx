@@ -7,8 +7,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./Asset.css";
 import { Status } from "../../components/ui/status/assetStatus";
 import FilterModal from "../../components/ui/modal/FilterModal";
-import { useAssetFilters } from "../../hooks/useAssetFilters";
-import { useAssets } from "../../hooks/useAssets";
+import { useAssetFilters } from "../../hooks/asset/useAssetFilters";
+import { useAssets } from "../../hooks/asset/useAssets";
 import { formatDate, displayDate } from "../../utils/date";
 
 function Asset() {

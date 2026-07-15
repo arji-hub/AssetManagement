@@ -5,11 +5,12 @@ import MainLayout from "../../components/layout/MainLayout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FilterModal from "../../components/ui/modal/FilterModal";
 import { Status } from "../../components/ui/status/assetStatus";
-import { useAssetFilters } from "../../hooks/useAssetFilters";
-import { useCustodianAssets } from "../../hooks/useCustodianAssets";
+import { useAssetFilters } from "../../hooks/asset/useAssetFilters";
+import { useCustodianAssets } from "../../hooks/custodian/useCustodianAssets";
 import { formatDate } from "../../utils/date";
 import { PDFPreviewModal } from "../../components/ui/modal/PDFPreviewModal";
 import { CustodianInventoryPDF } from "../../pdf/templates/CustodianInventoryPDF";
+import BackButton from "../../components/ui/button/BackButton";
 
 function CustodianAssets() {
   const { username } = useParams();
@@ -41,13 +42,7 @@ function CustodianAssets() {
         {/* ── Top bar ── */}
         <div className="assets-top">
           <div className="assets-header">
-            <button
-              className="return-button"
-              onClick={() => navigate("/custodian")}
-            >
-              <FontAwesomeIcon icon="fa-solid fa-arrow-left" />
-              Back
-            </button>
+            <BackButton />
             <div>
               <h1 className="assets-title">Assets in Custody</h1>
               <p className="assets-subtitle">

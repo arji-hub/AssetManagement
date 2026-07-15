@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import "./CustodianModal.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import useCustodianRegistration from "../../../hooks/useCustodianRegistration";
+import useCustodianRegistration from "../../../hooks/custodian/useCustodianRegistration";
 
 function CustodianModal({ onClose, onSubmit, isSubmitting = false }) {
   const { form, errors, checking, isComplete, handleChange, handleSubmit } =

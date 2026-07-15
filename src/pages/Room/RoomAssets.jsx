@@ -5,11 +5,12 @@ import MainLayout from "../../components/layout/MainLayout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FilterModal from "../../components/ui/modal/FilterModal";
 import { Status } from "../../components/ui/status/assetStatus";
-import { useAssetFilters } from "../../hooks/useAssetFilters";
-import { useRoomAssets } from "../../hooks/useRoomAssets";
+import { useAssetFilters } from "../../hooks/asset/useAssetFilters";
+import { useRoomAssets } from "../../hooks/room/useRoomAssets";
 import { formatDate } from "../../utils/date";
 import { PDFPreviewModal } from "../../components/ui/modal/PDFPreviewModal";
 import { RoomInventoryPDF } from "../../pdf/templates/RoomInventoryPDF";
+import BackButton from "../../components/ui/button/BackButton";
 
 function RoomAssets() {
   const { roomName: roomId } = useParams();
@@ -38,10 +39,7 @@ function RoomAssets() {
         {/* ── Top bar ── */}
         <div className="room-assets-top">
           <div className="room-assets-header">
-            <button className="return-button" onClick={() => navigate("/room")}>
-              <FontAwesomeIcon icon="fa-solid fa-arrow-left" />
-              Back
-            </button>
+            <BackButton />
             <div>
               <h1 className="room-assets-title">Assets in Room</h1>
               <p className="room-assets-subtitle">

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import NavButton from "../ui/NavButton";
+import NavButton from "../ui/button/NavButton";
 import "./Navbar.css";
 import logo from "../../assets/CICTLOGO.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

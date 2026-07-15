@@ -1,0 +1,164 @@
+/* "Create new audit" button */
+.audit-overview-scan-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  background: #860100;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(134, 1, 0, 0.25);
+  transition:
+    filter 0.15s ease,
+    transform 0.1s ease;
+}
+
+.audit-overview-scan-btn:hover {
+  filter: brightness(1.1);
+}
+
+.audit-overview-scan-btn:active {
+  transform: scale(0.98);
+}
+
+.new-audit-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 15, 20, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.new-audit-header {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.new-audit-confirm-content {
+  background: #ffffff;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 420px;
+  padding: 24px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+  animation: audit-confirm-in 0.18s ease-out;
+}
+
+.new-audit-confirm-content h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.new-audit-confirm-content p {
+  margin: 0 0 20px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #4b5563;
+}
+
+.new-audit-confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.new-audit-confirm-cancel,
+.new-audit-confirm-proceed {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.new-audit-confirm-cancel {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.new-audit-confirm-cancel:hover {
+  background: #e5e7eb;
+}
+
+.new-audit-confirm-proceed {
+  background: #059669;
+  color: #ffffff;
+}
+
+.new-audit-confirm-proceed:hover {
+  background: #047857;
+}
+
+.new-audit-confirm-proceed svg,
+.new-audit-confirm-cancel svg {
+  width: 13px;
+  height: 13px;
+}
+
+@keyframes audit-confirm-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.audit-session-scan-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.audit-session-scan-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.new-audit-confirm-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #fef3c7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.new-audit-confirm-icon svg {
+  color: #d97706;
+  width: 18px;
+  height: 18px;
+}
+
+@media (max-width: 360px) {
+  .audit-overview-scan-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .new-audit-header {
+    flex-direction: column;
+  }
+  .new-audit-confirm-icon {
+    margin-bottom: 0;
+  }
+}

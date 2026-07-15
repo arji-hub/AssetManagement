@@ -6,8 +6,8 @@ import RoomCard from "../../components/ui/card/RoomCard";
 import { fetchRooms } from "../../services/room";
 import RoomModal from "../../components/ui/modal/RoomModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useRoomFilters } from "../../hooks/useRoomFilters";
-import { useRoomRegistration } from "../../hooks/useRoomRegistration";
+import { useRoomFilters } from "../../hooks/room/useRoomFilters";
+import { useRoomRegistration } from "../../hooks/room/useRoomRegistration";
 
 function Room() {
   const { user } = useAuth();

@@ -1,0 +1,55 @@
+.audit-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 14px;
+}
+
+.audit-header {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.audit-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #121c2a;
+  margin: 0;
+}
+
+.audit-subtitle {
+  font-size: 16px;
+  color: #5a413c;
+  margin: 4px 0 0;
+}
+
+.audit-date {
+  font-size: 14px;
+  color: #5a413c;
+  margin: 0;
+}
+
+.audit-panels {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .audit-page {
+    padding: 16px;
+  }
+
+  .audit-panels {
+    grid-template-columns: 1fr;
+  }
+
+  .audit-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

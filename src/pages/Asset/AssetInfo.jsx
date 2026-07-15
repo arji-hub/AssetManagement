@@ -9,6 +9,7 @@ import ViewAssetQR from "../../components/ui/modal/ViewAssetQr";
 import ViewAssetDocument from "../../components/ui/modal/ViewAssetDocument";
 import ManageAsset from "../../components/ui/dropdown/ManageAsset";
 import "./AssetInfo.css";
+import BackButton from "../../components/ui/button/BackButton";
 
 function AssetInfo() {
   const navigate = useNavigate();
@@ -47,13 +48,7 @@ function AssetInfo() {
         {/* ── Header ── */}
         <div className="asset-info-header">
           <div className="asset-info-breadcrumb">
-            <button
-              className="return-button"
-              onClick={() => navigate("/asset")}
-            >
-              <FontAwesomeIcon icon="fa-solid fa-arrow-left" />
-              Back
-            </button>
+            <BackButton />
             <span className="breadcrumb-parent">Asset Information</span>
           </div>
           <div className="asset-info-actions">

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import useReportRegistration from "../../../hooks/useReportRegistration";
+import useReportRegistration from "../../../hooks/report/useReportRegistration";
 import "./ReportModal.css";
 import { REPORT_TYPES } from "../../../data/reports";
 import AddingStatusModal from "../status/AddingStatusModal";

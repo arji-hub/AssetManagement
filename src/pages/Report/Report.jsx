@@ -7,9 +7,9 @@ import "./Report.css";
 import ReportPanel from "../../components/panel/ReportPanel";
 import ReportModal from "../../components/ui/modal/ReportModal";
 import { displayDate } from "../../utils/date";
-import useReportPage from "../../hooks/useReportPage";
+import useReportPage from "../../hooks/report/useReportPage";
 import { TABS } from "../../data/reports";
-import { useReports } from "../../hooks/useReports";
+import { useReports } from "../../hooks/report/useReports";
 import { getReportType } from "../../utils/report";
 
 function Report() {
