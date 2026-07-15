@@ -10,7 +10,7 @@ function ImagePanel({ title, image, onImageChange, required }) {
     onImageChange({ file, preview: URL.createObjectURL(file) });
   };
 
-  const { openCamera, inputProps: cameraInputProps } = useCamera(handleCapture);
+  const { openCamera } = useCamera(handleCapture);
 
   const handleFile = (e) => {
     const file = e.target.files?.[0];
@@ -73,7 +73,6 @@ function ImagePanel({ title, image, onImageChange, required }) {
         style={{ display: "none" }}
         onChange={handleFile}
       />
-      <input {...cameraInputProps} />
     </div>
   );
 }

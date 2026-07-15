@@ -1,6 +1,32 @@
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { decodeImageFile, decodeImageFileWithTimeout } from "../../utils/qrDecode";
+import {
+  decodeImageFile,
+  decodeImageFileWithTimeout,
+} from "../../utils/qrDecode";
+
+const ASSET_PREVIEW_PATTERN = /^\/asset\/[^/]+\/?$/;
+
+// Pure — resolves a decoded QR value to an asset preview path, or null.
+// Does NOT navigate. Kept outside the hook since it has no dependency on it.
+function resolveAssetPath(decodedValue) {
+  let pathname = null;
+
+  try {
+    const url = new URL(decodedValue);
+    pathname = url.pathname;
+  } catch {
+    if (decodedValue.startsWith("/")) {
+      pathname = decodedValue;
+    }
+  }
+
+  if (pathname && ASSET_PREVIEW_PATTERN.test(pathname)) {
+    return pathname.replace(/\/$/, "");
+  }
+
+  return null;
+}
 
 export function useQRScanner() {
   const navigate = useNavigate();
@@ -13,32 +39,6 @@ export function useQRScanner() {
     setErrorMessage("");
   }, []);
 
-  const ASSET_PREVIEW_PATTERN = /^\/asset\/[^/]+\/?$/;
-
-  const navigateFromDecodedValue = useCallback(
-    (decodedValue) => {
-      let pathname = null;
-
-      try {
-        const url = new URL(decodedValue);
-        pathname = url.pathname;
-      } catch {
-        if (decodedValue.startsWith("/")) {
-          pathname = decodedValue;
-        }
-      }
-
-      if (pathname && ASSET_PREVIEW_PATTERN.test(pathname)) {
-        const previewPath = pathname.replace(/\/$/, "");
-        navigate(previewPath);
-        return true;
-      }
-
-      return false;
-    },
-    [navigate],
-  );
-
   const handleImageUpload = useCallback(
     async (file) => {
       reset();
@@ -47,11 +47,13 @@ export function useQRScanner() {
 
       try {
         const decodedValue = await decodeImageFileWithTimeout(file);
-        const navigated = navigateFromDecodedValue(decodedValue);
+        const previewPath = resolveAssetPath(decodedValue);
 
-        if (navigated) {
+        if (previewPath) {
           setStatus("success");
-          setTimeout(() => reset(), 1500);
+          setTimeout(() => {
+            navigate(previewPath);
+          }, 1500);
         } else {
           setStatus("notfound");
           setErrorMessage("This QR code does not point to a valid asset.");
@@ -68,14 +70,13 @@ export function useQRScanner() {
         }
       }
     },
-    [navigateFromDecodedValue, reset],
+    [navigate, reset],
   );
 
   return {
     status,
     errorMessage,
-    decodeImageFile, 
-    navigateFromDecodedValue,
+    decodeImageFile,
     handleImageUpload,
     reset,
   };

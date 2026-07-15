@@ -76,7 +76,7 @@ function QRInfo({ asset }) {
     { key: "room", label: "Room", value: displayValue(room_id) },
     {
       key: "custodian",
-      label: "Property Custodian",
+      label: "Custodian",
       value: displayValue(property_custodian_name),
     },
   ];
@@ -103,50 +103,103 @@ function QRInfo({ asset }) {
         {/* ── Fixed image (not part of scroll area) ── */}
         <ViewAssetDocument doc_image_url={asset_image_url}>
           {(openModal) => (
-            <div className="qri-media-container">
-              <div
-                className="qri-media"
-                onClick={asset_image_url ? openModal : undefined}
-                role={asset_image_url ? "button" : undefined}
-                tabIndex={asset_image_url ? 0 : undefined}
-              >
-                {asset_image_url ? (
-                  <img
-                    src={asset_image_url}
-                    alt={description || "Asset image"}
-                    className="qri-media-img"
-                  />
-                ) : (
-                  <div className="qri-media-placeholder">
-                    <FontAwesomeIcon icon="fa-solid fa-image" />
-                    <span>No Image</span>
-                  </div>
-                )}
-
-                {status && (
-                  <span
-                    className="qri-status-badge"
-                    style={{
-                      backgroundColor: statusStyle.bg,
-                      color: statusStyle.color,
-                    }}
+            <>
+              {/* Mobile layout — visible below 370px */}
+              <div className="qri-media-container-mobile">
+                <div className="qri-media-row">
+                  <div
+                    className="qri-media"
+                    onClick={asset_image_url ? openModal : undefined}
+                    role={asset_image_url ? "button" : undefined}
+                    tabIndex={asset_image_url ? 0 : undefined}
                   >
-                    <span className="qri-status-dot" />
-                    {status}
-                  </span>
-                )}
+                    {asset_image_url ? (
+                      <img
+                        src={asset_image_url}
+                        alt={description || "Asset image"}
+                        className="qri-media-img"
+                      />
+                    ) : (
+                      <div className="qri-media-placeholder">
+                        <FontAwesomeIcon icon="fa-solid fa-image" />
+                        <span>No Image</span>
+                      </div>
+                    )}
 
-                {asset_image_url && (
-                  <span className="qri-media-hint">
-                    <FontAwesomeIcon icon="fa-solid fa-magnifying-glass-plus" />
-                    Tap to enlarge
-                  </span>
-                )}
-              </div>
-              <div className="qri-description-container">
+                    {asset_image_url && (
+                      <span className="qri-media-hint">
+                        <FontAwesomeIcon icon="fa-solid fa-magnifying-glass-plus" />
+                        Tap to enlarge
+                      </span>
+                    )}
+                  </div>
+
+                  {status && (
+                    <span
+                      className="qri-status-badge-mobile"
+                      style={{
+                        backgroundColor: statusStyle.bg,
+                        color: statusStyle.color,
+                      }}
+                    >
+                      <span className="qri-status-dot-mobile" />
+                      {status}
+                    </span>
+                  )}
+                </div>
+
                 <h2 className="qri-description">{displayValue(description)}</h2>
               </div>
-            </div>
+
+              {/* Wider layout — visible at 370px and up */}
+              <div className="qri-media-container">
+                <div
+                  className="qri-media"
+                  onClick={asset_image_url ? openModal : undefined}
+                  role={asset_image_url ? "button" : undefined}
+                  tabIndex={asset_image_url ? 0 : undefined}
+                >
+                  {asset_image_url ? (
+                    <img
+                      src={asset_image_url}
+                      alt={description || "Asset image"}
+                      className="qri-media-img"
+                    />
+                  ) : (
+                    <div className="qri-media-placeholder">
+                      <FontAwesomeIcon icon="fa-solid fa-image" />
+                      <span>No Image</span>
+                    </div>
+                  )}
+
+                  {status && (
+                    <span
+                      className="qri-status-badge"
+                      style={{
+                        backgroundColor: statusStyle.bg,
+                        color: statusStyle.color,
+                      }}
+                    >
+                      <span className="qri-status-dot" />
+                      {status}
+                    </span>
+                  )}
+
+                  {asset_image_url && (
+                    <span className="qri-media-hint">
+                      <FontAwesomeIcon icon="fa-solid fa-magnifying-glass-plus" />
+                      Tap to enlarge
+                    </span>
+                  )}
+                </div>
+
+                <div className="qri-description-container">
+                  <h2 className="qri-description">
+                    {displayValue(description)}
+                  </h2>
+                </div>
+              </div>
+            </>
           )}
         </ViewAssetDocument>
 
