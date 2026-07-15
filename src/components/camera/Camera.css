@@ -206,3 +206,32 @@
     transform: translateY(0);
   }
 }
+
+.qr-focus-ring {
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  margin-left: -32px;
+  margin-top: -32px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 5;
+  animation: qr-focus-pulse 0.7s ease-out forwards;
+}
+
+@keyframes qr-focus-pulse {
+  0% {
+    transform: scale(1.4);
+    opacity: 0;
+    border-color: #f5aa2c;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+    border-color: #fff;
+  }
+}
