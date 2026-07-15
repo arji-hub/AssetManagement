@@ -141,10 +141,11 @@
   border-color: #860100;
 }
 
-.qr-scan-line {
+/*.qr-scan-line {
   position: absolute;
   left: 4%;
   right: 4%;
+  top: 6%;
   height: 2px;
   background: linear-gradient(
     90deg,
@@ -154,19 +155,20 @@
   );
   box-shadow: 0 0 8px 1px rgba(245, 170, 44, 0.7);
   animation: scanSweep 1.8s ease-in-out infinite;
+  will-change: transform;
 }
 
 @keyframes scanSweep {
   0% {
-    top: 6%;
+    transform: translateY(0);
   }
   50% {
-    top: 94%;
+    transform: translateY(calc(0.88 * var(--viewfinder-height, 280px)));
   }
   100% {
-    top: 6%;
+    transform: translateY(0);
   }
-}
+}*/
 
 /* ---------------- Hint text ---------------- */
 .qr-camera-hint {

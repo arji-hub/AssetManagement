@@ -24,7 +24,7 @@ function LandingPage({ previewAsset, assetNotFound }) {
     }
   };
 
-  const { status, errorMessage, handleImageUpload, reset } = useQRScanner();
+  const { status, errorMessage, handleImageUpload, handleScan, reset } = useQRScanner();
 
   const toggleView = () => {
     setView((prev) => (prev === "qr" ? "login" : "qr"));
@@ -52,7 +52,7 @@ function LandingPage({ previewAsset, assetNotFound }) {
           previewAsset !== undefined ? (
             <QRInfo asset={previewAsset} />
           ) : (
-            <QRModal onImageUpload={handleImageUpload} />
+            <QRModal onScan={handleScan} onImageUpload={handleImageUpload} />
           )
         ) : (
           <LoginModal onLogin={handleLogin} />
