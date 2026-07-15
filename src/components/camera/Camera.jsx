@@ -11,10 +11,12 @@ const Camera = ({ onScan, onImageUpload, onClose, isOpen = true }) => {
     error,
     torchOn,
     torchSupported,
+    focusPoint,
     toggleTorch,
     switchCamera,
     openFilePicker,
     handleFileChange,
+    handleFocusTap,
   } = useCamera({ isOpen, onScan, onImageUpload });
 
   if (!isOpen) return null;
@@ -27,8 +29,17 @@ const Camera = ({ onScan, onImageUpload, onClose, isOpen = true }) => {
         playsInline
         muted
         autoPlay
+        onClick={handleFocusTap}
+        onTouchStart={handleFocusTap}
       />
       <canvas ref={canvasRef} className="qr-camera-canvas" />
+
+      {focusPoint && (
+        <span
+          className="qr-focus-ring"
+          style={{ left: focusPoint.x, top: focusPoint.y }}
+        />
+      )}
 
       <div className="qr-camera-overlay">
         <div className="qr-camera-topbar">
@@ -72,7 +83,7 @@ const Camera = ({ onScan, onImageUpload, onClose, isOpen = true }) => {
           {error
             ? error
             : isReady
-              ? "Align the QR code within the frame"
+              ? "Tap to focus, align the QR code within the frame"
               : "Starting camera..."}
         </p>
 
