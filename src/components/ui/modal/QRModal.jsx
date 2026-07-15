@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCamera,
@@ -7,12 +7,12 @@ import {
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
 import "./QRModal.css";
-import { useCamera } from "../../../hooks/camera/useCamera";
+import Camera from "../../camera/Camera";
 
-function QRModal({ onImageUpload }) {
+function QRModal({ onScan, onImageUpload }) {
   const fileInputRef = useRef(null);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
 
-  const { openCamera, inputProps: cameraInputProps } = useCamera(onImageUpload);
   const handleUploadClick = () => {
     fileInputRef.current?.click();
   };
@@ -26,6 +26,11 @@ function QRModal({ onImageUpload }) {
       console.log("No onImageUpload handler provided");
     }
     e.target.value = "";
+  };
+
+  const handleScan = (qrValue) => {
+    setIsCameraOpen(false);
+    onScan?.(qrValue);
   };
 
   return (
@@ -48,7 +53,7 @@ function QRModal({ onImageUpload }) {
         <button
           type="button"
           className="qr-modal-btn qr-modal-btn-primary"
-          onClick={openCamera}
+          onClick={() => setIsCameraOpen(true)}
         >
           <FontAwesomeIcon icon={faCamera} />
           Camera Scan
@@ -70,13 +75,19 @@ function QRModal({ onImageUpload }) {
           className="qr-modal-file-input"
           onChange={handleFileChange}
         />
-        <input {...cameraInputProps} />
       </div>
 
       <p className="qr-modal-hint">
         Scan the QR code attached to school assets such as desktops, chairs,
         tables, and other equipment.
       </p>
+
+      <Camera
+        isOpen={isCameraOpen}
+        onScan={handleScan}
+        onImageUpload={onImageUpload}
+        onClose={() => setIsCameraOpen(false)}
+      />
     </div>
   );
 }
