@@ -3,20 +3,26 @@ import jsQR from "jsqr";
 export const MAX_DIMENSION = 1000;
 export const DECODE_TIMEOUT_MS = 5000;
 
-export function boostContrastFromBlueChannel(imageData) {
+// qrDecode.js — replace boostContrastFromBlueChannel
+
+export function boostContrastFromLuminance(imageData) {
   const { data, width, height } = imageData;
   const out = new Uint8ClampedArray(data.length);
 
+  const luminances = new Float32Array(data.length / 4);
   let sum = 0;
-  for (let i = 0; i < data.length; i += 4) {
-    sum += data[i + 2];
-  }
-  const avgBlue = sum / (data.length / 4);
-  const threshold = avgBlue * 0.85;
 
-  for (let i = 0; i < data.length; i += 4) {
-    const blue = data[i + 2];
-    const value = blue < threshold ? 0 : 255;
+  for (let i = 0, p = 0; i < data.length; i += 4, p++) {
+    const lum = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+    luminances[p] = lum;
+    sum += lum;
+  }
+
+  const avgLum = sum / luminances.length;
+  const threshold = avgLum * 0.85;
+
+  for (let i = 0, p = 0; i < data.length; i += 4, p++) {
+    const value = luminances[p] < threshold ? 0 : 255;
     out[i] = value;
     out[i + 1] = value;
     out[i + 2] = value;
@@ -26,14 +32,11 @@ export function boostContrastFromBlueChannel(imageData) {
   return new ImageData(out, width, height);
 }
 
-// Try a standard decode first, then fall back to the blue-channel-boosted
-// pass for red/orange gradient QR codes. Shared by both live-frame scanning
-// and image-upload decoding so there's only one detection strategy to tune.
 export function decodeImageData(imageData) {
   let code = jsQR(imageData.data, imageData.width, imageData.height);
 
   if (!code) {
-    const boosted = boostContrastFromBlueChannel(imageData);
+    const boosted = boostContrastFromLuminance(imageData);
     code = jsQR(boosted.data, boosted.width, boosted.height);
   }
 
