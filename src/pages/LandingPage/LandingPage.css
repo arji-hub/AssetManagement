@@ -19,7 +19,7 @@
 /* ── top bar ── */
 .login-topbar {
   position: relative;
-  z-index: 9999;
+  z-index: 9998;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -66,7 +66,7 @@
 /* ── main area ── */
 .login-main {
   position: relative;
-  z-index: 1;
+  z-index: 9999;
   flex: 1;
   display: flex;
   align-items: center;

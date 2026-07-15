@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState, useCallback } from "react";
-import jsQR from "jsqr";
 import { decodeImageData } from "../../utils/qrDecode";
 
 /**
