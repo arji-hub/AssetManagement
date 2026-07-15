@@ -1,11 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { decodeImageData } from "../../utils/qrDecode";
 
-/**
- * useCamera
- * Owns camera stream lifecycle, QR scan loop, torch/facing-mode controls,
- * and image-upload fallback. Camera.jsx just renders what this returns.
- */
 export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -13,16 +8,24 @@ export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
   const rafRef = useRef(null);
   const fileInputRef = useRef(null);
   const frameCountRef = useRef(0);
+  const focusResetTimeoutRef = useRef(null);
+  const focusRingTimeoutRef = useRef(null);
+  const lastFocusAtRef = useRef(0);
 
   const [isReady, setIsReady] = useState(false);
   const [error, setError] = useState(null);
   const [facingMode, setFacingMode] = useState("environment");
   const [torchOn, setTorchOn] = useState(false);
   const [torchSupported, setTorchSupported] = useState(false);
+  const [focusSupported, setFocusSupported] = useState(false);
+  const [focusPoint, setFocusPoint] = useState(null);
 
-  // ---------------- Camera lifecycle ----------------
+  //Camera lifecycle -------------
   const stopStream = useCallback(() => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    if (focusResetTimeoutRef.current)
+      clearTimeout(focusResetTimeoutRef.current);
+    if (focusRingTimeoutRef.current) clearTimeout(focusRingTimeoutRef.current);
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
@@ -51,8 +54,12 @@ export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
       }
 
       const [track] = stream.getVideoTracks();
-      const capabilities = track.getCapabilities?.();
-      setTorchSupported(Boolean(capabilities?.torch));
+      const capabilities = track.getCapabilities?.() || {};
+      setTorchSupported(Boolean(capabilities.torch));
+      setFocusSupported(
+        Boolean(capabilities.focusMode) &&
+          Boolean(capabilities.pointsOfInterest),
+      );
 
       setIsReady(true);
     } catch (err) {
@@ -72,7 +79,7 @@ export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, facingMode]);
 
-  // ---------------- QR scan loop ----------------
+  //QR scan loop -------------
   const scanFrame = useCallback(() => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
@@ -110,7 +117,7 @@ export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
     };
   }, [isReady, scanFrame]);
 
-  // ---------------- Controls ----------------
+  // Controls ------------
   const toggleTorch = useCallback(async () => {
     const track = streamRef.current?.getVideoTracks?.()[0];
     if (!track) return;
@@ -144,6 +151,70 @@ export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
     [onImageUpload],
   );
 
+  // Tap-to-focus -------
+  const applyFocusConstraint = useCallback(async (x, y) => {
+    const track = streamRef.current?.getVideoTracks?.()[0];
+    if (!track) return false;
+
+    const caps = track.getCapabilities?.() || {};
+    if (!caps.pointsOfInterest) return false;
+
+    try {
+      const advanced = [{ pointsOfInterest: [{ x, y }] }];
+      if (caps.focusMode?.includes("single-shot")) {
+        advanced[0].focusMode = "single-shot";
+      } else if (caps.focusMode?.includes("continuous")) {
+        advanced[0].focusMode = "continuous";
+      }
+      await track.applyConstraints({ advanced });
+
+      if (focusResetTimeoutRef.current)
+        clearTimeout(focusResetTimeoutRef.current);
+      if (caps.focusMode?.includes("continuous")) {
+        focusResetTimeoutRef.current = setTimeout(() => {
+          track
+            .applyConstraints({ advanced: [{ focusMode: "continuous" }] })
+            .catch(() => {});
+        }, 2500);
+      }
+
+      return true;
+    } catch (err) {
+      console.log("Tap-to-focus not applied:", err);
+      return false;
+    }
+  }, []);
+
+  const handleFocusTap = useCallback(
+    (e) => {
+      const video = videoRef.current;
+      if (!isReady || !video) return;
+
+      const now = Date.now();
+      if (now - lastFocusAtRef.current < 300) return;
+      lastFocusAtRef.current = now;
+
+      const rect = video.getBoundingClientRect();
+      const point = e.touches?.[0] ?? e;
+      const px = point.clientX - rect.left;
+      const py = point.clientY - rect.top;
+
+      // Ignore taps outside the video bounds
+      if (px < 0 || py < 0 || px > rect.width || py > rect.height) return;
+
+      // Show the ring immediately regardless of hardware support
+      setFocusPoint({ x: px, y: py });
+      if (focusRingTimeoutRef.current)
+        clearTimeout(focusRingTimeoutRef.current);
+      focusRingTimeoutRef.current = setTimeout(() => setFocusPoint(null), 700);
+
+      const nx = px / rect.width;
+      const ny = py / rect.height;
+      applyFocusConstraint(nx, ny);
+    },
+    [isReady, applyFocusConstraint],
+  );
+
   return {
     // refs
     videoRef,
@@ -154,10 +225,13 @@ export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
     error,
     torchOn,
     torchSupported,
+    focusSupported,
+    focusPoint,
     // handlers
     toggleTorch,
     switchCamera,
     openFilePicker,
     handleFileChange,
+    handleFocusTap,
   };
 };
