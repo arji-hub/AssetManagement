@@ -166,14 +166,8 @@ const generateQR = async (assetId) => {
     data: url,
 
     dotsOptions: {
-      type: "extra-rounded",
-      gradient: {
-        type: "radial",
-        colorStops: [
-          { offset: 0, color: "#f5aa2c" },
-          { offset: 1, color: "#860100" },
-        ],
-      },
+      type: "rounded",
+      color: "#860100",
     },
 
     cornersSquareOptions: {
@@ -192,8 +186,8 @@ const generateQR = async (assetId) => {
 
     imageOptions: {
       crossOrigin: "anonymous",
-      margin: 6,
-      imageSize: 0.3,
+      margin: 1,
+      imageSize: 0.6,
     },
 
     image: CICTLogo,

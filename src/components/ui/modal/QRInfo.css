@@ -132,14 +132,15 @@
   border-radius: 999px;
 }
 
-/* ── Fixed media (not scrollable) ── */
+/* ── Fixed media (not scrollable) ──
+   Shared by both the mobile and wide layouts. Sizing is controlled
+   entirely by the flex context each layout puts it in — no fixed
+   percentage width here, so there's no circular-sizing issue. */
 .qri-media {
   position: relative;
   z-index: 3;
-  flex-shrink: 0;
-  width: calc(100% - 200px);
-  min-width: 100px;
-  margin: 0 16px 14px;
+  flex: 1 1 auto;
+  min-width: 0;
   aspect-ratio: 16 / 9;
   border-radius: 12px;
   overflow: hidden;
@@ -147,13 +148,6 @@
   border: 1px solid rgba(134, 1, 0, 0.15);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
   cursor: pointer;
-}
-
-.qri-media-container {
-  margin: 0 16px 14px;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
 }
 
 .qri-media-img {
@@ -196,11 +190,12 @@
   color: #ccc;
 }
 
+/* Status badge — overlaid on the image (wide layout, ≥370px) */
 .qri-status-badge {
+  display: none;
   position: absolute;
   top: 10px;
   right: 10px;
-  display: inline-flex;
   align-items: center;
   gap: 6px;
   font-family: "Sansation";
@@ -210,7 +205,6 @@
   text-transform: uppercase;
   border-radius: 999px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-  display: flex;
   justify-content: center;
   width: 40px;
 }
@@ -238,6 +232,53 @@
   background: rgba(0, 0, 0, 0.5);
   border-radius: 999px;
   backdrop-filter: blur(2px);
+}
+
+/* ── Mobile layout (<370px): media + badge in a row, description below ── */
+.qri-media-container-mobile {
+  display: flex;
+  flex-direction: column;
+  margin: 0 16px 14px;
+}
+
+.qri-media-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.qri-status-badge-mobile {
+  flex-shrink: 0;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: "Sansation";
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  white-space: nowrap;
+}
+
+.qri-status-dot-mobile {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+/* ── Wide layout (≥370px): media + description side by side ──
+   Hidden by default, switched on at the 370px breakpoint below. */
+.qri-media-container {
+  display: none;
+  margin: 0 16px 14px;
 }
 
 /* ── Scrollable asset info ── */
@@ -484,6 +525,35 @@
 }
 
 /* ═══════════════════════════════════════
+   ≥370px — switch from stacked mobile media
+   to side-by-side media + description
+   ═══════════════════════════════════════ */
+@media (min-width: 370px) {
+  .qri-media-container-mobile {
+    display: none;
+  }
+
+  .qri-media-container {
+    display: flex;
+    align-items: stretch;
+    flex-direction: row;
+  }
+
+  .qri-media {
+    flex: 1 1 0;
+  }
+
+  .qri-description-container {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .qri-status-badge {
+    display: inline-flex;
+  }
+}
+
+/* ═══════════════════════════════════════
    Tablet / Desktop (≥600px) — logo moves left
    ═══════════════════════════════════════ */
 @media (min-width: 600px) {
@@ -516,17 +586,10 @@
   }
 
   .qri-media-container {
-    flex-direction: row;
     align-items: stretch;
   }
 
-  .qri-media {
-    width: auto;
-    flex: 1 1 0; /* equal share */
-  }
-
   .qri-description-container {
-    flex: 1 1 0; /* equal share */
     display: flex;
     align-items: center; /* vertically center the description text */
   }
