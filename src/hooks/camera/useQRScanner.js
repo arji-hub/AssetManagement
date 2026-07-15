@@ -39,6 +39,44 @@ export function useQRScanner() {
     setErrorMessage("");
   }, []);
 
+  // Shared by both live-scan and image-upload paths once a raw string
+  // value is in hand — resolves it to an asset route and navigates,
+  // or sets the appropriate not-found/error status.
+  const resolveAndNavigate = useCallback(
+    (decodedValue) => {
+      const previewPath = resolveAssetPath(decodedValue);
+
+      if (previewPath) {
+        setStatus("success");
+        setTimeout(() => {
+          navigate(previewPath);
+        }, 1500);
+      } else {
+        setStatus("notfound");
+        setErrorMessage("This QR code does not point to a valid asset.");
+      }
+    },
+    [navigate],
+  );
+
+  // Live camera scan — value is already decoded by useCamera's scan loop,
+  // so no image decoding step is needed here.
+  const handleScan = useCallback(
+    (decodedValue) => {
+      reset();
+      setStatus("loading");
+      setErrorMessage("");
+
+      try {
+        resolveAndNavigate(decodedValue);
+      } catch (err) {
+        setStatus("error");
+        setErrorMessage(err.message || "Could not process scanned QR code.");
+      }
+    },
+    [reset, resolveAndNavigate],
+  );
+
   const handleImageUpload = useCallback(
     async (file) => {
       reset();
@@ -47,17 +85,7 @@ export function useQRScanner() {
 
       try {
         const decodedValue = await decodeImageFileWithTimeout(file);
-        const previewPath = resolveAssetPath(decodedValue);
-
-        if (previewPath) {
-          setStatus("success");
-          setTimeout(() => {
-            navigate(previewPath);
-          }, 1500);
-        } else {
-          setStatus("notfound");
-          setErrorMessage("This QR code does not point to a valid asset.");
-        }
+        resolveAndNavigate(decodedValue);
       } catch (err) {
         if (err.message === "timeout") {
           setStatus("notfound");
@@ -70,13 +98,14 @@ export function useQRScanner() {
         }
       }
     },
-    [navigate, reset],
+    [reset, resolveAndNavigate],
   );
 
   return {
     status,
     errorMessage,
     decodeImageFile,
+    handleScan,
     handleImageUpload,
     reset,
   };
