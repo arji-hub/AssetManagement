@@ -7,7 +7,6 @@ export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
   const streamRef = useRef(null);
   const rafRef = useRef(null);
   const fileInputRef = useRef(null);
-  const frameCountRef = useRef(0);
   const focusResetTimeoutRef = useRef(null);
   const focusRingTimeoutRef = useRef(null);
   const lastFocusAtRef = useRef(0);
@@ -19,6 +18,48 @@ export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
   const [torchSupported, setTorchSupported] = useState(false);
   const [focusSupported, setFocusSupported] = useState(false);
   const [focusPoint, setFocusPoint] = useState(null);
+
+  const viewfinderRef = useRef(null);
+
+  // Maps the on-screen viewfinder box to the video's native pixel coordinates,
+  // accounting for object-fit: cover scaling/cropping between the video's
+  // natural resolution and its rendered display size.
+  function getCropRect(video, viewfinder, paddingFactor = 1.15) {
+    if (!video?.videoWidth || !viewfinder) return null;
+
+    const videoRect = video.getBoundingClientRect();
+    const vfRect = viewfinder.getBoundingClientRect();
+
+    const scale = Math.max(
+      videoRect.width / video.videoWidth,
+      videoRect.height / video.videoHeight,
+    );
+
+    const scaledW = video.videoWidth * scale;
+    const scaledH = video.videoHeight * scale;
+    const offsetX = (scaledW - videoRect.width) / 2;
+    const offsetY = (scaledH - videoRect.height) / 2;
+
+    const dx = vfRect.left - videoRect.left;
+    const dy = vfRect.top - videoRect.top;
+
+    const rawW = vfRect.width / scale;
+    const rawH = vfRect.height / scale;
+
+    // Pad slightly beyond the visible box — gives jsQR the quiet-zone
+    // margin it needs, and forgives a code that's just outside the guide.
+    const cropW = rawW * paddingFactor;
+    const cropH = rawH * paddingFactor;
+    const cropX = (dx + offsetX) / scale - (cropW - rawW) / 2;
+    const cropY = (dy + offsetY) / scale - (cropH - rawH) / 2;
+
+    return {
+      x: Math.max(0, Math.round(cropX)),
+      y: Math.max(0, Math.round(cropY)),
+      width: Math.round(Math.min(cropW, video.videoWidth)),
+      height: Math.round(Math.min(cropH, video.videoHeight)),
+    };
+  }
 
   //Camera lifecycle -------------
   const stopStream = useCallback(() => {
@@ -83,19 +124,34 @@ export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
   const scanFrame = useCallback(() => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
+    const viewfinder = viewfinderRef.current;
 
     if (video && canvas && video.readyState === video.HAVE_ENOUGH_DATA) {
+      const crop = getCropRect(video, viewfinder) || {
+        x: 0,
+        y: 0,
+        width: video.videoWidth,
+        height: video.videoHeight,
+      };
+
       const ctx = canvas.getContext("2d", { willReadFrequently: true });
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      canvas.width = crop.width;
+      canvas.height = crop.height;
+      ctx.drawImage(
+        video,
+        crop.x,
+        crop.y,
+        crop.width,
+        crop.height,
+        0,
+        0,
+        crop.width,
+        crop.height,
+      );
 
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-      frameCountRef.current++;
-      const tryAdaptive = frameCountRef.current % 3 === 0; // expensive pass every 3rd frame only
-
-      const code = decodeImageData(imageData, { tryAdaptive });
+      const code = decodeImageData(imageData, { tryAdaptive: true });
 
       if (code?.data) {
         if (navigator.vibrate) navigator.vibrate(80);
@@ -109,7 +165,6 @@ export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
 
   useEffect(() => {
     if (isReady) {
-      frameCountRef.current = 0;
       rafRef.current = requestAnimationFrame(scanFrame);
     }
     return () => {
@@ -220,6 +275,7 @@ export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
     videoRef,
     canvasRef,
     fileInputRef,
+    viewfinderRef,
     // state
     isReady,
     error,

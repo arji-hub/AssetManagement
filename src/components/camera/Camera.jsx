@@ -66,7 +66,7 @@ const Camera = ({ onScan, onImageUpload, onClose, isOpen = true }) => {
           </button>
         </div>
 
-        <div className="qr-viewfinder">
+        <div className="qr-viewfinder" ref={viewfinderRef}>
           <span className="qr-corner qr-corner--tl" />
           <span className="qr-corner qr-corner--tr" />
           <span className="qr-corner qr-corner--bl" />
