@@ -1,0 +1,82 @@
+.audit-panel-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding: 20px;
+  background: #ffffff;
+  border: 1px solid #e2beb9;
+  border-top: 4px solid #feb234;
+  border-radius: 8px;
+  text-align: left;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+.audit-panel-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.audit-panel-card:active {
+  transform: scale(0.98);
+}
+
+.audit-panel-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background: #860100;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+
+.audit-panel-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #121c2a;
+  margin: 0 0 8px;
+}
+
+.audit-panel-desc {
+  font-size: 14px;
+  color: #5a413c;
+  margin: 0 0 20px;
+}
+
+.audit-panel-footer {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.audit-panel-badge {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+.audit-panel-badge--danger {
+  background: #ffdad6;
+  color: #93000a;
+}
+
+.audit-panel-badge--neutral {
+  background: #e6eeff;
+  color: #5a413c;
+}
+
+.audit-panel-arrow {
+  color: #860100;
+  transition: transform 0.2s ease;
+}
+
+.audit-panel-card:hover .audit-panel-arrow {
+  transform: translateX(4px);
+}

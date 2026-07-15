@@ -24,7 +24,8 @@
   z-index: 1;
 }
 
-.profile-page .return-button {
+.back-button,
+.profile-page {
   align-self: flex-start; /* pins it to the left even though the parent centers items */
 }
 

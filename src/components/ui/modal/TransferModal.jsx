@@ -1,6 +1,6 @@
 import { React, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import useTransferRequest from "../../../hooks/useTransferRequest";
+import useTransferRequest from "../../../hooks/transfer/useTransferRequest";
 import "./TransferModal.css";
 import AddingStatusModal from "../status/AddingStatusModal";
 

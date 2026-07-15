@@ -1,6 +1,6 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useTransferAction } from "../../../hooks/useTransferAction";
+import { useTransferAction } from "../../../hooks/transfer/useTransferAction";
 import "./TransferActionModal.css";
 
 function TransferActionModal({ type, onClose, onConfirm }) {

@@ -1,6 +1,6 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useTransferPanel } from "../../hooks/useTransferPanel";
+import { useTransferPanel } from "../../hooks/transfer/useTransferPanel";
 import TransferCard from "../ui/card/TransferCard";
 import { EMPTY_STATE_CONFIG } from "../../data/transfer";
 import TransferRoomCard from "../ui/card/TransferRoomCard";

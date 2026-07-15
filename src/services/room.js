@@ -30,7 +30,8 @@ export async function fetchRooms() {
 }
 
 export async function fetchRoom(id) {
-  const snap = await getDoc(doc(db, "room", id));
+  const roomID = toLowerCase(id);
+  const snap = await getDoc(doc(db, "room", roomID));
   if (!snap.exists()) throw new Error("Room not found.");
 
   const data = snap.data();
@@ -39,6 +40,7 @@ export async function fetchRoom(id) {
     id: snap.id,
     name: data.name,
     assetCount: data.assetCount ?? 0,
+    last_audited_at: data.last_audited_at ?? null,
   };
 }
 
@@ -52,6 +54,7 @@ export async function addRoom(data, role) {
   const payload = {
     name: data.name,
     assetCount: 0,
+    last_audited_at: null,  
 
     // metadata
     created_at: serverTimestamp(),
@@ -123,4 +126,29 @@ export function subscribeToAssetsInRoom(room_id, callback, onError) {
   );
 
   return unsubscribe;
+}
+
+export async function fetchRoomsByLastAudited(newestFirst, count) {
+  const rooms = await fetchRooms();
+
+  rooms.sort((a, b) => {
+    const aTime = a.last_audited_at ?? null;
+    const bTime = b.last_audited_at ?? null;
+
+    // rooms never audited (null) always sink to the bottom, regardless of direction
+    if (aTime === null && bTime === null) return 0;
+    if (aTime === null) return 1;
+    if (bTime === null) return -1;
+
+    const aMillis = aTime.toMillis
+      ? aTime.toMillis()
+      : new Date(aTime).getTime();
+    const bMillis = bTime.toMillis
+      ? bTime.toMillis()
+      : new Date(bTime).getTime();
+
+    return newestFirst ? bMillis - aMillis : aMillis - bMillis;
+  });
+
+  return rooms.slice(0, count);
 }

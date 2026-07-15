@@ -1,7 +1,7 @@
 import "./ImagePanel.css";
 import { useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useCamera } from "../../hooks/useCamera";
+import { useCamera } from "../../hooks/camera/useCamera";
 
 function ImagePanel({ title, image, onImageChange, required }) {
   const fileRef = useRef(null);

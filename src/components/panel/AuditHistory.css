@@ -1,0 +1,115 @@
+.audit-history {
+  background: #ffffff;
+  border: 1px solid #e2beb9;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.audit-history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: #eff4ff;
+  border-bottom: 1px solid #e2beb9;
+}
+
+.audit-history-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #121c2a;
+  margin: 0;
+}
+
+.audit-history-view-all {
+  background: none;
+  border: none;
+  color: #860100;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.audit-history-view-all:hover {
+  text-decoration: underline;
+}
+
+.audit-history-table-wrapper {
+  overflow-x: auto;
+}
+
+.audit-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.audit-history-table th {
+  padding: 16px 24px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #5a413c;
+  border-bottom: 1px solid #e2beb9;
+}
+
+.audit-history-table td {
+  padding: 16px 24px;
+  font-size: 14px;
+  color: #121c2a;
+  border-bottom: 1px solid #e2beb9;
+}
+
+.audit-history-row {
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.audit-history-row:hover {
+  background: #eff4ff;
+}
+
+.audit-history-audit-no {
+  font-weight: 700;
+  color: #860100;
+}
+
+.audit-history-muted {
+  color: #5a413c;
+}
+
+.audit-history-discrepancy {
+  color: #ba1a1a;
+  font-weight: 700;
+}
+
+.audit-history-empty {
+  text-align: center;
+  color: #5a413c;
+  padding: 32px 24px;
+}
+
+.audit-history-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.audit-history-badge--completed {
+  background: #dcf5e3;
+  color: #1e6b3a;
+}
+
+.audit-history-badge--progress {
+  background: #ffddb3;
+  color: #6d4700;
+}
+
+.audit-history-badge--neutral {
+  background: #e6eeff;
+  color: #5a413c;
+}

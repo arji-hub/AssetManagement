@@ -1,0 +1,99 @@
+import jsQR from "jsqr";
+
+export const MAX_DIMENSION = 1000;
+export const DECODE_TIMEOUT_MS = 5000;
+
+export function boostContrastFromBlueChannel(imageData) {
+  const { data, width, height } = imageData;
+  const out = new Uint8ClampedArray(data.length);
+
+  let sum = 0;
+  for (let i = 0; i < data.length; i += 4) {
+    sum += data[i + 2];
+  }
+  const avgBlue = sum / (data.length / 4);
+  const threshold = avgBlue * 0.85;
+
+  for (let i = 0; i < data.length; i += 4) {
+    const blue = data[i + 2];
+    const value = blue < threshold ? 0 : 255;
+    out[i] = value;
+    out[i + 1] = value;
+    out[i + 2] = value;
+    out[i + 3] = 255;
+  }
+
+  return new ImageData(out, width, height);
+}
+
+// Try a standard decode first, then fall back to the blue-channel-boosted
+// pass for red/orange gradient QR codes. Shared by both live-frame scanning
+// and image-upload decoding so there's only one detection strategy to tune.
+export function decodeImageData(imageData) {
+  let code = jsQR(imageData.data, imageData.width, imageData.height);
+
+  if (!code) {
+    const boosted = boostContrastFromBlueChannel(imageData);
+    code = jsQR(boosted.data, boosted.width, boosted.height);
+  }
+
+  return code;
+}
+
+// Decode a QR code from a File (e.g. an uploaded photo). Downscales large
+// images first, then runs the shared decodeImageData pipeline.
+export function decodeImageFile(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onerror = () => reject(new Error("Failed to read file."));
+
+    reader.onload = (event) => {
+      const img = new Image();
+
+      img.onerror = () => reject(new Error("Failed to load image."));
+
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
+          const scale = MAX_DIMENSION / Math.max(width, height);
+          width = Math.round(width * scale);
+          height = Math.round(height * scale);
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const imageData = ctx.getImageData(0, 0, width, height);
+        const code = decodeImageData(imageData);
+
+        if (code) {
+          resolve(code.data);
+        } else {
+          reject(new Error("No QR code found in image."));
+        }
+      };
+
+      img.src = event.target.result;
+    };
+
+    reader.readAsDataURL(file);
+  });
+}
+
+// Race a decode against a timeout so a bad/blurry image doesn't hang forever.
+export function decodeImageFileWithTimeout(
+  file,
+  timeoutMs = DECODE_TIMEOUT_MS,
+) {
+  return Promise.race([
+    decodeImageFile(file),
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("timeout")), timeoutMs),
+    ),
+  ]);
+}
