@@ -37,6 +37,7 @@ functions/.env*
 
 functions/migrate.js
 functions/generateReport.js
+functions/changeQR.js
 
 #service key firebase
 functions/serviceAccountKey.json
