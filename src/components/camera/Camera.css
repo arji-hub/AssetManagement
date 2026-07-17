@@ -167,6 +167,7 @@
 }
 
 /* ---------------- Focus ring ---------------- */
+/* Focus ring (shrinks inward) */
 .qr-focus-ring {
   position: absolute;
   width: 64px;
@@ -176,11 +177,10 @@
   border: 2px solid #fff;
   border-radius: 50%;
   pointer-events: none;
-  z-index: 5;
-  animation: qr-focus-pulse 0.7s ease-out forwards;
+  z-index: 10001;
+  animation: qr-focus-shrink 0.7s ease-out forwards;
 }
 
-/* Status variants driven by focusStatus (focusing / focused / failed) */
 .qr-focus-ring--focusing {
   border-color: #f5aa2c;
 }
@@ -191,10 +191,40 @@
 
 .qr-focus-ring--failed {
   border-color: #860100;
-  animation: qr-focus-pulse-fail 0.5s ease-out forwards;
+  animation: qr-focus-shrink-fail 0.5s ease-out forwards;
 }
 
-@keyframes qr-focus-pulse {
+/* Focus orb (grows outward) */
+.qr-focus-orb {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  margin-left: -8px;
+  margin-top: -8px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 10000;
+  animation: qr-focus-grow 0.7s ease-out forwards;
+}
+
+.qr-focus-orb--focusing {
+  background: radial-gradient(circle, #f5aa2c 0%, rgba(245, 170, 44, 0.3) 100%);
+  box-shadow: 0 0 12px rgba(245, 170, 44, 0.5);
+}
+
+.qr-focus-orb--focused {
+  background: radial-gradient(circle, #4caf50 0%, rgba(76, 175, 80, 0.3) 100%);
+  box-shadow: 0 0 12px rgba(76, 175, 80, 0.5);
+}
+
+.qr-focus-orb--failed {
+  background: radial-gradient(circle, #860100 0%, rgba(134, 1, 0, 0.3) 100%);
+  box-shadow: 0 0 12px rgba(134, 1, 0, 0.5);
+  animation: qr-focus-grow-fail 0.5s ease-out forwards;
+}
+
+/* Ring shrinking animation */
+@keyframes qr-focus-shrink {
   0% {
     transform: scale(1.4);
     opacity: 0;
@@ -206,11 +236,10 @@
   100% {
     transform: scale(1);
     opacity: 0;
-    border-color: #fff;
   }
 }
 
-@keyframes qr-focus-pulse-fail {
+@keyframes qr-focus-shrink-fail {
   0% {
     transform: scale(1.2);
     opacity: 0;
@@ -220,6 +249,29 @@
   }
   100% {
     transform: scale(1);
+    opacity: 0;
+  }
+}
+
+/* Orb growing animation */
+@keyframes qr-focus-grow {
+  0% {
+    transform: scale(0.4);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+@keyframes qr-focus-grow-fail {
+  0% {
+    transform: scale(0.4);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(3.2);
     opacity: 0;
   }
 }
