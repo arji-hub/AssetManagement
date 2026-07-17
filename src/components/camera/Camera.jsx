@@ -49,11 +49,20 @@ const Camera = ({ onScan, onClose, isOpen = true }) => {
 
       {/* Focus Ring with Status Indicator */}
       {focusPoint && (
-        <span
-          className={`qr-focus-ring qr-focus-ring--${focusStatus}`}
-          style={{ left: focusPoint.x, top: focusPoint.y }}
-          aria-label={`Focus ring ${focusStatus}`}
-        />
+        <>
+          {/* Outer ring that shrinks inward */}
+          <span
+            className={`qr-focus-ring qr-focus-ring--${focusStatus}`}
+            style={{ left: focusPoint.x, top: focusPoint.y }}
+            aria-label={`Focus ring ${focusStatus}`}
+          />
+          {/* Inner orb that expands outward */}
+          <span
+            className={`qr-focus-orb qr-focus-orb--${focusStatus}`}
+            style={{ left: focusPoint.x, top: focusPoint.y }}
+            aria-hidden="true"
+          />
+        </>
       )}
 
       {/* Main Overlay */}
