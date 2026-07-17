@@ -33,11 +33,6 @@ function QRModal({ onScan, onImageUpload }) {
     onScan?.(qrValue);
   };
 
-  const handleImageUpload = (file) => {
-    setIsCameraOpen(false);
-    onImageUpload?.(file);
-  };
-
   return (
     <div className="qr-modal-box">
       <div className="qr-modal-title">SCAN QR</div>
@@ -90,7 +85,6 @@ function QRModal({ onScan, onImageUpload }) {
       <Camera
         isOpen={isCameraOpen}
         onScan={handleScan}
-        onImageUpload={handleImageUpload}
         onClose={() => setIsCameraOpen(false)}
       />
     </div>

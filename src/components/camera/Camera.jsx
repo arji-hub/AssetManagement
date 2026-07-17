@@ -2,7 +2,7 @@ import { useCamera } from "../../hooks/camera/useCamera";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./Camera.css";
 
-const Camera = ({ onScan, onImageUpload, onClose, isOpen = true }) => {
+const Camera = ({ onScan, onClose, isOpen = true }) => {
   const {
     videoRef,
     canvasRef,
@@ -20,11 +20,9 @@ const Camera = ({ onScan, onImageUpload, onClose, isOpen = true }) => {
     retryCount,
     toggleTorch,
     switchCamera,
-    openFilePicker,
-    handleFileChange,
     handleFocusTap,
     startStream,
-  } = useCamera({ isOpen, onScan, onImageUpload });
+  } = useCamera({ isOpen, onScan });
 
   if (!isOpen) return null;
 
@@ -173,16 +171,6 @@ const Camera = ({ onScan, onImageUpload, onClose, isOpen = true }) => {
         <div className="qr-camera-bottombar">
           <button
             type="button"
-            className="qr-icon-btn"
-            onClick={openFilePicker}
-            aria-label="Upload image from gallery"
-            title="Upload image from gallery"
-          >
-            <FontAwesomeIcon icon="fa-solid fa-image" />
-          </button>
-
-          <button
-            type="button"
             className="qr-icon-btn qr-icon-btn--switch"
             onClick={switchCamera}
             aria-label="Switch camera"
@@ -192,16 +180,6 @@ const Camera = ({ onScan, onImageUpload, onClose, isOpen = true }) => {
           </button>
         </div>
       </div>
-
-      {/* Hidden File Input */}
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        className="qr-camera-file-input"
-        onChange={handleFileChange}
-        aria-hidden="true"
-      />
     </div>
   );
 };

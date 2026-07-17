@@ -16,7 +16,7 @@ const CAMERA_CONFIG = {
   RETRY_DELAY_MS: 2000,
 };
 
-export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
+export const useCamera = ({ isOpen = true, onScan}) => {
   // Refs for DOM elements
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -303,47 +303,6 @@ export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
     setFacingMode(newMode);
   }, [facingMode]);
 
-  // ============ File Upload Handling ============
-  const openFilePicker = useCallback(() => {
-    fileInputRef.current?.click();
-  }, []);
-
-  const handleFileChange = useCallback(
-    (e) => {
-      const file = e.target.files?.[0];
-
-      // Validate file type
-      if (!file.type.startsWith("image/")) {
-        const errorMsg = "Please select a valid image file.";
-        setError(errorMsg);
-        console.error("[Camera] Invalid file type:", file.type);
-        return;
-      }
-
-      // Validate file size (max 5MB)
-      const maxSizeBytes = 5 * 1024 * 1024;
-      if (file.size > maxSizeBytes) {
-        const errorMsg = "Image file too large. Maximum size is 5MB.";
-        setError(errorMsg);
-        console.error("[Camera] File too large:", {
-          size: file.size,
-          maxSize: maxSizeBytes,
-        });
-        return;
-      }
-
-      if (onImageUpload) {
-        onImageUpload(file);
-      } else {
-        console.warn("[Camera] No onImageUpload handler provided");
-      }
-
-      // Clear the input
-      e.target.value = "";
-    },
-    [onImageUpload],
-  );
-
   // ============ Tap-to-Focus ============
   const applyFocusConstraint = useCallback(async (x, y) => {
     const track = streamRef.current?.getVideoTracks?.()[0];
@@ -450,8 +409,6 @@ export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
     // Handlers
     toggleTorch,
     switchCamera,
-    openFilePicker,
-    handleFileChange,
     handleFocusTap,
     startStream, // Exposed for manual retry
   };
