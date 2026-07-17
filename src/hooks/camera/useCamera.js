@@ -16,16 +16,6 @@ const CAMERA_CONFIG = {
   RETRY_DELAY_MS: 2000,
 };
 
-/**
- * useCamera - Advanced QR scanning hook with error recovery, performance optimization,
- * and enhanced user feedback for asset auditing workflows.
- *
- * @param {Object} config
- * @param {boolean} config.isOpen - Whether camera modal is open
- * @param {Function} config.onScan - Callback when QR code is scanned (receives data string)
- * @param {Function} config.onImageUpload - Callback for file upload
- * @returns {Object} Camera controls, refs, and state
- */
 export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
   // Refs for DOM elements
   const videoRef = useRef(null);
@@ -105,7 +95,6 @@ export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
       const angle = window.innerHeight > window.innerWidth ? 0 : 90;
       const newOrientation = angle === 0 ? "portrait" : "landscape";
       setOrientation(newOrientation);
-      console.log("[Camera] Orientation changed to:", newOrientation);
     };
 
     window.addEventListener("orientationchange", handleOrientationChange);
@@ -116,8 +105,6 @@ export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
 
   // ============ Camera Lifecycle ============
   const stopStream = useCallback(() => {
-    console.log("[Camera] Stopping stream");
-
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     if (focusResetTimeoutRef.current)
       clearTimeout(focusResetTimeoutRef.current);
@@ -132,8 +119,6 @@ export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
   }, []);
 
   const startStream = useCallback(async () => {
-    console.log("[Camera] Starting stream with facingMode:", facingMode);
-
     setError(null);
     setIsReady(false);
     stopStream();
@@ -166,11 +151,6 @@ export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
 
       setIsReady(true);
       setRetryCount(0);
-
-      console.log("[Camera] Stream started successfully", {
-        torchSupported: Boolean(capabilities.torch),
-        focusSupported: Boolean(capabilities.focusMode),
-      });
     } catch (err) {
       console.error("[Camera] Camera init failed:", {
         error: err?.name,
@@ -194,12 +174,6 @@ export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
         err?.name !== "NotAllowedError" &&
         retryCount < CAMERA_CONFIG.MAX_RETRY_ATTEMPTS
       ) {
-        console.log("[Camera] Scheduling retry attempt", {
-          attempt: retryCount + 1,
-          maxAttempts: CAMERA_CONFIG.MAX_RETRY_ATTEMPTS,
-          delayMs: CAMERA_CONFIG.RETRY_DELAY_MS,
-        });
-
         setTimeout(() => {
           setRetryCount((prev) => prev + 1);
         }, CAMERA_CONFIG.RETRY_DELAY_MS);
@@ -281,11 +255,6 @@ export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
           // New scan detected
           lastScannedRef.current = { data: code.data, timestamp: currentTime };
 
-          console.log("[Camera] QR code detected:", {
-            data: code.data,
-            timestamp: new Date().toISOString(),
-          });
-
           // Visual feedback
           setJustScanned(true);
           setTimeout(() => setJustScanned(false), 300);
@@ -308,7 +277,6 @@ export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
   // Start/stop scan loop
   useEffect(() => {
     if (isReady) {
-      console.log("[Camera] Starting scan loop");
       rafRef.current = requestAnimationFrame(scanFrame);
     }
     return () => {
@@ -324,7 +292,6 @@ export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
     try {
       await track.applyConstraints({ advanced: [{ torch: !torchOn }] });
       setTorchOn((prev) => !prev);
-      console.log("[Camera] Torch toggled to:", !torchOn);
     } catch (err) {
       console.error("[Camera] Torch control failed:", err?.message);
     }
@@ -333,7 +300,6 @@ export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
   // ============ Camera Switching ============
   const switchCamera = useCallback(() => {
     const newMode = facingMode === "environment" ? "user" : "environment";
-    console.log("[Camera] Switching to", newMode, "camera");
     setFacingMode(newMode);
   }, [facingMode]);
 
@@ -345,11 +311,6 @@ export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
   const handleFileChange = useCallback(
     (e) => {
       const file = e.target.files?.[0];
-
-      if (!file) {
-        console.log("[Camera] File selection cancelled");
-        return;
-      }
 
       // Validate file type
       if (!file.type.startsWith("image/")) {
@@ -370,12 +331,6 @@ export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
         });
         return;
       }
-
-      console.log("[Camera] File selected for upload:", {
-        name: file.name,
-        type: file.type,
-        size: file.size,
-      });
 
       if (onImageUpload) {
         onImageUpload(file);
@@ -421,7 +376,6 @@ export const useCamera = ({ isOpen = true, onScan, onImageUpload }) => {
         }, CAMERA_CONFIG.FOCUS_RESET_MS);
       }
 
-      console.log("[Camera] Focus constraint applied at:", { x, y });
       return true;
     } catch (err) {
       console.error("[Camera] Tap-to-focus failed:", err?.message);
