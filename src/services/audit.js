@@ -36,7 +36,12 @@ export async function generateAuditNo(type) {
   });
 }
 
-export async function addAuditRoom({ roomId, assets, auditedBy, auditedByName }) {
+export async function addAuditRoom({
+  roomId,
+  assets,
+  auditedBy,
+  auditedByName,
+}) {
   if (!roomId) throw new Error("roomId is required.");
   if (!assets || assets.length === 0) {
     throw new Error("No assets provided for this audit.");
@@ -58,7 +63,10 @@ export async function addAuditRoom({ roomId, assets, auditedBy, auditedByName })
     completed_at: null,
   };
 
-  const auditRoomRef = await addDoc(collection(db, "audit_room"), auditRoomData);
+  const auditRoomRef = await addDoc(
+    collection(db, "audit_room"),
+    auditRoomData,
+  );
 
   const batch = writeBatch(db);
 
@@ -99,8 +107,10 @@ export async function fetchAuditRooms() {
       total_assets: data.total_assets,
       audited_count: data.audited_count,
       has_discrepancies: data.has_discrepancies,
+      discrepancy_count: data.discrepancy_count,
       created_at: data.created_at,
       completed_at: data.completed_at,
+      status: data.status,
     };
   });
 }

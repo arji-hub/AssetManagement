@@ -17,6 +17,7 @@ function AuditRoom() {
     setSearch,
     stats,
     handleLogAction,
+    handleHistoryRowClick,
   } = useRoomLogs();
   return (
     <MainLayout>
@@ -81,7 +82,11 @@ function AuditRoom() {
           </p>
         )}
 
-        <AuditHistory sessions={filteredLogs} onLogAction={handleLogAction} />
+        <AuditHistory
+          sessions={filteredLogs}
+          onLogAction={handleLogAction}
+          handleRowClick={handleHistoryRowClick}
+        />
       </div>
     </MainLayout>
   );

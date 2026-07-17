@@ -6,6 +6,7 @@ import AuditCard from "../../components/ui/card/AuditCard";
 import { useParams } from "react-router-dom";
 import BackButton from "../../components/ui/button/BackButton";
 import { formatDate } from "../../utils/date";
+import { STATUS_CONFIG } from "../../data/audit";
 import "./AuditRoomInfo.css";
 
 // == Local presentational helpers ==========================================
@@ -21,24 +22,6 @@ function DiscrepancyBanner({ hasDiscrepancies, discrepancyCount }) {
     </div>
   );
 }
-
-const STATUS_CONFIG = {
-  audited: {
-    label: "Audited",
-    icon: "fa-solid fa-check",
-    className: "audited",
-  },
-  not_audited: {
-    label: "Not audited",
-    icon: "fa-solid fa-minus",
-    className: "not-audited",
-  },
-  misplaced: {
-    label: "Misplaced",
-    icon: "fa-solid fa-triangle-exclamation",
-    className: "misplaced",
-  },
-};
 
 function StatusBadge({ status }) {
   const config = STATUS_CONFIG[status] ?? {
@@ -69,6 +52,7 @@ function AuditRoomInfo() {
     totalAssets,
     auditedCount,
     progressPercent,
+    roomName,
   } = useRoomInfo(auditID);
 
   const hasItems = !loading && auditItems.length > 0;
@@ -149,7 +133,7 @@ function AuditRoomInfo() {
             </div>
             <div className="audit-session-meta-row">
               <span className="audit-session-card-label">Room</span>
-              <span>{audit?.room_id || "—"}</span>
+              <span>{roomName || "—"}</span>
             </div>
             <div className="audit-session-meta-row">
               <span className="audit-session-card-label">Started</span>
@@ -227,7 +211,9 @@ function AuditRoomInfo() {
                         <span className="audit-session-card-label">
                           Description
                         </span>
-                        <span className="audit-session-card-label-description">{item.description || "—"}</span>
+                        <span className="audit-session-card-label-description">
+                          {item.description || "—"}
+                        </span>
                       </div>
                       <div className="audit-session-card-meta-row">
                         <span className="audit-session-card-label">

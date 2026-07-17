@@ -69,6 +69,9 @@ function useRoomLogs() {
     [navigate],
   );
 
+  const handleHistoryRowClick = (roomID, auditID) =>
+    navigate(`/audit/room/${roomID}/${auditID}`);
+
   return {
     filteredLogs,
     logsLoading,
@@ -77,6 +80,7 @@ function useRoomLogs() {
     setSearch,
     stats,
     handleLogAction,
+    handleHistoryRowClick,
   };
 }
 
