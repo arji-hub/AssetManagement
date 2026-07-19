@@ -5,6 +5,7 @@ import {
   addDoc,
   getDoc,
   getDocs,
+  updateDoc,
   writeBatch,
   serverTimestamp,
   orderBy,
@@ -242,5 +243,18 @@ export async function updateAuditItem(auditID, itemID, updates) {
       itemID,
       updates,
     };
+  });
+}
+
+export async function completeAuditSession(auditID) {
+  if (!auditID) {
+    throw new Error("completeAuditSession: auditID is required");
+  }
+
+  const auditRef = doc(db, "audit_room", auditID);
+
+  await updateDoc(auditRef, {
+    status: "completed",
+    completed_at: serverTimestamp(),
   });
 }

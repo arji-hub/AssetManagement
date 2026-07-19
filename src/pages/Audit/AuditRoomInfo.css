@@ -24,6 +24,14 @@
   gap: 12px;
 }
 
+.audit-session-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+
 .audit-session-back-btn {
   flex-shrink: 0;
   margin-top: 2px;
@@ -69,7 +77,6 @@
 /* ── Camera Scan Button ── */
 .audit-camera-scan {
   display: inline-flex;
-  margin-left: auto;
   align-items: center;
   gap: 8px;
   padding: 10px 24px;
@@ -100,6 +107,40 @@
   transform: none;
 }
 
+/* ── Complete Audit Button ── */
+.audit-session-save-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border: 1px solid #16a34a;
+  border-radius: 8px;
+  background: rgba(34, 197, 94, 0.08);
+  color: #16a34a;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    transform 0.1s ease;
+}
+
+.audit-session-save-btn:hover:not(:disabled) {
+  background: rgba(34, 197, 94, 0.15);
+  border-color: #15803d;
+  transform: translateY(-2px);
+}
+
+.audit-session-save-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.audit-session-save-btn:disabled {
+  border-color: #ccc;
+  background: #f3e9e8;
+  color: #8e706b;
+  cursor: not-allowed;
+  transform: none;
+}
 /* == Discrepancy banner ===================================================== */
 
 .audit-session-discrepancy-banner {

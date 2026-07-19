@@ -8,6 +8,7 @@ import BackButton from "../../components/ui/button/BackButton";
 import { formatDate } from "../../utils/date";
 import { STATUS_CONFIG } from "../../data/audit";
 import Camera from "../../components/camera/Camera";
+import ScanStatusModal from "../../components/ui/status/scanStatusModal";
 import "./AuditRoomInfo.css";
 
 // == Local presentational helpers ==========================================
@@ -54,12 +55,19 @@ function AuditRoomInfo() {
     progressPercent,
     roomName,
     verifyingId,
-    verifiedItem,
     hasItems,
     handleVerifyItem,
     handleScan,
     isCameraOpen,
     setIsCameraOpen,
+    scanModalOpen,
+    scanModalError,
+    scanModalStatus,
+    scannedItem,
+    handleScanModalClose,
+    completingAudit,
+    completeAuditError,
+    handleCompleteAudit,
   } = useRoomInfo(auditID);
 
   return (
@@ -82,15 +90,61 @@ function AuditRoomInfo() {
               )}
             </div>
           </div>
-          <button
-            type="button"
-            className="audit-camera-scan"
-            onClick={() => setIsCameraOpen(true)}
-          >
-            <FontAwesomeIcon icon="fa-solid fa-camera" />
-            Scan Asset
-          </button>
+
+          <div className="audit-session-header-right">
+            {audit?.status !== "completed" && (
+              <button
+                type="button"
+                className="audit-camera-scan"
+                onClick={() => setIsCameraOpen(true)}
+              >
+                <FontAwesomeIcon icon="fa-solid fa-camera" />
+                Scan Asset
+              </button>
+            )}
+
+            {audit?.status == "completed" && (
+              <button
+                type="button"
+                className="audit-camera-scan"
+                onClick={() => setIsCameraOpen(true)}
+              >
+                <FontAwesomeIcon icon="fa-solid fa-camera" />
+                Scan Asset
+              </button>
+            )}
+
+            <button
+              type="button"
+              className="audit-session-save-btn"
+              onClick={handleCompleteAudit}
+              disabled={
+                audit?.status === "completed" ||
+                completingAudit ||
+                loading ||
+                !hasItems
+              }
+              title={
+                audit?.status === "completed"
+                  ? "Audit already completed"
+                  : "Save and mark this audit as complete"
+              }
+            >
+              {completingAudit ? (
+                <FontAwesomeIcon icon="fa-solid fa-spinner" spin />
+              ) : (
+                <FontAwesomeIcon icon="fa-solid fa-check" />
+              )}
+              {audit?.status === "completed" ? "Completed" : "Complete Audit"}
+            </button>
+          </div>
         </div>
+
+        {completeAuditError && (
+          <p className="audit-session-error" role="alert">
+            {completeAuditError}
+          </p>
+        )}
 
         {/* Discrepancy banner */}
         {audit && (
@@ -111,13 +165,13 @@ function AuditRoomInfo() {
           <AuditCard
             variant="primary"
             label="Audited"
-            value={loading ? "—" : audit.audited_count}
+            value={loading ? "—" : audit?.audited_count}
           />
 
           <AuditCard
             variant="primary"
             label="Discrepancies"
-            value={loading ? "—" : audit.discrepancy_count}
+            value={loading ? "—" : audit?.discrepancy_count}
           />
 
           <AuditCard
@@ -327,16 +381,26 @@ function AuditRoomInfo() {
             </>
           )}
         </div>
+
+        {/* Camera modal */}
         <Camera
           isOpen={isCameraOpen}
           onScan={handleScan}
           onClose={() => setIsCameraOpen(false)}
         />
+
+        {/* Scan status modal - Shows scanned item details */}
+        {scanModalOpen && (
+          <ScanStatusModal
+            item={scannedItem}
+            status={scanModalStatus}
+            errorMessage={scanModalError}
+            onClose={handleScanModalClose}
+          />
+        )}
       </div>
     </MainLayout>
   );
 }
 
 export default AuditRoomInfo;
-
-//verify button in room info todo: add button scan camera
