@@ -11,12 +11,9 @@ import {
   query,
   where,
   runTransaction,
+  onSnapshot,
 } from "firebase/firestore";
-
-const AUDIT_NO_CONFIG = {
-  room: { counterId: "audit_room", prefix: "ARM" },
-  report: { counterId: "audit_report", prefix: "ARPT" },
-};
+import { AUDIT_NO_CONFIG } from "../data/audit";
 
 export async function generateAuditNo(type) {
   const config = AUDIT_NO_CONFIG[type];
@@ -141,24 +138,109 @@ export async function fetchAuditRoomsByRoomID(roomId) {
   });
 }
 
-export async function fetchAuditByID(auditID) {
+export function subscribeToAuditByID(auditID, onData, onError) {
   if (!auditID) throw new Error("auditID is required.");
 
   const auditRef = doc(db, "audit_room", auditID);
-  const auditSnap = await getDoc(auditRef);
+  const itemsRef = collection(db, "audit_room", auditID, "audit_item");
 
-  if (!auditSnap.exists()) {
-    return null;
+  let auditData = null;
+  let itemsData = null;
+  let auditUnsubscribe = null;
+  let itemsUnsubscribe = null;
+
+  // Listen to audit document
+  auditUnsubscribe = onSnapshot(
+    auditRef,
+    (auditSnap) => {
+      if (!auditSnap.exists()) {
+        onError(new Error("Audit not found"));
+        return;
+      }
+
+      auditData = {
+        id: auditSnap.id,
+        ...auditSnap.data(),
+      };
+
+      // Only call onData if we have both audit and items data
+      if (itemsData !== null) {
+        onData({ ...auditData, items: itemsData });
+      }
+    },
+    onError,
+  );
+
+  // Listen to items subcollection
+  itemsUnsubscribe = onSnapshot(
+    itemsRef,
+    (itemsSnap) => {
+      itemsData = itemsSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
+
+      // Only call onData if we have both audit and items data
+      if (auditData !== null) {
+        onData({ ...auditData, items: itemsData });
+      }
+    },
+    onError,
+  );
+
+  return () => {
+    if (auditUnsubscribe) auditUnsubscribe();
+    if (itemsUnsubscribe) itemsUnsubscribe();
+  };
+}
+
+export async function updateAuditItem(auditID, itemID, updates) {
+  if (!auditID) throw new Error("auditID is required.");
+  if (!itemID) throw new Error("itemID is required.");
+  if (!updates || typeof updates !== "object") {
+    throw new Error("updates must be a non-empty object.");
   }
 
-  const itemsRef = collection(db, "audit_room", auditID, "audit_item");
-  const itemsSnap = await getDocs(itemsRef);
+  const auditRef = doc(db, "audit_room", auditID);
+  const itemRef = doc(db, "audit_room", auditID, "audit_item", itemID);
 
-  const items = itemsSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  return await runTransaction(db, async (transaction) => {
+    const auditSnap = await transaction.get(auditRef);
+    const itemSnap = await transaction.get(itemRef);
 
-  return {
-    id: auditSnap.id,
-    ...auditSnap.data(),
-    items,
-  };
+    if (!auditSnap.exists()) {
+      throw new Error(`Audit with ID "${auditID}" not found.`);
+    }
+
+    if (!itemSnap.exists()) {
+      throw new Error(`Audit item with ID "${itemID}" not found.`);
+    }
+
+    const itemData = itemSnap.data();
+    const auditData = auditSnap.data();
+
+    // Track if we're marking as audited (was not audited, now is)
+    const isMarkingAsAudited =
+      itemData.audit_status !== "audited" && updates.audit_status === "audited";
+
+    // Update the audit item
+    transaction.update(itemRef, {
+      ...updates,
+      audit_status: "audited",
+      audited_at: serverTimestamp(),
+    });
+
+    // If marking as audited, increment the audited_count in the parent audit
+    if (isMarkingAsAudited) {
+      const newAuditedCount = (auditData.audited_count ?? 0) + 1;
+      transaction.update(auditRef, {
+        audited_count: newAuditedCount,
+        updated_at: serverTimestamp(),
+      });
+    }
+
+    return {
+      success: true,
+      auditID,
+      itemID,
+      updates,
+    };
+  });
 }

@@ -15,3 +15,8 @@ export const STATUS_CONFIG = {
     className: "misplaced",
   },
 };
+
+export const AUDIT_NO_CONFIG = {
+  room: { counterId: "audit_room", prefix: "ARM" },
+  report: { counterId: "audit_report", prefix: "ARPT" },
+};
