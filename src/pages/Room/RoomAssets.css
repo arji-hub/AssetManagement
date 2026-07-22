@@ -26,25 +26,106 @@
 .room-assets-header {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 16px;
+  row-gap: 10px;
+}
+.room-assets-eyebrow-icon {
+  display: block;
+  font-size: large;
+  color: #f5aa2c;
+  margin-bottom: 4px;
 }
 
 .room-assets-title {
-  margin: 0 0 4px;
-  font-size: clamp(20px, 2.5vw, 28px);
-  font-weight: 700;
-  color: #111827;
-}
-
-.room-assets-subtitle {
+  display: flex;
   margin: 0;
-  font-size: clamp(13px, 1.2vw, 15px);
-  color: #6b7280;
+  font-size: clamp(24px, 3vw, 34px);
+  font-weight: 800;
+  line-height: 1.1;
+  color: #860100;
+  align-items: center;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
 }
 
-.room-assets-subtitle strong {
-  color: #860100;
+/* ── Heading row: title + top custodian card ─────────────────── */
+.room-assets-heading {
+  flex: 0 0 auto;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.room-assets-heading-main {
+  display: flex;
+  padding: 10px 20px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #9c0201 0%, #6b0000 100%);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.1),
+    0 6px 16px -6px rgba(134, 1, 0, 0.45);
+}
+
+.room-assets-heading-main .room-assets-title {
+  color: #ffffff;
+}
+/* ── Top Custodian card ───────────────────────────────────────── */
+.top-custodian-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 18px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ffffff 0%, #fdfaf5 100%);
+  border: 1px solid #eee0c8;
+  box-shadow:
+    0 1px 2px rgba(134, 1, 0, 0.04),
+    0 4px 14px -6px rgba(134, 1, 0, 0.14);
+}
+
+.top-custodian-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.top-custodian-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #b58a2e;
+}
+
+.top-custodian-name {
+  font-size: 13.5px;
   font-weight: 600;
+  color: #111827;
+  white-space: nowrap;
+}
+
+.top-custodian-count {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-left: 14px;
+  border-left: 1px solid #eee0c8;
+  line-height: 1.1;
+}
+
+.top-custodian-count-value {
+  font-variant-numeric: tabular-nums;
+  font-family: "Sansation";
+  font-weight: 700;
+  font-size: 16px;
+  color: #860100;
+}
+
+.top-custodian-count-label {
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #9ca3af;
 }
 
 /* ── Settings / filters ─────────────────────────────────────── */
@@ -54,6 +135,43 @@
   gap: 12px;
   flex-wrap: wrap;
   justify-content: flex-end;
+}
+
+/* ── Audit Logs button (same styling as PDF trigger button) ── */
+.audit-logs-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-family: "Sansation";
+  font-weight: bold;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  background: linear-gradient(135deg, #9c0201 0%, #6b0000 100%);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.1),
+    0 6px 16px -6px rgba(134, 1, 0, 0.5);
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+}
+
+.audit-logs-btn:hover {
+  background: linear-gradient(135deg, #ac0201 0%, #7a0000 100%);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.1),
+    0 8px 20px -6px rgba(134, 1, 0, 0.55);
+}
+
+.audit-logs-btn:active {
+  transform: scale(0.98);
 }
 
 /* ── Scrollable list wrapper ───────────────────────────────────
@@ -294,6 +412,18 @@
   .room-assets-top {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .room-assets-header {
+  }
+
+  .room-assets-heading {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .top-custodian-card {
+    width: 100%;
   }
 
   .room-assets-settings {

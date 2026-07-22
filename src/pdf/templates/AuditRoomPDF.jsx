@@ -243,6 +243,9 @@ const MIN_ROWS = 14;
 const FORM_CODE = "BulSU-OP-CICT-14F3";
 const REVISION = "0";
 
+// react-pdf's Text only breaks lines at spaces/hyphens by default, so a long
+// unbroken serial number just overflows the cell instead of wrapping. Force
+// an actual line break every few characters so it's guaranteed to wrap.
 function insertSoftBreaks(text, chunkSize = 20) {
   if (!text) return text;
   const chunks = text.match(new RegExp(`.{1,${chunkSize}}`, "g")) || [text];

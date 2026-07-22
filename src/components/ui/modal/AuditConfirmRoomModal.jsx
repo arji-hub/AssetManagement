@@ -7,7 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "./AuditConfirmRoomModal.css";
 
-function AuditConfirmRoomModal({ onConfirm, roomName }) {
+function AuditConfirmRoomModal({ onConfirm, roomName, isEmpty = false }) {
   const [isOpen, setIsOpen] = useState(false);
 
   function handleConfirm() {
@@ -43,30 +43,50 @@ function AuditConfirmRoomModal({ onConfirm, roomName }) {
                 />
               </div>
 
-              <h3>Start a new audit?</h3>
+              <h3>{isEmpty ? "No assets to audit" : "Start a new audit?"}</h3>
             </div>
-            <p>
-              This will begin a new audit session
-              {roomName ? ` for ${roomName}` : ""}. Make sure any audit
-              currently in progress for this room has been completed first.
-            </p>
+
+            {isEmpty ? (
+              <p>
+                This room{roomName ? ` (${roomName})` : ""} has no assets yet.
+                Add assets to this room before starting an audit.
+              </p>
+            ) : (
+              <p>
+                This will begin a new audit session
+                {roomName ? ` for ${roomName}` : ""}. Make sure any audit
+                currently in progress for this room has been completed first.
+              </p>
+            )}
 
             <div className="new-audit-confirm-actions">
-              <button
-                type="button"
-                className="new-audit-confirm-cancel"
-                onClick={() => setIsOpen(false)}
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                className="new-audit-confirm-proceed"
-                onClick={handleConfirm}
-              >
-                <FontAwesomeIcon icon={faCheck} aria-hidden="true" />
-                Proceed
-              </button>
+              {isEmpty ? (
+                <button
+                  type="button"
+                  className="new-audit-confirm-return"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Return
+                </button>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    className="new-audit-confirm-cancel"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="new-audit-confirm-proceed"
+                    onClick={handleConfirm}
+                  >
+                    <FontAwesomeIcon icon={faCheck} aria-hidden="true" />
+                    Proceed
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>

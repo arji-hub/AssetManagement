@@ -28,7 +28,7 @@ function AuditRoomOverview() {
     auditsError,
     lastAuditedAt,
   } = useRoomOverview(roomID);
-
+  console.log("total :", totalAssets);
   const { handleCreateAudit } = useAuditRoomSession(roomID);
 
   return (
@@ -55,6 +55,7 @@ function AuditRoomOverview() {
           <AuditConfirmRoomModal
             roomName={room?.name}
             onConfirm={handleCreateAudit}
+            isEmpty={!totalAssets || totalAssets === 0}
           />
         </div>
 

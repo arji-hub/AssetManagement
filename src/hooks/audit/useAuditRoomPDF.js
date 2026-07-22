@@ -81,7 +81,6 @@ function useAuditRoomPDF(auditID) {
     status: audit?.status || "pending",
     roomCustodian: audit?.room_custodian || null,
   };
-  
 
   return hookReturn;
 }
