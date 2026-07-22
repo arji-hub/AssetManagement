@@ -86,18 +86,18 @@ function QRInfo({ asset }) {
       <div className="qri-plaque">
         {/* ── Header: seal + institutional titles ── */}
         <div className="qri-header">
-          <div className="qri-seal">
-            <img src={cictLogo} alt="CICT Logo" className="qri-seal-img" />
-          </div>
           <div className="qri-header-text">
-            <div className="qri-title">
-              <h2>Bulacan State University</h2>
-              <p className="qri-tag">BulSU Property</p>
+            <div className="qri-seal">
+              <img src={cictLogo} alt="CICT Logo" className="qri-seal-img" />
             </div>
-            <p className="qri-subtitle">
-              College of Information and Communications Technology
-            </p>
+            <div className="qri-title"> 
+              Bulacan State University
+              <p className="qri-tag">
+                College of Information and Communications Technology
+              </p>
+            </div>
           </div>
+          <p className="qri-subtitle">BulSU Property</p>
         </div>
 
         {/* ── Fixed image (not part of scroll area) ── */}
@@ -135,7 +135,7 @@ function QRInfo({ asset }) {
                   </div>
 
                   {status && (
-                    <span
+                    <div
                       className="qri-status-badge-mobile"
                       style={{
                         backgroundColor: statusStyle.bg,
@@ -144,7 +144,7 @@ function QRInfo({ asset }) {
                     >
                       <span className="qri-status-dot-mobile" />
                       {status}
-                    </span>
+                    </div>
                   )}
                 </div>
 
