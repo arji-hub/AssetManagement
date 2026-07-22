@@ -16,7 +16,7 @@ const CAMERA_CONFIG = {
   RETRY_DELAY_MS: 2000,
 };
 
-export const useCamera = ({ isOpen = true, onScan}) => {
+export const useCamera = ({ isOpen = true, onScan }) => {
   // Refs for DOM elements
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -410,6 +410,7 @@ export const useCamera = ({ isOpen = true, onScan}) => {
     toggleTorch,
     switchCamera,
     handleFocusTap,
-    startStream, // Exposed for manual retry
+    startStream,
+    stopStream,
   };
 };

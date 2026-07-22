@@ -3,7 +3,7 @@
 .audit-session-page {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 5px;
   padding: 24px;
 }
 
@@ -12,15 +12,24 @@
 .audit-session-header {
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
+  justify-content: flex-start;
+  gap: 5px;
   flex-wrap: wrap;
+  margin-bottom: 5px;
 }
 
 .audit-session-header-left {
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+.audit-session-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+  flex-wrap: wrap;
 }
 
 .audit-session-back-btn {
@@ -39,7 +48,6 @@
   align-items: baseline;
   gap: 8px;
   flex-wrap: wrap;
-  min-width: 260px;
 }
 
 .audit-session-eyebrow {
@@ -66,6 +74,73 @@
   color: #dc2626;
 }
 
+/* ── Camera Scan Button ── */
+.audit-camera-scan {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border: none;
+  border-radius: 8px;
+  background: #860100;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(134, 1, 0, 0.25);
+  transition:
+    filter 0.15s ease,
+    transform 0.1s ease;
+}
+
+.audit-camera-scan:hover {
+  background: #5d0100;
+  transform: translateY(-2px);
+}
+
+.audit-camera-scan:active {
+  transform: translateY(0);
+}
+
+.audit-camera-scan:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── Complete Audit Button ── */
+.audit-session-save-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border: 1px solid #16a34a;
+  border-radius: 8px;
+  background: rgba(34, 197, 94, 0.08);
+  color: #16a34a;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    transform 0.1s ease;
+}
+
+.audit-session-save-btn:hover:not(:disabled) {
+  background: rgba(34, 197, 94, 0.15);
+  border-color: #15803d;
+  transform: translateY(-2px);
+}
+
+.audit-session-save-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.audit-session-save-btn:disabled {
+  border-color: #ccc;
+  background: #f3e9e8;
+  color: #8e706b;
+  cursor: not-allowed;
+  transform: none;
+}
 /* == Discrepancy banner ===================================================== */
 
 .audit-session-discrepancy-banner {
@@ -86,7 +161,7 @@
 .audit-session-stats {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 5px;
 }
 
 .audit-session-stats > * {
@@ -265,7 +340,7 @@
 .audit-session-card-title {
   font-size: 14px;
   font-weight: 700;
-  color: #121c2a;
+  color: #860100;
   margin: 0;
 }
 
@@ -281,6 +356,25 @@
   align-items: center;
   font-size: 12px;
   color: #5a413c;
+  gap: 8px;
+}
+
+.audit-session-card-meta-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7d6359;
+  min-width: 18px;
+  font-size: 14px;
+}
+.audit-session-card-meta-row:first-child .audit-session-card-meta-value {
+  font-weight: 1000;
+  color: #1a2634;
+}
+
+.audit-session-card-meta-value {
+  flex: 1;
+  color: #121c2a;
 }
 
 /* == Responsive breakpoint ==================================================== */
@@ -291,6 +385,7 @@
     align-items: flex-start;
     gap: 2px;
     flex: 1 1 auto;
+    max-width: 150px;
   }
 
   .audit-session-card-label-description {
@@ -336,4 +431,67 @@
     flex-direction: column;
     gap: 10px;
   }
+}
+/* == Verify Button ============================================================ */
+
+.audit-session-verify-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid #22c55e;
+  border-radius: 6px;
+  background: rgba(34, 197, 94, 0.08);
+  color: #16a34a;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  text-transform: capitalize;
+}
+
+.audit-session-verify-btn:hover:not(:disabled) {
+  background: rgba(34, 197, 94, 0.15);
+  border-color: #16a34a;
+}
+
+.audit-session-verify-btn:active:not(:disabled) {
+  background: rgba(34, 197, 94, 0.2);
+  transform: scale(0.98);
+}
+
+.audit-session-verify-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Mobile full-width variant */
+.audit-session-verify-btn--full-width {
+  width: 100%;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .audit-session-verify-btn {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+}
+
+.audit-status-badge--unexpected {
+  background: rgba(220, 38, 38, 0.12);
+  color: #dc2626;
+}
+
+/* Slight visual distinction for the discrepancy section title */
+.audit-session-section-title--discrepancy {
+  color: #dc2626;
+}
+
+/* Slight left-accent on discrepancy cards, mirroring the discrepancy banner's red */
+.audit-session-card--discrepancy {
+  border-left: 3px solid #dc2626;
 }

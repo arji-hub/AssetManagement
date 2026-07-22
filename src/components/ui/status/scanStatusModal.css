@@ -1,0 +1,308 @@
+/* ============================================
+   SCAN STATUS MODAL STYLES
+   ============================================ */
+
+.scan-modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  animation: scanFadeIn 0.2s ease;
+  z-index: 1000;
+}
+
+.scan-modal-container {
+  background: #fff;
+  border-radius: 8px;
+  padding: 36px 32px 32px;
+  width: 100%;
+  max-width: 360px;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.25);
+  animation: scanSlideUp 0.3s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── Spinner (Loading) ── */
+.scan-modal-spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid #f0f0f2;
+  border-top: 4px solid #860100;
+  border-radius: 50%;
+  animation: scanSpin 0.8s linear infinite;
+  margin-bottom: 20px;
+}
+
+/* ── Status Icon ── */
+.scan-modal-icon {
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  animation: scanPulse 0.6s ease;
+}
+
+.scan-modal-icon--success {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.scan-modal-icon--error {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.scan-modal-icon--duplicate {
+  color: #f5aa2c;
+}
+
+/* ── Title ── */
+.scan-modal-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #111;
+  margin-bottom: 20px;
+}
+
+/* ── Item Info Card ── */
+.scan-modal-item-info {
+  width: 100%;
+  background: #f8f9fb;
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 20px;
+  border-left: 4px solid #860100;
+}
+
+.scan-modal-item-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.scan-modal-item-row:last-child {
+  margin-bottom: 0;
+}
+
+.scan-modal-item-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: #888;
+  text-transform: uppercase;
+}
+
+.scan-modal-item-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: #222;
+  word-break: break-word;
+  line-height: 1.4;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.scan-item-id-success {
+  color: #2e7d32;
+  font-weight: 700;
+}
+
+/* ── Message Text ── */
+.scan-modal-message {
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #555;
+  margin-bottom: 20px;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scan-modal-message--success {
+  color: #2e7d32;
+  font-weight: 600;
+  background: #f1f8f5;
+  padding: 12px;
+  border-radius: 4px;
+}
+
+.scan-modal-message--error {
+  color: #c62828;
+  font-weight: 500;
+  background: #ffe5e5;
+  padding: 12px;
+  border-radius: 4px;
+}
+
+.scan-modal-message--duplicate {
+  color: #b8860b;
+}
+
+/* ── Buttons ── */
+.scan-modal-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.scan-modal-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.scan-modal-btn--success {
+  background: #860100;
+  color: #fff;
+}
+
+.scan-modal-btn--success:hover {
+  background: #5d0100;
+  transform: translateY(-2px);
+}
+
+.scan-modal-btn--success:active {
+  transform: translateY(0);
+}
+
+.scan-modal-btn--error {
+  background: #ffebee;
+  color: #c62828;
+  border: 1px solid #c62828;
+}
+
+.scan-modal-btn--error:hover {
+  background: #ffcdd2;
+}
+
+.scan-modal-btn--error:active {
+  transform: scale(0.98);
+}
+
+.scan-modal-btn--duplicate {
+  background-color: #f5aa2c;
+  color: #1a1a1a;
+}
+
+.scan-modal-btn--duplicate:hover {
+  background-color: #e0991f;
+}
+
+.scan-modal-btn--warning {
+  background: #fff4e0;
+  color: #a65c00;
+  border: 1px solid #f5aa2c;
+}
+
+.scan-modal-btn--warning:hover:not(:disabled) {
+  background: #f5aa2c;
+  color: #1a1a1a;
+}
+
+.scan-modal-btn--warning:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+/* ── Button Group (multiple buttons side by side) ── */
+.scan-modal-btn-group {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  width: 100%;
+}
+
+.scan-modal-btn-group .scan-modal-btn {
+  width: auto;
+  flex: 1;
+}
+
+/* ── Animations ── */
+@keyframes scanFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scanSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scanSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes scanPulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .scan-modal-container {
+    padding: 28px 24px 24px;
+    max-width: 90%;
+  }
+
+  .scan-modal-title {
+    font-size: 20px;
+  }
+
+  .scan-modal-item-info {
+    padding: 12px;
+  }
+
+  .scan-modal-item-value {
+    font-size: 13px;
+  }
+
+  .scan-modal-btn-group {
+    flex-direction: column;
+  }
+}

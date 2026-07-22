@@ -1,24 +1,28 @@
 import { useState, useEffect } from "react";
 import { subscribeToAssetsInRoom, fetchRoom } from "../../services/room";
+import useRoomOverview from "../audit/useRoomOverview";
+import { useNavigate } from "react-router-dom";
 
-export function useRoomAssets(room_id) {
+export function useRoomAssets(roomID) {
+  const navigate = useNavigate();
   const [assets, setAssets] = useState([]);
   const [roomName, setRoomName] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { topCustodian } = useRoomOverview(roomID);
 
   useEffect(() => {
-    if (!room_id) return;
+    if (!roomID) return;
 
     setLoading(true);
     setError(null);
 
-    fetchRoom(room_id)
+    fetchRoom(roomID)
       .then((room) => setRoomName(room.name))
       .catch((err) => setError(err));
 
     const unsubscribe = subscribeToAssetsInRoom(
-      room_id,
+      roomID,
       (assets) => {
         setAssets(assets);
         setLoading(false);
@@ -30,7 +34,11 @@ export function useRoomAssets(room_id) {
     );
 
     return () => unsubscribe();
-  }, [room_id]);
+  }, [roomID]);
 
-  return { assets, roomName, loading, error };
+  const handleAuditLogs = () => {
+    navigate(`/audit/room/${roomID}`);
+  };
+
+  return { assets, roomName, loading, error, topCustodian, handleAuditLogs };
 }
