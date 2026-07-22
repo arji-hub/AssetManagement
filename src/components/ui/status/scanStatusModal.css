@@ -61,6 +61,10 @@
   color: #c62828;
 }
 
+.scan-modal-icon--duplicate {
+  color: #f5aa2c;
+}
+
 /* ── Title ── */
 .scan-modal-title {
   text-align: center;
@@ -146,6 +150,10 @@
   border-radius: 4px;
 }
 
+.scan-modal-message--duplicate {
+  color: #b8860b;
+}
+
 /* ── Buttons ── */
 .scan-modal-btn {
   display: inline-flex;
@@ -159,7 +167,14 @@
   border-radius: 4px;
   border: none;
   cursor: pointer;
+  gap: 8px;
   transition: all 0.2s ease;
+}
+
+.scan-modal-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .scan-modal-btn--success {
@@ -188,6 +203,43 @@
 
 .scan-modal-btn--error:active {
   transform: scale(0.98);
+}
+
+.scan-modal-btn--duplicate {
+  background-color: #f5aa2c;
+  color: #1a1a1a;
+}
+
+.scan-modal-btn--duplicate:hover {
+  background-color: #e0991f;
+}
+
+.scan-modal-btn--warning {
+  background: #fff4e0;
+  color: #a65c00;
+  border: 1px solid #f5aa2c;
+}
+
+.scan-modal-btn--warning:hover:not(:disabled) {
+  background: #f5aa2c;
+  color: #1a1a1a;
+}
+
+.scan-modal-btn--warning:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+/* ── Button Group (multiple buttons side by side) ── */
+.scan-modal-btn-group {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  width: 100%;
+}
+
+.scan-modal-btn-group .scan-modal-btn {
+  width: auto;
+  flex: 1;
 }
 
 /* ── Animations ── */
@@ -249,20 +301,8 @@
   .scan-modal-item-value {
     font-size: 13px;
   }
-}
-.scan-modal-icon--duplicate {
-  color: #f5aa2c;
-}
 
-.scan-modal-message--duplicate {
-  color: #b8860b;
-}
-
-.scan-modal-btn--duplicate {
-  background-color: #f5aa2c;
-  color: #1a1a1a;
-}
-
-.scan-modal-btn--duplicate:hover {
-  background-color: #e0991f;
+  .scan-modal-btn-group {
+    flex-direction: column;
+  }
 }

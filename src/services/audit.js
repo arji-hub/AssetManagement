@@ -36,6 +36,7 @@ export async function generateAuditNo(type) {
 
 export async function addAuditRoom({
   roomId,
+  roomCustodian,
   assets,
   auditedBy,
   auditedByName,
@@ -50,6 +51,7 @@ export async function addAuditRoom({
   const auditRoomData = {
     audit_no: auditNo,
     room_id: roomId,
+    room_custodian: roomCustodian,
     status: "Ongoing",
     audited_by: auditedBy ?? null,
     audited_by_name: auditedByName ?? null,
@@ -144,11 +146,33 @@ export function subscribeToAuditByID(auditID, onData, onError) {
 
   const auditRef = doc(db, "audit_room", auditID);
   const itemsRef = collection(db, "audit_room", auditID, "audit_item");
+  const discrepancyItemsRef = collection(
+    db,
+    "audit_room",
+    auditID,
+    "discrepancy_item",
+  );
 
   let auditData = null;
   let itemsData = null;
+  let discrepancyItemsData = null;
   let auditUnsubscribe = null;
   let itemsUnsubscribe = null;
+  let discrepancyUnsubscribe = null;
+
+  const emitIfReady = () => {
+    if (
+      auditData !== null &&
+      itemsData !== null &&
+      discrepancyItemsData !== null
+    ) {
+      onData({
+        ...auditData,
+        items: itemsData,
+        discrepancyItems: discrepancyItemsData,
+      });
+    }
+  };
 
   // Listen to audit document
   auditUnsubscribe = onSnapshot(
@@ -164,24 +188,30 @@ export function subscribeToAuditByID(auditID, onData, onError) {
         ...auditSnap.data(),
       };
 
-      // Only call onData if we have both audit and items data
-      if (itemsData !== null) {
-        onData({ ...auditData, items: itemsData });
-      }
+      emitIfReady();
     },
     onError,
   );
 
-  // Listen to items subcollection
+  // Listen to audit_item subcollection
   itemsUnsubscribe = onSnapshot(
     itemsRef,
     (itemsSnap) => {
       itemsData = itemsSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      emitIfReady();
+    },
+    onError,
+  );
 
-      // Only call onData if we have both audit and items data
-      if (auditData !== null) {
-        onData({ ...auditData, items: itemsData });
-      }
+  // Listen to discrepancy_item subcollection
+  discrepancyUnsubscribe = onSnapshot(
+    discrepancyItemsRef,
+    (discrepancySnap) => {
+      discrepancyItemsData = discrepancySnap.docs.map((d) => ({
+        id: d.id,
+        ...d.data(),
+      }));
+      emitIfReady();
     },
     onError,
   );
@@ -189,6 +219,7 @@ export function subscribeToAuditByID(auditID, onData, onError) {
   return () => {
     if (auditUnsubscribe) auditUnsubscribe();
     if (itemsUnsubscribe) itemsUnsubscribe();
+    if (discrepancyUnsubscribe) discrepancyUnsubscribe();
   };
 }
 
@@ -256,5 +287,65 @@ export async function completeAuditSession(auditID) {
   await updateDoc(auditRef, {
     status: "completed",
     completed_at: serverTimestamp(),
+  });
+}
+
+export async function addUnexpectedDiscrepancy(auditID, assetData, roomId) {
+  if (!auditID) throw new Error("auditID is required.");
+  if (!assetData) throw new Error("assetData is required.");
+
+  const assetId = assetData.id ?? assetData.asset_id;
+  if (!assetId) throw new Error("assetData must include an id or asset_id.");
+
+  const auditRef = doc(db, "audit_room", auditID);
+  const discrepancyRef = doc(
+    db,
+    "audit_room",
+    auditID,
+    "discrepancy_item",
+    assetId,
+  );
+
+  return await runTransaction(db, async (transaction) => {
+    const auditSnap = await transaction.get(auditRef);
+    const discrepancySnap = await transaction.get(discrepancyRef);
+
+    if (!auditSnap.exists()) {
+      throw new Error(`Audit with ID "${auditID}" not found.`);
+    }
+
+    if (discrepancySnap.exists()) {
+      throw new Error(
+        "This asset has already been flagged as a discrepancy in this audit.",
+      );
+    }
+
+    const auditRoomData = auditSnap.data();
+
+    transaction.set(discrepancyRef, {
+      asset_id: assetId,
+      description: assetData.description ?? null,
+      serial_number: assetData.serial_number ?? null,
+      category: assetData.category ?? null,
+      custodian: assetData.property_custodian_name ?? null,
+      asset_status: assetData.status ?? null,
+      audit_status: "misplaced",
+      audited_at: serverTimestamp(),
+      room_id: roomId ?? auditRoomData.room_id ?? null,
+    });
+
+    const newDiscrepancyCount = (auditRoomData.discrepancy_count ?? 0) + 1;
+    transaction.update(auditRef, {
+      discrepancy_count: newDiscrepancyCount,
+      has_discrepancies: true,
+      updated_at: serverTimestamp(),
+    });
+
+    return {
+      success: true,
+      auditID,
+      assetId,
+      discrepancyId: discrepancyRef.id,
+    };
   });
 }

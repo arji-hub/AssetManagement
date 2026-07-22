@@ -480,3 +480,18 @@
     font-size: 12px;
   }
 }
+
+.audit-status-badge--unexpected {
+  background: rgba(220, 38, 38, 0.12);
+  color: #dc2626;
+}
+
+/* Slight visual distinction for the discrepancy section title */
+.audit-session-section-title--discrepancy {
+  color: #dc2626;
+}
+
+/* Slight left-accent on discrepancy cards, mirroring the discrepancy banner's red */
+.audit-session-card--discrepancy {
+  border-left: 3px solid #dc2626;
+}

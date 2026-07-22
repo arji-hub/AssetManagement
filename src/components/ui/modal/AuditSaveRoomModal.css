@@ -1,0 +1,156 @@
+.audit-save-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.audit-save-confirm-content {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+  animation: audit-save-confirm-pop 0.15s ease-out;
+}
+
+@keyframes audit-save-confirm-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.audit-save-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.audit-save-confirm-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #fdecea;
+  color: #9c0201;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.audit-save-header h3 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.audit-save-confirm-content p {
+  margin: 0 0 16px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #444;
+  text-align: center;
+}
+
+.audit-save-confirm-summary {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.audit-save-confirm-stat {
+  flex: 1;
+  max-width: 140px;
+  background: #f7f7f8;
+  border: 1px solid #ececec;
+  border-radius: 10px;
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.audit-save-confirm-stat-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #860100;
+}
+
+.audit-save-confirm-stat-flag {
+  color: #b30000;
+}
+
+.audit-save-confirm-stat-label {
+  font-size: 11px;
+  color: #666;
+  text-align: center;
+}
+
+.audit-save-confirm-warning {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #fff7e6;
+  border: 1px solid #f5aa2c;
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: #8a5a00;
+  font-size: 12.5px;
+  margin-bottom: 16px !important;
+}
+
+.audit-save-confirm-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.audit-save-confirm-cancel,
+.audit-save-confirm-proceed {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.15s ease, opacity 0.15s ease;
+}
+
+.audit-save-confirm-cancel {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.audit-save-confirm-cancel:hover {
+  background: #e4e4e4;
+}
+
+.audit-save-confirm-proceed {
+  background: #860100;
+  color: #fff;
+}
+
+.audit-save-confirm-proceed:hover {
+  background: #6e0100;
+}

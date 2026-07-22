@@ -1,10 +1,20 @@
 import PropTypes from "prop-types";
-import "./ScanStatusModal.css";
+import "./scanStatusModal.css";
 import { formatDate } from "../../../utils/date";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-function ScanStatusModal({ item, status, errorMessage, onClose }) {
+function ScanStatusModal({
+  item,
+  status,
+  errorMessage,
+  onAddDiscrepancy,
+  addingDiscrepancy,
+  onClose,
+}) {
   if (!item) return null;
+
+  const isNotFound = errorMessage === "not_found.";
+  console.log("scan status :", status);
 
   return (
     <div className="scan-modal-overlay">
@@ -95,14 +105,17 @@ function ScanStatusModal({ item, status, errorMessage, onClose }) {
             )}
           </>
         )}
-
         {/* ── Duplicate (Already Scanned/Audited) ── */}
         {status === "duplicate" && (
           <>
             <div className="scan-modal-icon scan-modal-icon--duplicate">
               <FontAwesomeIcon icon="fa-solid fa-triangle-exclamation" />
             </div>
-            <h2 className="scan-modal-title">Already Audited</h2>
+            <h2 className="scan-modal-title">
+              {item.audit_status === "unexpected"
+                ? "Already Flagged"
+                : "Already Audited"}
+            </h2>
 
             <div className="scan-modal-item-info">
               <div className="scan-modal-item-row">
@@ -121,7 +134,11 @@ function ScanStatusModal({ item, status, errorMessage, onClose }) {
               )}
               {item.audited_at && (
                 <div className="scan-modal-item-row">
-                  <span className="scan-modal-item-label">Audited at:</span>
+                  <span className="scan-modal-item-label">
+                    {item.audit_status === "unexpected"
+                      ? "Flagged at:"
+                      : "Audited at:"}
+                  </span>
                   <span className="scan-modal-item-value">
                     {formatDate(item.audited_at)}
                   </span>
@@ -130,7 +147,9 @@ function ScanStatusModal({ item, status, errorMessage, onClose }) {
             </div>
 
             <p className="scan-modal-message scan-modal-message--duplicate">
-              This asset has already been audited in this session
+              {item.audit_status === "unexpected"
+                ? "This asset has already been flagged as a discrepancy in this session."
+                : "This asset has already been audited in this session."}
             </p>
 
             {onClose && (
@@ -150,7 +169,9 @@ function ScanStatusModal({ item, status, errorMessage, onClose }) {
             <div className="scan-modal-icon scan-modal-icon--error">
               <FontAwesomeIcon icon="fa-solid fa-circle-xmark" />
             </div>
-            <h2 className="scan-modal-title">Verification Failed</h2>
+            <h2 className="scan-modal-title">
+              {isNotFound ? "Asset Not In Audit" : "Verification Failed"}
+            </h2>
 
             <div className="scan-modal-item-info">
               <div className="scan-modal-item-row">
@@ -170,15 +191,66 @@ function ScanStatusModal({ item, status, errorMessage, onClose }) {
             </div>
 
             <p className="scan-modal-message scan-modal-message--error">
-              {errorMessage || "Failed to verify asset. Please try again."}
+              {isNotFound
+                ? "This asset was not found in this audit session."
+                : errorMessage || "Failed to verify asset. Please try again."}
+            </p>
+
+            <div className="scan-modal-btn-group">
+              {isNotFound && onAddDiscrepancy && (
+                <button
+                  className="scan-modal-btn scan-modal-btn--warning"
+                  onClick={onAddDiscrepancy}
+                  disabled={addingDiscrepancy}
+                >
+                  {addingDiscrepancy ? (
+                    <FontAwesomeIcon icon="fa-solid fa-spinner" spin />
+                  ) : (
+                    <FontAwesomeIcon icon="fa-solid fa-flag" />
+                  )}
+                  {addingDiscrepancy ? "Recording…" : "Flag as Unexpected"}
+                </button>
+              )}
+
+              {onClose && (
+                <button
+                  className="scan-modal-btn scan-modal-btn--error"
+                  onClick={onClose}
+                >
+                  {isNotFound ? "Dismiss" : "Retry"}
+                </button>
+              )}
+            </div>
+          </>
+        )}
+
+        {/* ── Discrepancy recorded ── */}
+        {status === "discrepancy_added" && (
+          <>
+            <div className="scan-modal-icon scan-modal-icon--duplicate">
+              <FontAwesomeIcon icon="fa-solid fa-flag" />
+            </div>
+            <h2 className="scan-modal-title">Discrepancy Recorded</h2>
+
+            <div className="scan-modal-item-info">
+              <div className="scan-modal-item-row">
+                <span className="scan-modal-item-label">Asset ID:</span>
+                <span className="scan-modal-item-value font-bold">
+                  {item.asset_id || item.id}
+                </span>
+              </div>
+            </div>
+
+            <p className="scan-modal-message scan-modal-message--duplicate">
+              This asset was logged as an unexpected item in this room.
             </p>
 
             {onClose && (
               <button
-                className="scan-modal-btn scan-modal-btn--error"
+                className="scan-modal-btn scan-modal-btn--duplicate"
                 onClick={onClose}
               >
-                Retry
+                Continue Scanning
               </button>
             )}
           </>
@@ -196,10 +268,18 @@ ScanStatusModal.propTypes = {
     category: PropTypes.string,
     custodian: PropTypes.string,
     audited_at: PropTypes.string,
+    audit_status: PropTypes.string,
   }),
-  status: PropTypes.oneOf(["loading", "success", "duplicate", "error"])
-    .isRequired,
+  status: PropTypes.oneOf([
+    "loading",
+    "success",
+    "duplicate",
+    "error",
+    "discrepancy_added", // NEW
+  ]).isRequired,
   errorMessage: PropTypes.string,
+  onAddDiscrepancy: PropTypes.func, // NEW
+  addingDiscrepancy: PropTypes.bool, // NEW
   onClose: PropTypes.func,
 };
 

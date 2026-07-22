@@ -22,7 +22,13 @@ const Camera = ({ onScan, onClose, isOpen = true }) => {
     switchCamera,
     handleFocusTap,
     startStream,
+    stopStream,
   } = useCamera({ isOpen, onScan });
+
+  const handleClose = () => {
+    stopStream();
+    onClose();
+  };
 
   if (!isOpen) return null;
 
@@ -72,7 +78,7 @@ const Camera = ({ onScan, onClose, isOpen = true }) => {
           <button
             type="button"
             className="qr-icon-btn"
-            onClick={onClose}
+            onClick={handleClose}
             aria-label="Close scanner"
             title="Close scanner (ESC)"
           >

@@ -9,6 +9,9 @@ import { formatDate } from "../../utils/date";
 import { STATUS_CONFIG } from "../../data/audit";
 import Camera from "../../components/camera/Camera";
 import ScanStatusModal from "../../components/ui/status/scanStatusModal";
+import { AuditRoomPDF } from "../../pdf/templates/AuditRoomPDF";
+import { PDFPreviewModal } from "../../components/ui/modal/PDFPreviewModal";
+import AuditSaveRoomModal from "../../components/ui/modal/AuditSaveRoomModal";
 import "./AuditRoomInfo.css";
 
 // == Local presentational helpers ==========================================
@@ -46,6 +49,7 @@ function StatusBadge({ status }) {
 
 function AuditRoomInfo() {
   const { auditID } = useParams();
+  const [isSaveConfirmOpen, setIsSaveConfirmOpen] = useState(false);
   const {
     audit,
     auditItems,
@@ -54,6 +58,7 @@ function AuditRoomInfo() {
     totalAssets,
     progressPercent,
     roomName,
+    topCustodian,
     verifyingId,
     hasItems,
     handleVerifyItem,
@@ -65,6 +70,10 @@ function AuditRoomInfo() {
     scanModalStatus,
     scannedItem,
     handleScanModalClose,
+    handleCameraClose,
+    handleAddDiscrepancy,
+    discrepancyItems,
+    addingDiscrepancy,
     completingAudit,
     completeAuditError,
     handleCompleteAudit,
@@ -103,21 +112,19 @@ function AuditRoomInfo() {
               </button>
             )}
 
-            {audit?.status == "completed" && (
-              <button
-                type="button"
-                className="audit-camera-scan"
-                onClick={() => setIsCameraOpen(true)}
-              >
-                <FontAwesomeIcon icon="fa-solid fa-camera" />
-                Scan Asset
-              </button>
+            {audit?.status === "completed" && (
+              <PDFPreviewModal
+                title="Audit Report"
+                fileName={`audit-report-${auditID}.pdf`}
+                document={<AuditRoomPDF auditID={auditID} />}
+                triggerLabel="View Audit Report"
+              />
             )}
 
             <button
               type="button"
               className="audit-session-save-btn"
-              onClick={handleCompleteAudit}
+              onClick={() => setIsSaveConfirmOpen(true)}
               disabled={
                 audit?.status === "completed" ||
                 completingAudit ||
@@ -203,8 +210,8 @@ function AuditRoomInfo() {
             </div>
 
             <div className="audit-session-meta-row">
-              <span className="audit-session-card-label">Room</span>
-              <span>{roomName ? roomName : "—"}</span>
+              <span className="audit-session-card-label">Room Custodian</span>
+              <span>{topCustodian ? `${topCustodian.name}` : "—"}</span>
             </div>
 
             <div className="audit-session-meta-row">
@@ -259,30 +266,31 @@ function AuditRoomInfo() {
                         {item.audited_at ? formatDate(item.audited_at) : "—"}
                       </td>
                       <td>
-                        {item.audit_status == "not_audited" && (
-                          <button
-                            className="audit-session-verify-btn audit-session-verify-btn--full-width"
-                            onClick={() =>
-                              handleVerifyItem(item.id, item.audit_status)
-                            }
-                            disabled={verifyingId === item.id}
-                            title="Mark as audited"
-                          >
-                            {verifyingId === item.id ? (
-                              <>
-                                <FontAwesomeIcon
-                                  icon="fa-solid fa-spinner"
-                                  spin
-                                />
-                              </>
-                            ) : (
-                              <>
-                                <FontAwesomeIcon icon="fa-solid fa-check" />
-                                Verify
-                              </>
-                            )}
-                          </button>
-                        )}
+                        {item.audit_status == "not_audited" &&
+                          audit?.status !== "completed" && (
+                            <button
+                              className="audit-session-verify-btn audit-session-verify-btn--full-width"
+                              onClick={() =>
+                                handleVerifyItem(item.id, item.audit_status)
+                              }
+                              disabled={verifyingId === item.id}
+                              title="Mark as audited"
+                            >
+                              {verifyingId === item.id ? (
+                                <>
+                                  <FontAwesomeIcon
+                                    icon="fa-solid fa-spinner"
+                                    spin
+                                  />
+                                </>
+                              ) : (
+                                <>
+                                  <FontAwesomeIcon icon="fa-solid fa-check" />
+                                  Verify
+                                </>
+                              )}
+                            </button>
+                          )}
                       </td>
                     </tr>
                   ))}
@@ -329,7 +337,11 @@ function AuditRoomInfo() {
                             <FontAwesomeIcon icon="fa-solid fa-user" />
                           </div>
                           <span className="audit-session-card-meta-value">
-                            {item.custodian}
+                            {item.custodian ? (
+                              item.custodian
+                            ) : (
+                              <em>Unassigned</em>
+                            )}
                           </span>
                         </div>
                       )}
@@ -347,46 +359,168 @@ function AuditRoomInfo() {
                         </div>
                       )}
                     </div>
-                    {item.audit_status == "not_audited" && (
-                      <button
-                        className="audit-session-verify-btn audit-session-verify-btn--full-width"
-                        onClick={() =>
-                          handleVerifyItem(item.id, item.audit_status)
-                        }
-                        disabled={
-                          item.audit_status === "audited" ||
-                          verifyingId === item.id
-                        }
-                        title={
-                          item.audit_status === "audited"
-                            ? "Already audited"
-                            : "Mark as audited"
-                        }
-                      >
-                        {verifyingId === item.id ? (
-                          <>
-                            <FontAwesomeIcon icon="fa-solid fa-spinner" spin />
-                          </>
-                        ) : (
-                          <>
-                            <FontAwesomeIcon icon="fa-solid fa-check" />
-                            Verify
-                          </>
-                        )}
-                      </button>
-                    )}
+                    {item.audit_status == "not_audited" &&
+                      audit?.status !== "completed" && (
+                        <button
+                          className="audit-session-verify-btn audit-session-verify-btn--full-width"
+                          onClick={() =>
+                            handleVerifyItem(item.id, item.audit_status)
+                          }
+                          disabled={
+                            item.audit_status === "audited" ||
+                            verifyingId === item.id
+                          }
+                          title={
+                            item.audit_status === "audited"
+                              ? "Already audited"
+                              : "Mark as audited"
+                          }
+                        >
+                          {verifyingId === item.id ? (
+                            <>
+                              <FontAwesomeIcon
+                                icon="fa-solid fa-spinner"
+                                spin
+                              />
+                            </>
+                          ) : (
+                            <>
+                              <FontAwesomeIcon icon="fa-solid fa-check" />
+                              Verify
+                            </>
+                          )}
+                        </button>
+                      )}
                   </div>
                 ))}
               </div>
             </>
           )}
         </div>
+        {/* Discrepancy items */}
+        {discrepancyItems.length > 0 && (
+          <div className="audit-session-table-wrap">
+            <h3 className="audit-session-section-title audit-session-section-title--discrepancy">
+              Discrepancies
+            </h3>
+
+            {/* Desktop table */}
+            <table className="audit-session-table">
+              <thead>
+                <tr>
+                  <th>Asset ID</th>
+                  <th>Description</th>
+                  <th>Category</th>
+                  <th>Status</th>
+                  <th>Flagged at</th>
+                </tr>
+              </thead>
+              <tbody>
+                {discrepancyItems.map((item) => (
+                  <tr key={item.id}>
+                    <td>{item.asset_id ?? item.id}</td>
+                    <td>{item.description || "—"}</td>
+                    <td>{item.category || "—"}</td>
+                    <td>
+                      <StatusBadge status={item.audit_status} />
+                    </td>
+                    <td>
+                      {item.audited_at ? formatDate(item.audited_at) : "—"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* Mobile card list */}
+            <div className="audit-session-card-list">
+              {discrepancyItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="audit-session-card audit-session-card--discrepancy"
+                >
+                  <div className="audit-session-card-header">
+                    <p className="audit-session-card-title">
+                      {item.asset_id ?? item.id}
+                    </p>
+                    <StatusBadge status={item.audit_status} />
+                  </div>
+                  <div className="audit-session-card-meta">
+                    {item.description && (
+                      <div className="audit-session-card-meta-row">
+                        <span className="audit-session-card-meta-value">
+                          {item.description}
+                        </span>
+                      </div>
+                    )}
+                    {item.category && (
+                      <div className="audit-session-card-meta-row">
+                        <div
+                          className="audit-session-card-meta-icon"
+                          title="Category"
+                        >
+                          <FontAwesomeIcon icon="fa-solid fa-tag" />
+                        </div>
+                        <span className="audit-session-card-meta-value">
+                          {item.category}
+                        </span>
+                      </div>
+                    )}
+                    {item.category && (
+                      <div className="audit-session-card-meta-row">
+                        <div
+                          className="audit-session-card-meta-icon"
+                          title="Category"
+                        >
+                          <FontAwesomeIcon icon="fa-solid fa-user" />
+                        </div>
+                        <span className="audit-session-card-meta-value">
+                          {item.custodian ? (
+                            item.custodian
+                          ) : (
+                            <em>Unassigned</em>
+                          )}
+                        </span>
+                      </div>
+                    )}
+                    {item.audited_at && (
+                      <div className="audit-session-card-meta-row">
+                        <div
+                          className="audit-session-card-meta-icon"
+                          title="Flagged at"
+                        >
+                          <FontAwesomeIcon icon="fa-solid fa-calendar-check" />
+                        </div>
+                        <span className="audit-session-card-meta-value">
+                          {formatDate(item.audited_at)}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Camera modal */}
         <Camera
           isOpen={isCameraOpen}
           onScan={handleScan}
-          onClose={() => setIsCameraOpen(false)}
+          onClose={handleCameraClose}
+        />
+
+        <AuditSaveRoomModal
+          isOpen={isSaveConfirmOpen}
+          onClose={() => setIsSaveConfirmOpen(false)}
+          onConfirm={() => {
+            setIsSaveConfirmOpen(false);
+            handleCompleteAudit();
+          }}
+          roomName={roomName}
+          auditedCount={audit?.audited_count ?? 0}
+          totalAssets={totalAssets}
+          discrepancyCount={audit?.discrepancy_count ?? 0}
         />
 
         {/* Scan status modal - Shows scanned item details */}
@@ -395,6 +529,8 @@ function AuditRoomInfo() {
             item={scannedItem}
             status={scanModalStatus}
             errorMessage={scanModalError}
+            onAddDiscrepancy={handleAddDiscrepancy}
+            addingDiscrepancy={addingDiscrepancy}
             onClose={handleScanModalClose}
           />
         )}

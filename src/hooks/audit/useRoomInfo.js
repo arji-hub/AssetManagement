@@ -3,8 +3,11 @@ import {
   subscribeToAuditByID,
   updateAuditItem,
   completeAuditSession,
+  addUnexpectedDiscrepancy,
 } from "../../services/audit";
 import { useRoomAssets } from "../room/useRoomAssets";
+import useRoomOverview from "./useRoomOverview";
+import { fetchAssetByID } from "../../services/asset";
 
 function useRoomInfo(auditID) {
   const [audit, setAudit] = useState(null);
@@ -22,10 +25,15 @@ function useRoomInfo(auditID) {
   const [scannedItem, setScannedItem] = useState(null);
 
   const { roomName } = useRoomAssets(audit?.room_id);
+  const [topCustodian, setTopCustodian] = useState(null);
 
   //complete audit
   const [completingAudit, setCompletingAudit] = useState(false);
   const [completeAuditError, setCompleteAuditError] = useState(null);
+
+  //discrepancy
+  const [addingDiscrepancy, setAddingDiscrepancy] = useState(false);
+  const [discrepancyItems, setDiscrepancyItems] = useState([]);
 
   // Real-time subscription
   useEffect(() => {
@@ -44,13 +52,16 @@ function useRoomInfo(auditID) {
         if (!result) {
           setAudit(null);
           setAuditItems([]);
+          setDiscrepancyItems([]); // NEW
           setError("Audit not found.");
           return;
         }
 
-        const { items, ...auditData } = result;
+        const { items, discrepancyItems, ...auditData } = result;
         setAudit(auditData);
         setAuditItems(items);
+        setTopCustodian(auditData.room_custodian);
+        setDiscrepancyItems(discrepancyItems);
         setLoading(false);
       },
       (err) => {
@@ -65,21 +76,22 @@ function useRoomInfo(auditID) {
 
   // Auto-close modal and reopen camera after a success OR duplicate result.
   /*useEffect(() => {
-    if (
-      (scanModalStatus === "success" || scanModalStatus === "duplicate") &&
-      scanModalOpen
-    ) {
-      const timer = setTimeout(() => {
-        setScanModalOpen(false);
-        setIsCameraOpen(true);
-      }, 4500);
+      if (
+        (scanModalStatus === "success" || scanModalStatus === "duplicate") &&
+        scanModalOpen
+      ) {
+        const timer = setTimeout(() => {
+          setScanModalOpen(false);
+          setIsCameraOpen(true);
+        }, 4500);
 
-      return () => clearTimeout(timer);
-    }
-  }, [scanModalStatus, scanModalOpen]);*/
+        return () => clearTimeout(timer);
+      }
+    }, [scanModalStatus, scanModalOpen]);*/
 
   // Handle verify item — modal-agnostic. Writes to Firestore and reports
   // back what happened; callers decide what to do with that (modal, toast, etc).
+
   const handleVerifyItem = useCallback(
     async (itemId, currentStatus) => {
       if (!auditID) {
@@ -115,14 +127,28 @@ function useRoomInfo(auditID) {
   const handleScan = useCallback(
     async (scannedData) => {
       const assetId = scannedData.substring(scannedData.lastIndexOf("/") + 1);
+
       const matchingItem = auditItems.find(
         (item) => item.asset_id === assetId || item.id === assetId,
       );
 
-      // Asset not found in this audit — show modal instead of alert()
+      const matchingDiscrepancy = discrepancyItems.find(
+        (item) => item.asset_id === assetId || item.id === assetId,
+      );
+
+      if (matchingDiscrepancy) {
+        setScannedItem(matchingDiscrepancy);
+        setScanModalError(null);
+        setScanModalStatus("duplicate");
+        setScanModalOpen(true);
+        setIsCameraOpen(false);
+        return;
+      }
+
+      // Asset not found in this audit — show modal with option to flag it
       if (!matchingItem) {
         setScannedItem({ id: assetId, asset_id: assetId });
-        setScanModalError("This asset was not found in this audit session.");
+        setScanModalError("not_found.");
         setScanModalStatus("error");
         setScanModalOpen(true);
         setIsCameraOpen(false);
@@ -146,14 +172,11 @@ function useRoomInfo(auditID) {
         return;
       }
 
-      // "Already audited" is a distinct, non-error state — the scan worked
-      // fine, there's just nothing new to record.
       if (result.reason === "already_audited") {
         setScanModalStatus("duplicate");
         return;
       }
 
-      // Everything else is a genuine failure
       if (result.reason === "no_audit_id") {
         setScanModalError("No active audit session found.");
       } else {
@@ -162,12 +185,30 @@ function useRoomInfo(auditID) {
 
       setScanModalStatus("error");
     },
-    [auditItems, handleVerifyItem],
+    [auditItems, discrepancyItems, handleVerifyItem],
   );
 
   const handleScanModalClose = useCallback(() => {
     setScanModalOpen(false);
-    setIsCameraOpen(true);
+
+    if (
+      scanModalStatus === "success" ||
+      scanModalStatus === "duplicate" ||
+      scanModalStatus === "discrepancy_added"
+    ) {
+      setTimeout(() => {
+        setIsCameraOpen(true);
+      }, 300);
+    } else if (scanModalStatus === "error") {
+      setTimeout(() => {
+        setIsCameraOpen(true);
+      }, 500);
+    }
+  }, [scanModalStatus]);
+
+  const handleCameraClose = useCallback(() => {
+    setScanModalOpen(false);
+    setIsCameraOpen(false);
   }, []);
 
   // Calculate stats
@@ -199,6 +240,25 @@ function useRoomInfo(auditID) {
     }
   }, [auditID, audit?.status, completingAudit]);
 
+  const handleAddDiscrepancy = useCallback(async () => {
+    if (!auditID || !scannedItem) return;
+
+    setAddingDiscrepancy(true);
+    try {
+      const assetData = await fetchAssetByID(scannedItem.id);
+
+      await addUnexpectedDiscrepancy(auditID, assetData, audit?.room_id);
+      setScanModalStatus("discrepancy_added");
+    } catch (err) {
+      console.error("Failed to add discrepancy:", err);
+      setScanModalError(
+        "Failed to record this asset as a discrepancy. Please try again.",
+      );
+    } finally {
+      setAddingDiscrepancy(false);
+    }
+  }, [auditID, audit?.room_id, scannedItem]);
+
   return {
     audit,
     auditItems,
@@ -208,6 +268,7 @@ function useRoomInfo(auditID) {
     auditedCount,
     progressPercent,
     roomName,
+    topCustodian,
     verifyingId,
     hasItems,
     handleVerifyItem,
@@ -221,6 +282,10 @@ function useRoomInfo(auditID) {
     scanModalError,
     scannedItem,
     handleScanModalClose,
+    handleCameraClose,
+    handleAddDiscrepancy,
+    addingDiscrepancy,
+    discrepancyItems,
     // Complete audit
     completingAudit,
     completeAuditError,
