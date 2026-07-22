@@ -110,6 +110,25 @@
   height: 13px;
 }
 
+.new-audit-confirm-return {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #860100;
+  color: #ffffff;
+}
+
+.new-audit-confirm-return:hover {
+  background: #6e0100;
+}
+
 @keyframes audit-confirm-in {
   from {
     opacity: 0;

@@ -3,8 +3,7 @@ import { Status } from "../ui/status/assetStatus";
 import { formatDate } from "../../utils/date";
 import "./AuditHistory.css";
 
-function AuditHistory({ sessions = [], onViewAll, onRowClick }) {
-  console.log(sessions);
+function AuditHistory({ sessions = [], onViewAll, handleRowClick }) {
   return (
     <div className="audit-history">
       <div className="audit-history-header">
@@ -42,7 +41,7 @@ function AuditHistory({ sessions = [], onViewAll, onRowClick }) {
                 <tr
                   key={session.id}
                   className="audit-history-row"
-                  onClick={() => onRowClick?.(session)}
+                  onClick={() => handleRowClick(session.room_id, session.id)}
                 >
                   <td className="audit-history-audit-no">{session.audit_no}</td>
                   <td>{session.room_id}</td>
@@ -52,7 +51,6 @@ function AuditHistory({ sessions = [], onViewAll, onRowClick }) {
                   </td>
                   <td>
                     <Status status={session.status} />
-                    {console.log("status", session.status)}
                   </td>
                   <td
                     className={

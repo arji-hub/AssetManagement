@@ -13,10 +13,11 @@ import { RoomInventoryPDF } from "../../pdf/templates/RoomInventoryPDF";
 import BackButton from "../../components/ui/button/BackButton";
 
 function RoomAssets() {
-  const { roomName: roomId } = useParams();
+  const { roomName: roomID } = useParams();
   const navigate = useNavigate();
 
-  const { assets, loading, error, roomName } = useRoomAssets(roomId);
+  const { assets, loading, error, roomName, topCustodian, handleAuditLogs } =
+    useRoomAssets(roomID);
 
   const {
     showFilter,
@@ -40,18 +41,43 @@ function RoomAssets() {
         <div className="room-assets-top">
           <div className="room-assets-header">
             <BackButton />
-            <div>
-              <h1 className="room-assets-title">Assets in Room</h1>
-              <p className="room-assets-subtitle">
-                Showing assets located in <strong>{roomName}</strong>
-              </p>
+            <div className="room-assets-heading-main">
+              <FontAwesomeIcon
+                icon="fa-solid fa-door-open"
+                className="room-assets-eyebrow-icon"
+              />
+              <h1 className="room-assets-title">{roomName}</h1>
+            </div>
+            <div className="room-assets-heading">
+              {topCustodian && (
+                <div className="top-custodian-card">
+                  <span className="top-custodian-info">
+                    <span className="top-custodian-eyebrow">
+                      Room Custodian
+                    </span>
+                    <span className="top-custodian-name">
+                      {topCustodian.name}
+                    </span>
+                  </span>
+                  <span className="top-custodian-count">
+                    <span className="top-custodian-count-value">
+                      {topCustodian.count}
+                    </span>
+                    <span className="top-custodian-count-label">assets</span>
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
           <div className="room-assets-settings">
+            <button className="audit-logs-btn" onClick={handleAuditLogs}>
+              <FontAwesomeIcon icon="fa-file-lines" />
+              Audit Logs
+            </button>
             <PDFPreviewModal
               title="Room Inventory Form"
-              fileName={`room-inventory-${roomId}.pdf`}
+              fileName={`room-inventory-${roomID}.pdf`}
               document={
                 <RoomInventoryPDF roomName={roomName} assets={filteredAssets} />
               }

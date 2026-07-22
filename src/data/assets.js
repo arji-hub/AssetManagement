@@ -45,5 +45,5 @@ export const STATUS_COLORS = {
 
   // audit statuses
   Completed: { bg: "rgba(0, 255, 128, 0.7)", color: "#003d1f" },
-  Incomplete: { bg: "rgba(255, 120, 0, 0.7)", color: "#2e1500" },
+  Ongoing: { bg: "rgba(255, 120, 0, 0.7)", color: "#2e1500" },
 };
