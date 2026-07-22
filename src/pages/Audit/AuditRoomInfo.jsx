@@ -12,6 +12,7 @@ import ScanStatusModal from "../../components/ui/status/scanStatusModal";
 import { AuditRoomPDF } from "../../pdf/templates/AuditRoomPDF";
 import { PDFPreviewModal } from "../../components/ui/modal/PDFPreviewModal";
 import AuditSaveRoomModal from "../../components/ui/modal/AuditSaveRoomModal";
+import useAuditRoomPDF from "../../hooks/audit/useAuditRoomPDF";
 import "./AuditRoomInfo.css";
 
 // == Local presentational helpers ==========================================
@@ -79,6 +80,8 @@ function AuditRoomInfo() {
     handleCompleteAudit,
   } = useRoomInfo(auditID);
 
+  const { auditPDF, auditItemsPDF } = useAuditRoomPDF(auditID);
+
   return (
     <MainLayout>
       <div className="audit-session-page">
@@ -116,7 +119,13 @@ function AuditRoomInfo() {
               <PDFPreviewModal
                 title="Audit Report"
                 fileName={`audit-report-${auditID}.pdf`}
-                document={<AuditRoomPDF auditID={auditID} />}
+                document={
+                  <AuditRoomPDF
+                    roomName={roomName}
+                    audit={auditPDF}
+                    items={auditItemsPDF}
+                  />
+                }
                 triggerLabel="View Audit Report"
               />
             )}

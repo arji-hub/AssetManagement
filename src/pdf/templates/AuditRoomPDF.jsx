@@ -9,7 +9,6 @@ import {
 import cictLogo from "../../assets/CICTLOGO.png";
 import bulsuLogo from "../../assets/BULSULOGO.png";
 import { formatDate } from "../../utils/date";
-import useAuditRoomPDF from "../../hooks/audit/useAuditRoomPDF";
 import { AUDIT_STATUS_LABELS, AUDIT_STATUS_COLORS } from "../../data/audit";
 
 const styles = StyleSheet.create({
@@ -82,7 +81,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     borderWidth: 1,
     borderColor: "#000",
-    marginTop: 10,
   },
   metaCell: {
     flex: 1,
@@ -139,10 +137,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#000",
     borderTopWidth: 0,
+    marginTop: 10,
   },
   tableHeaderRow: {
     flexDirection: "row",
     borderBottomWidth: 1,
+    borderTopWidth: 1,
     borderColor: "#000",
     backgroundColor: "#f2f2f2",
   },
@@ -252,47 +252,8 @@ function insertSoftBreaks(text, chunkSize = 20) {
   return chunks.join("\n");
 }
 
-export function AuditRoomPDF({ auditID }) {
-  const {
-    audit,
-    items,
-    discrepancyItems,
-    loading,
-    error,
-    roomName,
-    auditNo,
-    auditedByName,
-    completedAt,
-    totalAssets,
-    auditedCount,
-    discrepancyCount,
-    hasDiscrepancies,
-    status,
-    roomCustodian,
-  } = useAuditRoomPDF(auditID);
-
-  // Show loading or error state
-  if (loading) {
-    return (
-      <Document>
-        <Page size="A4" style={styles.page}>
-          <Text>Loading audit data...</Text>
-        </Page>
-      </Document>
-    );
-  }
-
-  if (error) {
-    return (
-      <Document>
-        <Page size="A4" style={styles.page}>
-          <Text style={{ color: "#b30000" }}>Error: {error}</Text>
-        </Page>
-      </Document>
-    );
-  }
-
-  // Prepare rows for table
+export function AuditRoomPDF({ roomName, audit, items }) {
+  //prep
   const rows = items.map((item) => ({
     serial: insertSoftBreaks(item.serial_number) || "—",
     description: item.description || "",
@@ -300,17 +261,6 @@ export function AuditRoomPDF({ auditID }) {
     custodian: item.custodian || "—",
     audit_status: item.audit_status || "not_audited",
   }));
-
-  // Append discrepancy items (missing / misplaced / unexpected) after audited items
-  discrepancyItems.forEach((item) => {
-    rows.push({
-      serial: insertSoftBreaks(item.serial_number) || "—",
-      description: item.description || "",
-      category: item.category || "",
-      custodian: item.custodian || "—",
-      audit_status: item.type || item.audit_status || "unexpected",
-    });
-  });
 
   // Fill with empty rows if needed
   while (rows.length < MIN_ROWS) {
@@ -343,26 +293,30 @@ export function AuditRoomPDF({ auditID }) {
             <Text style={styles.metaLabel}>ROOM NAME: {roomName}</Text>
           </View>
           <View style={styles.metaCellLast}>
-            <Text style={styles.metaLabel}>AUDIT NO.: {auditNo}</Text>
+            <Text style={styles.metaLabel}>AUDIT NO.: {audit.audit_no}</Text>
           </View>
         </View>
         <View style={styles.metaRow}>
           <View style={styles.metaCell}>
-            <Text style={styles.metaLabel}>AUDITED BY: {auditedByName}</Text>
+            <Text style={styles.metaLabel}>
+              AUDITED BY: {audit.audited_by_name}
+            </Text>
           </View>
           <View style={styles.metaCellLast}>
             <Text style={styles.metaLabel}>
-              DATE : {formatDate(completedAt)}
+              DATE : {formatDate(audit.completed_at)}
             </Text>
           </View>
         </View>
         <View style={styles.metaRow}>
           <View style={styles.metaCell}>
-            <Text style={styles.metaLabel}>TOTAL ASSETS: {totalAssets}</Text>
+            <Text style={styles.metaLabel}>
+              TOTAL ASSETS: {audit.total_assets}
+            </Text>
           </View>
           <View style={styles.metaCellLast}>
             <Text style={styles.metaLabel}>
-              DISCREPANCIES FOUND: {discrepancyCount}
+              DISCREPANCIES FOUND: {audit.discrepancy_count}
             </Text>
           </View>
         </View>
@@ -420,8 +374,8 @@ export function AuditRoomPDF({ auditID }) {
           <View style={styles.signatureBlock}>
             <Text style={styles.signatureLabel}>Audited by:</Text>
             <Text style={styles.signatureName}>
-              {auditedByName && auditedByName !== "—"
-                ? auditedByName
+              {audit.audited_by_name && audit.audited_by_name !== "—"
+                ? audit.audited_by_name
                 : "_____________________"}
             </Text>
             <Text style={styles.signatureCaption}>
