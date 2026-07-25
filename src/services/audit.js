@@ -14,7 +14,11 @@ import {
   runTransaction,
   onSnapshot,
 } from "firebase/firestore";
+import { getReportType, fetchReportSummary } from "./report";
+import { REPORT_TYPES } from "../data/reports";
 import { AUDIT_NO_CONFIG } from "../data/audit";
+
+//==========AUDIT ROOM===========
 
 export async function generateAuditNo(type) {
   const config = AUDIT_NO_CONFIG[type];
@@ -348,4 +352,86 @@ export async function addUnexpectedDiscrepancy(auditID, assetData, roomId) {
       discrepancyId: discrepancyRef.id,
     };
   });
+}
+
+//--------REPORT LOG------------
+
+export async function generateReportLog(name, reportIDs) {
+  const reportTypes = await Promise.all(
+    reportIDs.map((id) => getReportType(id)),
+  );
+
+  const counts = REPORT_TYPES.reduce((acc, { value }) => {
+    acc[value] = 0;
+    return acc;
+  }, {});
+
+  reportTypes.forEach((type) => {
+    if (type in counts) {
+      counts[type] += 1;
+    }
+  });
+
+  const auditReportRef = await addDoc(collection(db, "audit_report"), {
+    log_name: name.trim(),
+    report_ids: reportIDs,
+    report_count: reportIDs.length,
+    missing_count: counts.missing ?? 0,
+    damaged_count: counts.damaged ?? 0,
+    created_at: serverTimestamp(),
+  });
+
+  return auditReportRef.id;
+}
+
+export function subscribeToReportLogs(callback, onError) {
+  const q = query(
+    collection(db, "audit_report"),
+    orderBy("created_at", "desc"),
+  );
+
+  const unsubscribe = onSnapshot(
+    q,
+    async (snapshot) => {
+      try {
+        const logs = await Promise.all(
+          snapshot.docs.map(async (docSnap) => {
+            const log = { id: docSnap.id, ...docSnap.data() };
+
+            const reports = await Promise.all(
+              (log.report_ids ?? []).map((id) => fetchReportSummary(id)),
+            );
+
+            return { ...log, reports };
+          }),
+        );
+
+        callback(logs);
+      } catch (err) {
+        onError?.(err);
+      }
+    },
+    (error) => {
+      onError?.(error);
+    },
+  );
+
+  return unsubscribe;
+}
+
+export async function fetchReportLogById(id) {
+  const snap = await getDoc(doc(db, "audit_report", id));
+  if (!snap.exists()) throw new Error("Report log not found.");
+
+  const reportLog = { id: snap.id, ...snap.data() };
+
+  const reportInfo = await Promise.all(
+    (reportLog.report_ids ?? []).map((reportId) =>
+      fetchReportSummary(reportId),
+    ),
+  );
+
+  const filteredReportLog = { ...reportLog, reportInfo };
+
+  return filteredReportLog;
 }

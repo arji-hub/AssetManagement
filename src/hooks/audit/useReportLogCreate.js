@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { subscribeToReports } from "../../services/report";
+import { generateReportLog } from "../../services/audit";
 
 const PAGE_SIZE = 10;
 
@@ -19,6 +21,8 @@ function toDateSafe(value) {
 }
 
 function useReportLogCreate() {
+  const navigate = useNavigate();
+
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -33,6 +37,11 @@ function useReportLogCreate() {
 
   const [isGenerateModalOpen, setIsGenerateModalOpen] = useState(false);
   const [logName, setLogName] = useState("");
+
+  // status: null | "loading" | "success" | "error"
+  const [generateStatus, setGenerateStatus] = useState(null);
+  const [generateErrorMessage, setGenerateErrorMessage] = useState(null);
+  const [generatedLogId, setGeneratedLogId] = useState(null);
 
   useEffect(() => {
     const unsubscribe = subscribeToReports(
@@ -154,13 +163,49 @@ function useReportLogCreate() {
     setLogName("");
   }, []);
 
-  const handleGenerate = useCallback(() => {
+  const handleGenerate = useCallback(async () => {
     const selectedReportIds = Array.from(selectedIds);
-    console.log("Log name:", logName.trim());
-    console.log("Selected report IDs:", selectedReportIds);
-    console.log("Total selected:", selectedReportIds.length);
-    closeGenerateModal();
-  }, [selectedIds, logName, closeGenerateModal]);
+    const trimmedName = logName.trim();
+
+    // Swap the name-input modal for the status modal
+    setIsGenerateModalOpen(false);
+    setGenerateStatus("loading");
+    setGenerateErrorMessage(null);
+
+    try {
+      const logId = await generateReportLog(trimmedName, selectedReportIds);
+      setGeneratedLogId(logId);
+      setGenerateStatus("success");
+    } catch (err) {
+      setGenerateErrorMessage(
+        err?.message || "An unexpected error occurred. Please try again.",
+      );
+      setGenerateStatus("error");
+    }
+  }, [selectedIds, logName]);
+
+  // "Done" on success -> go to the new log. "Try Again" on error -> back to the name modal.
+  const closeStatusModal = useCallback(() => {
+    if (generateStatus === "success" && generatedLogId) {
+      const logId = generatedLogId;
+      setGenerateStatus(null);
+      setGenerateErrorMessage(null);
+      setGeneratedLogId(null);
+      setLogName("");
+      navigate(`/audit/report/${logId}`);
+      return;
+    }
+
+    if (generateStatus === "error") {
+      setGenerateStatus(null);
+      setGenerateErrorMessage(null);
+      setIsGenerateModalOpen(true);
+      return;
+    }
+
+    setGenerateStatus(null);
+    setGenerateErrorMessage(null);
+  }, [generateStatus, generatedLogId, navigate]);
 
   return {
     loading,
@@ -190,6 +235,9 @@ function useReportLogCreate() {
     openGenerateModal,
     closeGenerateModal,
     handleGenerate,
+    generateStatus,
+    generateErrorMessage,
+    closeStatusModal,
   };
 }
 

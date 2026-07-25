@@ -3,6 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MainLayout from "../../components/layout/MainLayout";
 import AuditCard from "../../components/ui/card/AuditCard";
 import useReportLog from "../../hooks/audit/useReportLog";
+import ReportLogHistory from "../../components/panel/ReportLogHistory";
+
 import "./ReportLog.css";
 
 function ReportLog() {
@@ -14,6 +16,7 @@ function ReportLog() {
     logsError,
     stats,
     handleNewReport,
+    handleRowClick,
   } = useReportLog();
 
   return (
@@ -84,7 +87,12 @@ function ReportLog() {
           </p>
         )}
 
-        {/* TODO: replace with a ReportLogHistory table component */}
+        <ReportLogHistory
+          logs={filteredLogs}
+          onViewAll={() => navigate("/audit/report")}
+          handleRowClick={handleRowClick}
+        />
+
         {filteredLogs.length === 0 && !logsLoading && (
           <p className="report-log-empty">No report logs yet.</p>
         )}

@@ -4,6 +4,7 @@ import MainLayout from "../../components/layout/MainLayout";
 import BackButton from "../../components/ui/button/BackButton";
 import ReportLogPagination from "../../components/ui/pagination/ReportLogPagination";
 import GenerateReportLogModal from "../../components/ui/modal/GenerateReportLogModal";
+import AddingStatusModal from "../../components/ui/status/AddingStatusModal";
 import useReportLogCreate from "../../hooks/audit/useReportLogCreate";
 import { formatDate } from "../../utils/date";
 import "./ReportLogCreate.css";
@@ -37,6 +38,9 @@ function ReportLogCreate() {
     openGenerateModal,
     closeGenerateModal,
     handleGenerate,
+    generateStatus,
+    generateErrorMessage,
+    closeStatusModal,
   } = useReportLogCreate();
 
   return (
@@ -279,6 +283,15 @@ function ReportLogCreate() {
             onClose={closeGenerateModal}
             onSubmit={handleGenerate}
             isSubmitting={false}
+          />
+        )}
+
+        {generateStatus && (
+          <AddingStatusModal
+            title="Report Log"
+            status={generateStatus}
+            errorMessage={generateErrorMessage}
+            onClose={closeStatusModal}
           />
         )}
       </div>

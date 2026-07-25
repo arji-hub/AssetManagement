@@ -3,7 +3,7 @@ import React from "react";
 import AuditConfirmRoomModal from "../../../components/ui/modal/AuditConfirmRoomModal";
 
 export default {
-  title: "Modals/AuditConfirmRoomModal",
+  title: "Modal/AuditConfirmRoomModal",
   component: AuditConfirmRoomModal,
   parameters: {
     layout: "centered",

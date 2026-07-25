@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import AuditSaveRoomModal from "../../../components/ui/modal/AuditSaveRoomModal";
 
 export default {
-  title: "Modals/AuditSaveRoomModal",
+  title: "Modal/AuditSaveRoomModal",
   component: AuditSaveRoomModal,
   parameters: {
     layout: "centered",

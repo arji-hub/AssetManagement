@@ -1,0 +1,356 @@
+.report-log-info-page {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.report-log-info-header {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.report-log-info-header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.report-log-info-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #5c0100;
+  margin: 0 0 8px;
+}
+
+.report-log-info-subtitle {
+  font-size: 16px;
+  color: #5a413c;
+  margin: 0;
+}
+
+.report-log-info-error {
+  color: #860100;
+  font-size: 14px;
+}
+
+/* Stat cards */
+.report-log-info-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.report-log-info-stat-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border: 1px solid #e2beb9;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.report-log-info-stat-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.report-log-info-stat-icon-total {
+  background: rgba(92, 1, 0, 0.1);
+  color: #5c0100;
+}
+
+.report-log-info-stat-icon-damaged {
+  background: rgba(134, 1, 0, 0.12);
+  color: #860100;
+}
+
+.report-log-info-stat-icon-missing {
+  background: rgba(245, 170, 44, 0.18);
+  color: #8a5c00;
+}
+
+.report-log-info-stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #121c2a;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.report-log-info-stat-label {
+  font-size: 13px;
+  color: #5a413c;
+  margin: 0;
+}
+
+/* Filter row */
+.report-log-info-filter {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.report-log-info-search {
+  position: relative;
+  max-width: 420px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.report-log-info-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #5a413c;
+  font-size: 14px;
+}
+
+.report-log-info-search input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px 10px 36px;
+  border: 1px solid #e2beb9;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #ffffff;
+}
+
+.report-log-info-search input:focus {
+  outline: none;
+  border-color: #860100;
+}
+
+.report-log-info-select {
+  padding: 10px 12px;
+  border: 1px solid #e2beb9;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #ffffff;
+  color: #121c2a;
+  cursor: pointer;
+}
+
+.report-log-info-select:focus {
+  outline: none;
+  border-color: #860100;
+}
+
+/* ── status filter (segmented control) ── */
+.report-filter-segment {
+  display: inline-flex;
+  padding: 3px;
+  background: #f5f5f5;
+  border-radius: 9px;
+  border: 1px solid #e0e0e0;
+}
+
+.report-filter-option {
+  border: none;
+  background: transparent;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.report-filter-option:hover {
+  color: #860100;
+}
+
+.report-filter-option--active {
+  background: #860100;
+  color: #fff;
+}
+
+.report-filter-option--active:hover {
+  background: #860100;
+  color: #f5aa2c;
+}
+
+.report-log-info-count {
+  font-size: 13px;
+  color: #5a413c;
+  margin-left: auto;
+}
+
+/* Desktop table */
+.report-log-info-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid #e2beb9;
+  border-radius: 8px;
+}
+
+.report-log-info-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.report-log-info-table thead {
+  background: #fbeceb;
+}
+
+.report-log-info-table th {
+  text-align: left;
+  padding: 12px 16px;
+  font-weight: 700;
+  color: #5c0100;
+  white-space: nowrap;
+}
+
+.report-log-info-table td {
+  padding: 12px 16px;
+  border-top: 1px solid #f0dedc;
+  color: #121c2a;
+}
+
+.report-log-info-table tbody tr {
+  cursor: pointer;
+}
+
+.report-log-info-table tbody tr:hover {
+  background: #fdf6f5;
+}
+
+.report-log-info-table-empty {
+  text-align: center;
+  padding: 32px 0;
+  color: #5a413c;
+}
+
+.report-log-info-type-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.report-log-info-type-damaged {
+  background: rgba(134, 1, 0, 0.12);
+  color: #860100;
+}
+
+.report-log-info-type-missing {
+  background: rgba(245, 170, 44, 0.18);
+  color: #8a5c00;
+}
+
+/* Mobile card list */
+.report-log-info-card-list {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.report-log-info-card {
+  border: 1px solid #e2beb9;
+  border-radius: 8px;
+  padding: 14px 16px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.report-log-info-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.report-log-info-card-title {
+  flex: 1;
+  margin: 0;
+  font-weight: 700;
+  color: #121c2a;
+}
+
+.report-log-info-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.report-log-info-card-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.report-log-info-card-description,
+.report-log-info-card-custodian {
+  display: flex;
+  gap: 5px;
+}
+
+.report-log-info-card-meta-icon {
+  width: 16px;
+  color: #860100;
+  display: flex;
+  justify-content: center;
+}
+
+.report-log-info-card-meta-value {
+  font-size: 14px;
+  color: #121c2a;
+}
+
+.report-log-info-card-empty {
+  text-align: center;
+  padding: 32px 0;
+  color: #5a413c;
+}
+
+@media (max-width: 768px) {
+  .report-log-info-page {
+    padding: 16px;
+  }
+
+  .report-log-info-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .report-log-info-filter {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .report-log-info-search {
+    max-width: none;
+  }
+
+  .report-log-info-select {
+    width: 100%;
+  }
+}
+
+@media (max-width: 630px) {
+  .report-log-info-table-wrapper {
+    display: none;
+  }
+
+  .report-log-info-card-list {
+    display: flex;
+  }
+}
