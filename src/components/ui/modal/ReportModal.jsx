@@ -43,7 +43,7 @@ function ReportModal({ onClose, assetID = "" }) {
           onClose={handleStatusClose}
         />
       )}
-      <div className="report-modal-overlay">
+      <div className="report-modal-overlay" onClick={onClose}>
         <div
           className="report-modal"
           onClick={(e) => e.stopPropagation()}
