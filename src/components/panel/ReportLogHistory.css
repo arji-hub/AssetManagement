@@ -1,0 +1,204 @@
+.report-log-history {
+  background: #ffffff;
+  border: 1px solid #e2beb9;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.report-log-history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: #fbeceb;
+  border-bottom: 1px solid #e2beb9;
+}
+
+.report-log-history-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #860100;
+  margin: 0;
+}
+
+.report-log-history-view-all {
+  background: none;
+  border: none;
+  color: #860100;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.report-log-history-view-all:hover {
+  text-decoration: underline;
+}
+
+.report-log-history-table-wrapper {
+  overflow-x: auto;
+}
+
+.report-log-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.report-log-history-table th {
+  padding: 16px 24px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #5a413c;
+  border-bottom: 1px solid #e2beb9;
+}
+
+.report-log-history-table td {
+  padding: 16px 24px;
+  font-size: 14px;
+  color: #121c2a;
+  border-bottom: 1px solid #e2beb9;
+}
+
+.report-log-history-row {
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.report-log-history-row:hover {
+  background: #eff4ff;
+}
+
+.report-log-history-log-name {
+  font-weight: 700;
+  color: #860100;
+}
+
+.report-log-history-muted {
+  color: #5a413c;
+}
+
+.report-log-history-damaged {
+  color: #ba1a1a;
+  font-weight: 700;
+}
+
+.report-log-history-missing {
+  color: #8a5c00;
+  font-weight: 700;
+}
+
+.report-log-history-empty {
+  text-align: center;
+  color: #5a413c;
+  padding: 32px 24px;
+}
+
+.report-log-history-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  background: #e6eeff;
+  color: #5a413c;
+}
+
+/* Mobile card list */
+.report-log-history-card-list {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+}
+
+.report-log-history-card {
+  border: 1px solid #e2beb9;
+  border-radius: 8px;
+  padding: 14px 16px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.report-log-history-card:active {
+  background: #eff4ff;
+}
+
+.report-log-history-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.report-log-history-card-title {
+  flex: 1;
+  margin: 0;
+  font-weight: 700;
+  color: #860100;
+}
+
+.report-log-history-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.report-log-history-card-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.report-log-history-card-stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.report-log-history-card-meta-icon {
+  width: 14px;
+  color: #860100;
+  display: flex;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.report-log-history-card-date {
+  font-size: 12px;
+  color: #5a413c;
+}
+
+@media (max-width: 768px) {
+  .report-log-history-header {
+    padding: 14px 16px;
+  }
+
+  .report-log-history-table th,
+  .report-log-history-table td {
+    padding: 12px 16px;
+  }
+}
+
+@media (max-width: 630px) {
+  .report-log-history-table-wrapper {
+    display: none;
+  }
+
+  .report-log-history-card-list {
+    display: flex;
+  }
+
+  .report-log-history-empty {
+    padding: 32px 16px;
+  }
+}

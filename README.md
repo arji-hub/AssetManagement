@@ -87,8 +87,9 @@ npm run dev
 | Asset Registration   | ✅ Complete    |
 | Custodian Management | ✅ Complete    |
 | Room Management      | ✅ Complete    |
+| Report Management    | ✅ Complete    |
+| Audit Management     | ✅ Complete    |
 | QR Code Integration  | ✅ Complete    |
-| Report Management    | 🔧 In Progress |
 | System-Wide Testing  | 🔧 In Progress |
 
 ---

@@ -332,3 +332,38 @@ export function subscribeToReportsByAsset(assetId, callback, onError) {
 
   return unsubscribe;
 }
+
+export async function getReportType(id) {
+  const snap = await getDoc(doc(db, "report", id));
+  if (!snap.exists()) throw new Error("Report not found.");
+
+  const report = snap.data();
+  const reportType = report.status_log?.[0]?.status ?? null;
+
+  return reportType;
+}
+
+export async function fetchReportSummary(id) {
+  const snap = await getDoc(doc(db, "report", id));
+  if (!snap.exists()) throw new Error("Report not found.");
+
+  const report = snap.data();
+
+  const custodianName = report.current_custodian
+    ? await getName(report.current_custodian)
+    : null;
+
+  const type = await getReportType(id);
+
+  return {
+    id,
+    report_no: report.report_no,
+    description: report.asset_description,
+    created_at: report.created_at,
+    type,
+    reported_by: report.reported_by,
+    location: report.location,
+    custodian: report.current_custodian,
+    custodian_name: custodianName?.fullname ?? "---",
+  };
+}

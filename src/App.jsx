@@ -20,7 +20,9 @@ import Audit from "./pages/Audit/Audit";
 import AuditRoom from "./pages/Audit/AuditRoom";
 import AuditRoomOverview from "./pages/Audit/AuditRoomOverview";
 import AuditRoomInfo from "./pages/Audit/AuditRoomInfo";
-import AuditReport from "./pages/Audit/AuditReport";
+import ReportLog from "./pages/Audit/ReportLog";
+import ReportLogCreate from "./pages/Audit/ReportLogCreate";
+import ReportLogInfo from "./pages/Audit/ReportLogInfo";
 import Room from "./pages/Room/Room";
 import { ROLES } from "./data/roles";
 import CustodianAssets from "./pages/Custodian/CustodianAssets";
@@ -91,7 +93,9 @@ function App() {
                 <Route path=":roomID/:auditID" element={<AuditRoomInfo />} />
               </Route>
               <Route path="report">
-                <Route index element={<AuditReport />} />
+                <Route index element={<ReportLog />} />
+                <Route path="new" element={<ReportLogCreate />} />
+                <Route path=":logID" element={<ReportLogInfo />} />
               </Route>
             </Route>
 
