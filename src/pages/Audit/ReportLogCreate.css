@@ -108,19 +108,40 @@
   border-color: #860100;
 }
 
-.report-log-select {
-  padding: 10px 12px;
-  border: 1px solid #e2beb9;
-  border-radius: 8px;
-  font-size: 14px;
-  background: #ffffff;
-  color: #121c2a;
-  cursor: pointer;
+/* ── status filter (segmented control) ── */
+.report-filter-segment {
+  display: inline-flex;
+  padding: 3px;
+  background: #f5f5f5;
+  border-radius: 9px;
+  border: 1px solid #e0e0e0;
 }
 
-.report-log-select:focus {
-  outline: none;
-  border-color: #860100;
+.report-filter-option {
+  border: none;
+  background: transparent;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.report-filter-option:hover {
+  color: #860100;
+}
+
+.report-filter-option--active {
+  background: #860100;
+  color: #fff;
+}
+
+.report-filter-option--active:hover {
+  background: #860100;
+  color: #f5aa2c;
 }
 
 .report-log-date-range {
@@ -323,10 +344,6 @@
 
   .report-log-search {
     max-width: none;
-  }
-
-  .report-log-select {
-    width: 100%;
   }
 
   .report-log-date-range {

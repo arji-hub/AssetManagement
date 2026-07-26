@@ -207,6 +207,10 @@ function useReportLogCreate() {
     setGenerateErrorMessage(null);
   }, [generateStatus, generatedLogId, navigate]);
 
+  const handleReportClick = (reportId) => {
+    navigate(`/report/${reportId}`);
+  };
+
   return {
     loading,
     error,
@@ -238,6 +242,7 @@ function useReportLogCreate() {
     generateStatus,
     generateErrorMessage,
     closeStatusModal,
+    handleReportClick,
   };
 }
 

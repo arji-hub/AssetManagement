@@ -10,14 +10,14 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px 24px;
-  background: #eff4ff;
+  background: #fbeceb;
   border-bottom: 1px solid #e2beb9;
 }
 
 .audit-history-title {
   font-size: 18px;
   font-weight: 600;
-  color: #121c2a;
+  color: #860100;
   margin: 0;
 }
 
