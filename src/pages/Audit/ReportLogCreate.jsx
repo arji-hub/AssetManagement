@@ -41,6 +41,7 @@ function ReportLogCreate() {
     generateStatus,
     generateErrorMessage,
     closeStatusModal,
+    handleReportClick,
   } = useReportLogCreate();
 
   return (
@@ -84,15 +85,24 @@ function ReportLogCreate() {
             />
           </div>
 
-          <select
-            className="report-log-select"
-            value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value)}
-          >
-            <option value="all">All types</option>
-            <option value="damaged">Damage</option>
-            <option value="missing">Missing</option>
-          </select>
+          <div className="report-filter-segment">
+            {[
+              { value: "all", label: "All" },
+              { value: "damaged", label: "Damaged" },
+              { value: "missing", label: "Missing" },
+            ].map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                className={`report-filter-option ${
+                  typeFilter === opt.value ? "report-filter-option--active" : ""
+                }`}
+                onClick={() => setTypeFilter(opt.value)}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
 
           <div className="report-log-date-range">
             <input
@@ -167,7 +177,11 @@ function ReportLogCreate() {
 
               {!loading &&
                 paginatedReports.map((report) => (
-                  <tr key={report.id}>
+                  <tr
+                    key={report.id}
+                    onClick={() => handleReportClick(report.id)}
+                    style={{ cursor: "pointer" }}
+                  >
                     <td>
                       <input
                         type="checkbox"

@@ -4,6 +4,7 @@ import MainLayout from "../../components/layout/MainLayout";
 import AuditCard from "../../components/ui/card/AuditCard";
 import useReportLog from "../../hooks/audit/useReportLog";
 import ReportLogHistory from "../../components/panel/ReportLogHistory";
+import BackButton from "../../components/ui/button/BackButton";
 
 import "./ReportLog.css";
 
@@ -24,6 +25,7 @@ function ReportLog() {
       <div className="report-log-page">
         <div className="report-log-header">
           <div className="report-log-header-left">
+            <BackButton nav="/audit" />
             <div>
               <h2 className="report-log-title">Report Logs</h2>
               <p className="report-log-subtitle">
