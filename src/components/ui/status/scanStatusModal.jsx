@@ -112,7 +112,7 @@ function ScanStatusModal({
               <FontAwesomeIcon icon="fa-solid fa-triangle-exclamation" />
             </div>
             <h2 className="scan-modal-title">
-              {item.audit_status === "unexpected"
+              {item.audit_status === "misplaced"
                 ? "Already Flagged"
                 : "Already Audited"}
             </h2>
@@ -135,7 +135,7 @@ function ScanStatusModal({
               {item.audited_at && (
                 <div className="scan-modal-item-row">
                   <span className="scan-modal-item-label">
-                    {item.audit_status === "unexpected"
+                    {item.audit_status === "misplaced"
                       ? "Flagged at:"
                       : "Audited at:"}
                   </span>
@@ -147,7 +147,7 @@ function ScanStatusModal({
             </div>
 
             <p className="scan-modal-message scan-modal-message--duplicate">
-              {item.audit_status === "unexpected"
+              {item.audit_status === "misplaced"
                 ? "This asset has already been flagged as a discrepancy in this session."
                 : "This asset has already been audited in this session."}
             </p>
@@ -208,7 +208,7 @@ function ScanStatusModal({
                   ) : (
                     <FontAwesomeIcon icon="fa-solid fa-flag" />
                   )}
-                  {addingDiscrepancy ? "Recording…" : "Flag as Unexpected"}
+                  {addingDiscrepancy ? "Recording…" : "Flag as Misplaced"}
                 </button>
               )}
 
@@ -242,7 +242,7 @@ function ScanStatusModal({
             </div>
 
             <p className="scan-modal-message scan-modal-message--duplicate">
-              This asset was logged as an unexpected item in this room.
+              This asset was logged as a misplaced item in this room.
             </p>
 
             {onClose && (
