@@ -187,6 +187,7 @@ export async function addReport(
     asset_id,
     location: asset.room_id ?? null,
     current_custodian: asset.property_custodian ?? null,
+    current_localmr: asset.local_mr ?? null,
     report_no,
     date_resolved: null,
     status: type,
