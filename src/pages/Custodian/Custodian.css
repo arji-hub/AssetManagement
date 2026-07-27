@@ -60,33 +60,39 @@
   justify-content: flex-end;
 }
 
-.filters {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.report-filter-segment {
+  display: inline-flex;
+  padding: 3px;
+  background: #f5f5f5;
+  border-radius: 9px;
+  border: 1px solid #e0e0e0;
 }
 
-.filters label {
-  font-size: clamp(12px, 1vw, 14px);
+.report-filter-option {
+  border: none;
+  background: transparent;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 13px;
   font-weight: 500;
-  color: #374151;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.15s;
   white-space: nowrap;
 }
 
-.filters select {
-  font-size: clamp(12px, 1vw, 14px);
-  padding: 6px 10px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  background: #ffffff;
-  color: #111827;
-  cursor: pointer;
-  outline: none;
-  transition: border-color 0.2s ease;
+.report-filter-option:hover {
+  color: #860100;
 }
 
-.filters select:focus {
-  border-color: #860100;
+.report-filter-option--active {
+  background: #860100;
+  color: #fff;
+}
+
+.report-filter-option--active:hover {
+  background: #860100;
+  color: #f5aa2c;
 }
 
 .settings-button {
