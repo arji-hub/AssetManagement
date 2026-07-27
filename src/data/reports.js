@@ -18,11 +18,20 @@ export const TABS = [
   { key: "archive", label: "Archive" },
 ];
 
+export const REPORT_STATUS = {
+  DAMAGED: "damaged",
+  MISSING: "missing",
+  FOR_REPAIR: "for_repair",
+  WORKING: "working",
+  FOUND: "found",
+  CONDEMNED: "condemned",
+};
+
 export const STATUS_GROUPS = {
-  incident: ["damaged", "missing"],
-  repair: ["for_repair"],
-  resolved: ["working", "found"],
-  archive: ["condemned"],
+  incident: [REPORT_STATUS.DAMAGED, REPORT_STATUS.MISSING],
+  repair: [REPORT_STATUS.FOR_REPAIR],
+  resolved: [REPORT_STATUS.WORKING, REPORT_STATUS.FOUND],
+  archive: [REPORT_STATUS.CONDEMNED],
 };
 
 export const COLUMNS = {
@@ -55,10 +64,11 @@ export const COLUMNS = {
   ],
 };
 
-export const DAMAGE_STATUSES = ["damaged", "for_repair"];
-export const MISSING_STATUSES = ["missing", "found"];
-export const OPEN_REPORT_STATUSES = [...DAMAGE_STATUSES, ...MISSING_STATUSES];
-export const ASSET_CLEARING_STATUSES = ["found", "working", "condemned"];
+export const ASSET_CLEARING_STATUSES = [
+  REPORT_STATUS.WORKING,
+  REPORT_STATUS.FOUND,
+  REPORT_STATUS.CONDEMNED,
+];
 
 export const MOCK_REPORTS = [
   // ── INCIDENT (new — no status log progression) ──────────────────────────

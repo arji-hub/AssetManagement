@@ -1,62 +1,29 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useAuth } from "../../context/AuthContext";
 import MainLayout from "../../components/layout/MainLayout";
 import "./Custodian.css";
 import CustodianCard from "../../components/ui/card/CustodianCard";
 import CustodianModal from "../../components/ui/modal/CustodianModal";
 import AddingStatusModal from "../../components/ui/status/AddingStatusModal";
-import { addCustodian, fetchCustodians } from "../../services/user";
+import { useCustodian } from "../../hooks/custodian/useCustodian";
+import { ROLE_FILTER_OPTIONS } from "../../data/roles";
 
 function Custodian() {
   const { user } = useAuth();
-  const [showModal, setShowModal] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // ── Custodians list ───────────────────────────────────────────────────────
-  const [custodians, setCustodians] = useState([]);
-  const [isFetching, setIsFetching] = useState(true);
-
-  useEffect(() => {
-    fetchCustodians()
-      .then((data) => {
-        setCustodians(data);
-      })
-      .catch((err) => console.error("Failed to fetch custodians:", err))
-      .finally(() => setIsFetching(false));
-  }, []);
-
-  // ── Status modal ──────────────────────────────────────────────────────────
-  // "idle" | "loading" | "success" | "error"
-  const [status, setStatus] = useState("idle");
-  const [submitError, setSubmitError] = useState(null);
-
-  const handleAddCustodian = async (formData) => {
-    setIsSubmitting(true);
-    setShowModal(false);
-    setStatus("loading");
-    setSubmitError(null);
-
-    try {
-      await addCustodian(formData);
-      // Re-fetch so the new custodian appears in the list
-      const updated = await fetchCustodians();
-      setCustodians(updated);
-      setStatus("success");
-    } catch (error) {
-      console.error("Failed to add custodian:", error);
-      setSubmitError(
-        error.message || "Something went wrong. Please try again.",
-      );
-      setStatus("error");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleStatusClose = () => {
-    setStatus("idle");
-    setSubmitError(null);
-  };
+  const {
+    custodians,
+    isFetching,
+    roleFilter,
+    handleRoleFilter,
+    showModal,
+    openModal,
+    closeModal,
+    isSubmitting,
+    handleAddCustodian,
+    status,
+    submitError,
+    handleStatusClose,
+  } = useCustodian();
 
   return (
     <MainLayout>
@@ -68,18 +35,22 @@ function Custodian() {
           </div>
           <div className="custodian-settings">
             {/* Filters */}
-            <div className="filters">
-              <label htmlFor="classification-filter">Classification:</label>
-              <select id="classification-filter" name="classification">
-                <option value="">All</option>
-                <option value="fulltime">Full Time</option>
-                <option value="parttime">Part Time</option>
-              </select>
+            <div className="report-filter-segment">
+              {ROLE_FILTER_OPTIONS.map((opt) => (
+                <button
+                  key={opt.value}
+                  className={`report-filter-option ${
+                    roleFilter === opt.value
+                      ? "report-filter-option--active"
+                      : ""
+                  }`}
+                  onClick={() => handleRoleFilter(opt.value)}
+                >
+                  {opt.label}
+                </button>
+              ))}
             </div>
-            <button
-              className="settings-button"
-              onClick={() => setShowModal(true)}
-            >
+            <button className="settings-button" onClick={openModal}>
               Add Custodian
             </button>
           </div>
@@ -92,17 +63,15 @@ function Custodian() {
           ) : custodians.length === 0 ? (
             <p className="custodian-empty">No custodians found.</p>
           ) : (
-            custodians.map((c) => {
-              return (
-                <CustodianCard
-                  key={c.id}
-                  name={c.fullname}
-                  username={c.username}
-                  classification={c.role}
-                  totalAssets={c.asset_count ?? 0}
-                />
-              );
-            })
+            custodians.map((c) => (
+              <CustodianCard
+                key={c.id}
+                name={c.fullname}
+                username={c.username}
+                classification={c.role}
+                totalAssets={c.asset_count ?? 0}
+              />
+            ))
           )}
         </div>
       </div>
@@ -110,7 +79,7 @@ function Custodian() {
       {/* ── CustodianModal ── */}
       {showModal && (
         <CustodianModal
-          onClose={() => setShowModal(false)}
+          onClose={closeModal}
           onSubmit={handleAddCustodian}
           isSubmitting={isSubmitting}
         />

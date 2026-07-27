@@ -17,12 +17,7 @@ import {
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getName } from "./user";
 import { updateAssetStatus } from "./asset";
-import {
-  OPEN_REPORT_STATUSES,
-  ASSET_CLEARING_STATUSES,
-  DAMAGE_STATUSES,
-  MISSING_STATUSES,
-} from "../data/reports";
+import { ASSET_CLEARING_STATUSES, REPORT_STATUS } from "../data/reports";
 
 export function subscribeToReports(uid, callback, onError) {
   const q = query(collection(db, "report"), orderBy("updated_at", "desc"));
@@ -128,9 +123,9 @@ const generateReportNo = async () => {
   });
 };
 
-async function assertNoDuplicateOpenReport(assetId, type) {
-  const relevantStatuses =
-    type === "damaged" ? DAMAGE_STATUSES : MISSING_STATUSES;
+async function assetNoDuplicateOpenReport(assetId, type) {
+  const DAMAGE_STATUSES = [REPORT_STATUS.DAMAGED, REPORT_STATUS.FOR_REPAIR];
+  const MISSING_STATUSES = [REPORT_STATUS.MISSING, REPORT_STATUS.FOUND];
 
   const col = collection(db, "report");
   const snap = await getDocs(
@@ -141,13 +136,26 @@ async function assertNoDuplicateOpenReport(assetId, type) {
     ),
   );
 
-  const hasOpenSameCategory = snap.docs.some((d) =>
-    relevantStatuses.includes(d.data().status),
+  const openReport = snap.docs.find((d) =>
+    [...DAMAGE_STATUSES, ...MISSING_STATUSES].includes(d.data().status),
   );
 
-  if (hasOpenSameCategory) {
+  if (!openReport) return;
+
+  const openType = DAMAGE_STATUSES.includes(openReport.data().status)
+    ? REPORT_STATUS.DAMAGED
+    : REPORT_STATUS.MISSING;
+
+  // Block: same type reported twice while open
+  if (openType === type) {
     throw new Error(
       `This asset already has an open ${type} report. Please resolve it before filing a new one.`,
+    );
+  }
+
+  if (openType === REPORT_STATUS.MISSING && type === REPORT_STATUS.DAMAGED) {
+    throw new Error(
+      `This asset is currently reported missing. It cannot be reported as damaged until the missing report is resolved.`,
     );
   }
 }
@@ -158,7 +166,7 @@ export async function addReport(
   reportedByName,
 ) {
   // == Step 0: block duplicate open report of the same type ===============
-  await assertNoDuplicateOpenReport(asset_id, type);
+  await assetNoDuplicateOpenReport(asset_id, type);
 
   // == Step 1: generate report_no via counter transaction =================
   const report_no = await generateReportNo();
@@ -206,7 +214,7 @@ export async function addReport(
 }
 
 async function resolveAssetStatus(assetId, currentReportId, newStatus) {
-  if (newStatus === "condemned") return "condemned";
+  if (newStatus === REPORT_STATUS.CONDEMNED) return REPORT_STATUS.CONDEMNED;
 
   if (!ASSET_CLEARING_STATUSES.includes(newStatus)) {
     return newStatus;
@@ -224,13 +232,82 @@ async function resolveAssetStatus(assetId, currentReportId, newStatus) {
   const otherOpenReports = snap.docs.filter((d) => d.id !== currentReportId);
 
   if (otherOpenReports.length === 0) {
-    return newStatus === "found" ? "working" : newStatus;
+    return newStatus === REPORT_STATUS.FOUND
+      ? REPORT_STATUS.WORKING
+      : newStatus;
   }
 
   const statuses = otherOpenReports.map((d) => d.data().status);
-  if (statuses.includes("for_repair")) return "for_repair";
-  if (statuses.includes("damaged")) return "damaged";
-  return "missing";
+
+  if (statuses.includes(REPORT_STATUS.FOR_REPAIR))
+    return REPORT_STATUS.FOR_REPAIR;
+  if (statuses.includes(REPORT_STATUS.DAMAGED)) return REPORT_STATUS.DAMAGED;
+  return REPORT_STATUS.MISSING;
+}
+
+async function closeLinkedOpenReports({ assetId, excludeReportId, note }) {
+  const col = collection(db, "report");
+  const snap = await getDocs(
+    query(
+      col,
+      where("asset_id", "==", assetId),
+      where("date_resolved", "==", null),
+    ),
+  );
+
+  const linkedLog = {
+    status: REPORT_STATUS.CONDEMNED,
+    date: new Date().toISOString(),
+    note: note
+      ? `Auto-closed: asset condemned via a linked report. ${note}`
+      : `Auto-closed: asset condemned via a linked report.`,
+    img: null,
+  };
+
+  const updates = snap.docs
+    .filter((d) => d.id !== excludeReportId)
+    .map((d) =>
+      updateDoc(doc(db, "report", d.id), {
+        status: REPORT_STATUS.CONDEMNED,
+        status_log: arrayUnion(linkedLog),
+        date_resolved: new Date().toISOString(),
+        updated_at: serverTimestamp(),
+      }),
+    );
+
+  await Promise.all(updates);
+}
+
+async function assertNoConflictingMissingReport(
+  assetId,
+  currentReportId,
+  newStatus,
+) {
+  const REPAIR_TRACK_STATUSES = [
+    REPORT_STATUS.FOR_REPAIR,
+    REPORT_STATUS.WORKING,
+  ];
+  if (!REPAIR_TRACK_STATUSES.includes(newStatus)) return;
+
+  const col = collection(db, "report");
+  const snap = await getDocs(
+    query(
+      col,
+      where("asset_id", "==", assetId),
+      where("date_resolved", "==", null),
+    ),
+  );
+
+  const hasOpenMissing = snap.docs.some(
+    (d) =>
+      d.id !== currentReportId && d.data().status === REPORT_STATUS.MISSING,
+  );
+
+  if (hasOpenMissing) {
+    throw new Error(
+      `This asset currently has an open missing report. Resolve or find the asset before endorsing repair or marking it working.`,
+    );
+  }
 }
 
 export async function updateReportStatus({
@@ -241,6 +318,10 @@ export async function updateReportStatus({
   photo,
   assetId,
 }) {
+  if (assetId) {
+    await assertNoConflictingMissingReport(assetId, reportId, newStatus);
+  }
+
   let photoURL = null;
 
   if (photo) {
@@ -276,6 +357,14 @@ export async function updateReportStatus({
       newStatus,
     );
     await updateAssetStatus(assetId, resolvedAssetStatus);
+
+    if (newStatus === REPORT_STATUS.CONDEMNED) {
+      await closeLinkedOpenReports({
+        assetId,
+        excludeReportId: reportId,
+        note,
+      });
+    }
   }
 }
 

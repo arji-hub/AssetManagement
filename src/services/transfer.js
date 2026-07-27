@@ -295,7 +295,7 @@ function buildAck(acknowledged, uid, name) {
   };
 }
 
-async function assertNoOpenTransferForAsset(assetId) {
+async function assetNoOpenTransferForAsset(assetId) {
   const col = collection(db, COLLECTION);
   const snap = await getDocs(
     query(
@@ -326,7 +326,7 @@ export async function addTransferRequest(
   }
 
   // == Step 0: block duplicate open transfer request =======
-  await assertNoOpenTransferForAsset(asset_id);
+  await assetNoOpenTransferForAsset(asset_id);
 
   const isAdmin = requestedByRole === ROLES.ADMIN;
   const type = resolveTransferType(from, to);
@@ -414,6 +414,7 @@ export async function updateTransferRequest(requestId, user, note, isApprove) {
 
   if (!isApprove) {
     updates.status = "denied";
+    updates.completed_at = now;
   } else if (ackState.admin && ackState.from && ackState.to) {
     updates.status = "completed";
     updates.completed_at = now;
