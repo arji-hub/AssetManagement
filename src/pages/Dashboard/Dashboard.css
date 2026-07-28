@@ -1,0 +1,95 @@
+/* Dashboard container */
+.dashboard {
+  padding: 1rem;
+}
+
+@media (min-width: 640px) {
+  .dashboard {
+    padding: 1.5rem;
+  }
+}
+
+.dashboard__header {
+  margin-bottom: 1.5rem;
+}
+
+.dashboard__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #860100;
+  margin-bottom: 0.5rem;
+}
+
+.dashboard__subtitle {
+  font-size: 0.875rem;
+  color: #5a413c;
+}
+
+/* Mobile-first: Single column stack */
+.dashboard__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .dashboard__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .dashboard__grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Stat cards - always single column width */
+.dashboard__stat-card {
+  grid-column: 1;
+}
+
+@media (min-width: 768px) {
+  .dashboard__stat-card {
+    grid-column: span 1;
+  }
+}
+
+@media (min-width: 1200px) {
+  .dashboard__stat-card {
+    grid-column: span 1;
+  }
+}
+
+/* Section spans - responsive spans */
+.dashboard__section--span-2 {
+  grid-column: 1;
+}
+
+@media (min-width: 768px) {
+  .dashboard__section--span-2 {
+    grid-column: span 2;
+  }
+}
+
+@media (min-width: 1200px) {
+  .dashboard__section--span-2 {
+    grid-column: span 2;
+  }
+}
+
+.dashboard__section--span-4 {
+  grid-column: 1;
+}
+
+@media (min-width: 768px) {
+  .dashboard__section--span-4 {
+    grid-column: span 2;
+  }
+}
+
+@media (min-width: 1200px) {
+  .dashboard__section--span-4 {
+    grid-column: span 4;
+  }
+}
