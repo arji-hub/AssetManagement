@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { fetchAuditRooms } from "../../services/audit";
 
 export function useAuditSummary() {
   const [audits, setAudits] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     let cancelled = false;
@@ -30,5 +32,9 @@ export function useAuditSummary() {
     };
   }, []);
 
-  return { ongoingAudits: audits, loading, error };
+  const startNewAudit = () => {
+    navigate("/audit");
+  };
+
+  return { ongoingAudits: audits, loading, error, startNewAudit };
 }
