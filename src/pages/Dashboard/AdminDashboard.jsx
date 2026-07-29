@@ -109,9 +109,7 @@ function AdminDashboard() {
               audits={auditSummary.ongoingAudits}
               loading={auditSummary.loading}
               error={auditSummary.error}
-              onStartAudit={() => {
-                // wired up when audit-start flow is built
-              }}
+              onStartAudit={auditSummary.startNewAudit}
             />
           </div>
           {/* Charts row */}
