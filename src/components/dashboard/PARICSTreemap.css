@@ -1,0 +1,159 @@
+/* components/dashboard/PARICSTreemap.css */
+.paric-card {
+  position: relative;
+  isolation: isolate;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  border-radius: 0.8rem;
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border: 1px solid rgba(38, 24, 22, 0.07);
+  box-shadow:
+    0 1px 2px rgba(38, 24, 22, 0.04),
+    0 12px 24px -14px rgba(38, 24, 22, 0.22);
+  transition:
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .paric-card {
+    transition: none;
+  }
+}
+
+.paric-card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 2px 4px rgba(38, 24, 22, 0.05),
+    0 20px 32px -16px rgba(38, 24, 22, 0.28);
+}
+
+.paric-card__header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  gap: 0.5rem;
+}
+
+.paric-card__title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #8a6f63;
+}
+
+.paric-card__total {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #261816;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.paric-card__empty-text {
+  font-size: 0.875rem;
+  color: #8a6f63;
+}
+
+.paric-treemap {
+  display: flex;
+  width: 100%;
+  height: 6rem;
+  border-radius: 0.625rem;
+  overflow: hidden;
+  gap: 2px;
+}
+
+.paric-treemap__block {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.75rem 1rem;
+  min-width: 3.5rem;
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: flex-basis 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.paric-treemap__block--par {
+  background: linear-gradient(155deg, #9c0201 0%, #860100 60%, #6f0101 100%);
+  color: #ffffff;
+}
+
+.paric-treemap__block--ics {
+  background: linear-gradient(155deg, #f5aa2c 0%, #ef9c14 60%, #e08c00 100%);
+  color: #4a3200;
+}
+
+.paric-treemap__label {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.9;
+}
+
+.paric-treemap__count {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  opacity: 0.85;
+  white-space: nowrap;
+}
+
+.paric-card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-top: 0.875rem;
+}
+
+.paric-card__meta-values {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.paric-card__meta-value {
+  position: relative;
+  padding-left: 0.875rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #5a413c;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.paric-card__meta-value::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+}
+
+.paric-card__meta-value--par::before {
+  background: #860100;
+}
+
+.paric-card__meta-value--ics::before {
+  background: #f5aa2c;
+}
+
+.paric-card__footnote {
+  font-size: 0.75rem;
+  color: #8a6f63;
+}

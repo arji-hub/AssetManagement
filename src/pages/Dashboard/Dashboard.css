@@ -1,0 +1,39 @@
+/* Dashboard container */
+.dashboard {
+  padding: 0.5rem;
+}
+
+@media (min-width: 360px) {
+  .dashboard {
+    padding: 1rem;
+  }
+}
+
+.dashboard__title {
+  font-size: 1.5rem;  
+  font-weight: 700;
+  color: #860100;
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-grid-container {
+  display: grid;
+  gap: 0.6rem;
+  grid-template-areas:
+    "box-7 box-7 box-1 box-2"
+    "box-7 box-7 box-6 box-3"
+    "box-4 box-5 box-6 box-8"
+    "box-9 box-9 box-9 box-8";
+}
+/*
+box
+1-total assets
+2-total rooms
+3-total custodian
+4-open reports
+5-pending transfer
+6-audit
+7-donut breakdown
+8-category bar list
+9- par ics
+*/
