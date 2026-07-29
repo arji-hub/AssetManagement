@@ -29,6 +29,32 @@ export async function fetchRooms() {
   });
 }
 
+export function subscribeToRooms(callback, onError) {
+  const unsubscribe = onSnapshot(
+    collection(db, "room"),
+    (snapshot) => {
+      try {
+        const rooms = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            name: data.name,
+            assetCount: data.assetCount ?? 0,
+          };
+        });
+        callback(rooms);
+      } catch (err) {
+        onError?.(err);
+      }
+    },
+    (err) => {
+      onError?.(err);
+    },
+  );
+
+  return unsubscribe;
+}
+
 export async function fetchRoom(id) {
   const roomID = toLowerCase(id);
   const snap = await getDoc(doc(db, "room", roomID));

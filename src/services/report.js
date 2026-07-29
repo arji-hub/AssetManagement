@@ -46,6 +46,7 @@ export function subscribeToReports(uid, callback, onError) {
             updated_at: report.updated_at,
             date_reported: report.status_log?.[0]?.date ?? null,
             narrative: report.status_log?.[0]?.note ?? null,
+            type: report.status_log?.[0]?.status ?? null,
             latest_note: latestLog?.note ?? null,
             latest_date: latestLog?.date ?? null,
           };
@@ -105,10 +106,10 @@ export async function fetchReportByID(id) {
     // derived from status_log
     date_reported: report.status_log?.[0]?.date ?? null,
     narrative: report.status_log?.[0]?.note ?? null,
+    type: report.status_log?.[0]?.status ?? null,
     latest_note: latestLog?.note ?? null,
     latest_date: latestLog?.date ?? null,
   };
-  console.log("filteredReport:", filteredReport);
 
   return filteredReport;
 }

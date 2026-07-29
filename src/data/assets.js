@@ -23,6 +23,10 @@ export const UNASSIGNED_CUSTODIAN = "Unassigned";
 
 // data/status.js
 
+export const getStatusBgColor = (status) => {
+  return STATUS_COLORS[status]?.bg || STATUS_COLORS.Undefined.bg;
+};
+
 export const STATUS_COLORS = {
   //undefined
   Undefined: { bg: "rgba(200, 200, 200, 0.7)", color: "#333333" },
