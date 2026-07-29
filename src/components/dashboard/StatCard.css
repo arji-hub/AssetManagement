@@ -1,6 +1,8 @@
 .stat-card {
   position: relative;
-  border-radius: 0.875rem;
+  height: 100%;
+  box-sizing: border-box;
+  border-radius: 0.8rem;
   padding: 1.5rem;
   overflow: hidden;
   isolation: isolate;
@@ -15,8 +17,6 @@
   }
 }
 
-/* Thin accent bar along the top edge — ties every card back to the brand
-   without repeating the same block of color the way the alert variant does. */
 .stat-card::before {
   content: "";
   position: absolute;
@@ -62,7 +62,7 @@
 .stat-card__title {
   position: relative;
   z-index: 1;
-  font-size: 0.75rem;
+  font-size: clamp(0.625rem, 1.8vw, 0.75rem);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.07em;
@@ -73,7 +73,7 @@
 }
 
 .stat-card--alert .stat-card__title {
-  color: rgba(255, 255, 255, 0.75);
+  color: #f5aa2c;
 }
 
 .stat-card__value {
@@ -122,4 +122,20 @@
 
 .stat-card--alert .stat-card__error {
   color: #ffb4ab;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+}
+
+.stat-card--default:hover {
+  box-shadow:
+    0 2px 4px rgba(38, 24, 22, 0.05),
+    0 20px 32px -16px rgba(38, 24, 22, 0.28);
+}
+
+.stat-card--alert:hover {
+  box-shadow:
+    0 2px 4px rgba(134, 1, 1, 0.35),
+    0 22px 36px -16px rgba(134, 1, 1, 0.65);
 }

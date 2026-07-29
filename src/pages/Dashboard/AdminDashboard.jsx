@@ -1,19 +1,24 @@
 import React from "react";
 import { useAuth } from "../../context/AuthContext";
 import MainLayout from "../../components/layout/MainLayout";
-import { useAssetSummary } from "../../hooks/dashboard/useAssetSummary";
-import { useRoomsAndCategories } from "../../hooks/dashboard/useRoomsAndCategories";
-import { useCustodianCount } from "../../hooks/dashboard/useCustodianCount";
-import { useReportSummary } from "../../hooks/dashboard/useReportSummary";
-import { useTransferSummary } from "../../hooks/dashboard/useTransferSummary";
-import { useAuditSummary } from "../../hooks/dashboard/useAuditSummary";
+import {
+  useAssetSummary,
+  useRoomsAndCategories,
+  useCustodianCount,
+  useReportSummary,
+  useTransferSummary,
+  useAuditSummary,
+  usePARICSSummary,
+} from "../../hooks/dashboard";
 import {
   StatCard,
   DonutChart,
   CategoryBarList,
   AuditProgressCard,
+  PARICSTreemap,
+  DashboardHeader,
 } from "../../components/dashboard";
-import "./dashboard.css";
+import "./AdminDashboard.css";
 
 function AdminDashboard() {
   const { user } = useAuth();
@@ -24,21 +29,34 @@ function AdminDashboard() {
   const reportSummary = useReportSummary(user);
   const transferSummary = useTransferSummary(user);
   const auditSummary = useAuditSummary();
+  const parIcsSummary = usePARICSSummary(
+    user,
+    assetSummary.assets,
+    assetSummary.loading,
+    assetSummary.error,
+  );
 
   const visibleCategories = roomsAndCategories.categories.filter(
     (cat) => cat.assetCount > 0,
   );
 
+  const headerLoading =
+    reportSummary.loading || transferSummary.loading || auditSummary.loading;
+
   return (
     <MainLayout>
       <div className="dashboard">
-        <div className="dashboard__header">
-          <h1 className="dashboard__title">Admin Dashboard</h1>
-        </div>
+        <DashboardHeader
+          user={user}
+          openReportsCount={reportSummary.openReportsCount}
+          pendingTransfersCount={transferSummary.pendingCount}
+          ongoingAuditsCount={auditSummary.ongoingAudits.length}
+          loading={headerLoading}
+        />
 
-        <div className="dashboard__grid">
+        <div className="dashboard-grid-container">
           {/* Stat cards row */}
-          <div className="dashboard__stat-card">
+          <div className="item" style={{ gridArea: "box-1" }}>
             <StatCard
               title="Total assets"
               value={assetSummary.totalAssets}
@@ -47,7 +65,7 @@ function AdminDashboard() {
               error={assetSummary.error}
             />
           </div>
-          <div className="dashboard__stat-card">
+          <div className="item" style={{ gridArea: "box-2" }}>
             <StatCard
               title="Total rooms"
               value={roomsAndCategories.rooms.length}
@@ -56,7 +74,7 @@ function AdminDashboard() {
               error={roomsAndCategories.error}
             />
           </div>
-          <div className="dashboard__stat-card">
+          <div className="item" style={{ gridArea: "box-3" }}>
             <StatCard
               title="Total custodians"
               value={custodianCount.totalCustodians}
@@ -65,7 +83,7 @@ function AdminDashboard() {
               error={custodianCount.error}
             />
           </div>
-          <div className="dashboard__stat-card">
+          <div className="item" style={{ gridArea: "box-4" }}>
             <StatCard
               title="Open reports"
               value={reportSummary.openReportsCount}
@@ -75,9 +93,18 @@ function AdminDashboard() {
               variant="alert"
             />
           </div>
-
+          <div className="item" style={{ gridArea: "box-5" }}>
+            <StatCard
+              title="Pending transfers"
+              value={transferSummary.pendingCount}
+              description="Waiting for acknowledgment."
+              loading={transferSummary.loading}
+              error={transferSummary.error}
+              variant="alert"
+            />
+          </div>
           {/* Audit row */}
-          <div className="dashboard__section--span-2">
+          <div className="item" style={{ gridArea: "box-6" }}>
             <AuditProgressCard
               audits={auditSummary.ongoingAudits}
               loading={auditSummary.loading}
@@ -87,19 +114,8 @@ function AdminDashboard() {
               }}
             />
           </div>
-
-          <div className="dashboard__stat-card">
-            <StatCard
-              title="Pending transfers"
-              value={transferSummary.pendingCount}
-              description="Waiting for acknowledgment."
-              loading={transferSummary.loading}
-              error={transferSummary.error}
-            />
-          </div>
-
           {/* Charts row */}
-          <div className="dashboard__section--span-2">
+          <div className="item" style={{ gridArea: "box-7" }}>
             <DonutChart
               title="Asset status breakdown"
               statusBreakdown={assetSummary.statusBreakdown}
@@ -108,11 +124,21 @@ function AdminDashboard() {
             />
           </div>
 
-          <div className="dashboard__section--span-2">
+          <div className="item" style={{ gridArea: "box-8" }}>
             <CategoryBarList
               categories={visibleCategories}
               loading={roomsAndCategories.loading}
               error={roomsAndCategories.error}
+            />
+          </div>
+          <div className="item" style={{ gridArea: "box-9" }}>
+            <PARICSTreemap
+              par={parIcsSummary.par}
+              ics={parIcsSummary.ics}
+              totalCount={parIcsSummary.totalCount}
+              totalValue={parIcsSummary.totalValue}
+              loading={parIcsSummary.loading}
+              error={parIcsSummary.error}
             />
           </div>
         </div>

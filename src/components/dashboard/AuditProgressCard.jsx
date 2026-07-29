@@ -8,7 +8,7 @@ function AuditProgressCard({
 }) {
   if (loading) {
     return (
-      <div className="audit-card">
+      <div className="audit-progress-card">
         <p>Loading...</p>
       </div>
     );
@@ -16,14 +16,14 @@ function AuditProgressCard({
 
   if (error) {
     return (
-      <div className="audit-card">
+      <div className="audit-progress-card">
         <p>Error: {error.message}</p>
       </div>
     );
   }
 
   return (
-    <div className="audit-card">
+    <div className="audit-progress-card">
       <p className="audit-card__title">Ongoing audits</p>
 
       {audits.length === 0 ? (

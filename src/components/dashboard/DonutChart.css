@@ -1,17 +1,19 @@
-/* Mobile-first: 123 layout (header, chart, legend vertically stacked) */
+/* Mobile-first: stacked (header, chart, legend); flex row on desktop */
 .donut-chart {
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  border-radius: 0.875rem;
+  height: 100%;
+  box-sizing: border-box;
+  border-radius: 0.8rem;
   background-color: #ffffff;
   padding: 1rem;
   border: 1px solid rgba(38, 24, 22, 0.07);
   box-shadow:
     0 1px 2px rgba(38, 24, 22, 0.04),
     0 12px 24px -14px rgba(38, 24, 22, 0.22);
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
   transition:
     transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
@@ -40,60 +42,41 @@
   z-index: 1;
 }
 
-@media (min-width: 768px) {
-  .donut-chart {
-    padding: 1.5rem;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    align-items: start;
-  }
-}
-
-/* Title: 1 on mobile (top), 1 on desktop (top right) */
 .donut-chart__title {
   position: relative;
   z-index: 1;
-  font-size: 0.75rem;
+  font-size: 1.25rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  color: #8a6f63;
+  color: #860100;
   margin: 0;
-  grid-column: 1;
-  grid-row: 1;
-}
-
-@media (min-width: 640px) {
-  .donut-chart__title {
-    grid-column: 2;
-    grid-row: 1;
-  }
+  order: 1;
 }
 
 .donut-chart__empty-text {
   margin-top: 1rem;
   font-size: 0.875rem;
   color: #8a6f63;
+  order: 2;
 }
 
-/* Chart: 2 on mobile (middle), left side on desktop spanning both rows */
+/* Body: wraps chart + legend, stacked on mobile */
+.donut-chart__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  order: 2;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .donut-chart__chart {
   position: relative;
   width: 8rem;
   height: 8rem;
-  justify-self: center;
-  grid-column: 1;
-  grid-row: 2;
-}
-
-@media (min-width: 640px) {
-  .donut-chart__chart {
-    width: 10rem;
-    height: 10rem;
-    grid-column: 1;
-    grid-row: 1 / span 2;
-    justify-self: start;
-  }
+  flex-shrink: 0;
 }
 
 .donut-chart__svg {
@@ -129,12 +112,6 @@
   font-variant-numeric: tabular-nums;
 }
 
-@media (min-width: 640px) {
-  .donut-chart__total {
-    font-size: 1.625rem;
-  }
-}
-
 .donut-chart__label {
   font-size: 0.625rem;
   font-weight: 600;
@@ -143,21 +120,11 @@
   color: #8a6f63;
 }
 
-/* Legend: 3 on mobile (bottom), bottom right on desktop */
 .donut-chart__legend {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 0.625rem 0.5rem;
-  grid-column: 1;
-  grid-row: 3;
-}
-
-@media (min-width: 640px) {
-  .donut-chart__legend {
-    gap: 0.75rem;
-    grid-column: 2;
-    grid-row: 2;
-  }
+  width: 100%;
 }
 
 .donut-chart__legend-item {
@@ -196,7 +163,41 @@
   letter-spacing: -0.01em;
 }
 
-@media (min-width: 640px) {
+/* Desktop: title top-right, chart left (vertically centered), legend right */
+@media (min-width: 830px) {
+  .donut-chart {
+    padding: 1.5rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .donut-chart__title {
+    width: 100%;
+  }
+
+  .donut-chart__body {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 auto;
+  }
+
+  .donut-chart__chart {
+    width: 10rem;
+    height: 10rem;
+  }
+
+  .donut-chart__total {
+    font-size: 1.625rem;
+  }
+
+  .donut-chart__legend {
+    flex: 1 1 auto;
+    align-self: center;
+  }
+
   .donut-chart__legend-percent {
     font-size: 1.1875rem;
   }

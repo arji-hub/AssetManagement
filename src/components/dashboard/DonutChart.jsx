@@ -47,51 +47,53 @@ function DonutChart({ statusBreakdown, loading = false, error = null, title }) {
   return (
     <div className="donut-chart">
       <p className="donut-chart__title">{title}</p>
-      <div className="donut-chart__chart">
-        <svg viewBox="0 0 36 36" className="donut-chart__svg">
-          <circle
-            cx="18"
-            cy="18"
-            r="15.915"
-            fill="transparent"
-            className="donut-chart__track"
-            strokeWidth="4"
-          />
-          {segments.map((seg) => (
+      <div className="donut-chart__body">
+        <div className="donut-chart__chart">
+          <svg viewBox="0 0 36 36" className="donut-chart__svg">
             <circle
-              key={seg.status}
               cx="18"
               cy="18"
               r="15.915"
               fill="transparent"
-              stroke={seg.color}
+              className="donut-chart__track"
               strokeWidth="4"
-              strokeDasharray={`${seg.percent} ${100 - seg.percent}`}
-              strokeDashoffset={seg.dashoffset}
-              className="donut-chart__segment"
             />
-          ))}
-        </svg>
-        <div className="donut-chart__center">
-          <span className="donut-chart__total">{total}</span>
-          <span className="donut-chart__label">Items</span>
-        </div>
-      </div>
-      <div className="donut-chart__legend">
-        {segments.map((seg) => (
-          <div key={seg.status} className="donut-chart__legend-item">
-            <span className="donut-chart__legend-status">
-              <span
-                className="donut-chart__legend-dot"
-                style={{ backgroundColor: seg.color }}
+            {segments.map((seg) => (
+              <circle
+                key={seg.status}
+                cx="18"
+                cy="18"
+                r="15.915"
+                fill="transparent"
+                stroke={seg.color}
+                strokeWidth="4"
+                strokeDasharray={`${seg.percent} ${100 - seg.percent}`}
+                strokeDashoffset={seg.dashoffset}
+                className="donut-chart__segment"
               />
-              {seg.status}
-            </span>
-            <span className="donut-chart__legend-percent">
-              {Math.round(seg.percent)}%
-            </span>
+            ))}
+          </svg>
+          <div className="donut-chart__center">
+            <span className="donut-chart__total">{total}</span>
+            <span className="donut-chart__label">Items</span>
           </div>
-        ))}
+        </div>
+        <div className="donut-chart__legend">
+          {segments.map((seg) => (
+            <div key={seg.status} className="donut-chart__legend-item">
+              <span className="donut-chart__legend-status">
+                <span
+                  className="donut-chart__legend-dot"
+                  style={{ backgroundColor: seg.color }}
+                />
+                {seg.status}
+              </span>
+              <span className="donut-chart__legend-percent">
+                {Math.round(seg.percent)}%
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
