@@ -77,10 +77,6 @@ function ReportLog() {
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          <button className="report-log-btn-secondary" type="button">
-            <FontAwesomeIcon icon="fa-solid fa-sliders" />
-            Filter
-          </button>
         </div>
 
         {logsError && (
@@ -89,11 +85,7 @@ function ReportLog() {
           </p>
         )}
 
-        <ReportLogHistory
-          logs={filteredLogs}
-          onViewAll={() => navigate("/audit/report")}
-          handleRowClick={handleRowClick}
-        />
+        <ReportLogHistory logs={filteredLogs} handleRowClick={handleRowClick} />
 
         {filteredLogs.length === 0 && !logsLoading && (
           <p className="report-log-empty">No report logs yet.</p>

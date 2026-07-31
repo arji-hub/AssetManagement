@@ -32,7 +32,9 @@ export function formatDate(value) {
 export function formatDateTime(value) {
   const date =
     value?.seconds !== undefined
-      ? new Date(value.seconds * 1000 + Math.floor(value.nanoseconds / 1_000_000))
+      ? new Date(
+          value.seconds * 1000 + Math.floor(value.nanoseconds / 1_000_000),
+        )
       : new Date(value);
 
   if (isNaN(date)) return "Invalid date";
@@ -54,13 +56,13 @@ export function formatDateTime(value) {
 }
 
 export const displayDate = new Date()
-    .toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })
-    .toUpperCase();
+  .toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  })
+  .toUpperCase();
 
 export const todayISO = new Date().toISOString().split("T")[0];
 
@@ -77,4 +79,14 @@ export function toSortableDate(value) {
   if (value?.seconds !== undefined) return new Date(value.seconds * 1000);
   const d = new Date(value);
   return isNaN(d) ? new Date(0) : d;
+}
+
+export function getTimeValue(created_at) {
+  if (!created_at) return 0;
+  if (typeof created_at.toDate === "function")
+    return created_at.toDate().getTime();
+  if (typeof created_at.seconds === "number") return created_at.seconds * 1000;
+  if (created_at instanceof Date) return created_at.getTime();
+  const parsed = new Date(created_at).getTime();
+  return Number.isNaN(parsed) ? 0 : parsed;
 }

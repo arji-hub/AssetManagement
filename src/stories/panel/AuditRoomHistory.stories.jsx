@@ -1,5 +1,5 @@
 import React from "react";
-import AuditHistory from "../../components/panel/AuditHistory";
+import AuditRoomHistory from "../../components/panel/AuditRoomHistory";
 
 const mockSessions = [
   {
@@ -37,8 +37,8 @@ const mockSessions = [
 ];
 
 export default {
-  title: "Panel/AuditHistory",
-  component: AuditHistory,
+  title: "Panel/AuditRoomHistory",
+  component: AuditRoomHistory,
 };
 
 export const Default = {

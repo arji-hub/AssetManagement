@@ -1,72 +1,202 @@
 import React from "react";
-import { Status } from "../ui/status/assetStatus";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { formatDate } from "../../utils/date";
+import useAuditHistory from "../../hooks/audit/useAuditHistory";
 import "./AuditHistory.css";
 
-function AuditHistory({ sessions = [], onViewAll, handleRowClick }) {
+function AuditHistory({
+  reportLogs = [],
+  auditLogs = [],
+  onReportClick,
+  onAuditClick,
+}) {
+  const {
+    items,
+    totalCount,
+    page,
+    totalPages,
+    goPrev,
+    goNext,
+    handleItemClick,
+    getItemSummary,
+  } = useAuditHistory({ reportLogs, auditLogs, onReportClick, onAuditClick });
+
   return (
     <div className="audit-history">
       <div className="audit-history-header">
-        <h4 className="audit-history-title">Recent Audit Sessions</h4>
-        <button
-          className="audit-history-view-all"
-          onClick={onViewAll}
-          type="button"
-        >
-          View all sessions
-        </button>
+        <h4 className="audit-history-title">Audit History</h4>
       </div>
 
+      {/* Desktop / tablet table */}
       <div className="audit-history-table-wrapper">
         <table className="audit-history-table">
           <thead>
             <tr>
-              <th>Audit No.</th>
-              <th>Room</th>
-              <th>Conducted by</th>
+              <th>Type</th>
+              <th>Description</th>
+              <th>Summary</th>
               <th>Date</th>
-              <th>Status</th>
-              <th>Discrepancies</th>
             </tr>
           </thead>
           <tbody>
-            {sessions.length === 0 ? (
+            {items.length === 0 ? (
               <tr>
-                <td className="audit-history-empty" colSpan={6}>
-                  No audit sessions yet.
+                <td className="audit-history-empty" colSpan={4}>
+                  No audit history yet.
                 </td>
               </tr>
             ) : (
-              sessions.map((session) => (
-                <tr
-                  key={session.id}
-                  className="audit-history-row"
-                  onClick={() => handleRowClick(session.room_id, session.id)}
-                >
-                  <td className="audit-history-audit-no">{session.audit_no}</td>
-                  <td>{session.room_id}</td>
-                  <td>{session.audited_by_name}</td>
-                  <td className="audit-history-muted">
-                    {formatDate(session.created_at)}
-                  </td>
-                  <td>
-                    <Status status={session.status} />
-                  </td>
-                  <td
-                    className={
-                      session.discrepancy_count > 0
-                        ? "audit-history-discrepancy"
-                        : ""
-                    }
+              items.map((item) => {
+                const {
+                  isReport,
+                  description,
+                  primaryCount,
+                  secondaryCount,
+                  secondaryLabel,
+                } = getItemSummary(item);
+
+                return (
+                  <tr
+                    key={`${item.__type}-${item.id}`}
+                    className="audit-history-row"
+                    onClick={() => handleItemClick(item)}
                   >
-                    {session.discrepancy_count ?? 0}
-                  </td>
-                </tr>
-              ))
+                    <td>
+                      <span
+                        className={`audit-history-badge audit-history-badge--${
+                          isReport ? "report" : "room"
+                        }`}
+                      >
+                        <FontAwesomeIcon
+                          icon={
+                            isReport
+                              ? "fa-solid fa-triangle-exclamation"
+                              : "fa-solid fa-clipboard-check"
+                          }
+                        />
+                        {isReport ? "Report" : "Audit"}
+                      </span>
+                    </td>
+                    <td className="audit-history-audit-room-no">
+                      {description}
+                    </td>
+                    <td>
+                      <div className="audit-history-summary">
+                        <span className="audit-history-muted">
+                          {primaryCount} {isReport ? "reports" : "audited"}
+                        </span>
+                        <span
+                          className={
+                            secondaryCount > 0
+                              ? "audit-history-discrepancy"
+                              : "audit-history-muted"
+                          }
+                        >
+                          {secondaryCount} {secondaryLabel}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="audit-history-muted">
+                      {formatDate(item.created_at)}
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>
       </div>
+
+      {/* Mobile card list */}
+      <div className="audit-history-card-list">
+        {items.length === 0 ? (
+          <p className="audit-history-empty">No audit history yet.</p>
+        ) : (
+          items.map((item) => {
+            const {
+              isReport,
+              description,
+              primaryCount,
+              secondaryCount,
+              secondaryLabel,
+            } = getItemSummary(item);
+
+            return (
+              <div
+                key={`${item.__type}-${item.id}`}
+                className="audit-history-card"
+                onClick={() => handleItemClick(item)}
+              >
+                <div className="audit-history-card-header">
+                  <span
+                    className={`audit-history-badge audit-history-badge--${
+                      isReport ? "report" : "room"
+                    }`}
+                  >
+                    <FontAwesomeIcon
+                      icon={
+                        isReport
+                          ? "fa-solid fa-triangle-exclamation"
+                          : "fa-solid fa-clipboard-check"
+                      }
+                    />
+                    {isReport ? "Report" : "Audit"}
+                  </span>
+                  <span className="audit-history-card-date">
+                    {formatDate(item.created_at)}
+                  </span>
+                </div>
+
+                <p className="audit-history-card-title">{description}</p>
+
+                <div className="audit-history-card-summary">
+                  <span className="audit-history-muted">
+                    {primaryCount} {isReport ? "reports" : "audited"}
+                  </span>
+                  <span
+                    className={
+                      secondaryCount > 0
+                        ? "audit-history-discrepancy"
+                        : "audit-history-muted"
+                    }
+                  >
+                    {secondaryCount} {secondaryLabel}
+                  </span>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* Pagination */}
+      {totalCount > 0 && (
+        <div className="audit-history-pagination">
+          <span className="audit-history-pagination-info">
+            Page {page} of {totalPages}
+          </span>
+          <div className="audit-history-pagination-controls">
+            <button
+              type="button"
+              className="audit-history-pagination-btn"
+              onClick={goPrev}
+              disabled={page <= 1}
+            >
+              <FontAwesomeIcon icon="fa-solid fa-chevron-left" />
+              Prev
+            </button>
+            <button
+              type="button"
+              className="audit-history-pagination-btn"
+              onClick={goNext}
+              disabled={page >= totalPages}
+            >
+              Next
+              <FontAwesomeIcon icon="fa-solid fa-chevron-right" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
