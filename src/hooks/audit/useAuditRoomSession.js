@@ -53,8 +53,6 @@ function useAuditRoomSession(roomID) {
         auditedBy: user.uid,
         auditedByName: fullname,
       });
-      console.log("audit created", auditID);
-      console.log("navigating to:", `/audit/${roomID}/${auditID}`);
       navigate(`/audit/room/${roomID}/${auditID}`);
     } catch (err) {
       window.alert(`Failed to create audit: ${err.message}`);

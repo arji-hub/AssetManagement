@@ -80,7 +80,6 @@ export function useTransferInfo() {
 
   const handleSubmitAction = async (note) => {
     const isApprove = actionModal === "approve";
-    console.log("Submitting action:", isApprove ? "approve" : "decline");
     setSubmitStatus("loading");
 
     try {

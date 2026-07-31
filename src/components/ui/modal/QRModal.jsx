@@ -19,7 +19,6 @@ function QRModal({ onScan, onImageUpload }) {
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
-    console.log("File selected:", file);
     if (file && onImageUpload) {
       onImageUpload(file);
     } else if (file) {

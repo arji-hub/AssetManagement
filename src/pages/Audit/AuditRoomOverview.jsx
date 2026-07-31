@@ -28,7 +28,6 @@ function AuditRoomOverview() {
     auditsError,
     lastAuditedAt,
   } = useRoomOverview(roomID);
-  console.log("total :", totalAssets);
   const { handleCreateAudit } = useAuditRoomSession(roomID);
 
   return (
