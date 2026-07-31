@@ -62,13 +62,6 @@ function useRoomLogs() {
 
   // == Actions ==========================================================
 
-  const handleLogAction = useCallback(
-    (log) => {
-      navigate(`/audit/room/${log.room_id}`);
-    },
-    [navigate],
-  );
-
   const handleHistoryRowClick = (roomID, auditID) =>
     navigate(`/audit/room/${roomID}/${auditID}`);
 
@@ -79,7 +72,6 @@ function useRoomLogs() {
     search,
     setSearch,
     stats,
-    handleLogAction,
     handleHistoryRowClick,
   };
 }

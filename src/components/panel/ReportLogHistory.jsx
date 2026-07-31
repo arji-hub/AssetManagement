@@ -3,18 +3,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { formatDate } from "../../utils/date";
 import "./ReportLogHistory.css";
 
-function ReportLogHistory({ logs = [], onViewAll, handleRowClick }) {
+function ReportLogHistory({ logs = [], handleRowClick }) {
   return (
     <div className="report-log-history">
       <div className="report-log-history-header">
         <h4 className="report-log-history-title">Recent Report Logs</h4>
-        <button
-          className="report-log-history-view-all"
-          onClick={onViewAll}
-          type="button"
-        >
-          View all logs
-        </button>
       </div>
 
       {/* Desktop / tablet table */}
@@ -91,9 +84,7 @@ function ReportLogHistory({ logs = [], onViewAll, handleRowClick }) {
               onClick={() => handleRowClick(log.id)}
             >
               <div className="report-log-history-card-header">
-                <p className="report-log-history-card-title">
-                  {log.log_name}
-                </p>
+                <p className="report-log-history-card-title">{log.log_name}</p>
                 <span className="report-log-history-badge">
                   {log.report_count ?? 0} total
                 </span>

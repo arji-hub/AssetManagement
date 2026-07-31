@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MainLayout from "../../components/layout/MainLayout";
 import NewAuditRoomModal from "../../components/ui/modal/NewAuditRoomModal";
 import AuditCard from "../../components/ui/card/AuditCard";
-import AuditHistory from "../../components/panel/AuditHistory";
+import AuditRoomHistory from "../../components/panel/AuditRoomHistory";
 import BackButton from "../../components/ui/button/BackButton";
 import useRoomLogs from "../../hooks/audit/useRoomLogs";
 import "./AuditRoom.css";
@@ -16,7 +16,6 @@ function AuditRoom() {
     search,
     setSearch,
     stats,
-    handleLogAction,
     handleHistoryRowClick,
   } = useRoomLogs();
   return (
@@ -70,10 +69,6 @@ function AuditRoom() {
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          <button className="audit-room-btn-secondary" type="button">
-            <FontAwesomeIcon icon="fa-solid fa-sliders" />
-            Filter
-          </button>
         </div>
 
         {logsError && (
@@ -82,9 +77,8 @@ function AuditRoom() {
           </p>
         )}
 
-        <AuditHistory
+        <AuditRoomHistory
           sessions={filteredLogs}
-          onLogAction={handleLogAction}
           handleRowClick={handleHistoryRowClick}
         />
       </div>
