@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import TransferModal from "../modal/TransferModal";
 import ReportModal from "../modal/ReportModal";
 import TransferMR from "../modal/TransferMR";
+import TransferRoomModal from "../modal/TransferRoomModal";
 import useManageAsset from "../../../hooks/asset/useManageAsset";
 import "./ManageAsset.css";
 
@@ -20,7 +21,7 @@ function ManageAsset({ asset }) {
     permissions,
   } = useManageAsset(asset);
 
-  const { canReport, canTransfer, canLocalMR } = permissions;
+  const { canReport, canTransfer, canLocalMR, canTransferRoom } = permissions;
   const assetID = asset?.id;
 
   // nothing this user can do — don't render the button at all
@@ -48,6 +49,18 @@ function ManageAsset({ asset }) {
           className={`manage-asset-menu${isOpen ? " is-open" : ""}`}
           role="menu"
         >
+          {canTransferRoom && (
+            <li role="menuitem">
+              <button
+                type="button"
+                className="manage-asset-menu-item"
+                onClick={() => openModal("room")}
+              >
+                <FontAwesomeIcon icon="fa-solid fa-door-open" />
+                Move Room
+              </button>
+            </li>
+          )}
           {canTransfer && (
             <li role="menuitem">
               <button
@@ -95,6 +108,10 @@ function ManageAsset({ asset }) {
       )}
       {activeModal === "report" && canReport && (
         <ReportModal assetID={assetID} onClose={closeModal} />
+      )}
+
+      {activeModal === "room" && canReport && (
+        <TransferRoomModal assetID={assetID} onClose={closeModal} />
       )}
     </div>
   );

@@ -40,10 +40,6 @@ function AssetInfo() {
 
   return (
     <MainLayout>
-      {
-        //show asset
-        console.log("Asset Info:", asset)
-      }
       <div className="asset-info-page">
         {/* ── Header ── */}
         <div className="asset-info-header">

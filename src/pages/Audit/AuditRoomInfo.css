@@ -280,6 +280,10 @@
   border-bottom: none;
 }
 
+.audit-session-table tbody tr {
+  cursor: pointer;
+}
+
 /* == Status badges (matches StatusBadge component in JSX) ==================== */
 
 .audit-status-badge {
@@ -318,6 +322,10 @@
 
 .audit-session-card-list {
   display: none;
+}
+
+.audit-session-card {
+  cursor: pointer;
 }
 
 .audit-session-card {

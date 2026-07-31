@@ -421,14 +421,6 @@ export async function updateTransferRequest(requestId, user, note, isApprove) {
   } else if (!ackState.admin && ackState.from && ackState.to) {
     updates.status = "for_approval";
   }
-  console.log(
-    "isApprove:",
-    isApprove,
-    "ackState:",
-    ackState,
-    "updates:",
-    updates,
-  );
 
   await updateDoc(docRef, updates);
 }

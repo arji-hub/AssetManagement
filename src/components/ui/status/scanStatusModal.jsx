@@ -14,7 +14,6 @@ function ScanStatusModal({
   if (!item) return null;
 
   const isNotFound = errorMessage === "not_found.";
-  console.log("scan status :", status);
 
   return (
     <div className="scan-modal-overlay">

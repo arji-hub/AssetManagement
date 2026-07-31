@@ -149,7 +149,6 @@ function useReportRegistration({ onClose, assetID = "" }) {
         user.uid,
         `${user.firstname} ${user.lastname}`,
       );
-      console.log("Report submitted:", result);
       setSubmitStatus("success");
     } catch (err) {
       setSubmitError(err.message || "Failed to submit report.");

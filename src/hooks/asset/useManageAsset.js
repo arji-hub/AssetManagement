@@ -56,23 +56,14 @@ export default function useManageAsset(asset) {
   const isLocalMR = !!user && user.uid === asset?.local_mr;
   const isAffiliated = isAdmin || isPropertyCustodian || isLocalMR;
 
-  console.log("ManageAsset permission check:", {
-    role,
-    "user?.uid": user?.uid,
-    "asset?.property_custodian": asset?.property_custodian,
-    "asset?.local_mr": asset?.local_mr,
-    isAdmin,
-    isPropertyCustodian,
-    isLocalMR,
-    isAffiliated,
-    asset,
-  });
-
   // Report: visible to everyone.
   const canReport = true;
 
   // Transfer: admin, or the asset's property custodian, not its local MR.
   const canTransfer = isAffiliated && role !== ROLES.PARTTIME;
+
+  //Transfer Room: admin only
+  const canTransferRoom = isAdmin;
 
   // Local MR: property custodian or local MR only — never admin.
   const canLocalMR = !isAdmin && (isPropertyCustodian || isLocalMR);
@@ -89,6 +80,7 @@ export default function useManageAsset(asset) {
       canReport,
       canTransfer,
       canLocalMR,
+      canTransferRoom,
     },
   };
 }

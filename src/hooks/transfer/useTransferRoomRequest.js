@@ -128,7 +128,6 @@ function useTransferRoomRequest({ onClose, assetID = "" } = {}) {
         },
         user.uid,
       );
-      console.log("Room transfer submitted:", result);
       setSubmitStatus("success");
     } catch (err) {
       setSubmitError(err.message || "Failed to move asset.");
