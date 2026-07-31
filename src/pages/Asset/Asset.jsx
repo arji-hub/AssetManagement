@@ -5,11 +5,12 @@ import MainLayout from "../../components/layout/MainLayout";
 import { ROLES } from "../../data/roles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./Asset.css";
-import { Status } from "../../components/ui/status/assetStatus";
 import FilterModal from "../../components/ui/modal/FilterModal";
 import { useAssetFilters } from "../../hooks/asset/useAssetFilters";
 import { useAssets } from "../../hooks/asset/useAssets";
-import { formatDate, displayDate } from "../../utils/date";
+import { displayDate } from "../../utils/date";
+import AssetTable from "../../components/panel/AssetTable";
+import { assetColumns } from "../../data/assetColumns";
 
 function Asset() {
   const { role, currentUser } = useAuth();
@@ -90,79 +91,13 @@ function Asset() {
           </div>
         )}
 
-        <div className="asset-table-wrap">
-          <table className="asset-table">
-            <thead>
-              <tr>
-                <th>Asset ID</th>
-                <th>Description</th>
-                <th>Category</th>
-                <th>Location</th>
-                <th>Qty</th>
-                <th>Unit Value</th>
-                <th>Status</th>
-                <th>Date Acquired</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                <tr>
-                  <td colSpan="100%" className="asset-empty-cell">
-                    <FontAwesomeIcon icon="fa-solid fa-spinner" spin />
-                    <p>Loading assets…</p>
-                  </td>
-                </tr>
-              ) : error ? (
-                <tr>
-                  <td colSpan="100%" className="asset-empty-cell">
-                    <FontAwesomeIcon icon="fa-solid fa-triangle-exclamation" />
-                    <p>{error}</p>
-                  </td>
-                </tr>
-              ) : filteredAssets.length === 0 ? (
-                <tr>
-                  <td colSpan="100%" className="asset-empty-cell">
-                    <FontAwesomeIcon icon="fa-solid fa-box-open" />
-                    No assets found.
-                  </td>
-                </tr>
-              ) : (
-                filteredAssets.map((asset) => (
-                  <tr key={asset.id}>
-                    <td>{asset.id || "—"}</td>
-                    <td className="asset-desc">{asset.description || "—"}</td>
-                    <td>{asset.category_id || "—"}</td>
-                    <td>{asset.room_id || "—"}</td>
-                    <td>{asset.qty ?? 1}</td>
-                    <td>{asset.unit_value?.toLocaleString() ?? "—"}</td>
-                    <td>
-                      <Status status={asset.status} />
-                    </td>
-                    <td>{formatDate(asset.date_acquired)}</td>
-                    <td>
-                      <button
-                        className="asset-action-btn"
-                        onClick={() => navigate(`/asset/${asset.id}`)}
-                        aria-label="Actions"
-                      >
-                        <FontAwesomeIcon icon="fa-solid fa-ellipsis-vertical" />
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        <div className="asset-footer-bar">
-          <span>
-            {filteredAssets.length} asset
-            {filteredAssets.length !== 1 ? "s" : ""} shown
-            {activeFilterCount > 0 && ` (filtered from ${assets.length})`}
-          </span>
-        </div>
+        <AssetTable
+          columns={assetColumns}
+          data={filteredAssets}
+          loading={loading}
+          error={error}
+          emptyMessage="No assets found."
+        />
 
         {showFilter && (
           <FilterModal

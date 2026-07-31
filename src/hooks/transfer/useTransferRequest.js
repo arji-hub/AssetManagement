@@ -210,7 +210,6 @@ function useTransferRequest({ onClose, assetID = "" } = {}) {
                 role: custodian.role,
               }
             : null;
-      console.log("to", to);
       const from = asset.property_custodian
         ? {
             uid: asset.property_custodian,
@@ -230,8 +229,6 @@ function useTransferRequest({ onClose, assetID = "" } = {}) {
         `${user.firstname} ${user.lastname}`,
         user.role,
       );
-      //log result for debugging
-      console.log("Transfer request submitted:", result);
       setSubmitStatus("success");
     } catch (err) {
       setSubmitError(err.message || "Failed to submit transfer request.");

@@ -78,6 +78,7 @@ function AuditRoomInfo() {
     completingAudit,
     completeAuditError,
     handleCompleteAudit,
+    handleRowClick,
   } = useRoomInfo(auditID);
 
   const { auditPDF, auditItemsPDF } = useAuditRoomPDF(auditID);
@@ -263,7 +264,7 @@ function AuditRoomInfo() {
                 </thead>
                 <tbody>
                   {auditItems.map((item) => (
-                    <tr key={item.id}>
+                    <tr key={item.id} onClick={() => handleRowClick(item.id)}>
                       <td>{item.asset_id ?? item.id}</td>
                       <td>{item.description || "—"}</td>
                       <td>{item.category || "—"}</td>
@@ -309,7 +310,11 @@ function AuditRoomInfo() {
               {/* Mobile card list */}
               <div className="audit-session-card-list">
                 {auditItems.map((item) => (
-                  <div key={item.id} className="audit-session-card">
+                  <div
+                    key={item.id}
+                    className="audit-session-card"
+                    onClick={() => handleRowClick(item.id)}
+                  >
                     <div className="audit-session-card-header">
                       <p className="audit-session-card-title">
                         {item.asset_id ?? item.id}

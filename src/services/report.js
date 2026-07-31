@@ -80,7 +80,6 @@ export async function fetchReportByID(id) {
   if (!snap.exists()) throw new Error("Report not found.");
 
   const report = { id: snap.id, ...snap.data() };
-  console.log("report:", report);
 
   const latestLog = report.status_log?.[report.status_log.length - 1];
 

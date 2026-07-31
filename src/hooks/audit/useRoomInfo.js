@@ -8,8 +8,10 @@ import {
 import { useRoomAssets } from "../room/useRoomAssets";
 import useRoomOverview from "./useRoomOverview";
 import { fetchAssetByID } from "../../services/asset";
+import { useNavigate } from "react-router-dom";
 
 function useRoomInfo(auditID) {
+  const navigate = useNavigate();
   const [audit, setAudit] = useState(null);
   const [auditItems, setAuditItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -259,6 +261,10 @@ function useRoomInfo(auditID) {
     }
   }, [auditID, audit?.room_id, scannedItem]);
 
+  const handleRowClick = (id) => {
+    navigate(`/asset/info/${id}`);
+  };
+
   return {
     audit,
     auditItems,
@@ -272,6 +278,7 @@ function useRoomInfo(auditID) {
     verifyingId,
     hasItems,
     handleVerifyItem,
+    handleRowClick,
     handleScan,
     isCameraOpen,
     setIsCameraOpen,

@@ -108,7 +108,9 @@ function TransferRoomModal({ onClose, assetID = "" }) {
                     {asset.description || asset.id}
                   </p>
                   <p className="transfer-room-modal-preview-sub">
-                    Currently in {asset.room_id || "—"}
+                    {asset.room_id
+                      ? `Currently in ${asset.room_id}`
+                      : "Not yet assigned to a room"}
                   </p>
                 </div>
               </div>
@@ -118,9 +120,7 @@ function TransferRoomModal({ onClose, assetID = "" }) {
             <div
               className={`transfer-room-modal-field ${roomsError ? "has-error" : ""}`}
             >
-              <label htmlFor="transfer-room-destination-select">
-                Move To
-              </label>
+              <label htmlFor="transfer-room-destination-select">Move To</label>
               <select
                 id="transfer-room-destination-select"
                 value={moveTo}
@@ -156,9 +156,9 @@ function TransferRoomModal({ onClose, assetID = "" }) {
                 className="info-icon"
               />
               <p className="info-text">
-                Find the asset first, then select the room you want to move
-                it to. This action is recorded immediately and cannot be
-                edited afterward.
+                Find the asset first, then select the room you want to move it
+                to. This action is recorded immediately and cannot be edited
+                afterward.
               </p>
             </div>
           </div>

@@ -178,10 +178,4 @@
     flex-direction: column;
     z-index: 100;
   }
-
-  .transfer-top-tabs,
-  .transfer-sub-tabs {
-    overflow-x: auto;
-    white-space: nowrap;
-  }
 }

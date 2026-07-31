@@ -30,9 +30,6 @@ function useAuditRoomPDF(auditID) {
       if (unsubscribe) unsubscribe();
     };
   }, [auditID]);
-
-  console.log("PDF audit metadata :", auditPDF);
-  console.log("PDF audit items :", auditItemsPDF);
   return {
     auditPDF,
     auditItemsPDF,

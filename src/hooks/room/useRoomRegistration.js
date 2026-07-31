@@ -39,7 +39,6 @@ export function useRoomRegistration({ onSuccess, existingRooms = [] } = {}) {
     setError("");
 
     try {
-      console.log("Role", role);
       const savedName = await addRoom({ name: toProperCase(name) }, role);
       setName("");
       onSuccess?.(savedName);
