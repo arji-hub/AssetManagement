@@ -5,10 +5,19 @@ import { displayDate } from "../../utils/date";
 import AuditRoom from "../../components/panel/AuditRoom";
 import AuditReport from "../../components/panel/AuditReport";
 import AuditHistory from "../../components/panel/AuditHistory";
+import useReportLog from "../../hooks/audit/useReportLog";
+import useRoomLogs from "../../hooks/audit/useRoomLogs";
 import "./Audit.css";
 
 function Audit() {
   const { user } = useAuth();
+
+  const { filteredLogs: reportLogs, handleRowClick: handleReportRowClick } =
+    useReportLog();
+  const {
+    filteredLogs: auditLogs,
+    handleHistoryRowClick: handleAuditRowClick,
+  } = useRoomLogs();
 
   return (
     <MainLayout>
@@ -28,7 +37,12 @@ function Audit() {
           <AuditReport />
         </div>
 
-        <AuditHistory />
+        <AuditHistory
+          reportLogs={reportLogs}
+          auditLogs={auditLogs}
+          onReportClick={handleReportRowClick}
+          onAuditClick={handleAuditRowClick}
+        />
       </div>
     </MainLayout>
   );
