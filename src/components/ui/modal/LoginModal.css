@@ -5,7 +5,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9000;
   animation: loginFadeIn 0.2s ease;
 }
 
@@ -100,11 +99,70 @@
   cursor: not-allowed;
 }
 
+/* ── divider ── */
+.login-modal-divider {
+  display: flex;
+  align-items: center;
+  margin: 20px 0 14px;
+  color: #999;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.login-modal-divider::before,
+.login-modal-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e5e5e5;
+}
+
+.login-modal-divider span {
+  padding: 0 10px;
+  white-space: nowrap;
+}
+
+/* ── oauth buttons ── */
+.login-modal-oauth-group {
+  display: flex;
+  gap: 10px;
+}
+
+.login-modal-oauth-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #fff;
+  color: #333;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.login-modal-oauth-btn:hover {
+  background: #f7f7f7;
+  border-color: #ccc;
+}
+
+.login-modal-oauth-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 /* ── footer links ── */
 .login-modal-footer {
   display: flex;
   justify-content: space-between;
-  margin-top: 14px;
+  margin-top: 18px;
 }
 
 .login-modal-footer span {
