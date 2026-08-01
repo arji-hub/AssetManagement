@@ -67,7 +67,6 @@
 /* ── main area ── */
 .login-main {
   position: relative;
-  z-index: 9999;
   flex: 1;
   display: flex;
   align-items: center;

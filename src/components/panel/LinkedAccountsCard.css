@@ -1,0 +1,176 @@
+.linked-accounts-card {
+  width: 100%;
+  max-width: 720px;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  padding: 28px;
+}
+
+.linked-accounts-title {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #860100;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding-left: 10px;
+  border-left: 3px solid #f5aa2c;
+}
+
+.linked-accounts-subtitle {
+  margin: 8px 0 20px;
+  font-size: 13px;
+  color: #888;
+}
+
+.linked-accounts-error {
+  font-size: 13px;
+  color: #c0392b;
+  background: #fdf2f2;
+  border: 1px solid #f5c6c6;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-bottom: 16px;
+}
+
+.linked-accounts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.linked-account-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  transition: border-color 0.15s ease;
+}
+
+.linked-account-row:hover {
+  border-color: #ddd;
+}
+
+.linked-account-icon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #f9f9f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.linked-account-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.linked-account-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.linked-account-email {
+  font-size: 12px;
+  color: #2e7d32;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.linked-account-status {
+  font-size: 12px;
+  color: #999;
+}
+
+.linked-account-btn {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1.5px solid #860100;
+  background: #ffffff;
+  color: #860100;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.linked-account-btn:hover {
+  background: #860100;
+  color: #ffffff;
+}
+
+.linked-account-btn.is-connected {
+  border-color: #ddd;
+  color: #999;
+}
+
+.linked-account-btn.is-connected:hover {
+  background: #fdf2f2;
+  border-color: #c0392b;
+  color: #c0392b;
+}
+
+.linked-account-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ── Tablet ── */
+@media (max-width: 640px) {
+  .linked-accounts-card {
+    padding: 20px;
+  }
+}
+
+/* ── Mobile ── */
+@media (max-width: 480px) {
+  .linked-accounts-card {
+    padding: 16px;
+  }
+
+  .linked-accounts-subtitle {
+    font-size: 12px;
+    margin-bottom: 16px;
+  }
+
+  .linked-account-row {
+    flex-wrap: wrap;
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .linked-account-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .linked-account-info {
+    flex-basis: calc(100% - 42px);
+  }
+
+  .linked-account-email {
+    white-space: normal;
+    word-break: break-all;
+  }
+
+  .linked-account-btn {
+    flex-basis: 100%;
+    margin-left: 0;
+    text-align: center;
+  }
+}
