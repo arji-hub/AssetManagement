@@ -7,19 +7,19 @@ import {
 } from "../../services/authService";
 
 const OAUTH_ERROR_MESSAGES = {
-  "auth/popup-closed-by-user": null, // user cancelled — no error needed
-  "auth/cancelled-popup-request": null, // duplicate popup triggered — ignore
+  "auth/popup-closed-by-user": null,
+  "auth/cancelled-popup-request": null,
   "auth/popup-blocked":
     "Your browser blocked the sign-in popup. Please allow popups for this site and try again.",
   "auth/network-request-failed":
     "Network error. Please check your connection and try again.",
 };
 
-function getMicrosoftErrorMessage(err) {
+function getOAuthErrorMessage(err) {
   if (err.code && err.code in OAUTH_ERROR_MESSAGES) {
     return OAUTH_ERROR_MESSAGES[err.code];
   }
-  return err.message || "Microsoft sign-in failed. Please try again.";
+  return err.message || "Sign-in failed. Please try again.";
 }
 
 export function useLogin() {
@@ -44,7 +44,6 @@ export function useLogin() {
     e.preventDefault();
     setError("");
     setLoading(true);
-
     try {
       const { role } = await login(email, password);
       routeByRole(role);
@@ -62,7 +61,7 @@ export function useLogin() {
       const { role } = await loginWithMicrosoft();
       routeByRole(role);
     } catch (err) {
-      const message = getMicrosoftErrorMessage(err);
+      const message = getOAuthErrorMessage(err);
       if (message) setError(message);
     } finally {
       setOauthLoading(null);
@@ -76,7 +75,7 @@ export function useLogin() {
       const { role } = await loginWithGoogle();
       routeByRole(role);
     } catch (err) {
-      const message = getMicrosoftErrorMessage(err);
+      const message = getOAuthErrorMessage(err);
       if (message) setError(message);
     } finally {
       setOauthLoading(null);
@@ -85,7 +84,7 @@ export function useLogin() {
 
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
-  const isBusy = loading || oauthLoading !== null;
+  const isBusy = loading;
 
   return {
     email,
