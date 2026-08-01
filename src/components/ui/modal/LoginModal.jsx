@@ -77,7 +77,7 @@ function LoginModal() {
             type="button"
             className="login-modal-oauth-btn"
             onClick={handleGoogleClick}
-            disabled={isBusy}
+            disabled={oauthLoading === "google"}
           >
             <GoogleIcon />
             <span>
@@ -89,7 +89,7 @@ function LoginModal() {
             type="button"
             className="login-modal-oauth-btn"
             onClick={handleMicrosoftClick}
-            disabled={isBusy}
+            disabled={oauthLoading === "microsoft"}
           >
             <MicrosoftIcon />
             <span>
