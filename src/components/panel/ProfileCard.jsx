@@ -2,21 +2,36 @@ import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getRole } from "../../utils/role";
 import ProfileField from "../ui/card/ProfileField";
+import useProfileEdit from "../../hooks/profile/userProfileEdit";
+import { useAuth } from "../../context/AuthContext";
 import "./ProfileCard.css";
 
-function ProfileCard({
-  user,
-  form,
-  errors,
-  checking,
-  isEditing,
-  isSaving,
-  saveError,
-  isFormValid,
-  handleChange,
-  handleEditToggle,
-  handleSave,
-}) {
+function ProfileCard({ user }) {
+  const { setUser } = useAuth();
+  const {
+    form,
+    errors,
+    checking,
+    isEditing,
+    isSaving,
+    saveError,
+    isFormValid,
+    handleChange,
+    handleEditToggle,
+    handleSave,
+  } = useProfileEdit({
+    user,
+    onSaved: (result) => {
+      setUser((prev) => ({
+        ...prev,
+        firstname: form.firstname,
+        middlename: form.middlename || "_",
+        lastname: form.lastname,
+        username: form.username,
+      }));
+    },
+  });
+
   const fullName = [
     user?.firstname,
     user?.middlename === "_" ? null : user?.middlename,
@@ -180,27 +195,6 @@ ProfileCard.propTypes = {
     email: PropTypes.string,
     role: PropTypes.string,
   }),
-  form: PropTypes.shape({
-    firstname: PropTypes.string,
-    middlename: PropTypes.string,
-    lastname: PropTypes.string,
-    username: PropTypes.string,
-  }).isRequired,
-  errors: PropTypes.shape({
-    firstname: PropTypes.string,
-    lastname: PropTypes.string,
-    username: PropTypes.string,
-  }).isRequired,
-  checking: PropTypes.shape({
-    username: PropTypes.bool,
-  }).isRequired,
-  isEditing: PropTypes.bool.isRequired,
-  isSaving: PropTypes.bool.isRequired,
-  saveError: PropTypes.string,
-  isFormValid: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
-  handleChange: PropTypes.func.isRequired,
-  handleEditToggle: PropTypes.func.isRequired,
-  handleSave: PropTypes.func.isRequired,
 };
 
 export default ProfileCard;
