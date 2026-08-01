@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { login } from "../../services/authService";
 import LoginModal from "../../components/ui/modal/LoginModal";
 import QRModal from "../../components/ui/modal/QRModal";
@@ -11,24 +10,15 @@ import QRStatusModal from "../../components/ui/status/QRStatusModal";
 import "./LandingPage.css";
 
 function LandingPage({ previewAsset, assetNotFound }) {
-  const navigate = useNavigate();
   const [view, setView] = useState("qr");
 
-  const handleLogin = async (email, password) => {
-    const { role } = await login(email, password);
-
-    if (role === "admin" || role === "parttime" || role === "fulltime") {
-      navigate("/dashboard");
-    } else {
-      throw new Error("No role assigned.");
-    }
-  };
-
-  const { status, errorMessage, handleImageUpload, handleScan, reset } = useQRScanner();
+  const { status, errorMessage, handleImageUpload, handleScan, reset } =
+    useQRScanner();
 
   const toggleView = () => {
     setView((prev) => (prev === "qr" ? "login" : "qr"));
   };
+  console.log(view);
 
   return (
     <div className="login-page">
@@ -55,7 +45,7 @@ function LandingPage({ previewAsset, assetNotFound }) {
             <QRModal onScan={handleScan} onImageUpload={handleImageUpload} />
           )
         ) : (
-          <LoginModal onLogin={handleLogin} />
+          <LoginModal />
         )}
         {status && (
           <QRStatusModal

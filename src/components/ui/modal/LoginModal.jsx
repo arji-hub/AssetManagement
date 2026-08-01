@@ -1,33 +1,29 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { GoogleIcon, MicrosoftIcon } from "../../../assets/OAuthIcons";
+import { useLogin } from "../../../hooks/login/useLogin";
 import "./LoginModal.css";
 
-function LoginModal({ onLogin }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-
-    try {
-      await onLogin(email, password);
-    } catch (err) {
-      setError("Invalid email or password.");
-    } finally {
-      setLoading(false);
-    }
-  };
+function LoginModal() {
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    error,
+    loading,
+    showPassword,
+    togglePasswordVisibility,
+    oauthLoading,
+    isBusy,
+    handleSubmit,
+    handleMicrosoftClick,
+    handleGoogleClick,
+  } = useLogin();
 
   return (
     <div className="login-modal-overlay">
-      {/*remove 's' to implement right align*/}
       <div className="login-modal-box">
         <div className="login-modal-title">LOGIN</div>
 
@@ -57,7 +53,7 @@ function LoginModal({ onLogin }) {
             />
             <span
               className="login-modal-field-icon login-modal-eye"
-              onClick={() => setShowPassword(!showPassword)}
+              onClick={togglePasswordVisibility}
             >
               <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
             </span>
@@ -66,11 +62,41 @@ function LoginModal({ onLogin }) {
           <button
             type="submit"
             className="login-modal-submit-btn"
-            disabled={loading}
+            disabled={isBusy}
           >
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
+
+        <div className="login-modal-divider">
+          <span>or continue with</span>
+        </div>
+
+        <div className="login-modal-oauth-group">
+          <button
+            type="button"
+            className="login-modal-oauth-btn"
+            onClick={handleGoogleClick}
+            disabled={isBusy}
+          >
+            <GoogleIcon />
+            <span>
+              {oauthLoading === "google" ? "Signing in..." : "Google"}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            className="login-modal-oauth-btn"
+            onClick={handleMicrosoftClick}
+            disabled={isBusy}
+          >
+            <MicrosoftIcon />
+            <span>
+              {oauthLoading === "microsoft" ? "Signing in..." : "Microsoft"}
+            </span>
+          </button>
+        </div>
 
         <div className="login-modal-footer">
           <span>Remember me</span>
@@ -80,9 +106,5 @@ function LoginModal({ onLogin }) {
     </div>
   );
 }
-
-LoginModal.propTypes = {
-  onLogin: PropTypes.func.isRequired,
-};
 
 export default LoginModal;
