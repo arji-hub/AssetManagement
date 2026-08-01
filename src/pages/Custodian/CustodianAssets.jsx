@@ -32,7 +32,6 @@ function CustodianAssets() {
     custodians,
     loadingOptions,
   } = useAssetFilters(assets);
-  console.log(filteredAssets);
 
   return (
     <MainLayout>
