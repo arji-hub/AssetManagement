@@ -33,8 +33,6 @@ function useProfileEdit({ user, onSaved }) {
   useEffect(() => {
     return () => clearTimeout(usernameTimer.current);
   }, []);
-
-  // Re-sync the form if the underlying user data changes (e.g. after a save)
   useEffect(() => {
     setForm(buildFormFromUser(user));
   }, [user]);

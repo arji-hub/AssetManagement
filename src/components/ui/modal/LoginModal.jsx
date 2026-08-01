@@ -98,10 +98,10 @@ function LoginModal() {
           </button>
         </div>
 
-        <div className="login-modal-footer">
+        {/*<div className="login-modal-footer">
           <span>Remember me</span>
           <span>Forgot Password</span>
-        </div>
+        </div> */}
       </div>
     </div>
   );

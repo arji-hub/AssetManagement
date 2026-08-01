@@ -18,7 +18,6 @@ function LandingPage({ previewAsset, assetNotFound }) {
   const toggleView = () => {
     setView((prev) => (prev === "qr" ? "login" : "qr"));
   };
-  console.log(view);
 
   return (
     <div className="login-page">
