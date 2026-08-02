@@ -41,17 +41,19 @@ The **CICT Asset Management System (CICT-AMS)** is designed to give the College 
 
 ## 🛠️ Tech Stack
 
-| Layer                 | Technology                    |
-| --------------------- | ----------------------------- |
-| Frontend              | React + Vite                  |
-| Styling               | Custom CSS                    |
-| Backend / Database    | Firebase Firestore            |
-| Authentication        | Firebase Auth                 |
-| File Storage          | Firebase Storage              |
-| Serverless Functions  | Firebase Cloud Functions (v2) |
-| Email Delivery        | Resend                        |
-| Component Development | Storybook                     |
-| Hosting               | Firebase Hosting & Vercel     |
+| Layer                 | Technology                                   |
+| --------------------- | ---------------------------------------------|
+| Frontend              | React + Vite                                 |
+| Styling               | Custom CSS                                   |
+| Backend / Database    | Firebase Firestore                           |
+| Authentication        | Firebase Authentication                      |
+| Identity Providers    | Google OAuth 2.0, Microsoft Entra ID (Azure) |
+| File Storage          | Firebase Storage                             |
+| Serverless Functions  | Firebase Cloud Functions (v2)                |
+| Email Delivery        | Nodemailer                                   |
+| QR Code Processing    | jsQR                                         |
+| Component Development | Storybook                                    |
+| Hosting               | Firebase Hosting & Vercel                    |
 
 ---
 
