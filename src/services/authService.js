@@ -6,6 +6,7 @@ import {
   unlink,
   OAuthProvider,
   GoogleAuthProvider,
+  deleteUser,
   signOut,
 } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
@@ -37,8 +38,9 @@ export async function loginWithMicrosoft() {
 
   const userDoc = await getDoc(doc(db, "user", userCredential.user.uid));
   if (!userDoc.exists()) {
+    await deleteUser(userCredential.user);
     throw new Error(
-      "No user record found for this account. Please contact the administrator.",
+      "Microsoft account is not linked to a user record. Please contact the administrator.",
     );
   }
 
@@ -51,8 +53,9 @@ export async function loginWithGoogle() {
 
   const userDoc = await getDoc(doc(db, "user", userCredential.user.uid));
   if (!userDoc.exists()) {
+    await deleteUser(userCredential.user);
     throw new Error(
-      "No user record found for this account. Please contact the administrator.",
+      "Google account is not linked to a user record. Please contact the administrator.",
     );
   }
 

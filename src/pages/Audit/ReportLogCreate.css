@@ -178,11 +178,24 @@
   font-size: 14px;
 }
 
+/* ── Toolbar with clear button ── */
 .report-log-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+  flex-wrap: wrap;
+}
+
+.report-log-toolbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.report-log-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
@@ -199,6 +212,33 @@
 .report-log-selected-count {
   font-size: 13px;
   color: #5a413c;
+  white-space: nowrap;
+}
+
+/* ── Clear all button ── */
+.report-log-btn-clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1px solid #e2beb9;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #860100;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.report-log-btn-clear:hover {
+  background: #fbeceb;
+  border-color: #860100;
+  box-shadow: 0 2px 6px rgba(134, 1, 0, 0.1);
+}
+
+.report-log-btn-clear:active {
+  transform: scale(0.96);
 }
 
 /* Desktop table */
@@ -332,6 +372,7 @@
   color: #5a413c;
 }
 
+/* ── Responsive Design ── */
 @media (max-width: 768px) {
   .report-log-create-page {
     padding: 16px;
@@ -369,6 +410,22 @@
 
   .report-log-date-separator {
     text-align: center;
+  }
+
+  .report-log-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .report-log-toolbar-left,
+  .report-log-toolbar-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .report-log-btn-clear {
+    flex: 1;
+    justify-content: center;
   }
 
   .report-log-table-wrapper {

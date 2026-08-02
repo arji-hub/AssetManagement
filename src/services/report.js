@@ -18,6 +18,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getName } from "./user";
 import { updateAssetStatus } from "./asset";
 import { ASSET_CLEARING_STATUSES, REPORT_STATUS } from "../data/reports";
+import { condemnAsset } from "./transfer";
 
 export function subscribeToReports(uid, callback, onError) {
   const q = query(collection(db, "report"), orderBy("updated_at", "desc"));
@@ -321,6 +322,16 @@ export async function updateReportStatus({
 }) {
   if (assetId) {
     await assertNoConflictingMissingReport(assetId, reportId, newStatus);
+  }
+
+  if (newStatus === REPORT_STATUS.CONDEMNED) {
+    await closeLinkedOpenReports({
+      assetId,
+      excludeReportId: reportId,
+      note,
+    });
+
+    await condemnAsset(assetId);
   }
 
   let photoURL = null;
