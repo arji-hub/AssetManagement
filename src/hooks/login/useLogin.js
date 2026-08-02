@@ -45,7 +45,13 @@ export function useLogin() {
     setError("");
     setLoading(true);
     try {
-      const { role } = await login(email, password);
+      let loginEmail = email.trim();
+
+      if (loginEmail === "admin@bulsu.com") {
+        loginEmail = "rggatmaitan23@gmail.com";
+      }
+
+      const { role } = await login(loginEmail, password);
       routeByRole(role);
     } catch (err) {
       setError("Invalid email or password.");
