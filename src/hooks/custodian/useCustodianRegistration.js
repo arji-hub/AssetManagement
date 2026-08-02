@@ -47,7 +47,7 @@ function validate(name, value, currentForm) {
   }
 }
 
-function useCustodianRegistration({ onSubmit, onClose }) {
+function useCustodianRegistration({ onSubmit }) {
   const [form, setForm] = useState(INITIAL_FORM);
   const [errors, setErrors] = useState(INITIAL_ERRORS);
   const [checking, setChecking] = useState({ email: false, user_name: false });
@@ -151,7 +151,6 @@ function useCustodianRegistration({ onSubmit, onClose }) {
     if (!isComplete) return;
     const { confirm_password, ...submitData } = form;
     onSubmit(submitData);
-    onClose();
   };
 
   return { form, errors, checking, isComplete, handleChange, handleSubmit };

@@ -47,7 +47,6 @@ export function useCustodian() {
   const handleAddCustodian = useCallback(
     async (formData) => {
       setIsSubmitting(true);
-      setShowModal(false);
       setStatus("loading");
       setSubmitError(null);
 
@@ -56,6 +55,7 @@ export function useCustodian() {
         // Re-fetch so the new custodian appears in the list
         await loadCustodians();
         setStatus("success");
+        setShowModal(false);
       } catch (error) {
         console.error("Failed to add custodian:", error);
         setSubmitError(
