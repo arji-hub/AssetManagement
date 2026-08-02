@@ -12,6 +12,10 @@ import {
 import { doc, getDoc } from "firebase/firestore";
 
 export async function login(email, password) {
+  if (email.trim() === "" || password.trim() === "") {
+    throw new Error("Email and password cannot be empty.");
+  }
+
   const userCredential = await signInWithEmailAndPassword(
     auth,
     email,

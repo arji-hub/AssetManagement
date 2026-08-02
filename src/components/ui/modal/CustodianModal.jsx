@@ -5,7 +5,7 @@ import useCustodianRegistration from "../../../hooks/custodian/useCustodianRegis
 
 function CustodianModal({ onClose, onSubmit, isSubmitting = false }) {
   const { form, errors, checking, isComplete, handleChange, handleSubmit } =
-    useCustodianRegistration({ onSubmit, onClose });
+    useCustodianRegistration({ onSubmit });
 
   return (
     <div className="modal-overlay">

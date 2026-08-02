@@ -40,7 +40,6 @@ exports.addCustodian = onCall(
         "You must be logged in to perform this action.",
       );
     }
-
     // ── Guard: caller must be an admin ──────────────────────────────────
     if (request.auth.token.role !== "admin") {
       throw new HttpsError(
