@@ -15,10 +15,10 @@ import {
 } from "firebase/firestore";
 import { db, storage } from "./firebase-config";
 import { updateAssetRoom } from "./asset";
-import { getName } from "./user";
+import { getName, getAdmin } from "./user";
 import ROLES from "../data/roles";
 import { TRANSFER_TYPES, STATUS } from "../data/transfer";
-import { getAdmin } from "./user";
+import { roomCount } from "./room.js";
 
 const COLLECTION = "transfer_request";
 
@@ -442,6 +442,14 @@ export async function addTransferRoom(
 
   const docRef = await addDoc(col, docData);
   await updateAssetRoom(asset_id, move_to);
+
+  const countUpdates = [];
+  if (room_from) {
+    countUpdates.push(roomCount(room_from, "decrement"));
+  }
+  countUpdates.push(roomCount(move_to, "increment"));
+  await Promise.all(countUpdates);
+
   return { id: docRef.id, ...docData };
 }
 
@@ -499,11 +507,18 @@ export async function condemnAsset(assetID) {
   const docRef = doc(db, "asset", assetID);
 
   try {
+    const snap = await getDoc(docRef);
+    const currentRoomId = snap.exists() ? snap.data().room_id : null;
+
     await updateDoc(docRef, {
       local_mr: null,
       property_custodian: null,
       room_id: null,
     });
+
+    if (currentRoomId) {
+      await roomCount(currentRoomId, "decrement");
+    }
   } catch (err) {
     console.error("❌ Failed to condemn asset:", err);
     throw new Error(`Failed to condemn asset: ${err.message}`);
