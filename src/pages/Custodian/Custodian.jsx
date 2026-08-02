@@ -7,6 +7,8 @@ import CustodianModal from "../../components/ui/modal/CustodianModal";
 import AddingStatusModal from "../../components/ui/status/AddingStatusModal";
 import { useCustodian } from "../../hooks/custodian/useCustodian";
 import { ROLE_FILTER_OPTIONS } from "../../data/roles";
+import { CustodianListPDF } from "../../pdf/templates/CustodianListPDF";
+import { PDFPreviewModal } from "../../components/ui/modal/PDFPreviewModal";
 
 function Custodian() {
   const { user } = useAuth();
@@ -34,6 +36,12 @@ function Custodian() {
           </div>
           <div className="custodian-settings">
             {/* Filters */}
+            <PDFPreviewModal
+              title="Custodian List"
+              fileName="custodian-list.pdf"
+              document={<CustodianListPDF custodians={custodians} />}
+              triggerLabel="Custodian List"
+            />
             <div className="report-filter-segment">
               {ROLE_FILTER_OPTIONS.map((opt) => (
                 <button

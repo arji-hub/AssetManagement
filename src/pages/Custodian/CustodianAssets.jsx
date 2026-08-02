@@ -16,7 +16,8 @@ function CustodianAssets() {
   const { username } = useParams();
   const navigate = useNavigate();
 
-  const { assets, loading, error, fullname } = useCustodianAssets(username);
+  const { assets, loading, error, fullname, email } =
+    useCustodianAssets(username);
 
   const {
     showFilter,
@@ -43,7 +44,8 @@ function CustodianAssets() {
             <div>
               <h1 className="assets-title">Assets in Custody</h1>
               <p className="assets-subtitle">
-                Showing assets registered For <strong>{fullname}</strong>
+                {/*italic email */}
+                <strong>{fullname}</strong> • <em>{email}</em>
               </p>
             </div>
           </div>
