@@ -372,7 +372,10 @@ export async function generateReportLog(name, reportIDs) {
     }
   });
 
+  const auditNo = await generateAuditNo("report");
+
   const auditReportRef = await addDoc(collection(db, "audit_report"), {
+    audit_no: auditNo,
     log_name: name.trim(),
     report_ids: reportIDs,
     report_count: reportIDs.length,

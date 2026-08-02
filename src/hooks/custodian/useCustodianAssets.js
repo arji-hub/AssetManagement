@@ -58,6 +58,5 @@ export function useCustodianAssets(username) {
       unsubscribe();
     };
   }, [username]);
-
   return { assets, fullname, loading, error };
 }

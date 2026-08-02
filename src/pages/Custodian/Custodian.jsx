@@ -24,7 +24,6 @@ function Custodian() {
     submitError,
     handleStatusClose,
   } = useCustodian();
-
   return (
     <MainLayout>
       <div className="custodian-page">

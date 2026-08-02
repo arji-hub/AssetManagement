@@ -494,3 +494,18 @@ export function subscribeToRoomTransfersByAsset(assetId, callback, onError) {
 
   return unsubscribe;
 }
+
+export async function condemnAsset(assetID) {
+  const docRef = doc(db, "asset", assetID);
+
+  try {
+    await updateDoc(docRef, {
+      local_mr: null,
+      property_custodian: null,
+      room_id: null,
+    });
+  } catch (err) {
+    console.error("❌ Failed to condemn asset:", err);
+    throw new Error(`Failed to condemn asset: ${err.message}`);
+  }
+}

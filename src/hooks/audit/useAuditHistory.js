@@ -52,9 +52,7 @@ export default function useAuditHistory({
   const getItemSummary = (item) => {
     const isReport = item.__type === "report";
 
-    const description = isReport
-      ? item.log_name
-      : `Room ${item.room_id} · ${item.audit_no}`;
+    const description = isReport ? item.log_name : `Room ${item.room_id}`;
 
     const primaryCount = isReport
       ? (item.report_count ?? 0)

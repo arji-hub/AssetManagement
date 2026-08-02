@@ -16,3 +16,18 @@ export const ROLE_FILTER_OPTIONS = [
   { value: ROLES.FULLTIME, label: "Full-time" },
   { value: ROLES.PARTTIME, label: "Part-time" },
 ];
+
+export const ROLES_COLOR = {
+  admin: {
+    background: "rgba(220, 38, 38, 0.12)",
+    text: "#991b1b",
+  },
+  fulltime: {
+    background: "rgba(29, 78, 216, 0.12)",
+    text: "#1e3a8a",
+  },
+  parttime: {
+    background: "rgba(34, 197, 94, 0.12)",
+    text: "#166534",
+  },
+};
