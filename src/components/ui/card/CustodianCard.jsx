@@ -3,11 +3,12 @@ import "./CustodianCard.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 import { getRole } from "../../../utils/role";
-
+import { ROLES_COLOR } from "../../../data/roles";
 
 function CustodianCard({ name, classification, totalAssets, username }) {
   const role = getRole(classification);
   const navigate = useNavigate();
+  const roleColor = ROLES_COLOR[classification];
 
   const handleClick = () => {
     navigate(`/custodian/${username}`);
@@ -22,7 +23,15 @@ function CustodianCard({ name, classification, totalAssets, username }) {
         <h3 className="custodian-name">{name}</h3>
 
         <div className="custodian-assets">
-          <span className="custodian-badge">{role}</span>
+          <span
+            className="custodian-badge"
+            style={{
+              background: roleColor?.background || "rgba(59, 114, 68, 0.3)",
+              color: roleColor?.text || "#004700",
+            }}
+          >
+            {role}
+          </span>
 
           <div className="assets-divider">
             <span className="assets-icon">

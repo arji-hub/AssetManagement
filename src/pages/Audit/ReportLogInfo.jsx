@@ -27,7 +27,6 @@ function ReportLogInfo() {
     prevPage,
     handleRowClick,
   } = useReportLogInfo();
-
   return (
     <MainLayout>
       <div className="report-log-info-page">
@@ -43,7 +42,7 @@ function ReportLogInfo() {
               <p className="report-log-info-subtitle">
                 {loading
                   ? "Fetching log details..."
-                  : `Generated ${formatDate(reportLog?.created_at)}`}
+                  : `${reportLog?.audit_no ? `${reportLog.audit_no} · ` : ""}Generated ${formatDate(reportLog?.created_at)}`}
               </p>
             </div>
           </div>
@@ -192,7 +191,9 @@ function ReportLogInfo() {
                         {report.type}
                       </span>
                     </td>
-                    <td>{report.reported_by_name ?? report.reported_by}</td>
+                    <td>
+                      {report.reported_by ? report.reported_by_name : "---"}
+                    </td>
                     <td>{report.location}</td>
                     <td>{formatDate(report.created_at)}</td>
                   </tr>

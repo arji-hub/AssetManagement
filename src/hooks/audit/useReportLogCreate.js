@@ -154,6 +154,10 @@ function useReportLogCreate() {
     });
   }, [allFilteredSelected, filteredReports]);
 
+  const clearSelectedReports = useCallback(() => {
+    setSelectedIds(new Set());
+  }, []);
+
   const openGenerateModal = useCallback(() => {
     setIsGenerateModalOpen(true);
   }, []);
@@ -232,6 +236,7 @@ function useReportLogCreate() {
     selectedIds,
     toggleSelect,
     toggleSelectAll,
+    clearSelectedReports,
     allFilteredSelected,
     isGenerateModalOpen,
     logName,

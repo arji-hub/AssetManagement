@@ -31,6 +31,7 @@ function ReportLogCreate() {
     selectedIds,
     toggleSelect,
     toggleSelectAll,
+    clearSelectedReports,
     allFilteredSelected,
     isGenerateModalOpen,
     logName,
@@ -131,17 +132,34 @@ function ReportLogCreate() {
 
         {!loading && filteredReports.length > 0 && (
           <div className="report-log-toolbar">
-            <label className="report-log-select-all">
-              <input
-                type="checkbox"
-                checked={allFilteredSelected}
-                onChange={toggleSelectAll}
-              />
-              Select all filtered
-            </label>
-            <span className="report-log-selected-count">
-              {selectedIds.size} of {filteredReports.length} selected
-            </span>
+            <div className="report-log-toolbar-left">
+              <label className="report-log-select-all">
+                <input
+                  type="checkbox"
+                  checked={allFilteredSelected}
+                  onChange={toggleSelectAll}
+                />
+                Select all filtered
+              </label>
+            </div>
+
+            <div className="report-log-toolbar-right">
+              <span className="report-log-selected-count">
+                {selectedIds.size} of {filteredReports.length} selected
+              </span>
+
+              {selectedIds.size > 0 && (
+                <button
+                  type="button"
+                  className="report-log-btn-clear"
+                  onClick={clearSelectedReports}
+                  aria-label="Clear all selections"
+                >
+                  <FontAwesomeIcon icon="fa-solid fa-xmark" />
+                  Clear All
+                </button>
+              )}
+            </div>
           </div>
         )}
 
