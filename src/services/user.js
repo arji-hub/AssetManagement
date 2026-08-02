@@ -47,6 +47,7 @@ export async function fetchCustodians() {
       username: d.user_name,
       fullname,
       role: d.role,
+      email: d.email,
     };
   });
 

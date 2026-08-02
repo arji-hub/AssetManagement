@@ -15,18 +15,54 @@ import {
 import { toLowerCase } from "../utils/TextCasing";
 import { getName } from "./user";
 
+async function computeTopCustodian(assets) {
+  if (!assets || assets.length === 0) return "No Assets";
+
+  const counts = new Map();
+  assets.forEach((asset) => {
+    const uid = asset.property_custodian || asset.local_mr || "Unassigned";
+    counts.set(uid, (counts.get(uid) ?? 0) + 1);
+  });
+
+  let best = null;
+  for (const [uid, count] of counts) {
+    if (!best || count > best.count) best = { uid, count };
+  }
+
+  if (!best || best.uid === "Unassigned") return "Unassigned";
+
+  try {
+    const name = await getName(best.uid);
+    return name?.fullname || "Unassigned";
+  } catch (err) {
+    console.error("getName failed for uid", best.uid, err);
+    return "Unassigned";
+  }
+}
+
 export async function fetchRooms() {
   const snapshot = await getDocs(collection(db, "room"));
 
-  return snapshot.docs.map((doc) => {
-    const data = doc.data();
+  const rooms = await Promise.all(
+    snapshot.docs.map(async (roomDoc) => {
+      const data = roomDoc.data();
+      const assetsSnapshot = await getDocs(
+        query(collection(db, "asset"), where("room_id", "==", roomDoc.id)),
+      );
+      const assets = assetsSnapshot.docs.map((a) => a.data());
 
-    return {
-      id: doc.id,
-      name: data.name,
-      assetCount: data.assetCount ?? 0,
-    };
-  });
+      const topCustodian = await computeTopCustodian(assets);
+
+      return {
+        id: roomDoc.id,
+        name: data.name,
+        assetCount: data.assetCount ?? 0,
+        roomCustodian: topCustodian || "",
+      };
+    }),
+  );
+  console.log("Fetched Rooms:", rooms);
+  return rooms;
 }
 
 export function subscribeToRooms(callback, onError) {
@@ -80,7 +116,7 @@ export async function addRoom(data, role) {
   const payload = {
     name: data.name,
     assetCount: 0,
-    last_audited_at: null,  
+    last_audited_at: null,
 
     // metadata
     created_at: serverTimestamp(),
@@ -92,10 +128,12 @@ export async function addRoom(data, role) {
   return data.name;
 }
 
-export async function roomCount(room_id) {
+export async function roomCount(room_id, direction = "increment") {
   const roomRef = doc(db, "room", room_id);
+  const delta = direction === "decrement" ? -1 : 1; 
+
   await updateDoc(roomRef, {
-    assetCount: increment(1),
+    assetCount: increment(delta),
   });
 }
 

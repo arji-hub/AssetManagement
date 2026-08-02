@@ -1,52 +1,33 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useAuth } from "../../context/AuthContext";
 import MainLayout from "../../components/layout/MainLayout";
 import "./Room.css";
 import RoomCard from "../../components/ui/card/RoomCard";
-import { fetchRooms } from "../../services/room";
 import RoomModal from "../../components/ui/modal/RoomModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useRoomFilters } from "../../hooks/room/useRoomFilters";
-import { useRoomRegistration } from "../../hooks/room/useRoomRegistration";
+import { useRoom } from "../../hooks/room/useRoom";
+import { RoomListPDF } from "../../pdf/templates/RoomListPDF";
+import { PDFPreviewModal } from "../../components/ui/modal/PDFPreviewModal";
 
 function Room() {
   const { user } = useAuth();
-  const [showModal, setShowModal] = useState(false);
-  const [rooms, setRooms] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
   const {
+    loading,
+    error,
     searchQuery,
     setSearchQuery,
     assetCountFilter,
     setAssetCountFilter,
     filteredRooms,
-  } = useRoomFilters(rooms);
-
-  const {
+    showModal,
+    openModal,
+    closeModal,
     name,
-    error: roomError,
+    roomError,
     saving,
     handleChange,
     handleSave,
-  } = useRoomRegistration({
-    existingRooms: rooms.map((r) => r.name),
-    onSuccess: (savedName) => {
-      setRooms((prev) => [
-        ...prev,
-        { id: savedName, name: savedName, assetCount: 0 },
-      ]);
-      setShowModal(false);
-    },
-  });
-
-  useEffect(() => {
-    fetchRooms()
-      .then((data) => setRooms(data))
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
-  }, []);
+  } = useRoom();
 
   return (
     <MainLayout>
@@ -57,6 +38,12 @@ function Room() {
             <p>Welcome, {user.username}! This is the room page.</p>
           </div>
           <div className="room-settings">
+            <PDFPreviewModal
+              title="Room List"
+              fileName="room-list.pdf"
+              document={<RoomListPDF rooms={filteredRooms} />}
+              triggerLabel="Room List"
+            />
             <div className="search-bar">
               <FontAwesomeIcon
                 icon="fa-solid fa-magnifying-glass"
@@ -84,15 +71,12 @@ function Room() {
                 <option value="high">High (50+)</option>
               </select>
             </div>
-            <button
-              className="settings-button"
-              onClick={() => setShowModal(true)}
-            >
+            <button className="settings-button" onClick={openModal}>
               Add Room
             </button>
             {showModal && (
               <RoomModal
-                onClose={() => setShowModal(false)}
+                onClose={closeModal}
                 onSubmit={handleSave}
                 value={name}
                 onChange={handleChange}
@@ -110,7 +94,7 @@ function Room() {
           {!loading && !error && filteredRooms.length === 0 && (
             <p className="room-status">No rooms found.</p>
           )}
-          {filteredRooms.map(({ id, name, assetCount }) => (
+          {filteredRooms.map(({ id, name, assetCount, roomCustodian }) => (
             <RoomCard
               key={id}
               roomID={id}

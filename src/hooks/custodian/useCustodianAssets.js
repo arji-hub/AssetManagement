@@ -7,6 +7,7 @@ import {
 export function useCustodianAssets(username) {
   const [assets, setAssets] = useState([]);
   const [fullname, setFullname] = useState(null);
+  const [email, setEmail] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -31,6 +32,7 @@ export function useCustodianAssets(username) {
         }
 
         setFullname(custodian.fullname);
+        setEmail(custodian.email);
 
         unsubscribe = subscribeToAssetsByCustodian(
           custodian.id,
@@ -58,5 +60,5 @@ export function useCustodianAssets(username) {
       unsubscribe();
     };
   }, [username]);
-  return { assets, fullname, loading, error };
+  return { assets, fullname, email, loading, error };
 }

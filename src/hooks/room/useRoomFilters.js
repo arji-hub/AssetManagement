@@ -17,7 +17,6 @@ export function useRoomFilters(rooms) {
         return true;
       });
   }, [rooms, searchQuery, assetCountFilter]);
-
   return {
     searchQuery,
     setSearchQuery,
