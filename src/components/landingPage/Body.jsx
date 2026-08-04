@@ -1,4 +1,8 @@
 import bulsuGate from "../../assets/image/bulsuGate.png";
+import pimentel from "../../assets/image/pimentel.png";
+import elib from "../../assets/image/elib.png";
+import CICTLOGO from "../../assets/logo/CICTLOGO.png";
+import BULSULOGO from "../../assets/logo/BULSULOGO.png";
 import "./Body.css";
 
 function Body({ heroRef, featuresRef }) {
@@ -14,16 +18,16 @@ function Body({ heroRef, featuresRef }) {
         </div>
 
         <div className="hero-content">
-          <h1>Institutional Asset Control</h1>
+          <div className="hero-logo">
+            <img src={CICTLOGO} alt="CICT Logo" className="cict-logo" />
+            <img src={BULSULOGO} alt="BULSU Logo" className="bulsu-logo" />
+          </div>
+          <h1>Asset Management System</h1>
 
-          <p>
-            Secure, track, and manage university infrastructure with precision.
-          </p>
+          <p>"Every asset accounted for, every byte in its place."</p>
 
           <div className="hero-buttons">
-            <button className="primary-btn">Access Dashboard</button>
-
-            <button className="secondary-btn">Public Directory</button>
+            <button className="primary-btn">Scan Asset QR Code</button>
           </div>
         </div>
       </section>
@@ -41,7 +45,7 @@ function Body({ heroRef, featuresRef }) {
           {/* Main Card */}
 
           <div className="campus-card large">
-            <img src="/images/main-building.jpg" alt="" />
+            <img src={elib} alt="pimentel building" />
 
             <div className="card-content">
               <span className="badge">Primary Hub</span>
@@ -64,7 +68,7 @@ function Body({ heroRef, featuresRef }) {
           {/* Small Card */}
 
           <div className="campus-card">
-            <img src="/images/pimentel.jpg" alt="" />
+            <img src={pimentel} alt="" />
 
             <div className="card-content">
               <h3>Pimentel Hall</h3>

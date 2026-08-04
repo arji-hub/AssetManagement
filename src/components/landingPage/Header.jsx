@@ -1,35 +1,52 @@
+import { useState } from "react";
 import "./Header.css";
+import CICTLOGO from "../../assets/logo/CICTLOGO.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser, faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 export default function Header({ onNavigate }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const handleNavigate = (section) => {
+    onNavigate(section);
+    setMenuOpen(false);
+  };
+
   return (
     <header className="header">
-      <div className="header-left">
-        <div className="header-logo">BSU Asset Management</div>
+      <div className="header-logo">
+        <img src={CICTLOGO} alt="CICT Logo" />
+        <span>CICT-AMS Project</span>
+      </div>
 
+      <button
+        className="menu-toggle"
+        onClick={() => setMenuOpen((prev) => !prev)}
+        aria-label={menuOpen ? "Close menu" : "Open menu"}
+        aria-expanded={menuOpen}
+      >
+        <FontAwesomeIcon icon={menuOpen ? faXmark : faBars} />
+      </button>
+
+      <div className={`header-right ${menuOpen ? "open" : ""}`}>
         <nav className="header-nav">
           <button
-            className="nav-link active"
-            onClick={() => onNavigate("home")}
+            className="nav-link"
+            onClick={() => handleNavigate("features")}
           >
-            Home
-          </button>
-
-          <button className="nav-link" onClick={() => onNavigate("features")}>
             Features
           </button>
 
-          <button className="nav-link" onClick={() => onNavigate("about")}>
+          <button className="nav-link" onClick={() => handleNavigate("about")}>
             About
           </button>
-
-          <button className="nav-link" onClick={() => onNavigate("contact")}>
-            Contact
-          </button>
         </nav>
-      </div>
 
-      <div className="header-right">
-        <button className="login-btn">User Login</button>
+        <button className="login-btn">
+          <FontAwesomeIcon icon={faUser} className="login-icon" />
+          <span className="desktop-text">User Login</span>
+          <span className="mobile-text">Login</span>
+        </button>
       </div>
     </header>
   );
