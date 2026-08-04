@@ -5,7 +5,7 @@ import "./QRInfo.css";
 import { STATUS_COLORS } from "../../../data/assets";
 import { formatCurrency } from "../../../utils/formatCurrency";
 import { formatDate } from "../../../utils/date";
-import cictLogo from "../../../assets/CICTLOGO.png";
+import cictLogo from "../../../assets/logo/CICTLOGO.png";
 import ViewAssetDocument from "../modal/ViewAssetDocument";
 
 function displayValue(value) {

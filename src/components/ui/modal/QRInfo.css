@@ -309,7 +309,7 @@
 .qri-scroll-watermark {
   position: absolute;
   inset: 0;
-  background-image: url("../../../assets/CICTLOGO.png");
+  background-image: url("../../../assets/logo/CICTLOGO.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: 55%;

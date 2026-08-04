@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../../../assets/CICTLOGO.png";
+import logo from "../../../assets/logo/CICTLOGO.png";
 import elib from "../../../assets/elib.png";
 import "./LoadingScreen.css";
 

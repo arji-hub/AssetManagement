@@ -2,7 +2,7 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import NavButton from "../ui/button/NavButton";
 import "./Navbar.css";
-import logo from "../../assets/CICTLOGO.png";
+import logo from "../../assets/logo/CICTLOGO.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ROLES } from "../../data/roles";
 import LogoutModal from "../ui/modal/LogoutModal";

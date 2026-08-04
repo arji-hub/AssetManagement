@@ -1,61 +1,36 @@
-import React, { useState } from "react";
-import { login } from "../../services/authService";
-import LoginModal from "../../components/ui/modal/LoginModal";
-import QRModal from "../../components/ui/modal/QRModal";
-import QRInfo from "../../components/ui/modal/QRInfo";
-import logo from "../../assets/CICTLOGO.png";
-import elib from "../../assets/elib.png";
-import { useQRScanner } from "../../hooks/camera/useQRScanner";
-import QRStatusModal from "../../components/ui/status/QRStatusModal";
+import { useRef } from "react";
+
+import Header from "../../components/landingPage/Header";
+import Body from "../../components/landingPage/Body";
+import Footer from "../../components/landingPage/Footer";
+
 import "./LandingPage.css";
 
-function LandingPage({ previewAsset, assetNotFound }) {
-  const [view, setView] = useState("qr");
+export default function LandingPage() {
+  // Sections
+  const heroRef = useRef(null);
+  const campusRef = useRef(null);
 
-  const { status, errorMessage, handleImageUpload, handleScan, reset } =
-    useQRScanner();
+  // Navigation
+  const scrollToSection = (section) => {
+    const sections = {
+      home: heroRef,
+      campus: campusRef,
+    };
 
-  const toggleView = () => {
-    setView((prev) => (prev === "qr" ? "login" : "qr"));
+    sections[section]?.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   };
 
   return (
-    <div className="login-page">
-      {/* Background */}
-      <div className="login-bg" style={{ backgroundImage: `url(${elib})` }} />
+    <div className="landing-page">
+      <Header onNavigate={scrollToSection} />
 
-      {/* Top bar */}
-      <div className="login-topbar">
-        <div className="login-topbar-left">
-          <img src={logo} alt="CICT Logo" className="login-topbar-logo" />
-          <span className="login-topbar-title">Asset Management System</span>
-        </div>
-        <button className="login-scan-btn" onClick={toggleView}>
-          {view === "qr" ? "Login" : "Scan QR"}
-        </button>
-      </div>
+      <Body heroRef={heroRef} featuresRef={campusRef} />
 
-      {/* Modal floats over the background */}
-      <div className="login-main">
-        {view === "qr" ? (
-          previewAsset !== undefined ? (
-            <QRInfo asset={previewAsset} />
-          ) : (
-            <QRModal onScan={handleScan} onImageUpload={handleImageUpload} />
-          )
-        ) : (
-          <LoginModal />
-        )}
-        {status && (
-          <QRStatusModal
-            status={status}
-            errorMessage={errorMessage}
-            onClose={reset}
-          />
-        )}
-      </div>
+      <Footer />
     </div>
   );
 }
-
-export default LandingPage;

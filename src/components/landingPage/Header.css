@@ -1,0 +1,140 @@
+/* ================= HEADER ================= */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+
+  width: 100%;
+  height: 80px;
+
+  background: #ffffff;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 0 4rem;
+
+  border-bottom: 1px solid #e6d4d1;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Left Side */
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+}
+
+.header-logo {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #860100;
+  white-space: nowrap;
+}
+
+/* Navigation */
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  padding: 0;
+
+  height: 80px;
+
+  display: flex;
+  align-items: center;
+
+  font-size: 1rem;
+  color: #666;
+
+  transition: 0.25s;
+}
+
+.nav-link:hover {
+  color: #860100;
+}
+
+.nav-link.active {
+  color: #860100;
+  font-weight: 600;
+  border-bottom: 3px solid #860100;
+}
+
+/* Right Side */
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Scan Button */
+
+.scan-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  padding: 10px 18px;
+
+  border: 1px solid #860100;
+  border-radius: 8px;
+
+  background: white;
+  color: #860100;
+
+  cursor: pointer;
+
+  transition: 0.25s;
+}
+
+.scan-btn:hover {
+  background: #f8f3f3;
+}
+
+/* Login Button */
+
+.login-btn {
+  padding: 10px 20px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: #860100;
+  color: white;
+
+  cursor: pointer;
+
+  transition: 0.25s;
+}
+
+.login-btn:hover {
+  opacity: 0.9;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 900px) {
+  .header {
+    padding: 0 1.5rem;
+  }
+
+  .header-nav {
+    display: none;
+  }
+
+  .scan-btn {
+    display: none;
+  }
+}
