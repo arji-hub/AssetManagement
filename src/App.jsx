@@ -29,6 +29,7 @@ import CustodianAssets from "./pages/Custodian/CustodianAssets";
 import RoomAssets from "./pages/Room/RoomAssets";
 import Profile from "./pages/Profile/Profile";
 import ReportInfo from "./pages/Report/ReportInfo";
+import LoginPage from "./pages/LoginPage/LoginPage";
 
 function App() {
   const { user, loading } = useAuth();
@@ -45,6 +46,9 @@ function App() {
           path="/"
           element={user ? <Navigate to="/dashboard" /> : <LandingPage />}
         />
+
+        {/* AUTHENTICATION PAGE */}
+        <Route path="/login" element={<LoginPage />} />
 
         {/* QR redirects here */}
         <Route path="/asset/:assetId" element={<AssetPreview />} />

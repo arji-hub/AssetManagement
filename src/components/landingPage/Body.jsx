@@ -3,9 +3,11 @@ import pimentel from "../../assets/image/pimentel.png";
 import elib from "../../assets/image/elib.png";
 import CICTLOGO from "../../assets/logo/CICTLOGO.png";
 import BULSULOGO from "../../assets/logo/BULSULOGO.png";
+import { useNavigate } from "react-router-dom";
 import "./Body.css";
 
 function Body({ heroRef, featuresRef }) {
+  const navigate = useNavigate();
   return (
     <main className="body">
       {/* ================= HERO ================= */}
@@ -27,7 +29,12 @@ function Body({ heroRef, featuresRef }) {
           <p>"Every asset accounted for, every byte in its place."</p>
 
           <div className="hero-buttons">
-            <button className="primary-btn">Scan Asset QR Code</button>
+            <button
+              className="primary-btn"
+              onClick={() => navigate("/login?view=qr")}
+            >
+              Scan Asset QR Code
+            </button>
           </div>
         </div>
       </section>

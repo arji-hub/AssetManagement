@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, Navigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import LoadingScreen from "../../components/ui/status/LoadingScreen";
-import LandingPage from "../LandingPage/LandingPage";
+import LoginPage from "../LoginPage/LoginPage";
 import { fetchAssetByID } from "../../services/asset";
 
 function AssetPreview() {
@@ -29,7 +29,7 @@ function AssetPreview() {
   if (user) return <Navigate to={`/asset/info/${assetId}`} replace />;
   if (fetching) return <LoadingScreen />;
 
-  return <LandingPage previewAsset={preview} />;
+  return <LoginPage previewAsset={preview} />;
 }
 
 export default AssetPreview;

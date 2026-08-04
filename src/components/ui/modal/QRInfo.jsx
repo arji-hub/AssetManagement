@@ -26,7 +26,7 @@ const FIELD_ICONS = {
 function QRInfo({ asset }) {
   const navigate = useNavigate();
 
-  const handleReturn = () => navigate("/");
+  const handleReturn = () => navigate("/login?view=qr");
 
   if (!asset) {
     return (
@@ -90,7 +90,7 @@ function QRInfo({ asset }) {
             <div className="qri-seal">
               <img src={cictLogo} alt="CICT Logo" className="qri-seal-img" />
             </div>
-            <div className="qri-title"> 
+            <div className="qri-title">
               Bulacan State University
               <p className="qri-tag">
                 College of Information and Communications Technology

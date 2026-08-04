@@ -3,8 +3,10 @@ import "./Header.css";
 import CICTLOGO from "../../assets/logo/CICTLOGO.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 
 export default function Header({ onNavigate }) {
+  const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleNavigate = (section) => {
@@ -42,7 +44,7 @@ export default function Header({ onNavigate }) {
           </button>
         </nav>
 
-        <button className="login-btn">
+        <button className="login-btn" onClick={() => navigate("/login")}>
           <FontAwesomeIcon icon={faUser} className="login-icon" />
           <span className="desktop-text">User Login</span>
           <span className="mobile-text">Login</span>
