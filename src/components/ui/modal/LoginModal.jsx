@@ -23,85 +23,88 @@ function LoginModal() {
   } = useLogin();
 
   return (
-    <div className="login-modal-overlay">
-      <div className="login-modal-box">
-        <div className="login-modal-title">LOGIN</div>
+    <div className="login-modal-box">
+      <div className="login-modal-title">STAFF PORTAL</div>
 
-        {error && <p className="login-modal-error">{error}</p>}
+      {error && <p className="login-modal-error">{error}</p>}
 
-        <form onSubmit={handleSubmit}>
-          <div className="login-modal-field">
-            <input
-              type="email"
-              placeholder="E-mail"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <span className="login-modal-field-icon">
-              <FontAwesomeIcon icon={faUser} />
-            </span>
-          </div>
-
-          <div className="login-modal-field">
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <span
-              className="login-modal-field-icon login-modal-eye"
-              onClick={togglePasswordVisibility}
-            >
-              <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
-            </span>
-          </div>
-
-          <button
-            type="submit"
-            className="login-modal-submit-btn"
-            disabled={isBusy}
-          >
-            {loading ? "Logging in..." : "Login"}
-          </button>
-        </form>
-
-        <div className="login-modal-divider">
-          <span>or continue with</span>
+      <form onSubmit={handleSubmit}>
+        <div className="login-modal-field-label">E-mail</div>
+        <div className="login-modal-field">
+          <span className="login-modal-field-icon">
+            <FontAwesomeIcon icon="fa-solid fa-envelope" />
+          </span>
+          <input
+            type="email"
+            placeholder="user@ms.bulsu.edu.ph"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <span className="login-modal-field-icon2">
+            <FontAwesomeIcon icon={faUser} />
+          </span>
         </div>
 
-        <div className="login-modal-oauth-group">
-          <button
-            type="button"
-            className="login-modal-oauth-btn"
-            onClick={handleGoogleClick}
-            disabled={oauthLoading === "google"}
+        <div className="login-modal-field-label">
+          Password
+          <span>Forgot?</span>
+        </div>
+        <div className="login-modal-field">
+          <span className="login-modal-field-icon">
+            <FontAwesomeIcon icon="fa-solid fa-lock" />
+          </span>
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="********"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <span
+            className="login-modal-field-icon2 login-modal-eye"
+            onClick={togglePasswordVisibility}
           >
-            <GoogleIcon />
-            <span>
-              {oauthLoading === "google" ? "Signing in..." : "Google"}
-            </span>
-          </button>
-
-          <button
-            type="button"
-            className="login-modal-oauth-btn"
-            onClick={handleMicrosoftClick}
-            disabled={oauthLoading === "microsoft"}
-          >
-            <MicrosoftIcon />
-            <span>
-              {oauthLoading === "microsoft" ? "Signing in..." : "Microsoft"}
-            </span>
-          </button>
+            <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+          </span>
         </div>
 
-        {/*<div className="login-modal-footer">
-          <span>Remember me</span>
-          <span>Forgot Password</span>
-        </div> */}
+        <button
+          type="submit"
+          className="login-modal-submit-btn"
+          disabled={isBusy}
+        >
+          {loading ? "Logging in...  " : "Sign in  "}
+          <FontAwesomeIcon icon="fa-solid fa-arrow-right" />
+        </button>
+      </form>
+
+      <div className="login-modal-divider">
+        <span>or continue with</span>
+      </div>
+
+      <div className="login-modal-oauth-group">
+        <button
+          type="button"
+          className="login-modal-oauth-btn"
+          onClick={handleGoogleClick}
+          disabled={oauthLoading === "google"}
+        >
+          <GoogleIcon />
+          <span>{oauthLoading === "google" ? "Signing in..." : "Google"}</span>
+        </button>
+
+        <button
+          type="button"
+          className="login-modal-oauth-btn"
+          onClick={handleMicrosoftClick}
+          disabled={oauthLoading === "microsoft"}
+        >
+          <MicrosoftIcon />
+          <span>
+            {oauthLoading === "microsoft" ? "Signing in..." : "Microsoft"}
+          </span>
+        </button>
       </div>
     </div>
   );

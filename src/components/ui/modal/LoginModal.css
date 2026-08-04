@@ -1,48 +1,90 @@
-.login-modal-overlay {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: loginFadeIn 0.2s ease;
-}
-
 .login-modal-box {
   background: #fff;
-  border-radius: 4px;
+  border-radius: 7px;
   padding: clamp(16px, 4vw, 40px) clamp(12px, 3vw, 36px) clamp(12px, 3vw, 32px);
   width: 100%;
-  max-width: 320px;
+  max-width: 420px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
   animation: loginSlideUp 0.25s ease;
   position: relative;
+  overflow: hidden;
+}
+
+.login-modal-box::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 5px;
+  background: linear-gradient(90deg, #f5aa2c, #f5c877);
 }
 
 .login-modal-title {
   text-align: center;
-  font-size: 22px;
+  font-size: clamp(18px, 3vw, 22px);
   font-weight: 700;
   letter-spacing: 0.12em;
-  color: #111;
-  margin-bottom: 28px;
+  color: #860100;
+  margin-bottom: clamp(18px, 3vw, 28px);
 }
 
 /* ── fields ── */
+.login-modal-field-label {
+  text-transform: uppercase;
+  text-align: left;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  color: #333;
+  font-family: "Inter", sans-serif;
+}
+
+.login-modal-field-label span {
+  text-transform: none;
+  float: right;
+  font-size: 11px;
+  color: #860100;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
 .login-modal-field {
+  display: flex;
+  justify-content: flex-start;
   position: relative;
   margin-bottom: 14px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+
+  transition:
+    border-color 0.5s ease,
+    box-shadow 0.5s ease;
+}
+
+.login-modal-field:focus-within {
+  border-color: #860100;
+  box-shadow: 0 0 0 2px rgba(134, 1, 0, 0.15);
+}
+.login-modal-field:focus-within .login-modal-field-icon {
+  border-color: #860100;
+}
+
+.login-modal-field:focus-within .login-modal-field-icon {
+  color: #f5aa2c;
+}
+.login-modal-field:focus-within .login-modal-field-icon2 {
+  color: #860100;
 }
 
 .login-modal-field input {
   width: 100%;
-  padding: 10px 36px 10px 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
   font-size: 14px;
   color: #333;
+  border: none;
   outline: none;
-  box-sizing: border-box;
   transition: border-color 0.2s ease;
+  overflow: hidden;
 }
 
 .login-modal-field input::placeholder {
@@ -54,13 +96,28 @@
 }
 
 .login-modal-field-icon {
+  padding-right: 3px;
+  margin-right: 2px;
+  color: #860100;
+  font-size: 14px;
+  border-right: 1px solid #ddd;
+  transition:
+    border-color 0.5s ease,
+    box-shadow 0.5s ease,
+    color 0.5s ease;
+}
+
+.login-modal-field-icon2 {
   position: absolute;
   right: 10px;
   top: 50%;
   transform: translateY(-50%);
   color: #aaa;
   font-size: 14px;
-  pointer-events: none;
+  transition:
+    border-color 0.5s ease,
+    box-shadow 0.5s ease,
+    color 0.5s ease;
 }
 
 .login-modal-eye {
@@ -76,17 +133,20 @@
 /* ── button ── */
 .login-modal-submit-btn {
   width: 100%;
-  padding: 11px;
+  padding: clamp(5px, 2vw, 10px);
   background: #860100;
   color: #fff;
   border: none;
-  border-radius: 4px;
-  font-size: 15px;
+  border-radius: clamp(4px, 0.5vw, 6px);
+  font-size: clamp(13px, 1.5vw, 15px);
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: clamp(0.03em, 0.15vw, 0.06em);
   cursor: pointer;
-  margin-top: 6px;
-  transition: background 0.2s ease;
+  margin-top: clamp(4px, 1vw, 6px);
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .login-modal-submit-btn:hover {
