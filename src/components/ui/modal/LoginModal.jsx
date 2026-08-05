@@ -2,6 +2,7 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { GoogleIcon, MicrosoftIcon } from "../../../assets/OAuthIcons";
+import CICTLOGO from "../../../assets/logo/CICTLOGO.png";
 import { useLogin } from "../../../hooks/login/useLogin";
 import "./LoginModal.css";
 
@@ -24,7 +25,11 @@ function LoginModal() {
 
   return (
     <div className="login-modal-box">
-      <div className="login-modal-title">STAFF PORTAL</div>
+      <img className="login-logo" src={CICTLOGO} alt="CICT Logo" />
+      <div className="login-modal-title">
+        STAFF PORTAL
+        <FontAwesomeIcon icon="fa-solid fa-user-shield" />
+      </div>
 
       {error && <p className="login-modal-error">{error}</p>}
 
