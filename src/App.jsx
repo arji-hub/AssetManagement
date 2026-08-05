@@ -30,6 +30,7 @@ import RoomAssets from "./pages/Room/RoomAssets";
 import Profile from "./pages/Profile/Profile";
 import ReportInfo from "./pages/Report/ReportInfo";
 import LoginPage from "./pages/LoginPage/LoginPage";
+import About from "./pages/LandingPage/About";
 
 function App() {
   const { user, loading } = useAuth();
@@ -46,6 +47,9 @@ function App() {
           path="/"
           element={user ? <Navigate to="/dashboard" /> : <LandingPage />}
         />
+
+        {/* ABOUT PAGE */}
+        <Route path="/about" element={<About />} />
 
         {/* AUTHENTICATION PAGE */}
         <Route path="/login" element={<LoginPage />} />

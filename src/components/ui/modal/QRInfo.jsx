@@ -26,7 +26,7 @@ const FIELD_ICONS = {
 function QRInfo({ asset }) {
   const navigate = useNavigate();
 
-  const handleReturn = () => navigate("/login?view=qr");
+  const handleReturn = () => navigate("/");
 
   if (!asset) {
     return (

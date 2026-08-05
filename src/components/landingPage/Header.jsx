@@ -32,6 +32,14 @@ export default function Header({ onNavigate }) {
 
       <div className={`header-right ${menuOpen ? "open" : ""}`}>
         <nav className="header-nav">
+          <button className="nav-link" onClick={() => handleNavigate("hero")}>
+            Home
+          </button>
+
+          <button className="nav-link" onClick={() => handleNavigate("qr")}>
+            How to Scan
+          </button>
+
           <button
             className="nav-link"
             onClick={() => handleNavigate("features")}
@@ -39,7 +47,7 @@ export default function Header({ onNavigate }) {
             Features
           </button>
 
-          <button className="nav-link" onClick={() => handleNavigate("about")}>
+          <button className="nav-link" onClick={() => navigate("/about")}>
             About
           </button>
         </nav>
