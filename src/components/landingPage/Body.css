@@ -1,0 +1,449 @@
+/* =============================================================
+   BODY — LAYOUT ROOT
+============================================================= */
+
+.body {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow-x: hidden; /* guards against blob/glow overflow causing scrollbars */
+}
+
+/* =============================================================
+   HERO SECTION
+============================================================= */
+
+.hero-section {
+  position: relative;
+  height: 110vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  overflow: hidden;
+}
+
+.hero-background {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-background img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+
+  background: linear-gradient(rgba(134, 1, 0, 0.75), rgba(0, 0, 0, 0.85));
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+
+  max-width: 900px;
+
+  text-align: center;
+  color: white;
+
+  padding: 2rem;
+}
+
+.hero-content img {
+  width: clamp(5rem, 20vw, 10rem);
+  height: auto;
+}
+
+.hero-logo {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-content h1 {
+  font-size: clamp(2rem, 5vw, 3rem) !important;
+  margin-bottom: 1rem;
+  letter-spacing: 0.08em !important;
+  line-height: 1;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* -------- Primary Button -------- */
+
+.primary-btn {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+
+  padding: 18px 42px;
+  border: none;
+  border-radius: 14px;
+
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  cursor: pointer;
+
+  background: radial-gradient(
+    circle at center,
+    #860100 72%,
+    #98120f 82%,
+    #c96e18 94%,
+    #feb234 100%
+  );
+
+  box-shadow:
+    0 12px 24px rgba(0, 0, 0, 0.45),
+    0 18px 60px rgba(134, 1, 0, 0.45),
+    0 0 40px rgba(254, 178, 52, 0.35);
+
+  transition: all 0.35s ease;
+}
+
+.primary-btn::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: 13px;
+  z-index: -1;
+
+  background: linear-gradient(180deg, #9b0b09 0%, #860100 40%, #700000 100%);
+}
+
+.primary-btn span,
+.primary-btn i,
+.primary-btn svg {
+  position: relative;
+  z-index: 1;
+}
+
+.primary-btn:hover {
+  transform: translateY(-1px) scale(1.03);
+  filter: brightness(0.95);
+
+  box-shadow:
+    0 18px 36px rgba(0, 0, 0, 0.55),
+    0 22px 70px rgba(134, 1, 0, 0.55),
+    0 0 60px rgba(254, 178, 52, 0.55);
+}
+
+.primary-btn:active {
+  transform: translateY(-1px) scale(0.99);
+}
+
+/* =============================================================
+   QR SCAN + GUIDE SECTION
+============================================================= */
+
+.qr-section {
+  position: relative;
+  overflow: hidden;
+  padding: 6rem 8%;
+  background: #fff;
+}
+
+/* Dust cloud layer — multiple soft blobs, each drifting independently */
+.qr-section::before {
+  content: "";
+  position: absolute;
+  inset: -10%;
+  pointer-events: none;
+  z-index: 0;
+
+  background:
+    radial-gradient(
+      circle 180px at 20% 30%,
+      rgba(254, 178, 52, 0.35),
+      transparent 70%
+    ),
+    radial-gradient(
+      circle 140px at 70% 20%,
+      rgba(254, 178, 52, 0.28),
+      transparent 70%
+    ),
+    radial-gradient(
+      circle 200px at 85% 65%,
+      rgba(254, 178, 52, 0.22),
+      transparent 70%
+    ),
+    radial-gradient(
+      circle 120px at 40% 80%,
+      rgba(254, 178, 52, 0.3),
+      transparent 70%
+    ),
+    radial-gradient(
+      circle 160px at 10% 60%,
+      rgba(254, 178, 52, 0.2),
+      transparent 70%
+    );
+
+  filter: blur(20px);
+  animation: dustDrift 10s ease-in-out infinite;
+}
+
+/* Second, slower/offset layer for parallax-like depth */
+.qr-section::after {
+  content: "";
+  position: absolute;
+  inset: -10%;
+  pointer-events: none;
+  z-index: 0;
+
+  background:
+    radial-gradient(
+      circle 100px at 60% 40%,
+      rgba(254, 178, 52, 0.18),
+      transparent 70%
+    ),
+    radial-gradient(
+      circle 150px at 30% 70%,
+      rgba(254, 178, 52, 0.15),
+      transparent 70%
+    ),
+    radial-gradient(
+      circle 90px at 80% 15%,
+      rgba(254, 178, 52, 0.2),
+      transparent 70%
+    );
+
+  filter: blur(30px);
+  animation: dustDrift 8s ease-in-out infinite reverse;
+}
+
+@keyframes dustDrift {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(3%, -2%) scale(1.05);
+  }
+  50% {
+    transform: translate(-2%, 3%) scale(1);
+  }
+  75% {
+    transform: translate(2%, 2%) scale(1.03);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+.qr-section__grid {
+  position: relative;
+  z-index: 1;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.qr-section__scanner {
+  display: flex;
+  justify-content: center;
+}
+
+.qr-section__guide {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.qr-section__eyebrow {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #860100;
+}
+
+.qr-section__heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  margin: 0 0 0.5rem;
+  color: #1a1a1a;
+}
+
+.qr-section__heading-icon {
+  font-size: 0.85em;
+  color: #860100;
+}
+
+.qr-section__body {
+  text-align: left;
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+/* -------- Guide Steps -------- */
+
+.qr-guide-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.qr-guide-step {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.qr-guide-step__number {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+
+  background: #860100;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+
+  box-shadow: 0 6px 14px rgba(134, 1, 0, 0.3);
+}
+
+.qr-guide-step__text h3 {
+  font-size: 1.05rem;
+  margin: 0 0 0.25rem;
+  color: #1a1a1a;
+}
+
+.qr-guide-step__text p {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0;
+}
+
+/* =============================================================
+   SHARED — SECTION TITLES
+============================================================= */
+
+.section-title {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 3rem;
+}
+
+.section-title h2 {
+  text-transform: uppercase;
+  font-size: 2.5rem;
+  color: #f5aa2c;
+  text-shadow:
+    0 0 1px rgba(255, 255, 255, 0.4),
+    0 0 18px rgba(254, 178, 52, 0.55),
+    0 0 34px rgba(254, 178, 52, 0.25);
+}
+
+.section-title p {
+  margin-top: 0.5rem;
+  color: rgba(245, 245, 245, 0.7);
+}
+
+.section-title--with-badge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.section-title__badge {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  border: 3px solid #feb234;
+  object-fit: cover;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* =============================================================
+   RESPONSIVE
+============================================================= */
+
+@media (max-width: 1200px) {
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .hero-content h1 {
+    font-size: 3rem;
+    letter-spacing: 0.2em !important;
+  }
+
+  .qr-section__grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .qr-section__scanner {
+    order: 1;
+  }
+
+  .qr-section__guide {
+    order: 2;
+    text-align: center;
+  }
+
+  .qr-guide-step {
+    text-align: left;
+  }
+
+  .campus-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-title--with-badge {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+}
