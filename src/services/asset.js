@@ -19,7 +19,7 @@ import QRCode from "qrcode";
 import { categoryCount } from "./category";
 import { roomCount } from "./room";
 import QRCodeStyling from "qr-code-styling";
-import CICTLogo from "../assets/CICTLOGO.png";
+import CICTLogo from "../assets/logo/CICTLOGO.png";
 import { toLowerCase, toTitleCase } from "../utils/TextCasing";
 
 export function subscribeToAssets(role, currentUserUid, callback, onError) {

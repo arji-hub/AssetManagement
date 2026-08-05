@@ -1,6 +1,13 @@
-import { Document, Page, View, Text, Image, StyleSheet } from "@react-pdf/renderer";
-import cictLogo from "../../assets/CICTLOGO.png";
-import bulsuLogo from "../../assets/BULSULOGO.png";
+import {
+  Document,
+  Page,
+  View,
+  Text,
+  Image,
+  StyleSheet,
+} from "@react-pdf/renderer";
+import cictLogo from "../../assets/logo/CICTLOGO.png";
+import bulsuLogo from "../../assets/logo/BULSULOGO.png";
 
 const styles = StyleSheet.create({
   page: {

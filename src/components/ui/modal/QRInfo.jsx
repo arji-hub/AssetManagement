@@ -5,7 +5,7 @@ import "./QRInfo.css";
 import { STATUS_COLORS } from "../../../data/assets";
 import { formatCurrency } from "../../../utils/formatCurrency";
 import { formatDate } from "../../../utils/date";
-import cictLogo from "../../../assets/CICTLOGO.png";
+import cictLogo from "../../../assets/logo/CICTLOGO.png";
 import ViewAssetDocument from "../modal/ViewAssetDocument";
 
 function displayValue(value) {
@@ -90,7 +90,7 @@ function QRInfo({ asset }) {
             <div className="qri-seal">
               <img src={cictLogo} alt="CICT Logo" className="qri-seal-img" />
             </div>
-            <div className="qri-title"> 
+            <div className="qri-title">
               Bulacan State University
               <p className="qri-tag">
                 College of Information and Communications Technology
