@@ -4,10 +4,11 @@
   padding: clamp(16px, 4vw, 40px) clamp(12px, 3vw, 36px) clamp(12px, 3vw, 32px);
   width: 100%;
   max-width: 420px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 8px 32px rgba(134, 1, 0, 0.5);
   animation: loginSlideUp 0.25s ease;
   position: relative;
   overflow: hidden;
+  z-index: 9999;
 }
 
 .login-modal-box::before {
@@ -25,6 +26,18 @@
   letter-spacing: 0.12em;
   color: #860100;
   margin-bottom: clamp(18px, 3vw, 28px);
+}
+
+.login-logo {
+  position: absolute;
+  top: clamp(10px, 3vw, 16px);
+  left: clamp(10px, 3vw, 16px);
+
+  width: clamp(35px, 4vw, 50px);
+  height: clamp(35px, 4vw, 50px);
+  object-fit: contain;
+
+  z-index: 2;
 }
 
 /* ── fields ── */

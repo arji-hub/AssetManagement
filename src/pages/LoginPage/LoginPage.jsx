@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import bulsuGate from "../../assets/image/bulsuGate.png";
 import pimentel from "../../assets/image/pimentel.png";
 import CICTLOGO from "../../assets/logo/CICTLOGO.png";
+import BulsuWordmark from "../../assets/logo/BulSU_wordmark.png";
 
 import "./LoginPage.css";
 
@@ -13,8 +14,11 @@ function LoginPage() {
       {/* ============ PANE A ============ */}
       <div className="login-page__pane login-page__pane--form">
         <Link to="/" className="login-page__brand" aria-label="Back to home">
-          <img src={CICTLOGO} alt="CICT Logo" className="login-page__logo" />
-          <span className="login-page__wordmark">CICT Asset Management</span>
+          <img
+            src={BulsuWordmark}
+            alt="CICT Logo"
+            className="login-page__logo"
+          />
         </Link>
 
         <div className="login-page__pane-content">
@@ -28,6 +32,8 @@ function LoginPage() {
         style={{ backgroundImage: `url(${pimentel})` }}
       >
         <div className="login-page__semantic-overlay" />
+
+        <span className="login-page__wordmark">CICT Asset Management</span>
 
         <div className="login-page__pane-content login-page__semantic-content">
           <span className="login-page__eyebrow">Staff Access</span>

@@ -40,13 +40,99 @@
 /* ============ PANE A — form ============ */
 
 .login-page__pane--form {
-  background: #ffffff;
+  background: rgb(255, 255, 255);
+}
+
+/* Dust cloud layer — multiple soft blobs, each drifting independently */
+.login-page__pane--form::before {
+  content: "";
+  position: absolute;
+  inset: -10%;
+  pointer-events: none;
+  z-index: 0;
+
+  background:
+    radial-gradient(
+      circle 100px at 60% 40%,
+      rgba(134, 1, 0, 0.14),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle 150px at 30% 70%,
+      rgba(134, 1, 0, 0.12),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle 90px at 80% 15%,
+      rgba(134, 1, 0, 0.16),
+      transparent 55%
+    );
+
+  filter: blur(20px);
+  animation: dustDrift 10s ease-in-out infinite;
+}
+
+/* Second, slower/offset layer for parallax-like depth */
+.login-page__pane--form::after {
+  content: "";
+  position: absolute;
+  inset: -10%;
+  pointer-events: none;
+  z-index: 0;
+
+  background:
+    radial-gradient(
+      circle 180px at 20% 30%,
+      rgba(134, 1, 0, 0.28),
+      transparent 70%
+    ),
+    radial-gradient(
+      circle 140px at 70% 20%,
+      rgba(134, 1, 0, 0.22),
+      transparent 70%
+    ),
+    radial-gradient(
+      circle 200px at 85% 65%,
+      rgba(134, 1, 0, 0.18),
+      transparent 60%
+    ),
+    radial-gradient(
+      circle 120px at 40% 80%,
+      rgba(134, 1, 0, 0.24),
+      transparent 60%
+    ),
+    radial-gradient(
+      circle 160px at 10% 60%,
+      rgba(134, 1, 0, 0.16),
+      transparent 60%
+    );
+
+  filter: blur(30px);
+  animation: dustDrift 8s ease-in-out infinite reverse;
+}
+
+@keyframes dustDrift {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(3%, -2%) scale(1.05);
+  }
+  50% {
+    transform: translate(-2%, 3%) scale(1);
+  }
+  75% {
+    transform: translate(2%, 2%) scale(1.03);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
 }
 
 .login-page__brand {
   position: absolute;
-  top: 40px;
-  left: 48px;
+  top: 20px;
+  left: 28px;
   z-index: 2;
 
   display: flex;
@@ -69,17 +155,10 @@
 }
 
 .login-page__logo {
-  width: 40px;
-  height: 40px;
-  object-fit: contain;
-}
-
-.login-page__wordmark {
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--lp-maroon);
+  width: clamp(100px, 10vw, 240px);
+  height: auto;
+  object-fit: cover;
+  border-radius: 8px;
 }
 
 .login-page__pane--form .login-page__pane-content {
@@ -107,9 +186,19 @@
   background: linear-gradient(
     160deg,
     rgba(93, 1, 0, 0.88) 0%,
-    rgba(134, 1, 0, 0.82) 45%,
-    rgba(20, 0, 0, 0.9) 100%
+    rgba(134, 1, 0, 0.82) 50%,
+    rgba(20, 0, 0, 1) 100%
   );
+  box-shadow: 0 8px 32px rgba(134, 1, 0, 0.5);
+}
+
+.login-page__wordmark {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--lp-gold);
+  z-index: 1;
 }
 
 .login-page__semantic-content {
@@ -209,7 +298,7 @@
   }
 
   .login-page__brand {
-    top: 28px;
+    top: 20px;
     left: 36px;
   }
 }
@@ -245,7 +334,7 @@
   }
 
   .login-page__brand {
-    top: 20px;
+    top: 10px;
     left: 24px;
   }
 
