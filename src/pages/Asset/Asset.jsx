@@ -41,8 +41,8 @@ function Asset() {
         {/* header */}
         <div className="asset-header">
           <div className="asset-header-left">
-            <h1 className="asset-title">Assets</h1>
-            <p className="asset-date">{displayDate}</p>
+            <h1 className="title">Assets</h1>
+            <p className="date">{displayDate}</p>
           </div>
 
           <div className="asset-header-right">

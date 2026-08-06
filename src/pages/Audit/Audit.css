@@ -1,8 +1,8 @@
 .audit-page {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding: 14px;
+  gap: clamp(8px, 2vw, 16px);
+  padding: clamp(12px, 3vw, 24px);
 }
 
 .audit-header {
@@ -14,11 +14,20 @@
   flex-wrap: wrap;
 }
 
-.audit-title {
-  font-size: 28px;
+.title {
+  font-size: 24px !important;
   font-weight: 700;
-  color: #121c2a;
+  color: #111;
   margin: 0;
+  line-height: 1;
+}
+
+.date {
+  font-size: 11px;
+  color: #888;
+  letter-spacing: 0.06em;
+  margin: 0;
+  text-transform: uppercase;
 }
 
 .audit-subtitle {
@@ -27,11 +36,6 @@
   margin: 4px 0 0;
 }
 
-.audit-date {
-  font-size: 14px;
-  color: #5a413c;
-  margin: 0;
-}
 
 .audit-panels {
   display: grid;
@@ -40,10 +44,6 @@
 }
 
 @media (max-width: 768px) {
-  .audit-page {
-    padding: 16px;
-  }
-
   .audit-panels {
     grid-template-columns: 1fr;
   }

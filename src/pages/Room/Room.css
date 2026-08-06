@@ -5,9 +5,10 @@
   grid-template-areas:
     "header   settings"
     "cards    cards";
-  gap: 24px 0px;
   align-items: start;
   position: relative;
+  gap: clamp(8px, 2vw, 16px);
+  padding: clamp(12px, 3vw, 24px);
 }
 
 .room-top {
@@ -17,7 +18,6 @@
   border-bottom: 1px solid #e5e7eb;
   background: #f0f2f5;
   display: grid;
-  padding: 16px 24px;
   grid-template-columns: 1fr auto;
   grid-template-areas: "header settings";
   align-items: center;
@@ -39,17 +39,20 @@
   grid-area: header;
 }
 
-.room-header h1 {
-  margin: 0 0 4px;
-  font-size: clamp(20px, 2.5vw, 28px);
+.title {
+  font-size: 24px !important;
   font-weight: 700;
-  color: #111827;
+  color: #111;
+  margin: 0;
+  line-height: 1;
 }
 
-.room-header p {
+.date {
+  font-size: 11px;
+  color: #888;
+  letter-spacing: 0.06em;
   margin: 0;
-  font-size: clamp(13px, 1.2vw, 15px);
-  color: #6b7280;
+  text-transform: uppercase;
 }
 
 .room-settings {

@@ -80,7 +80,6 @@ function AssetTable({
                   {col.label}
                 </th>
               ))}
-              <th className="asset-action-col">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -109,21 +108,22 @@ function AssetTable({
               </tr>
             ) : (
               pagedData.map((asset, index) => (
-                <tr key={asset.id} className="asset-table-row">
+                <tr
+                  key={asset.id}
+                  className="asset-table-row"
+                  onClick={() => handleRowAction(asset)}
+                >
                   {columns.map((col) => (
                     <td key={col.key} data-priority={col.priority || "high"}>
-                      {col.render(asset, getAbsoluteIndex(index))}
+                      {col.key === "desc" ? (
+                        <span className="asset-desc-cell">
+                          {col.render(asset, getAbsoluteIndex(index))}
+                        </span>
+                      ) : (
+                        col.render(asset, getAbsoluteIndex(index))
+                      )}
                     </td>
                   ))}
-                  <td className="asset-action-col">
-                    <button
-                      className="asset-action-btn"
-                      onClick={() => handleRowAction(asset)}
-                      aria-label="Actions"
-                    >
-                      <FontAwesomeIcon icon="fa-solid fa-ellipsis-vertical" />
-                    </button>
-                  </td>
                 </tr>
               ))
             )}

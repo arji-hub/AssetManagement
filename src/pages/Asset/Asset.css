@@ -4,9 +4,9 @@
 .asset-page {
   display: flex;
   flex-direction: column;
-  gap: 16px;
   height: 100%;
-  padding: 24px;
+  gap: clamp(8px, 2vw, 16px);
+  padding: clamp(12px, 3vw, 24px);
 }
 
 /* ── header row ── */
@@ -25,15 +25,15 @@
   gap: 2px;
 }
 
-.asset-title {
-  font-size: 32px;
+.title {
+  font-size: 24px !important;
   font-weight: 700;
   color: #111;
   margin: 0;
   line-height: 1;
 }
 
-.asset-date {
+.date {
   font-size: 11px;
   color: #888;
   letter-spacing: 0.06em;
@@ -193,10 +193,6 @@
 
 /* ── responsive ── */
 @media (max-width: 960px) {
-  .asset-page {
-    padding: 16px;
-  }
-
   .asset-header {
     flex-direction: column;
     z-index: 100;
