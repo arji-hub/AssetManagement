@@ -9,6 +9,7 @@ import { useCustodian } from "../../hooks/custodian/useCustodian";
 import { ROLE_FILTER_OPTIONS } from "../../data/roles";
 import { CustodianListPDF } from "../../pdf/templates/CustodianListPDF";
 import { PDFPreviewModal } from "../../components/ui/modal/PDFPreviewModal";
+import { displayDate } from "../../utils/date";
 
 function Custodian() {
   const { user } = useAuth();
@@ -31,8 +32,8 @@ function Custodian() {
       <div className="custodian-page">
         <div className="custodian-top">
           <div className="custodian-header">
-            <h1>Custodian</h1>
-            <p>Welcome, {user.username}! This is the custodian page.</p>
+            <h1 className="title">Assets</h1>
+            <p className="date">{displayDate}</p>
           </div>
           <div className="custodian-settings">
             {/* Filters */}

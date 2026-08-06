@@ -91,14 +91,13 @@ export const assetColumns = [
     label: "Asset ID",
     priority: "high",
     render: (a) => a.id || "—",
-    card: { role: "hidden" }, // ← add this
+    card: { role: "hidden" },
   },
   {
     key: "desc",
     label: "Description",
     priority: "high",
     render: (a) => a.description || "—",
-    // no card role needed — will now correctly become titleCol
   },
   {
     key: "category",

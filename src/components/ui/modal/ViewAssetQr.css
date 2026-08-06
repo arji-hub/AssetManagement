@@ -87,8 +87,11 @@
   width: 100%;
 }
 
-.qr-modal-close,
+/* ── Download button ── */
 .qr-modal-download {
+  position: relative;
+  overflow: hidden; /* clips the fade overlay to the rounded corners */
+
   flex: 1;
   display: flex;
   align-items: center;
@@ -103,22 +106,32 @@
   color: #ffffff;
   border: none;
   cursor: pointer;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+
+  background: linear-gradient(135deg, #9c0201 0%, #6b0000 100%);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.1),
+    0 8px 20px -6px rgba(134, 1, 0, 0.5);
+
   transition:
-    background 0.2s ease,
     box-shadow 0.2s ease,
     transform 0.15s ease;
 }
 
-.qr-modal-download {
-  background: linear-gradient(135deg, #e6931a 0%, #a8480f 100%);
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.1),
-    0 6px 16px -6px rgba(168, 72, 15, 0.5);
+.qr-modal-download::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #f0a022 0%, #b8540f 100%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  z-index: 0;
+}
+
+.qr-modal-download:hover:not(:disabled)::before {
+  opacity: 1;
 }
 
 .qr-modal-download:hover:not(:disabled) {
-  background: linear-gradient(135deg, #f0a022 0%, #b8540f 100%);
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.1),
     0 8px 20px -6px rgba(168, 72, 15, 0.55);
@@ -129,18 +142,65 @@
   cursor: not-allowed;
 }
 
+.qr-modal-download > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Close button ── */
 .qr-modal-close {
-  background: linear-gradient(135deg, #9c0201 0%, #6b0000 100%);
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.1),
-    0 8px 20px -6px rgba(134, 1, 0, 0.5);
+  position: relative;
+  overflow: hidden;
+
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 0;
+  border-radius: 10px;
+  font-family: "Sansation";
+  font-weight: bold;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: #860100;
+  border: 1px solid rgba(134, 1, 0, 0.1);
+  cursor: pointer;
+
+  background: #fffafa;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+
+  transition:
+    color 0.25s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+}
+
+.qr-modal-close::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #ac0201 0%, #7a0000 100%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  z-index: 0;
 }
 
 .qr-modal-close:hover {
-  background: linear-gradient(135deg, #ac0201 0%, #7a0000 100%);
+  color: #fafafa;
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.1),
     0 10px 24px -6px rgba(134, 1, 0, 0.55);
+}
+
+.qr-modal-close:hover::before {
+  color: #fafafa;
+  opacity: 1;
+}
+
+.qr-modal-close > * {
+  position: relative;
+  z-index: 1;
 }
 
 .qr-modal-close:active,

@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRoom } from "../../hooks/room/useRoom";
 import { RoomListPDF } from "../../pdf/templates/RoomListPDF";
 import { PDFPreviewModal } from "../../components/ui/modal/PDFPreviewModal";
+import { displayDate } from "../../utils/date";
 
 function Room() {
   const { user } = useAuth();
@@ -34,8 +35,8 @@ function Room() {
       <div className="room-page">
         <div className="room-top">
           <div className="room-header">
-            <h1>Room</h1>
-            <p>Welcome, {user.username}! This is the room page.</p>
+            <h1 className="title">Room</h1>
+            <p className="date">{displayDate}</p>
           </div>
           <div className="room-settings">
             <PDFPreviewModal

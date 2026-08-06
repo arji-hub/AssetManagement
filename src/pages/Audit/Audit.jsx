@@ -24,12 +24,12 @@ function Audit() {
       <div className="audit-page">
         <div className="audit-header">
           <div>
-            <h2 className="audit-title">Asset Audit</h2>
-            <p className="audit-subtitle">
-              Institutional resource verification and tracking
-            </p>
+            <h2 className="title">Asset Audit</h2>
+            <p className="date">{displayDate}</p>
           </div>
-          <p className="audit-date">{displayDate}</p>
+          <p className="audit-subtitle">
+            Institutional resource verification and tracking
+          </p>
         </div>
 
         <div className="audit-panels">
