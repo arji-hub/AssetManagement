@@ -28,14 +28,36 @@
   margin-bottom: clamp(18px, 3vw, 28px);
 }
 
-.login-logo {
+.login-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: clamp(220px, 60vw, 340px);
+  height: auto;
+  object-fit: contain;
+
+  opacity: 0.1;
+  pointer-events: none;
+
+  z-index: -1;
+}
+
+.login-icon {
   position: absolute;
   top: clamp(10px, 3vw, 16px);
-  left: clamp(10px, 3vw, 16px);
+  right: clamp(10px, 3vw, 16px);
 
   width: clamp(35px, 4vw, 50px);
   height: clamp(35px, 4vw, 50px);
-  object-fit: contain;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: clamp(16px, 4vw, 38px);
+  color: #860100;
 
   z-index: 2;
 }
@@ -81,13 +103,15 @@
 }
 .login-modal-field:focus-within .login-modal-field-icon {
   border-color: #860100;
-}
-
-.login-modal-field:focus-within .login-modal-field-icon {
   color: #f5aa2c;
 }
+
 .login-modal-field:focus-within .login-modal-field-icon2 {
   color: #860100;
+}
+
+.login-modal-field:focus-within {
+  background: #fcfcfc;
 }
 
 .login-modal-field input {
@@ -98,14 +122,11 @@
   outline: none;
   transition: border-color 0.2s ease;
   overflow: hidden;
+  background: none;
 }
 
 .login-modal-field input::placeholder {
   color: #aaa;
-}
-
-.login-modal-field input:focus {
-  border-color: #860100;
 }
 
 .login-modal-field-icon {
