@@ -12,7 +12,7 @@ import {
   where,
   query,
 } from "firebase/firestore";
-import { toLowerCase } from "../utils/TextCasing";
+import { toLowerCase, toSlug } from "../utils/TextCasing";
 import { getName } from "./user";
 
 async function computeTopCustodian(assets) {
@@ -58,10 +58,10 @@ export async function fetchRooms() {
         name: data.name,
         assetCount: data.assetCount ?? 0,
         roomCustodian: topCustodian || "",
+        last_audited_at: data.last_audited_at,
       };
     }),
   );
-  console.log("Fetched Rooms:", rooms);
   return rooms;
 }
 
@@ -111,7 +111,17 @@ export async function addRoom(data, role) {
     throw new Error("Permission denied: only admins can register rooms.");
   }
 
-  const normalizedName = toLowerCase(data.name);
+  if (!data.name?.trim()) {
+    throw new Error("Room name is required.");
+  }
+
+  const normalizedName = toSlug(data.name);
+  const roomRef = doc(db, "room", normalizedName);
+
+  const existing = await getDoc(roomRef);
+  if (existing.exists()) {
+    throw new Error(`Room "${data.name}" already exists.`);
+  }
 
   const payload = {
     name: data.name,
@@ -123,14 +133,14 @@ export async function addRoom(data, role) {
     updated_at: serverTimestamp(),
   };
 
-  await setDoc(doc(db, "room", normalizedName), payload);
+  await setDoc(roomRef, payload);
 
   return data.name;
 }
 
 export async function roomCount(room_id, direction = "increment") {
   const roomRef = doc(db, "room", room_id);
-  const delta = direction === "decrement" ? -1 : 1; 
+  const delta = direction === "decrement" ? -1 : 1;
 
   await updateDoc(roomRef, {
     assetCount: increment(delta),

@@ -36,6 +36,8 @@ function RoomAssets() {
     loadingOptions,
   } = useAssetFilters(assets);
 
+  const isEmpty = filteredAssets.length === 0;
+
   return (
     <MainLayout>
       <div className="room-assets-page">
@@ -73,10 +75,12 @@ function RoomAssets() {
           </div>
 
           <div className="room-assets-settings">
-            <button className="audit-logs-btn" onClick={handleAuditLogs}>
-              <FontAwesomeIcon icon="fa-file-lines" />
-              Audit Logs
-            </button>
+            {!isEmpty && (
+              <button className="audit-logs-btn" onClick={handleAuditLogs}>
+                <FontAwesomeIcon icon="fa-file-lines" />
+                Audit Logs
+              </button>
+            )}
             <PDFPreviewModal
               title="Room Inventory Form"
               fileName={`room-inventory-${roomID}.pdf`}
