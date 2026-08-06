@@ -32,8 +32,8 @@ function Report() {
         {/* header */}
         <div className="report-header">
           <div className="report-header-left">
-            <h1 className="report-title">Reports</h1>
-            <p className="report-date">{displayDate}</p>
+            <h1 className="title">Reports</h1>
+            <p className="date">{displayDate}</p>
           </div>
 
           <div className="report-header-right">

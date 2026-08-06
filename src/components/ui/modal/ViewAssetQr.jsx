@@ -51,13 +51,13 @@ function ViewAssetQR({ qr_code_url, assetID }) {
                 disabled={isDownloading}
               >
                 <FontAwesomeIcon icon="fa-solid fa-download" />
-                {isDownloading ? "Downloading..." : "Download"}
+                <span>{isDownloading ? "Downloading..." : "Download"}</span>
               </button>
               <button
                 className="qr-modal-close"
                 onClick={() => setIsQRActive(false)}
               >
-                Close
+                <span>Close</span>
               </button>
             </div>
           </div>

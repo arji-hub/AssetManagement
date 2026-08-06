@@ -3,8 +3,6 @@
   flex-direction: column;
   flex: 1;
   min-height: 0;
-  background: #ffffff;
-  border: 1px solid #e2beb9;
   border-radius: 8px;
   overflow: hidden;
 }
@@ -13,6 +11,9 @@
 .asset-table-wrap {
   overflow-x: auto;
   overflow-y: auto;
+
+  background: #ffffff;
+  border: 1px solid #e2beb9;
 }
 
 .asset-table {
@@ -48,25 +49,26 @@
   vertical-align: middle;
 }
 
+.asset-table tbody td .asset-desc-cell {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 320px;
+}
+
 .asset-table tbody tr:last-child td {
   border-bottom: none;
 }
 
 .asset-table-row {
   transition: background 0.15s ease;
+  cursor: pointer;
 }
 
 .asset-table-row:hover {
   background: #fbeceb;
-}
-
-.asset-action-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #860100;
-  font-size: 14px;
-  padding: 6px 10px;
 }
 
 .asset-empty-cell {
@@ -160,6 +162,12 @@
   color: #860100;
   font-size: 15px;
   line-height: 1.35;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ── Meta group: stacked vertically on mobile ── */
