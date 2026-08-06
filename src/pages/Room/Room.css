@@ -9,13 +9,14 @@
   position: relative;
   gap: clamp(8px, 2vw, 16px);
   padding: clamp(12px, 3vw, 24px);
+  height: 100%;
+  min-height: 0;
 }
 
 .room-top {
   position: sticky;
   top: 0;
   z-index: 999;
-  border-bottom: 1px solid #e5e7eb;
   background: #f0f2f5;
   display: grid;
   grid-template-columns: 1fr auto;
@@ -62,6 +63,7 @@
   gap: 12px;
   flex-wrap: wrap;
   justify-content: flex-end;
+  margin-bottom: 10px;
 }
 
 .search-icon {
@@ -151,12 +153,16 @@
 }
 
 .room-cards {
-  grid-area: cards;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-evenly;
-  gap: 16px;
-  padding: 0 24px 24px;
+  justify-content: flex-start;
+  gap: 10px;
+  height: 100%;
+}
+
+.room-card {
+  flex: 1 1 240px;
+  max-width: 280px;
 }
 
 .room-status {
@@ -182,5 +188,6 @@
 
   .room-settings {
     justify-content: flex-start;
+    margin-bottom: 0;
   }
 }

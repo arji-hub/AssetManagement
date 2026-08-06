@@ -199,7 +199,7 @@ function AssetTable({
       {showPagination && (
         <div className="asset-pagination">
           <span className="asset-pagination-info">
-            Showing {rangeStart}–{rangeEnd} of {total}
+            Showing {rangeStart}–{rangeEnd} of {total} Assets
           </span>
           <div className="asset-pagination-controls">
             <button
