@@ -1,3 +1,5 @@
+/* page shell */
+
 .about-page {
   min-height: 100dvh;
   margin: 0;
@@ -8,29 +10,155 @@
 
 .page-content {
   margin-bottom: auto;
+  background: #f2f0ef;
 }
 
-/* =============================================================
-   FEATURES SECTION
-============================================================= */
+/* padding + overflow */
 
-.features-section {
+.system-section,
+.mission-section,
+.features-section,
+.team-section {
   position: relative;
   overflow: hidden;
-  padding: 6rem 8%;
+  padding: 4rem 8%;
+}
 
+/* "About the System" + "Our Mission" — same layout, different content */
+
+.system-section,
+.mission-section {
+  background: #f2f0ef;
+  color: #111;
+}
+
+.system-section .section-title,
+.mission-section .section-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.system-section .section-title__icon,
+.mission-section .section-title__icon {
+  font-size: 4rem;
+  color: #860100;
+  flex-shrink: 0;
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.system-section.is-visible .section-title__icon,
+.mission-section.is-visible .section-title__icon {
+  animation: iconEnter 600ms cubic-bezier(0.4, 0, 0.2, 1) 200ms forwards;
+}
+
+.about-page .system-section .section-title h2,
+.about-page .mission-section .section-title h2 {
+  font-size: 2.5rem !important; 
+  color: #860100;
+  text-shadow: none;
+  text-transform: none;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+  position: relative;
+}
+
+.system-section .section-title::after,
+.mission-section .section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: #feb234;
+  width: 0;
+}
+
+.system-section.is-visible .section-title::after,
+.mission-section.is-visible .section-title::after {
+  animation: expandUnderline 700ms cubic-bezier(0.4, 0, 0.2, 1) 400ms forwards;
+}
+
+.system-section .section-title h2::after,
+.mission-section .section-title h2::after {
+  display: none;
+}
+
+.system-section .section-title p,
+.mission-section .section-title p {
+  display: none; 
+}
+
+/* the description text box inside system + mission */
+
+.prose-card {
+  position: relative;
+  z-index: 1;
+  padding: 2.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(254, 178, 52, 0.3);
+  background: rgba(242, 240, 239, 0.7);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.prose-card::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -10%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(254, 178, 52, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.prose-card__text {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  font-size: 1.5rem;
+  line-height: 1.8;
+  color: #444;
+  text-align: left;
+  text-indent: 0;
+  letter-spacing: 0.3px;
+  opacity: 0;
+}
+
+.system-section.is-visible .prose-card__text,
+.mission-section.is-visible .prose-card__text {
+  animation: fadeInUp 600ms cubic-bezier(0.4, 0, 0.2, 1) 300ms forwards;
+}
+
+/* "What the System Offers" section */
+
+.features-section {
   background:
-    radial-gradient(
-      ellipse 80% 60% at 20% 0%,
-      rgba(134, 1, 0, 0.5),
-      transparent 60%
-    ),
+    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(134, 1, 0, 0.5), transparent 60%),
     linear-gradient(180deg, #1a0505 0%, #120303 100%);
-
   color: #f5f5f5;
 }
 
-.features-section::before {
+/* "Meet the Team" section */
+
+.team-section {
+  background: #f8f5f2;
+  color: #111;
+}
+
+
+.features-section::before,
+.team-section::before {
   content: "";
   position: absolute;
   bottom: -20%;
@@ -38,16 +166,61 @@
   width: 500px;
   height: 500px;
   border-radius: 50%;
-
-  background: radial-gradient(circle, rgba(134, 1, 0, 0.06), transparent 70%);
   filter: blur(60px);
   pointer-events: none;
 }
 
+.features-section::before {
+  background: radial-gradient(circle, rgba(134, 1, 0, 0.06), transparent 70%);
+}
+
+.team-section::before {
+  background: radial-gradient(circle, rgba(134, 1, 0, 0.03), transparent 70%);
+}
+
+/* titles for the features + team sections */
+
+.section-title {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 2rem;
+}
+
+.features-section .section-title h2 {
+  text-transform: uppercase;
+  font-size: 2.5rem;
+  color: #f5aa2c;
+  text-shadow:
+    0 0 1px rgba(255, 255, 255, 0.4),
+    0 0 18px rgba(254, 178, 52, 0.55),
+    0 0 34px rgba(254, 178, 52, 0.25);
+}
+
+.team-section .section-title h2 {
+  text-transform: uppercase;
+  font-size: 2.5rem;
+  color: #860100;
+  text-shadow:
+    0 0 1px rgba(134, 1, 0, 0.3),
+    0 0 18px rgba(134, 1, 0, 0.25),
+    0 0 34px rgba(134, 1, 0, 0.12);
+}
+
+.features-section .section-title p {
+  margin-top: 0.5rem;
+  color: rgba(245, 245, 245, 0.7);
+}
+
+.team-section .section-title p {
+  margin-top: 0.5rem;
+  color: #666;
+}
+
+/* feature cards */
+
 .features-grid {
   position: relative;
   z-index: 1;
-
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1.75rem;
@@ -56,28 +229,22 @@
 .feature-card {
   position: relative;
   overflow: hidden;
-
   padding: 2rem 1.75rem;
   border-radius: 16px;
   border: 1px solid rgba(134, 1, 0, 0.08);
-
   background: #fff;
-
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-
   box-shadow:
     0 2px 4px rgba(134, 1, 0, 0.04),
     0 12px 24px rgba(134, 1, 0, 0.06);
-
   transition:
     transform 0.35s ease,
     box-shadow 0.35s ease,
     border-color 0.35s ease;
 }
 
-/* top accent bar that reveals on hover */
 .feature-card::before {
   content: "";
   position: absolute;
@@ -85,7 +252,6 @@
   left: 0;
   right: 0;
   height: 4px;
-
   background: linear-gradient(90deg, #860100, #feb234);
   transform: scaleX(0);
   transform-origin: left;
@@ -95,7 +261,6 @@
 .feature-card:hover {
   transform: translateY(-8px);
   border-color: rgba(134, 1, 0, 0.18);
-
   box-shadow:
     0 4px 8px rgba(134, 1, 0, 0.08),
     0 24px 48px rgba(134, 1, 0, 0.16);
@@ -109,16 +274,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
   width: 3rem;
   height: 3rem;
   margin-bottom: 0.5rem;
   border-radius: 12px;
-
   background: radial-gradient(circle at center, #860100 70%, #c96e18 100%);
   color: #fff;
   font-size: 1.25rem;
-
   box-shadow: 0 8px 18px rgba(134, 1, 0, 0.35);
 }
 
@@ -135,67 +297,172 @@
   color: #666;
 }
 
-/* =============================================================
-   SHARED — SECTION TITLES
-============================================================= */
+/* team member cards */
 
-.section-title {
+.team-grid {
   position: relative;
   z-index: 1;
-  margin-bottom: 3rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
 }
 
-.section-title h2 {
-  text-transform: uppercase;
-  font-size: 2.5rem;
-  color: #f5aa2c;
-  text-shadow:
-    0 0 1px rgba(255, 255, 255, 0.4),
-    0 0 18px rgba(254, 178, 52, 0.55),
-    0 0 34px rgba(254, 178, 52, 0.25);
+.team-grid .team-card:nth-child(5) {
+  /* 5th card is the odd one out on a 2-col grid, so center it on its own row */
+  grid-column: 1 / -1;
+  max-width: calc(50% - 0.75rem);
+  margin: 0 auto;
 }
 
-.section-title p {
-  margin-top: 0.5rem;
-  color: rgba(245, 245, 245, 0.7);
-}
-
-.section-title--with-badge {
+.team-card {
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+  border-radius: 16px;
+  border: 1px solid rgba(134, 1, 0, 0.12);
+  background: #fff;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 2rem;
+  flex-direction: column;
+  box-shadow:
+    0 2px 4px rgba(134, 1, 0, 0.04),
+    0 12px 24px rgba(134, 1, 0, 0.08);
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
 }
 
-.section-title__badge {
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  border: 3px solid #feb234;
-  object-fit: cover;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+.team-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(134, 1, 0, 0.22);
+  box-shadow:
+    0 4px 8px rgba(134, 1, 0, 0.08),
+    0 20px 40px rgba(134, 1, 0, 0.16);
 }
 
-/* =============================================================
-   RESPONSIVE
-============================================================= */
+.team-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 5px;
+  background: linear-gradient(180deg, #860100 0%, #feb234 100%);
+  border-radius: 16px 0 0 16px;
+}
+
+.team-card__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1.6rem 1.75rem 1.25rem 2rem;
+  border-bottom: 1px solid rgba(134, 1, 0, 0.08);
+}
+
+.team-card__name {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  letter-spacing: -0.01em;
+}
+
+.team-card__role {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #860100;
+}
+
+.team-card__bio {
+  margin: 0;
+  padding: 1.25rem 1.75rem 1.6rem 2rem;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: #555;
+  flex: 1;
+}
+
+/* animations used above (icon fade-in, underline expand, text fade-up) */
+
+@keyframes iconEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes expandUnderline {
+  from {
+    width: 0;
+    opacity: 0;
+  }
+  to {
+    width: 100%;
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* tablet breakpoint */
 
 @media (max-width: 1200px) {
   .features-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-}
 
-@media (max-width: 900px) {
-  .section-title--with-badge {
-    flex-direction: column;
-    text-align: center;
+  .team-grid .team-card:nth-child(5) {
+    grid-column: auto;
+    max-width: 100%;
+    margin: 0;
   }
 }
 
+/* mobile breakpoint */
+
 @media (max-width: 600px) {
-  .features-grid {
+  .features-grid,
+  .team-grid {
     grid-template-columns: 1fr;
+  }
+
+  .prose-card {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .system-section .section-title,
+  .mission-section .section-title {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .system-section .section-title__icon,
+  .mission-section .section-title__icon {
+    font-size: 2.5rem;
+  }
+
+  .about-page .system-section .section-title h2,
+  .about-page .mission-section .section-title h2 {
+    font-size: 1.75rem !important;
+  }
+
+  .prose-card__text {
+    font-size: 0.95rem;
+    line-height: 1.7;
   }
 }
