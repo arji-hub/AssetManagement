@@ -2,7 +2,7 @@ import { useState } from "react";
 import "./Header.css";
 import CICTLOGO from "../../assets/logo/CICTLOGO.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 
 export default function Header({ onNavigate }) {
@@ -52,10 +52,11 @@ export default function Header({ onNavigate }) {
           </button>
         </nav>
 
+        {/*Exclusive login for cict staffs only */}
         <button className="login-btn" onClick={() => navigate("/login")}>
-          <FontAwesomeIcon icon={faUser} className="login-icon" />
-          <span className="desktop-text">User Login</span>
-          <span className="mobile-text">Login</span>
+          <FontAwesomeIcon icon="fa-solid fa-user-shield" />
+          <span className="desktop-text">Access Portal</span>
+          <span className="mobile-text">Continue as Staff</span>
         </button>
       </div>
     </header>

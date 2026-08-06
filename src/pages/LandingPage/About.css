@@ -21,7 +21,7 @@
 .team-section {
   position: relative;
   overflow: hidden;
-  padding: 4rem 8%;
+  padding: 2.5rem 8%;
 }
 
 /* "About the System" + "Our Mission" — same layout, different content */
@@ -58,7 +58,7 @@
 
 .about-page .system-section .section-title h2,
 .about-page .mission-section .section-title h2 {
-  font-size: 2.5rem !important; 
+  font-size: 2.5rem !important;
   color: #860100;
   text-shadow: none;
   text-transform: none;
@@ -71,7 +71,7 @@
 
 .system-section .section-title::after,
 .mission-section .section-title::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -0.5rem;
   left: 0;
@@ -93,7 +93,7 @@
 
 .system-section .section-title p,
 .mission-section .section-title p {
-  display: none; 
+  display: none;
 }
 
 /* the description text box inside system + mission */
@@ -117,7 +117,11 @@
   left: -10%;
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(254, 178, 52, 0.08) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(254, 178, 52, 0.08) 0%,
+    transparent 70%
+  );
   pointer-events: none;
   z-index: 0;
 }
@@ -129,7 +133,7 @@
   font-size: 1.5rem;
   line-height: 1.8;
   color: #444;
-  text-align: left;
+  text-align: justify;
   text-indent: 0;
   letter-spacing: 0.3px;
   opacity: 0;
@@ -140,11 +144,95 @@
   animation: fadeInUp 600ms cubic-bezier(0.4, 0, 0.2, 1) 300ms forwards;
 }
 
+/* ===== Features section: staggered "rise" card reveal ===== */
+
+.feature-card {
+  opacity: 0;
+  transform: translateY(40px);
+  clip-path: inset(0 0 100% 0);
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
+}
+
+.features-section.is-visible .feature-card {
+  animation: riseAndReveal 650ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation-delay: calc(var(--reveal-index, 0) * 120ms);
+}
+
+/* when scrolled back out of view, reset instantly so it can replay */
+.features-section:not(.is-visible) .feature-card {
+  animation: none;
+  opacity: 0;
+  transform: translateY(40px);
+  clip-path: inset(0 0 100% 0);
+}
+
+@keyframes riseAndReveal {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    clip-path: inset(0 0 0% 0);
+  }
+}
+
+/* ===== Team section: alternating slide-in with slight rotation ===== */
+
+.team-card {
+  opacity: 0;
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
+}
+
+.team-section.is-visible .team-card {
+  animation: slideInAlt 600ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation-delay: calc(var(--reveal-index, 0) * 130ms);
+}
+
+.team-section:not(.is-visible) .team-card {
+  animation: none;
+  opacity: 0;
+}
+
+.team-grid .team-card:nth-child(odd) {
+  --slide-from: -50px;
+  --rotate-from: -3deg;
+}
+
+.team-grid .team-card:nth-child(even) {
+  --slide-from: 50px;
+  --rotate-from: 3deg;
+}
+
+@keyframes slideInAlt {
+  from {
+    opacity: 0;
+    transform: translateX(var(--slide-from, -50px))
+      rotate(var(--rotate-from, -3deg));
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) rotate(0deg);
+  }
+}
+
 /* "What the System Offers" section */
 
 .features-section {
   background:
-    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(134, 1, 0, 0.5), transparent 60%),
+    radial-gradient(
+      ellipse 80% 60% at 20% 0%,
+      rgba(134, 1, 0, 0.5),
+      transparent 60%
+    ),
     linear-gradient(180deg, #1a0505 0%, #120303 100%);
   color: #f5f5f5;
 }
@@ -155,7 +243,6 @@
   background: #f8f5f2;
   color: #111;
 }
-
 
 .features-section::before,
 .team-section::before {

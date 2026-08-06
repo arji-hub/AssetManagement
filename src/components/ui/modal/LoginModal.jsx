@@ -25,11 +25,17 @@ function LoginModal() {
 
   return (
     <div className="login-modal-box">
-      <img className="login-logo" src={CICTLOGO} alt="CICT Logo" />
-      <div className="login-modal-title">
-        STAFF PORTAL
-        <FontAwesomeIcon icon="fa-solid fa-user-shield" />
+      <img
+        className="login-watermark"
+        src={CICTLOGO}
+        alt=""
+        aria-hidden="true"
+      />
+
+      <div className="login-icon">
+        <FontAwesomeIcon icon="fa-solid fa-user-shield" />{" "}
       </div>
+      <div className="login-modal-title">STAFF PORTAL</div>
 
       {error && <p className="login-modal-error">{error}</p>}
 

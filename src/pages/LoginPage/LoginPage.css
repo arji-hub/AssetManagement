@@ -142,16 +142,14 @@
   text-decoration: none;
   border-radius: 8px;
 
-  transition: opacity 0.2s ease;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
 .login-page__brand:hover {
-  opacity: 0.75;
-}
-
-.login-page__brand:focus-visible {
-  outline: 2px solid var(--lp-maroon);
-  outline-offset: 4px;
+  transform: translateX(6px);
+  box-shadow: -10px 0 16px -6px rgba(0, 0, 0, 0.4);
 }
 
 .login-page__logo {
@@ -159,6 +157,7 @@
   height: auto;
   object-fit: cover;
   border-radius: 8px;
+  display: block;
 }
 
 .login-page__pane--form .login-page__pane-content {
@@ -317,7 +316,7 @@
 
   .login-page__pane--form {
     order: 1;
-    padding: 96px 24px 40px;
+    padding: 52px 24px 40px;
     min-height: 55vh;
   }
 
