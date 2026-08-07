@@ -2,7 +2,7 @@ import React from "react";
 import { useAuth } from "../../context/AuthContext";
 import MainLayout from "../../components/layout/MainLayout";
 import "./Room.css";
-import RoomCard from "../../components/ui/card/RoomCard";
+import RoomTable from "../../components/panel/RoomTable";
 import RoomModal from "../../components/ui/modal/RoomModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRoom } from "../../hooks/room/useRoom";
@@ -95,14 +95,7 @@ function Room() {
           {!loading && !error && filteredRooms.length === 0 && (
             <p className="room-status">No rooms found.</p>
           )}
-          {filteredRooms.map(({ id, name, assetCount, roomCustodian }) => (
-            <RoomCard
-              key={id}
-              roomID={id}
-              roomName={name}
-              totalAssets={assetCount}
-            />
-          ))}
+          <RoomTable rooms={filteredRooms} loading={loading} error={error} />
         </div>
       </div>
     </MainLayout>
