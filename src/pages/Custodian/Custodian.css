@@ -1,41 +1,36 @@
 .custodian-page {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  grid-template-rows: auto 1fr;
-  grid-template-areas:
-    "header   settings"
-    "cards    cards";
-  align-items: start;
+  display: flex;
+  flex-direction: column;
   position: relative;
   gap: clamp(8px, 2vw, 16px);
   padding: clamp(12px, 3vw, 24px);
+  height: 100%;
+  min-height: 0;
 }
 
 .custodian-top {
   position: sticky;
   top: 0;
   z-index: 999;
-  border-bottom: 1px solid #e5e7eb;
   background: #f0f2f5;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  grid-template-areas: "header settings";
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
+  flex-shrink: 0;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 660px) {
   .custodian-top {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "header"
-      "settings";
+    flex-direction: column;
+    align-items: stretch;
     z-index: 100;
   }
 }
 
 .custodian-header {
-  grid-area: header;
+  flex-shrink: 0;
 }
 
 .title {
@@ -55,12 +50,32 @@
 }
 
 .custodian-settings {
-  grid-area: settings;
   display: flex;
   align-items: center;
-  gap: 12px;
   flex-wrap: wrap;
   justify-content: flex-end;
+  gap: 12px;
+  margin-left: auto;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 490px) {
+  .custodian-settings {
+    justify-content: space-between;
+  }
+
+  .custodian-settings .report-filter-segment {
+    order: 3;
+    margin-right: auto;
+  }
+
+  .custodian-settings .settings-button {
+    order: 2;
+  }
+
+  .custodian-settings > *:first-child {
+    order: 1;
+  }
 }
 
 .report-filter-segment {
@@ -122,29 +137,20 @@
 }
 
 .custodian-cards {
-  grid-area: cards;
+  flex: 1;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
-  gap: 16px;
-}
-.custodian-cards {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
-  gap: 16px;
+  flex-direction: column;
+  min-height: 0;
 }
 
-@media (max-width: 640px) {
-  .custodian-page {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "header"
-      "settings"
-      "cards";
-  }
+.custodian-status {
+  font-size: 14px;
+  color: #6b7280;
+  padding: 24px 0;
+  width: 100%;
+  text-align: center;
+}
 
-  .custodian-settings {
-    justify-content: flex-start;
-  }
+.custodian-status--error {
+  color: #860100;
 }

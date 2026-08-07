@@ -25,7 +25,6 @@ export default function useResponsivePageSize(
       window.removeEventListener("resize", handleResize);
       cancelAnimationFrame(frame);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [desktopSize, mobileSize, breakpoint]);
 
   return pageSize;

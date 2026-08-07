@@ -22,7 +22,17 @@ function RoomCard({ room, onClick }) {
     <>
       {/* ── Desktop / tablet row ── */}
       <div className="room-row" onClick={handleClick}>
-        <div className="room-row-cell room-row-name">{name}</div>
+        <div className="room-row-cell room-row-name">
+          <FontAwesomeIcon
+            icon="fa-solid fa-door-open"
+            className="icon-door icon-door--open"
+          />
+          <FontAwesomeIcon
+            icon="fa-solid fa-door-closed"
+            className="icon-door icon-door--closed"
+          />
+          {name}
+        </div>
         <div
           className="room-row-cell room-row-custodian"
           data-priority="medium"
@@ -49,7 +59,10 @@ function RoomCard({ room, onClick }) {
         {(roomCustodian || last_audited_at) && (
           <div className="room-card-meta">
             {roomCustodian && (
-              <span className="room-card-custodian">{roomCustodian}</span>
+              <span className="room-card-custodian">
+                <FontAwesomeIcon icon="fa-regular fa-user" />
+                {roomCustodian}
+              </span>
             )}
             <span className="room-card-audit">
               <FontAwesomeIcon icon="fa-solid fa-clock-rotate-left" />
