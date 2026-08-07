@@ -1,11 +1,6 @@
 .room-page {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  grid-template-rows: auto 1fr;
-  grid-template-areas:
-    "header   settings"
-    "cards    cards";
-  align-items: start;
+  display: flex;
+  flex-direction: column;
   position: relative;
   gap: clamp(8px, 2vw, 16px);
   padding: clamp(12px, 3vw, 24px);
@@ -18,26 +13,24 @@
   top: 0;
   z-index: 999;
   background: #f0f2f5;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  grid-template-areas: "header settings";
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
-  grid-column: 1 / -1;
+  flex-shrink: 0;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 780px) {
   .room-top {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "header"
-      "settings";
+    flex-direction: column;
+    align-items: stretch;
     z-index: 100;
   }
 }
 
 .room-header {
-  grid-area: header;
+  flex-shrink: 0;
 }
 
 .title {
@@ -57,13 +50,61 @@
 }
 
 .room-settings {
-  grid-area: settings;
   display: flex;
   align-items: center;
-  gap: 12px;
   flex-wrap: wrap;
-  justify-content: flex-end;
+  gap: 12px;
+  margin-left: auto;
   margin-bottom: 10px;
+}
+
+@media (max-width: 605px) {
+  .room-settings {
+    justify-content: space-between;
+  }
+
+  .room-settings .filters {
+    order: 4;
+    margin-left: auto;
+  }
+
+  .room-settings .settings-button {
+    order: 2;
+  }
+
+  .room-settings .search-bar {
+    order: 3;
+  }
+
+  .room-settings > *:first-child {
+    order: 1;
+    flex-basis: 50%;
+  }
+}
+
+@media (max-width: 400px) {
+  .room-settings {
+    justify-content: space-between;
+  }
+
+  .room-settings .filters {
+    order: 3;
+    margin-right: auto;
+    margin-left: 0;
+  }
+
+  .room-settings .settings-button {
+    order: 4;
+  }
+
+  .room-settings .search-bar {
+    order: 1;
+  }
+
+  .room-settings > *:first-child {
+    order: 2;
+    flex-basis: 0;
+  }
 }
 
 .search-icon {
@@ -148,21 +189,19 @@
     transform 0.1s ease;
 }
 
+.settings-button:hover {
+  background: #6b0000;
+}
+
 .settings-button:active {
   transform: scale(0.97);
 }
 
 .room-cards {
+  flex: 1;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  gap: 10px;
-  height: 100%;
-}
-
-.room-card {
-  flex: 1 1 240px;
-  max-width: 280px;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .room-status {
@@ -175,19 +214,4 @@
 
 .room-status--error {
   color: #860100;
-}
-
-@media (max-width: 640px) {
-  .room-page {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "header"
-      "settings"
-      "cards";
-  }
-
-  .room-settings {
-    justify-content: flex-start;
-    margin-bottom: 0;
-  }
 }

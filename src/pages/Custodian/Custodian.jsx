@@ -2,7 +2,7 @@ import React from "react";
 import { useAuth } from "../../context/AuthContext";
 import MainLayout from "../../components/layout/MainLayout";
 import "./Custodian.css";
-import CustodianCard from "../../components/ui/card/CustodianCard";
+import CustodianTable from "../../components/panel/CustodianTable";
 import CustodianModal from "../../components/ui/modal/CustodianModal";
 import AddingStatusModal from "../../components/ui/status/AddingStatusModal";
 import { useCustodian } from "../../hooks/custodian/useCustodian";
@@ -27,6 +27,7 @@ function Custodian() {
     submitError,
     handleStatusClose,
   } = useCustodian();
+
   return (
     <MainLayout>
       <div className="custodian-page">
@@ -36,7 +37,6 @@ function Custodian() {
             <p className="date">{displayDate}</p>
           </div>
           <div className="custodian-settings">
-            {/* Filters */}
             <PDFPreviewModal
               title="Custodian List"
               fileName="custodian-list.pdf"
@@ -63,28 +63,11 @@ function Custodian() {
             </button>
           </div>
         </div>
-
-        {/* ── Custodian Cards ── */}
         <div className="custodian-cards">
-          {isFetching ? (
-            <p className="custodian-loading">Loading custodians...</p>
-          ) : custodians.length === 0 ? (
-            <p className="custodian-empty">No custodians found.</p>
-          ) : (
-            custodians.map((c) => (
-              <CustodianCard
-                key={c.id}
-                name={c.fullname}
-                username={c.username}
-                classification={c.role}
-                totalAssets={c.asset_count ?? 0}
-              />
-            ))
-          )}
+          <CustodianTable custodians={custodians} loading={isFetching} />
         </div>
       </div>
 
-      {/* ── CustodianModal ── */}
       {showModal && (
         <CustodianModal
           onClose={closeModal}
@@ -93,7 +76,6 @@ function Custodian() {
         />
       )}
 
-      {/* ── Status Modal ── */}
       {status !== "idle" && (
         <AddingStatusModal
           title="Custodian"
