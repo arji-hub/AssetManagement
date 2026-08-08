@@ -31,9 +31,9 @@ function Custodian() {
   return (
     <MainLayout>
       <div className="custodian-page">
-        <div className="custodian-top">
+        <div className="custodian-top"> 
           <div className="custodian-header">
-            <h1 className="title">Assets</h1>
+            <h1 className="title">Custodian</h1>
             <p className="date">{displayDate}</p>
           </div>
           <div className="custodian-settings">

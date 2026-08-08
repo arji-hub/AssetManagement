@@ -14,7 +14,7 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 12px;
-  z-index: 900;
+  z-index: 9999;
 }
 
 .transfer-header-left {
@@ -168,14 +168,8 @@
   margin: 0;
 }
 
-/* ── responsive ── */
 @media (max-width: 960px) {
-  .transfer-page {
-    padding: 16px;
-  }
-
   .transfer-header {
-    flex-direction: column;
     z-index: 100;
   }
 }
