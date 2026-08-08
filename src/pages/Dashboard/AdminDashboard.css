@@ -1,6 +1,7 @@
 /* Admin dashboard container */
 .dashboard {
   padding: 0.5rem;
+  min-height: 100dvh;
 }
 
 @media (min-width: 360px) {
@@ -19,6 +20,7 @@
 /* Admin dashboard grid — mobile-first (2 columns) */
 .dashboard-grid-container {
   display: grid;
+  align-content: start;
   gap: 0.6rem;
   grid-auto-columns: 1fr;
   grid-auto-rows: auto;

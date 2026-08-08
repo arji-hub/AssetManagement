@@ -1,15 +1,10 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useAuditRoom } from "../../hooks/audit/useAuditRoom";
 import "./AuditRoom.css";
 
 function AuditRoom() {
-  const navigate = useNavigate();
-  const roomsOverdue = 3; // Example value, replace with actual data
-
-  function handleClick() {
-    navigate("/audit/room");
-  }
+  const { lastEntry, handleClick } = useAuditRoom();
 
   return (
     <button className="audit-panel-card" onClick={handleClick} type="button">
@@ -23,7 +18,7 @@ function AuditRoom() {
       </p>
       <div className="audit-panel-footer">
         <span className="audit-panel-badge audit-panel-badge--danger">
-          {roomsOverdue} room{roomsOverdue === 1 ? "" : "s"} overdue
+          {lastEntry ? `Last entry: ${lastEntry}` : "No recent entries"}
         </span>
         <FontAwesomeIcon
           icon="arrow-right"

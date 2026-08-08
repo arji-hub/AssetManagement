@@ -200,6 +200,7 @@
 
   .custodian-name {
     margin: 0;
+    margin-top: auto;
     font-size: clamp(14px, 1.5vw, 26px);
     font-weight: 600;
     color: #860100;

@@ -27,6 +27,7 @@ function ReportLogInfo() {
     prevPage,
     handleRowClick,
   } = useReportLogInfo();
+
   return (
     <MainLayout>
       <div className="report-log-info-page">

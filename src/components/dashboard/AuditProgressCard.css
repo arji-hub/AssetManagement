@@ -174,3 +174,17 @@
   padding: 0.1875rem 0.5rem;
   border-radius: 0.375rem;
 }
+
+@media (min-width: 540px) {
+  .audit-progress-card {
+    padding: 1.125rem;
+  }
+
+  .audit-card__title {
+    margin-bottom: 0.625rem;
+  }
+
+  .audit-card__item {
+    padding: 0.75rem 0.75rem 0.75rem 0.875rem;
+  }
+}
