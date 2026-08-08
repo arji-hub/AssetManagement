@@ -24,7 +24,7 @@ function Audit() {
       <div className="audit-page">
         <div className="audit-header">
           <div>
-            <h2 className="title">Asset Audit</h2>
+            <h2 className="title">Audit</h2>
             <p className="date">{displayDate}</p>
           </div>
           <p className="audit-subtitle">

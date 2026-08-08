@@ -11,7 +11,6 @@
 .room-top {
   position: sticky;
   top: 0;
-  z-index: 999;
   background: #f0f2f5;
   display: flex;
   flex-wrap: wrap;
@@ -19,12 +18,17 @@
   justify-content: space-between;
   gap: 10px;
   flex-shrink: 0;
+  z-index: 9999;
 }
 
 @media (max-width: 780px) {
   .room-top {
     flex-direction: column;
     align-items: stretch;
+  }
+}
+@media (max-width: 960px) {
+  .room-top {
     z-index: 100;
   }
 }
@@ -52,9 +56,9 @@
 .room-settings {
   display: flex;
   align-items: center;
+  justify-content: space-around;
   flex-wrap: wrap;
   gap: 12px;
-  margin-left: auto;
   margin-bottom: 10px;
 }
 
