@@ -48,7 +48,7 @@
 .donut-chart__title {
   position: relative;
   z-index: 1;
-  font-size: 1.25rem;
+  font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.07em;
@@ -203,5 +203,21 @@
 
   .donut-chart__legend-percent {
     font-size: 1.1875rem;
+  }
+}
+
+@media (min-width: 540px) {
+  .donut-chart {
+    padding: 1.125rem;
+    gap: 1rem;
+  }
+
+  .donut-chart__chart {
+    width: 7.5rem;
+    height: 7.5rem;
+  }
+
+  .donut-chart__total {
+    font-size: 1.375rem;
   }
 }

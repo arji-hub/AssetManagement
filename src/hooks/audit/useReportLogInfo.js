@@ -7,6 +7,7 @@ const PAGE_SIZE = 10;
 
 function useReportLogInfo() {
   const { logID } = useParams();
+  console.log("log id :", logID);
   const navigate = useNavigate();
 
   const [reportLog, setReportLog] = useState(null);
@@ -26,6 +27,7 @@ function useReportLogInfo() {
 
       try {
         const data = await fetchReportLogById(logID);
+        console.log("data fetched :", data);
 
         if (!cancelled) {
           const reports = data.reportInfo || [];
@@ -33,10 +35,12 @@ function useReportLogInfo() {
           const enrichedReports = await Promise.all(
             reports.map(async (report) => {
               const name = await getName(report.reported_by);
-
+              if (!name) {
+                console.log("getName returned null for report:", report);
+              }
               return {
                 ...report,
-                reported_by_name: name.firstname,
+                reported_by_name: name?.firstname ?? "Unknown",
               };
             }),
           );

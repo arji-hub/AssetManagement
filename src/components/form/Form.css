@@ -115,3 +115,69 @@
 .reg-input--prefixed {
   padding-left: 1.75rem;
 }
+
+/* ─── Responsive ─────────────────────────────────────────────────────────── */
+
+/* Tablet: 3 cols → 2 cols */
+@media (max-width: 1024px) {
+  .reg-card {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .reg-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem 1.25rem;
+  }
+}
+
+/* Small tablet / large phone: 2 cols → 1 col */
+@media (max-width: 640px) {
+  .reg-card {
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+  }
+
+  .reg-card-title {
+    font-size: 0.85rem;
+  }
+
+  .reg-card-subtitle {
+    font-size: 0.78rem;
+  }
+
+  .reg-grid {
+    grid-template-columns: 1fr;
+    gap: 0.9rem;
+  }
+
+  .reg-field--full {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Mobile: tighten inputs/text */
+@media (max-width: 420px) {
+  .reg-card {
+    padding: 0.9rem 1rem;
+  }
+
+  .reg-label {
+    font-size: 0.72rem;
+  }
+
+  .reg-input,
+  .reg-select,
+  .reg-textarea {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.65rem;
+  }
+
+  .reg-input--prefixed {
+    padding-left: 1.6rem;
+  }
+
+  .reg-input-prefix {
+    font-size: 0.85rem;
+    left: 0.65rem;
+  }
+}

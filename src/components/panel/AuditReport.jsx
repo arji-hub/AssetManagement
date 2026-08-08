@@ -1,14 +1,11 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useReport } from "../../hooks/audit/useReport";
 import "./AuditReport.css";
 
 function AuditReport() {
-  const navigate = useNavigate();
-  const lastEntry = "2 hours ago";
-  function handleClick() {
-    navigate("/audit/report");
-  }
+  const { lastEntry, handleClick } = useReport();
+
   return (
     <button className="audit-panel-card" onClick={handleClick} type="button">
       <div className="audit-panel-icon">

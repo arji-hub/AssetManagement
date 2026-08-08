@@ -217,3 +217,13 @@
     order: 3;
   }
 }
+
+@media (min-width: 540px) {
+  .dashboard-header {
+    padding: 1.125rem 1.5rem;
+  }
+
+  .dashboard-header h1.dashboard-header__title {
+    font-size: 1.5rem;
+  }
+}

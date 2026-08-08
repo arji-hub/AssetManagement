@@ -1,0 +1,298 @@
+.ic-camera {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.ic-camera-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ic-camera-canvas {
+  display: none;
+}
+
+.ic-capture-flash {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  opacity: 0.85;
+  animation: ic-flash-fade 200ms ease-out forwards;
+  pointer-events: none;
+  z-index: 5;
+}
+
+@keyframes ic-flash-fade {
+  from {
+    opacity: 0.85;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* ─── Overlay layout ─────────────────────────────────────────────────── */
+
+.ic-camera-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.ic-camera-overlay > * {
+  pointer-events: auto;
+}
+
+.ic-camera-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  padding-top: max(1rem, env(safe-area-inset-top));
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.55), transparent);
+}
+
+.ic-camera-title {
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.ic-icon-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.ic-icon-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.ic-icon-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.ic-icon-btn--active {
+  background: #f5aa2c;
+  color: #222;
+}
+
+/* ─── Frame guide ────────────────────────────────────────────────────── */
+
+.ic-frame-guide {
+  position: absolute;
+  top: 4.5rem;
+  left: 1rem;
+  right: 1rem;
+  bottom: 6rem;
+  pointer-events: none;
+}
+
+.ic-corner {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border: 3px solid #f5aa2c;
+}
+
+.ic-corner--tl {
+  top: 0;
+  left: 0;
+  border-right: none;
+  border-bottom: none;
+  border-radius: 6px 0 0 0;
+}
+
+.ic-corner--tr {
+  top: 0;
+  right: 0;
+  border-left: none;
+  border-bottom: none;
+  border-radius: 0 6px 0 0;
+}
+
+.ic-corner--bl {
+  bottom: 0;
+  left: 0;
+  border-right: none;
+  border-top: none;
+  border-radius: 0 0 0 6px;
+}
+
+.ic-corner--br {
+  bottom: 0;
+  right: 0;
+  border-left: none;
+  border-top: none;
+  border-radius: 0 0 6px 0;
+}
+
+/* ─── Status / hint / error ──────────────────────────────────────────── */
+
+.ic-camera-status {
+  display: flex;
+  justify-content: center;
+  padding: 0 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.ic-camera-hint {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #fff;
+  font-size: 0.85rem;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+}
+
+.ic-camera-hint-icon {
+  font-size: 0.85rem;
+}
+
+.ic-camera-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.65);
+  padding: 1rem 1.25rem;
+  border-radius: 10px;
+  max-width: 320px;
+}
+
+.ic-camera-error-icon {
+  color: #f5aa2c;
+  font-size: 1.4rem;
+}
+
+.ic-camera-error-text {
+  color: #fff;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.ic-camera-error-hint {
+  color: #ccc;
+  font-size: 0.78rem;
+  margin: 0;
+}
+
+.ic-btn--retry {
+  background: #860100;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ─── Bottom bar / shutter ───────────────────────────────────────────── */
+
+.ic-camera-bottombar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 2rem;
+  padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.55), transparent);
+}
+
+.ic-bottombar-spacer {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.ic-shutter-btn {
+  width: 4.25rem;
+  height: 4.25rem;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.ic-shutter-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ic-shutter-btn-inner {
+  width: 3.4rem;
+  height: 3.4rem;
+  border-radius: 50%;
+  background: #fff;
+  transition:
+    transform 0.15s,
+    background 0.15s;
+}
+
+.ic-shutter-btn:active:not(:disabled) .ic-shutter-btn-inner {
+  transform: scale(0.85);
+  background: #f5aa2c;
+}
+
+/* ─── Focus ring/orb (tap-to-focus feedback) ─────────────────────────── */
+
+.ic-focus-ring,
+.ic-focus-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.ic-focus-ring {
+  width: 56px;
+  height: 56px;
+  border: 2px solid #f5aa2c;
+  transition:
+    width 0.3s,
+    height 0.3s,
+    opacity 0.3s;
+}
+
+.ic-focus-ring--locked {
+  width: 40px;
+  height: 40px;
+  border-color: #4caf50;
+}
+
+.ic-focus-orb {
+  width: 4px;
+  height: 4px;
+  background: #f5aa2c;
+  opacity: 0.9;
+}
+
+.ic-focus-orb--locked {
+  background: #4caf50;
+}

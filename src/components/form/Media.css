@@ -4,3 +4,21 @@
   gap: 1.5rem;
   margin-top: 1.25rem;
 }
+
+/* ─── Responsive ─────────────────────────────────────────────────────────── */
+
+/* Tablet: keep 2 cols but tighten gap */
+@media (max-width: 1024px) {
+  .reg-media-grid {
+    gap: 1.25rem;
+  }
+}
+
+/* Small tablet / mobile: stack the two panels */
+@media (max-width: 640px) {
+  .reg-media-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+}
