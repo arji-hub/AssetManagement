@@ -28,6 +28,15 @@
   margin-bottom: clamp(18px, 3vw, 28px);
 }
 
+.login-modal-title .subtitle {
+  color: #b8791f;
+  font-weight: 500;
+  font-size: clamp(11px, 2vw, 13px) !important;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  margin: 0;
+}
+
 .login-watermark {
   position: absolute;
   top: 50%;
@@ -42,24 +51,6 @@
   pointer-events: none;
 
   z-index: -1;
-}
-
-.login-icon {
-  position: absolute;
-  top: clamp(10px, 3vw, 16px);
-  right: clamp(10px, 3vw, 16px);
-
-  width: clamp(35px, 4vw, 50px);
-  height: clamp(35px, 4vw, 50px);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: clamp(16px, 4vw, 38px);
-  color: #860100;
-
-  z-index: 2;
 }
 
 /* ── fields ── */
@@ -296,4 +287,43 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* ── forgot password: success message ── */
+.login-modal-success {
+  font-size: 13px;
+  color: #333;
+  background: #fdf4e3;
+  border: 1px solid #f5aa2c;
+  border-radius: 4px;
+  padding: 12px 14px;
+  text-align: center;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.login-modal-success strong {
+  color: #860100;
+}
+
+/* ── forgot password: back to sign in ── */
+.login-modal-back-btn {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  color: #860100;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-align: center;
+  cursor: pointer;
+  margin-top: 14px;
+  padding: 4px;
+  transition: opacity 0.2s ease;
+}
+
+.login-modal-back-btn:hover {
+  opacity: 0.7;
+  text-decoration: underline;
 }
