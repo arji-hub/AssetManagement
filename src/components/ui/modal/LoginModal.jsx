@@ -21,7 +21,94 @@ function LoginModal() {
     handleSubmit,
     handleMicrosoftClick,
     handleGoogleClick,
+    isForgotPassword,
+    openForgotPassword,
+    closeForgotPassword,
+    resetEmail,
+    setResetEmail,
+    resetLoading,
+    resetError,
+    resetSent,
+    handleForgotSubmit,
   } = useLogin();
+
+  if (isForgotPassword) {
+    return (
+      <div className="login-modal-box">
+        <img
+          className="login-watermark"
+          src={CICTLOGO}
+          alt=""
+          aria-hidden="true"
+        />
+
+        <div className="login-modal-title">
+          RESET PASSWORD
+          <FontAwesomeIcon icon="fa-solid fa-key" />
+          <h2 className="subtitle">Enter your email to receive a reset link</h2>
+        </div>
+
+        {resetSent ? (
+          <>
+            <p className="login-modal-success">
+              If an account exists for <strong>{resetEmail}</strong>, a reset
+              link has been sent. Check your inbox (and spam folder).
+            </p>
+            <button
+              type="button"
+              className="login-modal-submit-btn"
+              onClick={closeForgotPassword}
+            >
+              Back to Sign in
+            </button>
+          </>
+        ) : (
+          <>
+            {resetError && <p className="login-modal-error">{resetError}</p>}
+
+            <form onSubmit={handleForgotSubmit}>
+              <div className="login-modal-field-label">E-mail</div>
+              <div className="login-modal-field">
+                <span className="login-modal-field-icon">
+                  <FontAwesomeIcon icon="fa-solid fa-envelope" />
+                </span>
+                <input
+                  type="email"
+                  placeholder="user@ms.bulsu.edu.ph"
+                  value={resetEmail}
+                  onChange={(e) => setResetEmail(e.target.value)}
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="login-modal-submit-btn"
+                disabled={resetLoading}
+              >
+                {resetLoading ? (
+                  "Sending..."
+                ) : (
+                  <>
+                    Send reset link{" "}
+                    <FontAwesomeIcon icon="fa-regular fa-paper-plane" />
+                  </>
+                )}
+              </button>
+            </form>
+
+            <button
+              type="button"
+              className="login-modal-back-btn"
+              onClick={closeForgotPassword}
+            >
+              Back to Sign in
+            </button>
+          </>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="login-modal-box">
@@ -32,10 +119,11 @@ function LoginModal() {
         aria-hidden="true"
       />
 
-      <div className="login-icon">
-        <FontAwesomeIcon icon="fa-solid fa-user-shield" />{" "}
+      <div className="login-modal-title">
+        STAFF PORTAL
+        <FontAwesomeIcon icon="fa-solid fa-user-shield" />
+        <h2 className="subtitle">Exclusive access for CICT faculty</h2>
       </div>
-      <div className="login-modal-title">STAFF PORTAL</div>
 
       {error && <p className="login-modal-error">{error}</p>}
 
@@ -59,7 +147,9 @@ function LoginModal() {
 
         <div className="login-modal-field-label">
           Password
-          <span>Forgot?</span>
+          <span onClick={openForgotPassword} style={{ cursor: "pointer" }}>
+            Forgot?
+          </span>
         </div>
         <div className="login-modal-field">
           <span className="login-modal-field-icon">

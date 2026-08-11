@@ -4,6 +4,7 @@ import {
   login,
   loginWithMicrosoft,
   loginWithGoogle,
+  resetPassword,
 } from "../../services/authService";
 
 const OAUTH_ERROR_MESSAGES = {
@@ -15,11 +16,27 @@ const OAUTH_ERROR_MESSAGES = {
     "Network error. Please check your connection and try again.",
 };
 
+const RESET_ERROR_MESSAGES = {
+  "auth/user-not-found":
+    "No account found with that email.",
+  "auth/invalid-email":
+    "Please enter a valid email address.",
+  "auth/too-many-requests":
+    "Too many attempts. Please try again later.",
+};
+
 function getOAuthErrorMessage(err) {
   if (err.code && err.code in OAUTH_ERROR_MESSAGES) {
     return OAUTH_ERROR_MESSAGES[err.code];
   }
   return err.message || "Sign-in failed. Please try again.";
+}
+
+function getResetErrorMessage(err) {
+  if (err.code && err.code in RESET_ERROR_MESSAGES) {
+    return RESET_ERROR_MESSAGES[err.code];
+  }
+  return "Something went wrong. Please try again.";
 }
 
 export function useLogin() {
@@ -31,6 +48,13 @@ export function useLogin() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [oauthLoading, setOauthLoading] = useState(null);
+
+  // --- Forgot password state ---
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetLoading, setResetLoading] = useState(false);
+  const [resetError, setResetError] = useState("");
+  const [resetSent, setResetSent] = useState(false);
 
   const routeByRole = (role) => {
     if (role === "admin" || role === "parttime" || role === "fulltime") {
@@ -90,6 +114,35 @@ export function useLogin() {
 
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
+  // --- Forgot password handlers ---
+  const openForgotPassword = () => {
+    setError("");
+    setResetError("");
+    setResetSent(false);
+    setResetEmail(email.trim());
+    setIsForgotPassword(true);
+  };
+
+  const closeForgotPassword = () => {
+    setIsForgotPassword(false);
+    setResetError("");
+    setResetSent(false);
+  };
+
+  const handleForgotSubmit = async (e) => {
+    e.preventDefault();
+    setResetError("");
+    setResetLoading(true);
+    try {
+      await resetPassword(resetEmail.trim());
+      setResetSent(true);
+    } catch (err) {
+      setResetError(getResetErrorMessage(err));
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
   const isBusy = loading;
 
   return {
@@ -106,5 +159,15 @@ export function useLogin() {
     handleSubmit,
     handleMicrosoftClick,
     handleGoogleClick,
+    // forgot password
+    isForgotPassword,
+    openForgotPassword,
+    closeForgotPassword,
+    resetEmail,
+    setResetEmail,
+    resetLoading,
+    resetError,
+    resetSent,
+    handleForgotSubmit,
   };
 }
