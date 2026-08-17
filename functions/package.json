@@ -11,7 +11,7 @@
   "engines": {
     "node": "24"
   },
-  "main": "index.js",
+  "main": "src/index.js",
   "dependencies": {
     "@react-email/components": "^1.0.12",
     "@react-email/render": "^2.0.8",
