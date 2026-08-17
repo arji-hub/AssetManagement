@@ -71,14 +71,7 @@ function CustodianCard({ custodian, onClick }) {
       <div className="custodian-card" onClick={handleClick}>
         <div className="custodian-info">
           <div className="custodian-card-top">
-            <FontAwesomeIcon
-              icon="fa-regular fa-user"
-              className="icon-user icon-user--default"
-            />
-            <FontAwesomeIcon
-              icon="fa-solid fa-user"
-              className="icon-user icon-user--hover"
-            />
+            <FontAwesomeIcon icon="fa-regular fa-user" />
             <h3 className="custodian-name">{fullname}</h3>
             <span className="custodian-badge" style={badgeStyle}>
               {role}

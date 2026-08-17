@@ -48,12 +48,9 @@
   display: inline-block;
 }
 
-.custodian-card:hover .icon-user--hover,
 .custodian-row:hover .icon-user--hover {
   display: inline-block;
 }
-
-.custodian-card:hover .icon-user--default,
 .custodian-row:hover .icon-user--default {
   display: none;
 }
