@@ -10,7 +10,7 @@ function CustodianTable({
   loading,
   error,
   emptyMessage = "No custodians found.",
-  desktopPageSize = 6,
+  desktopPageSize = 12,
   mobilePageSize = 6,
   onRowAction,
 }) {
