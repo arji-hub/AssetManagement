@@ -8,6 +8,8 @@ import {
   GoogleAuthProvider,
   deleteUser,
   signOut,
+  getAuth,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 
@@ -102,4 +104,10 @@ export async function unlinkProvider(providerId) {
     throw new Error("You must be signed in to unlink an account.");
   }
   await unlink(auth.currentUser, providerId);
+}
+
+//reset password
+export async function resetPassword(email) {
+  const auth = getAuth();
+  await sendPasswordResetEmail(auth, email);
 }
