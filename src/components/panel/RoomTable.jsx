@@ -10,7 +10,7 @@ function RoomTable({
   loading,
   error,
   emptyMessage = "No rooms found.",
-  desktopPageSize = 7,
+  desktopPageSize = 12,
   mobilePageSize = 6,
   onRowAction,
 }) {
