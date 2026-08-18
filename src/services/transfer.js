@@ -325,6 +325,12 @@ export async function addTransferRequest(
     );
   }
 
+  if (from?.uid && to?.uid && from.uid === to.uid) {
+    throw new Error(
+      "Invalid transfer request: 'from' and 'to' cannot be the same person.",
+    );
+  }
+
   // == Step 0: block duplicate open transfer request =======
   await assetNoOpenTransferForAsset(asset_id);
 
@@ -359,8 +365,8 @@ export async function addTransferRequest(
     updated_at: serverTimestamp(),
     acknowledgments: {
       admin: buildAck(isAdmin, uidAdmin),
-      from: buildAck(!from, from?.uid, fromName),
-      to: buildAck(!to, to?.uid, toName),
+      from: buildAck(!from || from.uid === requestedByUid, from?.uid, fromName),
+      to: buildAck(!to || to.uid === requestedByUid, to?.uid, toName),
     },
     status_log: [
       {

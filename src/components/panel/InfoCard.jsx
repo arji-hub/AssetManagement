@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { STATUS_COLORS } from "../../data/assets";
 import LabelCard from "../ui/card/LabelCard";
 import { formatCurrency } from "../../utils/formatCurrency";
@@ -23,6 +24,7 @@ function StatusBadge({ status }) {
 }
 
 function InfoCard({ asset }) {
+  const navigate = useNavigate();
   return (
     <div className="info-card">
       {/* Center: main info */}
@@ -56,9 +58,37 @@ function InfoCard({ asset }) {
         </div>
 
         <div className="info-card-labels-grid">
-          <LabelCard label="Current Location" value={asset.room_id} />
-          <LabelCard label="Custodian" value={asset.property_custodian_name} />
-          <LabelCard label="Local Custodian" value={asset.local_mr_name} />
+          <LabelCard
+            label="Current Location"
+            value={asset.room_id}
+            onClick={
+              asset.room_id
+                ? () => navigate(`/room/${asset.room_id}`)
+                : undefined
+            }
+            style={asset.room_id ? { cursor: "pointer" } : undefined}
+          />
+          <LabelCard
+            label="Custodian"
+            value={asset.property_custodian_name}
+            onClick={
+              asset.property_custodian
+                ? () =>
+                    navigate(`/custodian/${asset.property_custodian_username}`)
+                : undefined
+            }
+            style={asset.property_custodian ? { cursor: "pointer" } : undefined}
+          />
+          <LabelCard
+            label="Local Custodian"
+            value={asset.local_mr_name}
+            onClick={
+              asset.local_mr
+                ? () => navigate(`/custodian/${asset.local_mr_username}`)
+                : undefined
+            }
+            style={asset.local_mr ? { cursor: "pointer" } : undefined}
+          />
           <LabelCard
             label="Acquisition Cost"
             value={formatCurrency(asset.unit_value)}
