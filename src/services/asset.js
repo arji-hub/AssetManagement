@@ -117,6 +117,7 @@ export async function fetchAssetByID(assetId) {
   );
 
   const userMap = {};
+  const usernameMap = {};
   userDocs.forEach((d) => {
     if (d.exists()) {
       const data = d.data();
@@ -124,6 +125,7 @@ export async function fetchAssetByID(assetId) {
         .filter(Boolean)
         .join(" ");
       userMap[d.id] = fullname;
+      usernameMap[d.id] = data.user_name;
     }
   });
 
@@ -132,7 +134,10 @@ export async function fetchAssetByID(assetId) {
     category: assetData.category_id,
     name: userMap[assetData.property_custodian],
     property_custodian_name: userMap[assetData.property_custodian] || "---",
+    property_custodian_username:
+      usernameMap[assetData.property_custodian] || "---",
     local_mr_name: userMap[assetData.local_mr] || "---",
+    local_mr_username: usernameMap[assetData.local_mr] || "---",
   };
 }
 
