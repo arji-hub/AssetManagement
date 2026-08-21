@@ -37,7 +37,6 @@ export function useAssetRegistrationForm() {
   // ── step 1 validation (fields + serial number check) ──────────────────────
   const {
     error: basicInfoError,
-    checkingSerial,
     isValid: basicInfoValid,
   } = useBasicInfo(form);
 
@@ -142,7 +141,6 @@ export function useAssetRegistrationForm() {
     step,
     form,
     error: basicInfoError,
-    checkingSerial,
     assetImage,
     setAssetImage,
     docImage,
