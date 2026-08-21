@@ -48,7 +48,7 @@ function AddingStatusModal({ title, status, errorMessage, onClose }) {
                 "An unexpected error occurred. Please try again."}
             </p>
             <button className="status-btn status-btn--error" onClick={onClose}>
-              Try Again
+              Return
             </button>
           </>
         )}

@@ -337,7 +337,8 @@ export async function addTransferRequest(
   const isAdmin = requestedByRole === ROLES.ADMIN;
   const type = resolveTransferType(from, to);
   const status =
-    type === TRANSFER_TYPES.ASSIGN && !isAdmin
+    (type === TRANSFER_TYPES.ASSIGN || type === TRANSFER_TYPES.REMOVE) &&
+    !isAdmin
       ? STATUS.FOR_APPROVAL
       : STATUS.PENDING;
 
