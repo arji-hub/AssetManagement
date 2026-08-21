@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import { isSerialNumberExist } from "../../services/asset";
 
 const initialErrors = {
   serial_number: "",
@@ -12,46 +11,9 @@ const initialErrors = {
 
 export function useBasicInfo(form) {
   const [error, setError] = useState(initialErrors);
-  const [checkingSerial, setCheckingSerial] = useState(false);
   const debounceRef = useRef(null);
 
   const today = new Date().toISOString().split("T")[0];
-
-  // serial number — debounced async check whenever it changes
-  useEffect(() => {
-    const value = form.serial_number?.trim();
-
-    if (!value) {
-      setError((prev) => ({ ...prev, serial_number: "" }));
-      setCheckingSerial(false);
-      return;
-    }
-
-    setCheckingSerial(true);
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-
-    debounceRef.current = setTimeout(async () => {
-      try {
-        const exists = await isSerialNumberExist(value);
-        setError((prev) => ({
-          ...prev,
-          serial_number: exists
-            ? "This serial number is already registered."
-            : "",
-        }));
-      } catch (err) {
-        console.error("Serial number check failed:", err);
-        setError((prev) => ({
-          ...prev,
-          serial_number: "Could not verify serial number. Please try again.",
-        }));
-      } finally {
-        setCheckingSerial(false);
-      }
-    }, 500);
-
-    return () => clearTimeout(debounceRef.current);
-  }, [form.serial_number]);
 
   // sync validation for the rest of the fields, live on every form change
   useEffect(() => {
@@ -91,8 +53,7 @@ export function useBasicInfo(form) {
     today,
   ]);
 
-  const isValid =
-    Object.values(error).every((msg) => msg === "") && !checkingSerial;
+  const isValid = Object.values(error).every((msg) => msg === "");
 
-  return { error, checkingSerial, isValid, today };
+  return { error, isValid, today };
 }

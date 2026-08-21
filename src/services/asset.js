@@ -247,17 +247,6 @@ export async function addAsset(data, role) {
   return assetId;
 }
 
-export async function isSerialNumberExist(serialNumber) {
-  if (!serialNumber || !toLowerCase(serialNumber)) return false;
-
-  const normalizedInput = toLowerCase(serialNumber);
-  const snapshot = await getDocs(collection(db, "asset"));
-
-  return snapshot.docs.some((doc) => {
-    const existing = doc.data().serial_number;
-    return existing && toLowerCase(existing) === normalizedInput;
-  });
-}
 
 export async function updateAssetStatus(assetId, status) {
   const assetRef = doc(db, "asset", assetId);
