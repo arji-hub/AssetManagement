@@ -149,16 +149,13 @@ const uploadImage = async (file, path) => {
 };
 
 const generateAssetId = async () => {
-  const snapshot = await getDocs(collection(db, "asset")); // ← changed
-
-  if (snapshot.empty) return "cict-1001";
-
-  const highest = snapshot.docs.reduce((max, doc) => {
-    const num = parseInt(doc.id.replace("cict-", ""), 10);
-    return isNaN(num) ? max : Math.max(max, num);
-  }, 1000);
-
-  return `cict-${highest + 1}`;
+  const counterRef = doc(db, "counters", "asset");
+  return await runTransaction(db, async (transaction) => {
+    const counter = await transaction.get(counterRef);
+    const next = (counter.data()?.count ?? 0) + 1;
+    transaction.update(counterRef, { count: next });
+    return `cict-${next}`;
+  });
 };
 
 const generateQR = async (assetId) => {
