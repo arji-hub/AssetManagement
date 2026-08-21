@@ -147,6 +147,8 @@ exports.addCustodian = onCall(
         "This username was just taken by another request. Please try again.",
       );
     }
+    // Password reset link
+    const actionLink = await getAuth().generatePasswordResetLink(email);
 
     // Step 3: Send welcome email
     const transporter = nodemailer.createTransport({
@@ -166,7 +168,7 @@ exports.addCustodian = onCall(
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
             <div style="background-color: #860100; padding: 24px; text-align: center;">
               <img src="https://firebasestorage.googleapis.com/v0/b/ams-cict.firebasestorage.app/o/images%2Fcictlogo.jfif?alt=media&token=5ce68321-b3ef-40a4-86b5-6bcc42d7735e"
-               width="60" alt="CICT AMS Logo" style="margin-bottom: 8px;" />
+              width="60" alt="CICT AMS Logo" style="margin-bottom: 8px;" />
               <h1 style="color: #f5aa2c; margin: 0; font-size: 20px; letter-spacing: 1px;">CICT Asset Management System</h1>
             </div>
             <div style="padding: 32px;">
@@ -183,10 +185,16 @@ exports.addCustodian = onCall(
               <p style="font-size: 14px; color: #860100;">
                 ⚠ For security purposes, please change your password immediately upon first login.
               </p>
-              <div style="text-align: center; margin: 32px 0;">
+              <div style="text-align: center; margin: 24px 0;">
                 <a href="https://ams-cict.web.app" 
-                  style="background-color: #860100; color: #f5aa2c; padding: 12px 32px; text-decoration: none; border-radius: 4px; font-size: 15px; font-weight: bold;">
+                  style="background-color: #860100; color: #f5aa2c; padding: 12px 32px; text-decoration: none; border-radius: 4px; font-size: 15px; font-weight: bold; display: inline-block;">
                   Go to Website
+                </a>
+              </div>
+              <div style="text-align: center; margin: 0 0 24px;">
+                <a href="${actionLink}" 
+                  style="background-color: #fff8ee; color: #860100; padding: 12px 32px; text-decoration: none; border-radius: 4px; font-size: 15px; font-weight: bold; border: 1px solid #860100; display: inline-block;">
+                  Set/Change Your Password
                 </a>
               </div>
               <p style="font-size: 14px; color: #555; line-height: 1.6;">
