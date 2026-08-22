@@ -80,3 +80,75 @@
 .report-panel-empty p {
   margin: 0;
 }
+
+/* ── pagination ── */
+.report-panel-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-top: 1px solid #e2beb9;
+  background: #fffaf9;
+  border-radius: 0 0 5px 5px;
+}
+
+.report-panel-pagination-info {
+  font-size: 13px;
+  color: #5a413c;
+}
+
+.report-panel-pagination-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.report-panel-pagination-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid #e2beb9;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #860100;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.report-panel-pagination-btn:hover:not(:disabled) {
+  background: #fbeceb;
+}
+
+.report-panel-pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── responsive: collapse the grid table into a stacked layout on mobile ── */
+@media (max-width: 767px) {
+  .report-panel {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .report-panel-header {
+    display: none;
+  }
+
+  .report-panel-body {
+    padding: 4px;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 300px) {
+  .report-panel-pagination {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}

@@ -7,7 +7,7 @@ export default function useAuditHistory({
   auditLogs = [],
   onReportClick,
   onAuditClick,
-  desktopPageSize = 10,
+  desktopPageSize = 12,
   mobilePageSize = 5,
 } = {}) {
   const pageSize = useResponsivePageSize(desktopPageSize, mobilePageSize);

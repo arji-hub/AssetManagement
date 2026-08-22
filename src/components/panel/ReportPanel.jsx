@@ -2,8 +2,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ReportCard from "../ui/card/ReportCard";
-import { STATUS_GROUPS, COLUMNS } from "../../data/reports";
-import { getReportType } from "../../utils/report";
+import { COLUMNS } from "../../data/reports";
+import useReportPanel from "../../hooks/report/useReportPanel";
 import "./ReportPanel.css";
 
 function ReportPanel({
@@ -15,20 +15,13 @@ function ReportPanel({
 }) {
   const navigate = useNavigate();
 
-  const allowedStatuses = STATUS_GROUPS[group] || [];
-
-  const filteredReports = reports.filter((r) => {
-    if (!allowedStatuses.includes(r.status)) return false;
-    if (statusFilter === "all") return true;
-    if (Array.isArray(statusFilter))
-      return statusFilter.includes(getReportType(r));
-    return getReportType(r) === statusFilter;
-    return r.status === statusFilter;
-  });
+  const { items, totalCount, page, totalPages, goPrev, goNext } =
+    useReportPanel({ group, statusFilter, reports });
 
   const handleRowClick = (report) => {
     navigate(`/report/${report.id}`);
   };
+
   return (
     <div className={`report-panel ${group}`}>
       <div className="report-panel-header">
@@ -50,13 +43,13 @@ function ReportPanel({
             <FontAwesomeIcon icon="fa-solid fa-triangle-exclamation" />
             <p>{error?.message || error}</p>
           </div>
-        ) : filteredReports.length === 0 ? (
+        ) : items.length === 0 ? (
           <div className="report-panel-empty">
             <FontAwesomeIcon icon="fa-solid fa-clipboard" />
             <p>No reports found.</p>
           </div>
         ) : (
-          filteredReports.map((report) => (
+          items.map((report) => (
             <ReportCard
               key={report.id}
               report={report}
@@ -66,6 +59,34 @@ function ReportPanel({
           ))
         )}
       </div>
+
+      {!loading && !error && totalCount > 0 && (
+        <div className="report-panel-pagination">
+          <span className="report-panel-pagination-info">
+            Page {page} of {totalPages}
+          </span>
+          <div className="report-panel-pagination-controls">
+            <button
+              type="button"
+              className="report-panel-pagination-btn"
+              onClick={goPrev}
+              disabled={page <= 1}
+            >
+              <FontAwesomeIcon icon="fa-solid fa-chevron-left" />
+              Prev
+            </button>
+            <button
+              type="button"
+              className="report-panel-pagination-btn"
+              onClick={goNext}
+              disabled={page >= totalPages}
+            >
+              Next
+              <FontAwesomeIcon icon="fa-solid fa-chevron-right" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

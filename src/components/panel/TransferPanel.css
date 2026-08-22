@@ -1,14 +1,14 @@
 /* TransferPanel.css
-   Minimal stub matching the classNames used in TransferPanel.jsx.
    Mirrors ReportPanel's structural classes (panel / body / empty state)
-   so this resolves cleanly on import — replace with real styling to match
-   the rest of the app's visual language. */
+   plus pagination and mobile responsiveness. */
 
 .transfer-panel {
   display: flex;
   flex-direction: column;
   width: 100%;
   min-width: 700px;
+  flex: 1;
+  min-height: 0;
 }
 
 .transfer-card-header {
@@ -40,9 +40,9 @@
 }
 
 .transfer-panel-body {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
 }
 
 .transfer-panel-empty {
@@ -69,4 +69,76 @@
 
 .transfer-panel-row:hover {
   background-color: var(--color-surface-hover, #f9fafb);
+}
+
+/* ── pagination ── */
+.transfer-panel-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-top: 1px solid #e5e7eb;
+  background: #fafaff;
+  border-radius: 0 0 5px 5px;
+  margin-top: 8px;
+}
+
+.transfer-panel-pagination-info {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.transfer-panel-pagination-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.transfer-panel-pagination-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #860100;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.transfer-panel-pagination-btn:hover:not(:disabled) {
+  background: #fff0f0;
+}
+
+.transfer-panel-pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── responsive: drop the forced min-width and hide the grid header ── */
+@media (max-width: 767px) {
+  .transfer-panel {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .transfer-card-header {
+    display: none;
+  }
+
+  .transfer-panel-body {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 280px) {
+  .transfer-panel-pagination {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
 }

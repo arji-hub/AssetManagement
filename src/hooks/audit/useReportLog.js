@@ -5,7 +5,6 @@ import { subscribeToReportLogs } from "../../services/audit";
 function useReportLog() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
-  const [isNewReportModalOpen, setIsNewReportModalOpen] = useState(false);
 
   const [logs, setLogs] = useState([]);
   const [logsLoading, setLogsLoading] = useState(true);

@@ -158,26 +158,58 @@
   .report-tabs {
     overflow-x: auto;
     white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .report-tabs::-webkit-scrollbar {
+    display: none;
   }
 }
 
-@media (max-width: 548px) {
-  .report-header-right {
-    width: 100%;
-    justify-content: space-between;
+@media (max-width: 555px) {
+  .report-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "left   btn"
+      "filter filter";
+    align-items: center;
+    row-gap: 10px;
   }
-}
 
-@media (max-width: 380px) {
-  .report-header-right {
-    flex-direction: column;
+  .report-header-left {
+    grid-area: left;
   }
+
+  .report-header-right {
+    display: contents;
+  }
+
   .report-incident-btn {
-    order: 1;
-    align-self: flex-end;
+    grid-area: btn;
+    justify-self: end;
   }
+
   .report-filter-segment {
-    order: 2;
-    align-self: center;
+    grid-area: filter;
+    justify-self: center;
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .report-filter-segment::-webkit-scrollbar {
+    display: none;
+  }
+
+  .report-tabs {
+    gap: 14px;
+  }
+
+  .report-tab {
+    font-size: 0.7rem;
   }
 }

@@ -83,6 +83,7 @@
   font-weight: 600;
   color: #999;
   border-radius: 8px;
+  white-space: nowrap;
   transition:
     color 0.15s,
     background 0.15s;
@@ -115,6 +116,7 @@
   font-weight: 600;
   color: #999;
   position: relative;
+  white-space: nowrap;
   transition: color 0.15s;
 }
 
@@ -139,10 +141,10 @@
 
 /* ── table wrapper ── */
 .transfer-table-wrap {
+  display: flex;
+  flex-direction: column;
   flex: 1;
   overflow-x: auto;
-  overflow-y: auto;
-  min-width: 750px;
   min-height: 0;
 }
 
@@ -168,8 +170,54 @@
   margin: 0;
 }
 
+/* ── responsive ── */
 @media (max-width: 960px) {
   .transfer-header {
     z-index: 100;
+  }
+
+  .transfer-top-tabs,
+  .transfer-sub-tabs {
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .transfer-top-tabs::-webkit-scrollbar,
+  .transfer-sub-tabs::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* below 767px, TransferPanel/TransferCard switch to mobile cards —
+   the table wrapper no longer needs a fixed min-width to force scroll */
+@media (max-width: 767px) {
+  .transfer-table-wrap {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 555px) {
+  .transfer-sub-tab {
+    font-size: 0.8rem;
+  }
+
+  .transfer-sub-tabs {
+    gap: 14px;
+  }
+
+  .transfer-top-tab {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+  }
+}
+
+/* one or two action buttons — stack full-width when space runs out */
+@media (max-width: 400px) {
+  .transfer-action-btn {
+    width: 100%;
+    justify-content: center;
   }
 }
