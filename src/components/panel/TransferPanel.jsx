@@ -2,7 +2,6 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTransferPanel } from "../../hooks/transfer/useTransferPanel";
 import TransferCard from "../ui/card/TransferCard";
-import { EMPTY_STATE_CONFIG } from "../../data/transfer";
 import TransferRoomCard from "../ui/card/TransferRoomCard";
 import "./TransferPanel.css";
 
@@ -12,18 +11,24 @@ function TransferPanel({
   loading: loadingProp,
   error: errorProp,
 }) {
-  const hook = useTransferPanel(group, { skip: itemsProp !== undefined });
-
-  const items = itemsProp ?? hook.items;
-  const loading = loadingProp ?? hook.loading;
-  const error = errorProp ?? hook.error;
-  const handleRowClick = hook.handleRowClick;
-
-  const emptyState = EMPTY_STATE_CONFIG[group] || EMPTY_STATE_CONFIG.action;
-  const showHeader =
-    !loading && !error && items.length != 0 && group !== "room_logs";
-  const showRoomHeader =
-    !loading && !error && items.length !== 0 && group === "room_logs";
+  const {
+    items,
+    loading,
+    error,
+    handleRowClick,
+    page,
+    totalPages,
+    totalCount,
+    goPrev,
+    goNext,
+    emptyState,
+    showHeader,
+    showRoomHeader,
+  } = useTransferPanel(group, {
+    items: itemsProp,
+    loading: loadingProp,
+    error: errorProp,
+  });
 
   return (
     <div className={`transfer-panel ${group}`}>
@@ -74,6 +79,34 @@ function TransferPanel({
           ))
         )}
       </div>
+
+      {!loading && !error && totalCount > 0 && (
+        <div className="transfer-panel-pagination">
+          <span className="transfer-panel-pagination-info">
+            Page {page} of {totalPages}
+          </span>
+          <div className="transfer-panel-pagination-controls">
+            <button
+              type="button"
+              className="transfer-panel-pagination-btn"
+              onClick={goPrev}
+              disabled={page <= 1}
+            >
+              <FontAwesomeIcon icon="fa-solid fa-chevron-left" />
+              Prev
+            </button>
+            <button
+              type="button"
+              className="transfer-panel-pagination-btn"
+              onClick={goNext}
+              disabled={page >= totalPages}
+            >
+              Next
+              <FontAwesomeIcon icon="fa-solid fa-chevron-right" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
