@@ -216,7 +216,7 @@
   }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 310px) {
   .audit-history-pagination {
     flex-direction: column;
     align-items: flex-start;
