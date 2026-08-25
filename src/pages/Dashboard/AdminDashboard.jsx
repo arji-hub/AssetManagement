@@ -19,6 +19,7 @@ import {
   DashboardHeader,
 } from "../../components/dashboard";
 import "./AdminDashboard.css";
+import "./Dashboard.css";
 
 function AdminDashboard() {
   const { user } = useAuth();

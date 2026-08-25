@@ -27,7 +27,6 @@
 
 /* Default variant */
 .stat-card--default {
-  border: 1px solid transparent;
   background:
     radial-gradient(
       120% 140% at 0% 0%,
@@ -49,7 +48,6 @@
 /* Alert variant */
 /* Alert variant */
 .stat-card--alert {
-  border: 2px solid transparent;
   background:
     linear-gradient(155deg, #9c0201 0%, #860100 55%, #6f0101 100%) padding-box,
     linear-gradient(90deg, #f5aa2c, rgba(245, 170, 44, 0.3), #f5aa2c) border-box;

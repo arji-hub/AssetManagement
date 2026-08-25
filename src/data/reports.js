@@ -12,7 +12,7 @@ export const ACTION_LABELS = {
 };
 
 export const TABS = [
-  { key: "incident", label: "Incident Reports" },
+  { key: "incident", label: "Incident" },
   { key: "repair", label: "For Repair" },
   { key: "resolved", label: "Resolved" },
   { key: "archive", label: "Archive" },

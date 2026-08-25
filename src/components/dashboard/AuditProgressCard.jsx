@@ -1,4 +1,5 @@
 import "./AuditProgressCard.css";
+import { useNavigate } from "react-router-dom";
 
 function AuditProgressCard({
   audits,
@@ -6,6 +7,7 @@ function AuditProgressCard({
   error = null,
   onStartAudit,
 }) {
+  const navigate = useNavigate();
   if (loading) {
     return (
       <div className="audit-progress-card">
@@ -21,6 +23,10 @@ function AuditProgressCard({
       </div>
     );
   }
+
+  const navigateAudit = (audit) => {
+    navigate(`/audit/room/${audit.room_id}/${audit.id}`);
+  };
 
   return (
     <div className="audit-progress-card">
@@ -45,7 +51,12 @@ function AuditProgressCard({
                 ? Math.round((audit.audited_count / audit.total_assets) * 100)
                 : 0;
             return (
-              <div key={audit.id} className="audit-card__item">
+              <div
+                key={audit.id}
+                className="audit-card__item"
+                onClick={() => navigateAudit(audit)}
+                style={{ cursor: "pointer" }}
+              >
                 <div className="audit-card__item-header">
                   <span className="audit-card__item-number">
                     {audit.audit_no}
@@ -60,7 +71,7 @@ function AuditProgressCard({
                 </div>
                 {audit.discrepancy_count > 0 && (
                   <p className="audit-card__discrepancy">
-                    {audit.discrepancy_count} discrepanc
+                    {audit.discrepancy_count} discrepancy
                     {audit.discrepancy_count === 1 ? "y" : "ies"}
                   </p>
                 )}

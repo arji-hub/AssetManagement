@@ -7,7 +7,6 @@
   overflow: hidden;
   border-radius: 0.5rem;
   padding: 1rem 1.125rem;
-  border: 1px solid transparent;
   background:
     linear-gradient(#ffffff, #ffffff) padding-box,
     linear-gradient(90deg, #9c0201, rgba(156, 2, 1, 0.3), #9c0201) border-box;
