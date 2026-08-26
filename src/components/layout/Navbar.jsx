@@ -11,14 +11,34 @@ import { useNavigate } from "react-router-dom";
 const allRoles = [ROLES.ADMIN, ROLES.PARTTIME, ROLES.FULLTIME];
 
 const defaultNavItems = [
-  { label: "Dashboard", path: "/dashboard", roles: allRoles },
-  { label: "Asset", path: "/asset", roles: allRoles },
-  { label: "QR Code", path: "/qr", roles: allRoles },
-  { label: "Audit", path: "/audit", roles: [ROLES.ADMIN] },
-  { label: "Report", path: "/report", roles: allRoles },
-  { label: "Transfer", path: "/transfer", roles: allRoles },
-  { label: "Custodian", path: "/custodian", roles: [ROLES.ADMIN] },
-  { label: "Room", path: "/room", roles: [ROLES.ADMIN] },
+  {
+    label: "Dashboard",
+    path: "/dashboard",
+    roles: allRoles,
+    icon: "chart-line",
+  },
+  { label: "Asset", path: "/asset", roles: allRoles, icon: "boxes-stacked" },
+  { label: "QR Code", path: "/qr", roles: allRoles, icon: "qrcode" },
+  {
+    label: "Audit",
+    path: "/audit",
+    roles: [ROLES.ADMIN],
+    icon: "clipboard-check",
+  },
+  {
+    label: "Incident",
+    path: "/report",
+    roles: allRoles,
+    icon: "triangle-exclamation",
+  },
+  { label: "Transfer", path: "/transfer", roles: allRoles, icon: "right-left" },
+  {
+    label: "Custodian",
+    path: "/custodian",
+    roles: [ROLES.ADMIN],
+    icon: "user-shield",
+  },
+  { label: "Room", path: "/room", roles: [ROLES.ADMIN], icon: "door-closed" },
 ];
 
 function Navbar({

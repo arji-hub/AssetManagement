@@ -1,5 +1,6 @@
 import React from "react";
 import { useAuth } from "../../context/AuthContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MainLayout from "../../components/layout/MainLayout";
 import {
   useAssetSummary,
@@ -19,6 +20,7 @@ import {
   DashboardHeader,
 } from "../../components/dashboard";
 import "./AdminDashboard.css";
+import "./Dashboard.css";
 
 function AdminDashboard() {
   const { user } = useAuth();
@@ -63,6 +65,7 @@ function AdminDashboard() {
               description="Equipment/s tracked across CICT."
               loading={assetSummary.loading}
               error={assetSummary.error}
+              icon={<FontAwesomeIcon icon={["fas", "boxes-stacked"]} />}
             />
           </div>
           <div className="item" style={{ gridArea: "box-2" }}>
@@ -72,6 +75,7 @@ function AdminDashboard() {
               description="Registered under the department."
               loading={roomsAndCategories.loading}
               error={roomsAndCategories.error}
+              icon={<FontAwesomeIcon icon={["fas", "door-open"]} />}
             />
           </div>
           <div className="item" style={{ gridArea: "box-3" }}>
@@ -81,16 +85,17 @@ function AdminDashboard() {
               description="Staff currently assigned to an asset."
               loading={custodianCount.loading}
               error={custodianCount.error}
+              icon={<FontAwesomeIcon icon={["fas", "user-shield"]} />}
             />
           </div>
           <div className="item" style={{ gridArea: "box-4" }}>
             <StatCard
-              title="Open reports"
+              title="Open Incidents"
               value={reportSummary.openReportsCount}
               description="Items awaiting resolution."
               loading={reportSummary.loading}
               error={reportSummary.error}
-              variant="alert"
+              icon={<FontAwesomeIcon icon={["fas", "triangle-exclamation"]} />}
             />
           </div>
           <div className="item" style={{ gridArea: "box-5" }}>
@@ -100,7 +105,7 @@ function AdminDashboard() {
               description="Waiting for acknowledgment."
               loading={transferSummary.loading}
               error={transferSummary.error}
-              variant="alert"
+              icon={<FontAwesomeIcon icon={["fas", "right-left"]} />}
             />
           </div>
           {/* Audit row */}
@@ -110,6 +115,7 @@ function AdminDashboard() {
               loading={auditSummary.loading}
               error={auditSummary.error}
               onStartAudit={auditSummary.startNewAudit}
+              icon={<FontAwesomeIcon icon={["fas", "clipboard-check"]} />}
             />
           </div>
           {/* Charts row */}
@@ -119,6 +125,7 @@ function AdminDashboard() {
               statusBreakdown={assetSummary.statusBreakdown}
               loading={assetSummary.loading}
               error={assetSummary.error}
+              icon={<FontAwesomeIcon icon={["fas", "chart-pie"]} />}
             />
           </div>
 
@@ -127,6 +134,7 @@ function AdminDashboard() {
               categories={visibleCategories}
               loading={roomsAndCategories.loading}
               error={roomsAndCategories.error}
+              icon={<FontAwesomeIcon icon={["fas", "layer-group"]} />}
             />
           </div>
           <div className="item" style={{ gridArea: "box-9" }}>

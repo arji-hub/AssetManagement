@@ -1,8 +1,8 @@
-import React from "react";
-import { useAuth } from "../../context/AuthContext";
+
 import MainLayout from "../../components/layout/MainLayout";
 import "./Room.css";
-import RoomTable from "../../components/panel/RoomTable";
+import Table from "../../components/panel/Table";
+import RoomCard from "../../components/ui/card/RoomCard";
 import RoomModal from "../../components/ui/modal/RoomModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRoom } from "../../hooks/room/useRoom";
@@ -11,7 +11,6 @@ import { PDFPreviewModal } from "../../components/ui/modal/PDFPreviewModal";
 import { displayDate } from "../../utils/date";
 
 function Room() {
-  const { user } = useAuth();
   const {
     loading,
     error,
@@ -58,7 +57,7 @@ function Room() {
               />
             </div>
             <div className="filters">
-              <label htmlFor="asset-count-filter">Assets:</label>
+              <label htmlFor="asset-count-filter" className="filters-label">Assets:</label>
               <select
                 id="asset-count-filter"
                 name="assetCount"
@@ -88,14 +87,14 @@ function Room() {
           </div>
         </div>
         <div className="room-cards">
-          {loading && <p className="room-status">Loading rooms...</p>}
-          {error && (
-            <p className="room-status room-status--error">Error: {error}</p>
-          )}
-          {!loading && !error && filteredRooms.length === 0 && (
-            <p className="room-status">No rooms found.</p>
-          )}
-          <RoomTable rooms={filteredRooms} loading={loading} error={error} />
+          <Table
+            items={filteredRooms}
+            loading={loading}
+            error={error}
+            itemLabel="rooms"
+            emptyMessage="No rooms found."
+            renderItem={(room) => <RoomCard key={room.id} room={room} />}
+          />
         </div>
       </div>
     </MainLayout>

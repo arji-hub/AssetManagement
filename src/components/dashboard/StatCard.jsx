@@ -6,15 +6,15 @@ function StatCard({
   description = null,
   loading = false,
   error = null,
-  variant = "default",
+  icon,
 }) {
-  const isAlert = variant === "alert";
-
   return (
-    <div
-      className={`stat-card ${isAlert ? "stat-card--alert" : "stat-card--default"}`}
-    >
-      <p className="stat-card__title">{title}</p>
+    <div className="stat-card stat-card--default">
+      <div className="stat-card__header">
+        <p className="stat-card__title">{title}</p>
+        {icon && <span className="stat-card__icon">{icon}</span>}
+      </div>
+
       <p className="stat-card__value">
         {loading ? (
           <span className="stat-card__loading">Loading...</span>
@@ -24,8 +24,12 @@ function StatCard({
           value
         )}
       </p>
+
       {!loading && !error && description && (
-        <p className="stat-card__description">{description}</p>
+        <>
+          <hr className="stat-card__divider" />
+          <p className="stat-card__description">{description}</p>
+        </>
       )}
     </div>
   );

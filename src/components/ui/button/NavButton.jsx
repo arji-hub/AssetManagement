@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./NavButton.css";
 
 function NavButton({ label, icon, isActive = false, onClick = () => {} }) {
@@ -8,7 +9,10 @@ function NavButton({ label, icon, isActive = false, onClick = () => {} }) {
       onClick={onClick}
       aria-current={isActive ? "page" : undefined}
     >
-      <span className="nav-button-label">{label}</span>
+      <span className="nav-button-label">
+        {icon && <FontAwesomeIcon icon={icon} />}
+        {label}
+      </span>
     </button>
   );
 }

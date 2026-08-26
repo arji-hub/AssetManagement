@@ -1,7 +1,7 @@
 import { useAuth } from "../../context/AuthContext";
 import MainLayout from "../../components/layout/MainLayout";
-import ProfileCard from "../../components/panel/ProfileCard";
-import LinkedAccountsCard from "../../components/panel/LinkedAccountsCard";
+import ProfileCard from "../../components/ui/card/ProfileCard";
+import LinkedAccountsCard from "../../components/ui/card/LinkedAccountsCard";
 import { useProfile } from "../../hooks/profile/useProfile";
 import "./Profile.css";
 import BackButton from "../../components/ui/button/BackButton";
@@ -18,7 +18,7 @@ function Profile() {
           <BackButton />
         </div>
 
-        <ProfileCard user={user}  />
+        <ProfileCard user={user} />
         <LinkedAccountsCard {...linkedAccounts} />
       </div>
     </MainLayout>

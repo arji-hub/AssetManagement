@@ -33,7 +33,7 @@ export function useAuditSummary() {
   }, []);
 
   const startNewAudit = () => {
-    navigate("/audit");
+    navigate("/audit/room");
   };
 
   return { ongoingAudits: audits, loading, error, startNewAudit };

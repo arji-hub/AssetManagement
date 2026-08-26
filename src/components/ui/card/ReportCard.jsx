@@ -18,7 +18,9 @@ function ReportCard({ report, group = "incident", onClick }) {
         {/* shared columns — all groups */}
         <div className="report-card-cell report-card-id">{report.asset_id}</div>
         <div className="report-card-cell report-card-desc">{description}</div>
-        <div className="report-card-cell">{report.location}</div>
+        <div className="report-card-cell report-card-desc">
+          {report.location}
+        </div>
         <div className="report-card-cell">{report.reported_by_name}</div>
         <div className="report-card-cell">
           {formatDate(report.date_reported)}

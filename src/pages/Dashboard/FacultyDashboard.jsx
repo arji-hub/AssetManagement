@@ -16,6 +16,7 @@ import {
   DashboardHeader,
 } from "../../components/dashboard";
 import "./FacultyDashboard.css";
+import "./Dashboard.css";
 
 function FacultyDashboard() {
   const { user } = useAuth();

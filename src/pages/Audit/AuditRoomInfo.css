@@ -325,10 +325,6 @@
 }
 
 .audit-session-card {
-  cursor: pointer;
-}
-
-.audit-session-card {
   border: 1px solid #e2beb9;
   border-radius: 10px;
   padding: 12px 14px;
@@ -457,6 +453,7 @@
   transition: all 0.2s ease;
   white-space: nowrap;
   text-transform: capitalize;
+  z-index: 99;
 }
 
 .audit-session-verify-btn:hover:not(:disabled) {
