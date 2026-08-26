@@ -1,15 +1,14 @@
 .audit-progress-card {
+  display: flex;
+  flex-direction: column;
   position: relative;
   isolation: isolate;
   height: 100%;
   box-sizing: border-box;
   overflow: hidden;
-  border-radius: 0.5rem;
+  border: 2px solid #ddc3c3;
   background-color: #ffffff;
   padding: 1.5rem;
-  background:
-    linear-gradient(#ffffff, #ffffff) padding-box,
-    linear-gradient(90deg, #9c0201, rgba(156, 2, 1, 0.3), #9c0201) border-box;
   box-shadow:
     0 1px 2px rgba(38, 24, 22, 0.04),
     0 12px 24px -14px rgba(38, 24, 22, 0.22);
@@ -31,35 +30,79 @@
     0 20px 32px -16px rgba(38, 24, 22, 0.28);
 }
 
-.audit-progress-card::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 3px;
-  background: linear-gradient(90deg, #f5aa2c, #f5c877);
+.audit-card__header {
+  position: relative;
   z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .audit-card__title {
-  position: relative;
-  z-index: 1;
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  color: #8a6f63;
-  margin-bottom: 1rem;
+  color: #860100;
+}
+
+.audit-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: calc(0.75rem * 1.8);
+  height: calc(0.75rem * 1.8);
+  border-radius: 6px;
+  background-color: rgba(134, 1, 1, 0.08);
+  color: #860100;
+  font-size: 0.75rem;
+}
+
+/* ============================
+   Empty state — no active audits
+   ============================ */
+
+.audit-card__empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex: 1;
+  gap: 0.375rem;
+}
+
+.audit-card__empty-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background-color: rgba(134, 1, 1, 0.08);
+  color: #860100;
+  font-size: 1.125rem;
 }
 
 .audit-card__empty-text {
   font-size: 0.875rem;
+  font-weight: 600;
+  color: #5a413c;
+  margin: 0;
+}
+
+.audit-card__empty-subtext {
+  font-size: 0.75rem;
   color: #8a6f63;
-  margin-bottom: 1rem;
+  max-width: 24ch;
 }
 
 .audit-card__button {
-  width: 100%;
-  padding: 0.625rem;
+  width: auto;
+  padding: 0.625rem 1.5rem;
   background: linear-gradient(155deg, #f5aa2c, #ef9c14);
   color: #4a3200;
   font-weight: 700;
@@ -88,10 +131,16 @@
   transform: scale(0.98);
 }
 
+/* ============================
+   Audit list
+   ============================ */
+
 .audit-card__list {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  flex: 1;
+  justify-content: flex-start;
 }
 
 .audit-card__item {
@@ -179,7 +228,7 @@
     padding: 1.125rem;
   }
 
-  .audit-card__title {
+  .audit-card__header {
     margin-bottom: 0.625rem;
   }
 

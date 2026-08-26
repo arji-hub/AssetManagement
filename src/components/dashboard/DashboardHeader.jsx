@@ -12,10 +12,6 @@ function DashboardHeader({
   const greeting =
     hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 
-  const roleLabel = user?.role
-    ? user.role.charAt(0).toUpperCase() + user.role.slice(1)
-    : null;
-
   const alerts = [
     openReportsCount > 0 && {
       key: "reports",
@@ -41,13 +37,16 @@ function DashboardHeader({
           <p className="dashboard-header__eyebrow">{displayDate}</p>
           <h1 className="dashboard-header__title">
             {greeting}
-            {user?.firstname ? `, ${user.firstname}` : ""}
+            {user?.firstname ? (
+              <>
+                ,{" "}
+                <span className="dashboard-header__name">{user.firstname}</span>
+              </>
+            ) : (
+              ""
+            )}
           </h1>
         </div>
-
-        {roleLabel && (
-          <span className="dashboard-header__role-badge">{roleLabel}</span>
-        )}
       </div>
 
       {!loading && alerts.length > 0 && (

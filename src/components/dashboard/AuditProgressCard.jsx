@@ -1,13 +1,16 @@
 import "./AuditProgressCard.css";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function AuditProgressCard({
   audits,
   loading = false,
   error = null,
   onStartAudit,
+  icon,
 }) {
   const navigate = useNavigate();
+
   if (loading) {
     return (
       <div className="audit-progress-card">
@@ -30,11 +33,20 @@ function AuditProgressCard({
 
   return (
     <div className="audit-progress-card">
-      <p className="audit-card__title">Ongoing audits</p>
+      <div className="audit-card__header">
+        <p className="audit-card__title">Ongoing audits</p>
+        {icon && <span className="audit-card__icon">{icon}</span>}
+      </div>
 
       {audits.length === 0 ? (
-        <div>
+        <div className="audit-card__empty-state">
+          <span className="audit-card__empty-icon">
+            <FontAwesomeIcon icon={["fas", "clipboard-check"]} />
+          </span>
           <p className="audit-card__empty-text">No active audits.</p>
+          <p className="audit-card__empty-subtext">
+            Start a new one to begin tracking room-by-room progress.
+          </p>
           <button
             type="button"
             onClick={onStartAudit}
