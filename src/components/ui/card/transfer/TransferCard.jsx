@@ -1,7 +1,7 @@
 import React from "react";
-import { Status } from "../status/assetStatus";
-import { formatDate } from "../../../utils/date";
-import { TRANSFER_TYPE_LABELS } from "../../../data/transfer";
+import { Status } from "../../status/assetStatus";
+import { formatDate } from "../../../../utils/date";
+import { TRANSFER_TYPE_LABELS } from "../../../../data/transfer";
 import "./TransferCard.css";
 
 function TransferCard({ request, onClick }) {

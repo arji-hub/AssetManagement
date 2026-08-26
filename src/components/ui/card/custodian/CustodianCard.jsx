@@ -2,8 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
-import { getRole } from "../../../utils/role";
-import { ROLES_COLOR } from "../../../data/roles";
+import { getRole } from "../../../../utils/role";
+import { ROLES_COLOR } from "../../../../data/roles";
 import "./CustodianCard.css";
 
 function CustodianCard({ custodian, onClick }) {

@@ -1,6 +1,6 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { formatDate } from "../../../utils/date";
+import { formatDate } from "../../../../utils/date";
 import "./AckBadge.css";
 
 function AckBadge({ label, ack }) {

@@ -1,8 +1,7 @@
-
 import MainLayout from "../../components/layout/MainLayout";
 import "./Custodian.css";
 import Table from "../../components/panel/Table";
-import CustodianCard from "../../components/ui/card/CustodianCard";
+import CustodianCard from "../../components/ui/card/custodian/CustodianCard";
 import CustodianModal from "../../components/ui/modal/CustodianModal";
 import AddingStatusModal from "../../components/ui/status/AddingStatusModal";
 import { useCustodian } from "../../hooks/custodian/useCustodian";

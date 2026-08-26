@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import ReportCard from "../ui/card/ReportCard";
+import ReportCard from "../ui/card/report/ReportCard";
 import Table from "../panel/Table";
 import { COLUMNS } from "../../data/reports";
 import useReportPanel from "../../hooks/report/useReportPanel";

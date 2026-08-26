@@ -1,5 +1,5 @@
 import React from "react";
-import { formatDateTime } from "../../../utils/date";
+import { formatDateTime } from "../../../../utils/date";
 import "./TransferLogEntry.css";
 
 function TransferLogEntry({ log }) {

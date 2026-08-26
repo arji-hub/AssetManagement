@@ -1,9 +1,9 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Status } from "../status/assetStatus";
-import { getReportType } from "../../../utils/report";
-import { formatDate } from "../../../utils/date";
-import { toTitleCase } from "../../../utils/TextCasing";
+import { Status } from "../../status/assetStatus";
+import { getReportType } from "../../../../utils/report";
+import { formatDate } from "../../../../utils/date";
+import { toTitleCase } from "../../../../utils/TextCasing";
 import "./ReportCard.css";
 
 function ReportCard({ report, group = "incident", onClick }) {

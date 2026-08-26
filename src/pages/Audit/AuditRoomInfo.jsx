@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MainLayout from "../../components/layout/MainLayout";
 import useRoomInfo from "../../hooks/audit/useRoomInfo";
-import AuditCard from "../../components/ui/card/AuditCard";
+import AuditCard from "../../components/ui/card/audit/AuditCard";
 import { useParams } from "react-router-dom";
 import BackButton from "../../components/ui/button/BackButton";
 import { formatDate } from "../../utils/date";

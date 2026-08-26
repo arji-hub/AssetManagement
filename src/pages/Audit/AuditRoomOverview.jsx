@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import MainLayout from "../../components/layout/MainLayout";
 import useRoomOverview from "../../hooks/audit/useRoomOverview";
 import AuditConfirmRoomModal from "../../components/ui/modal/AuditConfirmRoomModal";
-import AuditCard from "../../components/ui/card/AuditCard";
+import AuditCard from "../../components/ui/card/audit/AuditCard";
 import { Status } from "../../components/ui/status/assetStatus";
 import { formatDate } from "../../utils/date";
 import BackButton from "../../components/ui/button/BackButton";

@@ -1,11 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { STATUS_COLORS } from "../../../data/assets";
+import { STATUS_COLORS } from "../../../../data/assets";
 import LabelCard from "./LabelCard";
-import { formatCurrency } from "../../../utils/formatCurrency";
-import ViewAssetDocument from "../modal/ViewAssetDocument";
+import { formatCurrency } from "../../../../utils/formatCurrency";
+import ViewAssetDocument from "../../modal/ViewAssetDocument";
 import "./InfoCard.css";
-import { formatDate } from "../../../utils/date";
+import { formatDate } from "../../../../utils/date";
 
 function StatusBadge({ status }) {
   if (!status) return null;

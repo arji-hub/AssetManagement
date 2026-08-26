@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
-import { formatDate } from "../../../utils/date";
+import { formatDate } from "../../../../utils/date";
 import "./RoomCard.css";
 
 function RoomCard({ room, onClick }) {

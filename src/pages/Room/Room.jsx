@@ -1,8 +1,7 @@
-
 import MainLayout from "../../components/layout/MainLayout";
 import "./Room.css";
 import Table from "../../components/panel/Table";
-import RoomCard from "../../components/ui/card/RoomCard";
+import RoomCard from "../../components/ui/card/room/RoomCard";
 import RoomModal from "../../components/ui/modal/RoomModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRoom } from "../../hooks/room/useRoom";
@@ -57,7 +56,9 @@ function Room() {
               />
             </div>
             <div className="filters">
-              <label htmlFor="asset-count-filter" className="filters-label">Assets:</label>
+              <label htmlFor="asset-count-filter" className="filters-label">
+                Assets:
+              </label>
               <select
                 id="asset-count-filter"
                 name="assetCount"

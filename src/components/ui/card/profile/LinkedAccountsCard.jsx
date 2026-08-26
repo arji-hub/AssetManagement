@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { GoogleIcon, MicrosoftIcon } from "../../../assets/OAuthIcons";
+import { GoogleIcon, MicrosoftIcon } from "../../../../assets/OAuthIcons";
 import "./LinkedAccountsCard.css";
 
 function ProviderRow({

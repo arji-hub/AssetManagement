@@ -4,7 +4,6 @@
   display: flex;
   flex-direction: column;
   gap: 0.875rem;
-  margin-bottom: 0.5rem;
   box-sizing: border-box;
   overflow: hidden;
   background: linear-gradient(135deg, #860100 0%, #9c0707 90%, #9e1616 100%);

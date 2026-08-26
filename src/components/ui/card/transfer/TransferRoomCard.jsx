@@ -1,5 +1,5 @@
 import React from "react";
-import { formatDate } from "../../../utils/date";
+import { formatDate } from "../../../../utils/date";
 import "./TransferRoomCard.css";
 
 function TransferRoomCard({ request }) {

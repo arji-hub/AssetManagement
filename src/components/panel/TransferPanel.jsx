@@ -1,8 +1,8 @@
 import React from "react";
 import { useTransferPanel } from "../../hooks/transfer/useTransferPanel";
 import Table from "./Table";
-import TransferCard from "../ui/card/TransferCard";
-import TransferRoomCard from "../ui/card/TransferRoomCard";
+import TransferCard from "../ui/card/transfer/TransferCard";
+import TransferRoomCard from "../ui/card/transfer/TransferRoomCard";
 import "./TransferPanel.css";
 
 function TransferPanel({
