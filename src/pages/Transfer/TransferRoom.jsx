@@ -23,8 +23,8 @@ function TransferRoom() {
         {/* header */}
         <div className="transfer-header">
           <div className="transfer-header-left">
-            <h1 className="transfer-title">Transfers</h1>
-            <p className="transfer-date">{displayDate}</p>
+            <h1 className="title">Transfer</h1>
+            <p className="date">{displayDate}</p>
           </div>
 
           <div className="transfer-header-right">

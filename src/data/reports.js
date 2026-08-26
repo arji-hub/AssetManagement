@@ -13,7 +13,7 @@ export const ACTION_LABELS = {
 
 export const TABS = [
   { key: "incident", label: "Incident" },
-  { key: "repair", label: "For Repair" },
+  { key: "repair", label: "In Progress" },
   { key: "resolved", label: "Resolved" },
   { key: "archive", label: "Archive" },
 ];
@@ -49,9 +49,9 @@ export const COLUMNS = {
     "Description",
     "Location",
     "Reported By",
-    "Date",
+    "Reported At",
     "Incident",
-    "Date Resolved",
+    "Resolved At",
   ],
   archive: [
     "Asset ID",

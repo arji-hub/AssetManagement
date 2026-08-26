@@ -1,8 +1,8 @@
-import React from "react";
-import { useAuth } from "../../context/AuthContext";
+
 import MainLayout from "../../components/layout/MainLayout";
 import "./Custodian.css";
-import CustodianTable from "../../components/panel/CustodianTable";
+import Table from "../../components/panel/Table";
+import CustodianCard from "../../components/ui/card/CustodianCard";
 import CustodianModal from "../../components/ui/modal/CustodianModal";
 import AddingStatusModal from "../../components/ui/status/AddingStatusModal";
 import { useCustodian } from "../../hooks/custodian/useCustodian";
@@ -12,7 +12,6 @@ import { PDFPreviewModal } from "../../components/ui/modal/PDFPreviewModal";
 import { displayDate } from "../../utils/date";
 
 function Custodian() {
-  const { user } = useAuth();
   const {
     custodians,
     isFetching,
@@ -31,7 +30,7 @@ function Custodian() {
   return (
     <MainLayout>
       <div className="custodian-page">
-        <div className="custodian-top"> 
+        <div className="custodian-top">
           <div className="custodian-header">
             <h1 className="title">Custodian</h1>
             <p className="date">{displayDate}</p>
@@ -64,7 +63,15 @@ function Custodian() {
           </div>
         </div>
         <div className="custodian-cards">
-          <CustodianTable custodians={custodians} loading={isFetching} />
+          <Table
+            items={custodians}
+            loading={isFetching}
+            itemLabel="custodians"
+            emptyMessage="No custodians found."
+            renderItem={(custodian) => (
+              <CustodianCard key={custodian.id} custodian={custodian} />
+            )}
+          />
         </div>
       </div>
 

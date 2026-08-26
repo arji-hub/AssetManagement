@@ -1,7 +1,15 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
-import useResponsivePageSize from "../asset/useResponsivePageSize";
+import useResponsivePageSize from "./useResponsivePageSize";
 
-export default function useRoomGrid({
+/**
+ * Generic pagination for any card grid (rooms, custodians, etc.).
+ *
+ * @param {Object} params
+ * @param {Array} params.data
+ * @param {number} [params.desktopPageSize=12]
+ * @param {number} [params.mobilePageSize=6]
+ */
+export default function usePagination({
   data,
   desktopPageSize = 12,
   mobilePageSize = 6,

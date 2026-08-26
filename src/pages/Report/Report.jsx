@@ -32,7 +32,7 @@ function Report() {
         {/* header */}
         <div className="report-header">
           <div className="report-header-left">
-            <h1 className="title">Reports</h1>
+            <h1 className="title">Incident</h1>
             <p className="date">{displayDate}</p>
           </div>
 

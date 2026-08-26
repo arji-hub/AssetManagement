@@ -7,7 +7,7 @@ import {
   subscribeToLogs,
   subscribeToRoomLogs,
 } from "../../services/transfer";
-import useResponsivePageSize from "../asset/useResponsivePageSize";
+import useResponsivePageSize from "../shared/useResponsivePageSize";
 import { EMPTY_STATE_CONFIG } from "../../data/transfer";
 
 export function useTransferPanel(

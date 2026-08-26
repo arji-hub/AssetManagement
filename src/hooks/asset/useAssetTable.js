@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import useResponsivePageSize from "./useResponsivePageSize";
+import useResponsivePageSize from "../shared/useResponsivePageSize";
 
 /**
  * Encapsulates all AssetTable behavior: pagination, page-size responsiveness,
@@ -43,8 +43,9 @@ export default function useAssetTable({
   }, [data, page, pageSize]);
 
   const goToPage = useCallback(
-    (p) => setPage((current) => Math.min(Math.max(1, p), totalPages) || current),
-    [totalPages]
+    (p) =>
+      setPage((current) => Math.min(Math.max(1, p), totalPages) || current),
+    [totalPages],
   );
 
   const nextPage = useCallback(() => goToPage(page + 1), [goToPage, page]);
@@ -55,7 +56,7 @@ export default function useAssetTable({
       if (onRowAction) return onRowAction(asset);
       navigate(`/asset/${asset.id}`);
     },
-    [onRowAction, navigate]
+    [onRowAction, navigate],
   );
 
   const colSpan = columns.length + 1;
@@ -79,6 +80,7 @@ export default function useAssetTable({
     isLastPage: page === totalPages,
     handleRowAction,
     // absolute index helper so "#" columns count correctly across pages
-    getAbsoluteIndex: (pageLocalIndex) => (page - 1) * pageSize + pageLocalIndex,
+    getAbsoluteIndex: (pageLocalIndex) =>
+      (page - 1) * pageSize + pageLocalIndex,
   };
 }

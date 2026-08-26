@@ -1,9 +1,9 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useReport } from "../../hooks/audit/useReport";
-import "./AuditReport.css";
+import "./AuditIncident.css";
 
-function AuditReport() {
+function AuditIncident() {
   const { lastEntry, handleClick } = useReport();
 
   return (
@@ -11,7 +11,7 @@ function AuditReport() {
       <div className="audit-panel-icon">
         <FontAwesomeIcon icon="clipboard-check" aria-hidden="true" />
       </div>
-      <h4 className="audit-panel-title">Report Logs</h4>
+      <h4 className="audit-panel-title">Incident Logs</h4>
       <p className="audit-panel-desc">
         View detailed audit report activity, filtered by date range and
         personnel.
@@ -30,4 +30,4 @@ function AuditReport() {
   );
 }
 
-export default AuditReport;
+export default AuditIncident;
