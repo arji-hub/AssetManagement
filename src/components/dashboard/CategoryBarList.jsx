@@ -5,6 +5,7 @@ function CategoryBarList({
   loading = false,
   error = null,
   title = "Assets by category",
+  icon,
 }) {
   if (loading) {
     return (
@@ -25,7 +26,10 @@ function CategoryBarList({
   if (categories.length === 0) {
     return (
       <div className="category-list">
-        <p className="category-list__title">{title}</p>
+        <div className="category-list__header">
+          <p className="category-list__title">{title}</p>
+          {icon && <span className="category-list__icon">{icon}</span>}
+        </div>
         <p className="category-list__empty-text">No assets assigned yet.</p>
       </div>
     );
@@ -35,7 +39,10 @@ function CategoryBarList({
 
   return (
     <div className="category-list category-list--has-items">
-      <p className="category-list__title">{title}</p>
+      <div className="category-list__header">
+        <p className="category-list__title">{title}</p>
+        {icon && <span className="category-list__icon">{icon}</span>}
+      </div>
       <div className="category-list__items">
         {categories.map((cat) => (
           <div key={cat.id} className="category-list__item">

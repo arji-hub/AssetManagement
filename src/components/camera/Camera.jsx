@@ -1,3 +1,4 @@
+import { createPortal } from "react-dom";
 import { useCamera } from "../../hooks/camera/useCamera";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./Camera.css";
@@ -36,7 +37,7 @@ const Camera = ({ onScan, onClose, isOpen = true }) => {
     transform: orientation === "landscape" ? "rotate(90deg)" : "none",
   };
 
-  return (
+  return createPortal(
     <div className="qr-camera">
       {/* Video Stream */}
       <video
@@ -195,7 +196,8 @@ const Camera = ({ onScan, onClose, isOpen = true }) => {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };
 

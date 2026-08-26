@@ -3,8 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 import MainLayout from "../../components/layout/MainLayout";
 import { displayDate } from "../../utils/date";
 import AuditRoom from "../../components/panel/AuditRoom";
-import AuditReport from "../../components/panel/AuditReport";
-import AuditHistory from "../../components/panel/AuditHistory";
+import AuditIncident from "../../components/panel/AuditIncident";
 import useReportLog from "../../hooks/audit/useReportLog";
 import useRoomLogs from "../../hooks/audit/useRoomLogs";
 import "./Audit.css";
@@ -34,15 +33,10 @@ function Audit() {
 
         <div className="audit-panels">
           <AuditRoom />
-          <AuditReport />
+          <AuditIncident />
         </div>
 
-        <AuditHistory
-          reportLogs={reportLogs}
-          auditLogs={auditLogs}
-          onReportClick={handleReportRowClick}
-          onAuditClick={handleAuditRowClick}
-        />
+        
       </div>
     </MainLayout>
   );

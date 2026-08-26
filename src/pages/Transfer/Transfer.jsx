@@ -31,7 +31,7 @@ function Transfer() {
         {/* header */}
         <div className="transfer-header">
           <div className="transfer-header-left">
-            <h1 className="title">Transfers</h1>
+            <h1 className="title">Transfer</h1>
             <p className="date">{displayDate}</p>
           </div>
 

@@ -1,18 +1,36 @@
 .dashboard-header {
+  position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   gap: 0.875rem;
   margin-bottom: 0.5rem;
   box-sizing: border-box;
-  border: 1px solid transparent;
-  background:
-    linear-gradient(#ffffff, #ffffff) padding-box,
-    linear-gradient(90deg, #9c0201, rgba(156, 2, 1, 0.3), #9c0201) border-box;
-  border-radius: 0.5rem;
+  overflow: hidden;
+  background: linear-gradient(135deg, #860100 0%, #9c0707 90%, #9e1616 100%);
+  border-radius: 10px;
+  border: 1px solid #6f0101;
   box-shadow:
-    0 1px 2px rgba(38, 24, 22, 0.04),
-    0 12px 24px -14px rgba(38, 24, 22, 0.22);
+    0 1px 2px rgba(38, 12, 10, 0.18),
+    0 16px 28px -16px rgba(134, 1, 1, 0.4);
   padding: 1rem;
+}
+
+/* Thin gold accent along the bottom edge — a quiet nod to the
+   brand's gold without needing a gradient background */
+.dashboard-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(245, 170, 44, 0.55),
+    transparent
+  );
 }
 
 .dashboard-header__top {
@@ -31,32 +49,31 @@
   font-size: 0.625rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #8a6f63;
-  margin: 0 0 0.25rem;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 0 0.3rem;
 }
 
 .dashboard-header__title {
-  color: #261816;
+  color: #ffffff;
   letter-spacing: -0.01em;
   margin: 0;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.dashboard-header__title::after {
+  content: none;
 }
 
 .dashboard-header h1.dashboard-header__title {
-  font-size: 1rem;
+  font-size: 1.0625rem;
+  font-weight: 700;
 }
 
-.dashboard-header__role-badge {
-  flex-shrink: 0;
-  font-size: 0.625rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #ffffff;
-  background: linear-gradient(155deg, #9c0201 0%, #860100 60%, #6f0101 100%);
-  padding: 0.375rem 0.75rem;
-  border-radius: 9999px;
-  box-shadow: 0 1px 2px rgba(134, 1, 1, 0.3);
+/* Highlight the name portion in gold without extra markup —
+   handled by wrapping it in a span in JSX (see below) */
+.dashboard-header__name {
+  color: #f5aa2c;
 }
 
 .dashboard-header__alerts {
@@ -71,9 +88,13 @@
   align-items: center;
   font-size: 0.6875rem;
   font-weight: 600;
+  text-transform: capitalize;
   padding: 0.375rem 0.75rem;
   border-radius: 9999px;
   white-space: nowrap;
+  background-color: rgba(0, 0, 0, 0.22);
+  color: #ffffff;
+  backdrop-filter: blur(2px);
 }
 
 .dashboard-header__pill::before {
@@ -86,36 +107,23 @@
   flex-shrink: 0;
 }
 
-.dashboard-header__pill--alert {
-  color: #ba1a1a;
-  background-color: rgba(186, 26, 26, 0.08);
-}
 .dashboard-header__pill--alert::before {
-  background-color: #ba1a1a;
+  background-color: #ff8a80;
 }
 
-.dashboard-header__pill--warning {
-  color: #8a5300;
-  background-color: rgba(245, 170, 44, 0.14);
-}
 .dashboard-header__pill--warning::before {
-  background-color: #f5aa2c;
+  background-color: #ffd27a;
 }
 
-.dashboard-header__pill--info {
-  color: #5a413c;
-  background-color: rgba(38, 24, 22, 0.06);
-}
 .dashboard-header__pill--info::before {
-  background-color: #8a6f63;
+  background-color: #3e9fee;
 }
 
 .dashboard-header__pill--clear {
-  color: #2e6b3e;
-  background-color: rgba(46, 107, 62, 0.08);
+  background-color: rgba(255, 255, 255, 0.12);
 }
 .dashboard-header__pill--clear::before {
-  background-color: #2e6b3e;
+  background-color: #8ee6a6;
 }
 
 /* ============================
@@ -128,8 +136,7 @@
   }
 
   .dashboard-header h1.dashboard-header__title {
-    font-size: 1.3rem;
-    font-weight: 700;
+    font-size: 1.375rem;
   }
 
   .dashboard-header__eyebrow {
@@ -140,15 +147,10 @@
     align-items: flex-start;
   }
 
-  .dashboard-header__role-badge {
-    align-self: flex-start;
-  }
-
-  /* Group alerts into one visual unit instead of loose pills */
   .dashboard-header__alerts {
     gap: 0.625rem;
     padding: 0.625rem 0.75rem;
-    background-color: rgba(38, 24, 22, 0.03);
+    background-color: transparent;
     border-radius: 0.625rem;
   }
 
@@ -169,9 +171,6 @@
     gap: 1.5rem;
   }
 
-  /* Unwrap __top so intro + badge join __alerts as direct
-     flex children of .dashboard-header, so they can all be
-     ordered into a single row (same pattern as .dashboard__pair) */
   .dashboard-header__top {
     display: contents;
   }
@@ -182,39 +181,15 @@
   }
 
   .dashboard-header h1.dashboard-header__title {
-    font-size: 1.75rem;
-    font-weight: 900;
+    font-size: 1.875rem;
+    font-weight: 800;
   }
 
   .dashboard-header__alerts {
     order: 2;
     flex: 0 1 auto;
-    background-color: transparent;
-    padding: 0 0 0 1.25rem;
-    position: relative;
-  }
-
-  /* Thin divider separating identity (intro) from status (alerts) */
-  .dashboard-header__alerts::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 1px;
-    height: 1.75rem;
-    background: linear-gradient(
-      180deg,
-      transparent,
-      rgba(38, 24, 22, 0.14),
-      transparent
-    );
-  }
-
-  .dashboard-header__role-badge {
-    font-size: 0.8125rem;
-    padding: 0.5rem 1rem;
-    order: 3;
+    padding: 0.625rem 1rem;
+    border-radius: 0.75rem;
   }
 }
 

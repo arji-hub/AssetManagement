@@ -12,7 +12,7 @@
   position: relative;
   overflow: hidden;
 
-  background: rgba(0, 0, 0, 0.03);
+  background-color: rgba(0, 0, 0, 0);
   color: #3a3a3a;
 
   transition:
@@ -38,10 +38,6 @@
   background: linear-gradient(135deg, #9c0201 0%, #6b0000 100%);
   color: #ffffff;
   border-color: rgba(245, 170, 44, 0.25);
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.1),
-    0 8px 20px -6px rgba(134, 1, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 /* subtle glow bleeding outward — the "premium" tell, not a hard accent bar */
@@ -93,9 +89,11 @@
 }
 
 .nav-button-label {
+  display: flex;
   font-family: "Sansation";
   font-weight: bold;
   font-size: 12px;
   position: relative;
   z-index: 1;
+  gap: 5px;
 }

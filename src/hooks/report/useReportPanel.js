@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import useResponsivePageSize from "../asset/useResponsivePageSize";
+import useResponsivePageSize from "../shared/useResponsivePageSize";
 import { STATUS_GROUPS } from "../../data/reports";
 import { getReportType } from "../../utils/report";
 

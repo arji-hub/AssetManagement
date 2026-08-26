@@ -1,13 +1,4 @@
 /* Faculty dashboard container */
-.dashboard {
-  padding: 0.5rem;
-}
-
-@media (min-width: 360px) {
-  .dashboard {
-    padding: 1rem;
-  }
-}
 
 .item {
   min-width: 0;
@@ -17,9 +8,12 @@
 /* Faculty dashboard grid — mobile-first (2 columns) */
 .dashboard__grid {
   display: grid;
+  overflow-y: auto;
+  flex: 1;
+  align-content: start;
   gap: 0.6rem;
   grid-auto-columns: 1fr;
-  grid-auto-rows: auto;
+  grid-auto-rows: minmax(auto, 1fr);
   grid-template-columns: repeat(2, 1fr);
   grid-template-areas:
     "box-5 box-5"

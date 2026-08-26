@@ -154,8 +154,10 @@ const generateAssetId = async () => {
   return await runTransaction(db, async (transaction) => {
     const counter = await transaction.get(counterRef);
     const next = (counter.data()?.count ?? 0) + 1;
-    transaction.update(counterRef, { count: next });
-    return `cict-${next}`;
+
+    transaction.set(counterRef, { count: next }, { merge: true });
+
+    return `cict-${1000 + next}`;
   });
 };
 
@@ -246,7 +248,6 @@ export async function addAsset(data, role) {
   await Promise.all(countUpdates);
   return assetId;
 }
-
 
 export async function updateAssetStatus(assetId, status) {
   const assetRef = doc(db, "asset", assetId);

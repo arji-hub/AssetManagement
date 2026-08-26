@@ -57,7 +57,6 @@ function PARICSTreemap({
           className="paric-treemap__block paric-treemap__block--par"
           style={{ flexBasis: `${parShare}%` }}
         >
-          <span className="paric-treemap__label">PAR</span>
           <span className="paric-treemap__count">
             {par.count} item{par.count === 1 ? "" : "s"}
           </span>
@@ -67,7 +66,6 @@ function PARICSTreemap({
           className="paric-treemap__block paric-treemap__block--ics"
           style={{ flexBasis: `${icsShare}%` }}
         >
-          <span className="paric-treemap__label">ICS</span>
           <span className="paric-treemap__count">
             {ics.count} item{ics.count === 1 ? "" : "s"}
           </span>

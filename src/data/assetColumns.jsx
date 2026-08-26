@@ -3,21 +3,16 @@ import { formatDate } from "../utils/date";
 
 export const roomColumns = [
   {
-    key: "index",
-    label: "#",
-    priority: "high",
-    render: (_, i) => i + 1,
-    card: { role: "hidden" },
-  },
-  {
     key: "name",
     label: "Asset Name",
+    width: "2.2fr",
     priority: "high",
     render: (a) => a.description,
   },
   {
     key: "category",
     label: "Category",
+    width: "1fr",
     priority: "medium",
     render: (a) => a.category,
     card: { icon: "fa-solid fa-tag" },
@@ -25,6 +20,7 @@ export const roomColumns = [
   {
     key: "custodian",
     label: "Custodian",
+    width: "1.5fr",
     priority: "high",
     render: (a) => a.name,
     card: { icon: "fa-solid fa-user" },
@@ -32,12 +28,14 @@ export const roomColumns = [
   {
     key: "status",
     label: "Status",
+    width: "1fr",
     priority: "high",
     render: (a) => <Status status={a.status} />,
   },
   {
     key: "date",
     label: "Date Assigned",
+    width: "1.2fr",
     priority: "low",
     render: (a) => formatDate(a.date),
   },
@@ -45,21 +43,16 @@ export const roomColumns = [
 
 export const custodianColumns = [
   {
-    key: "index",
-    label: "#",
-    priority: "high",
-    render: (_, i) => i + 1,
-    card: { role: "hidden" },
-  },
-  {
     key: "name",
     label: "Asset Name",
+    width: "2.2fr",
     priority: "high",
     render: (a) => a.description,
   },
   {
     key: "category",
     label: "Category",
+    width: "1fr",
     priority: "medium",
     render: (a) => a.category_id,
     card: { icon: "fa-solid fa-tag" },
@@ -67,6 +60,7 @@ export const custodianColumns = [
   {
     key: "room",
     label: "Room",
+    width: "1.2fr",
     priority: "medium",
     render: (a) => a.room_id,
     card: { icon: "fa-solid fa-door-open" },
@@ -74,12 +68,14 @@ export const custodianColumns = [
   {
     key: "status",
     label: "Status",
+    width: "1fr",
     priority: "high",
     render: (a) => <Status status={a.status} />,
   },
   {
     key: "date",
     label: "Date Assigned",
+    width: "1.2fr",
     priority: "low",
     render: (a) => formatDate(a.created_at),
   },
@@ -89,6 +85,7 @@ export const assetColumns = [
   {
     key: "id",
     label: "Asset ID",
+    width: "0.9fr",
     priority: "high",
     render: (a) => a.id || "—",
     card: { role: "hidden" },
@@ -96,12 +93,14 @@ export const assetColumns = [
   {
     key: "desc",
     label: "Description",
+    width: "2.5fr",
     priority: "high",
     render: (a) => a.description || "—",
   },
   {
     key: "category",
     label: "Category",
+    width: "1fr",
     priority: "medium",
     render: (a) => a.category_id || "—",
     card: { icon: "fa-solid fa-tag" },
@@ -109,6 +108,7 @@ export const assetColumns = [
   {
     key: "location",
     label: "Location",
+    width: "1fr",
     priority: "medium",
     render: (a) => a.room_id || "—",
     card: { icon: "fa-solid fa-door-open" },
@@ -116,6 +116,7 @@ export const assetColumns = [
   {
     key: "qty",
     label: "Qty",
+    width: "0.6fr",
     priority: "low",
     render: (a) => a.qty ?? 1,
     card: { icon: "fa-solid fa-boxes-stacked" },
@@ -123,6 +124,7 @@ export const assetColumns = [
   {
     key: "value",
     label: "Unit Value",
+    width: "1fr",
     priority: "low",
     render: (a) => `₱${a.unit_value?.toLocaleString() ?? "—"}`,
     card: { icon: "fa-solid fa-peso-sign" },
@@ -130,12 +132,14 @@ export const assetColumns = [
   {
     key: "status",
     label: "Status",
+    width: "1fr",
     priority: "high",
     render: (a) => <Status status={a.status} />,
   },
   {
     key: "date",
     label: "Date Acquired",
+    width: "1.2fr",
     priority: "low",
     render: (a) => formatDate(a.date_acquired),
   },

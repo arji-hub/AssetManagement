@@ -264,8 +264,10 @@ function AuditRoomInfo() {
                 </thead>
                 <tbody>
                   {auditItems.map((item) => (
-                    <tr key={item.id} onClick={() => handleRowClick(item.id)}>
-                      <td>{item.asset_id ?? item.id}</td>
+                    <tr key={item.id}>
+                      <td onClick={() => handleRowClick(item.id)}>
+                        {item.asset_id ?? item.id}
+                      </td>
                       <td>{item.description || "—"}</td>
                       <td>{item.category || "—"}</td>
                       <td>{item.custodian || "—"}</td>
@@ -310,13 +312,12 @@ function AuditRoomInfo() {
               {/* Mobile card list */}
               <div className="audit-session-card-list">
                 {auditItems.map((item) => (
-                  <div
-                    key={item.id}
-                    className="audit-session-card"
-                    onClick={() => handleRowClick(item.id)}
-                  >
+                  <div key={item.id} className="audit-session-card">
                     <div className="audit-session-card-header">
-                      <p className="audit-session-card-title">
+                      <p
+                        className="audit-session-card-title"
+                        onClick={() => handleRowClick(item.id)}
+                      >
                         {item.asset_id ?? item.id}
                       </p>
                       <StatusBadge status={item.audit_status} />
