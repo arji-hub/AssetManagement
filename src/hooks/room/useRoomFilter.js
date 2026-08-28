@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 
-export function useRoomFilters(rooms) {
+export function useRoomFilter(rooms) {
   const [searchQuery, setSearchQuery] = useState("");
   const [assetCountFilter, setAssetCountFilter] = useState("");
 

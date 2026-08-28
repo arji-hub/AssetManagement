@@ -1,7 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { ROLES } from "../../data/roles";
 import { SUB_TABS, EMPTY_STATE_CONFIG } from "../../data/transfer";
 import {
   subscribeToAction,
