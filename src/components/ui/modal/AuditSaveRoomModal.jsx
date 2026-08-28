@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTriangleExclamation,
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
+import AddingStatusModal from "../status/AddingStatusModal";
 import "./AuditSaveRoomModal.css";
 
 function AuditConfirmSaveModal({
@@ -15,14 +16,59 @@ function AuditConfirmSaveModal({
   totalAssets = 0,
   discrepancyCount = 0,
 }) {
+  const [phase, setPhase] = useState("confirm"); // "confirm" | "loading" | "success" | "error"
+  const [statusError, setStatusError] = useState(null);
+
+  // Reset to the confirm view every time the modal is (re)opened
+  useEffect(() => {
+    if (isOpen) {
+      setPhase("confirm");
+      setStatusError(null);
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const remaining = Math.max(totalAssets - auditedCount, 0);
   const hasDiscrepancies = discrepancyCount > 0;
   const hasRemaining = remaining > 0;
 
-  function handleConfirm() {
-    onConfirm?.();
+  async function handleConfirm() {
+    setPhase("loading");
+    const result = await onConfirm?.();
+
+    if (result?.ok === false) {
+      setStatusError(
+        result.error?.message ||
+          "Failed to complete the audit. Please try again.",
+      );
+      setPhase("error");
+      return;
+    }
+
+    setPhase("success");
+  }
+
+  function handleStatusClose() {
+    if (phase === "success") {
+      onClose?.(); // fully close, parent already knows audit is complete
+    } else {
+      setPhase("confirm"); // let the user retry from the confirm view
+    }
+  }
+
+  if (phase !== "confirm") {
+    return (
+      <AddingStatusModal
+        title="Audit"
+        status={phase}
+        errorMessage={statusError}
+        loadingMessage="Please wait while we complete this audit..."
+        successTitle="Audit Completed"
+        successMessage={`The audit${roomName ? ` for ${roomName}` : ""} has been marked as completed.`}
+        onClose={handleStatusClose}
+      />
+    );
   }
 
   return (

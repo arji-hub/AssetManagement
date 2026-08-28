@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useAuditRoomStart from "../../../hooks/audit/useAuditRoomStart";
+import { formatDate } from "../../../utils/date";
 import "./NewAuditRoomModal.css";
 
 function NewAuditRoomModal() {
@@ -156,7 +157,7 @@ function NewAuditRoomModal() {
                     </p>
                     <p className="audit-modal-room-preview-sub">
                       {foundRoom.last_audited_at
-                        ? `Last audited ${foundRoom.last_audited_at}`
+                        ? `Last audited ${formatDate(foundRoom.last_audited_at)}`
                         : "No audit recorded"}
                     </p>
                   </div>
@@ -190,7 +191,7 @@ function NewAuditRoomModal() {
                           </p>
                           <p className="audit-modal-suggested-item-sub">
                             {room.last_audited_at
-                              ? `Last audited ${room.last_audited_at}`
+                              ? `Last audited ${formatDate(foundRoom.last_audited_at)}`
                               : "No audit recorded"}
                           </p>
                         </div>

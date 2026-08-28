@@ -528,10 +528,7 @@ function AuditRoomInfo() {
         <AuditSaveRoomModal
           isOpen={isSaveConfirmOpen}
           onClose={() => setIsSaveConfirmOpen(false)}
-          onConfirm={() => {
-            setIsSaveConfirmOpen(false);
-            handleCompleteAudit();
-          }}
+          onConfirm={handleCompleteAudit}
           roomName={roomName}
           auditedCount={audit?.audited_count ?? 0}
           totalAssets={totalAssets}
