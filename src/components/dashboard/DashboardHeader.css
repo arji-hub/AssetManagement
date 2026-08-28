@@ -8,10 +8,6 @@
   overflow: hidden;
   background: linear-gradient(135deg, #860100 0%, #9c0707 90%, #9e1616 100%);
   border-radius: 10px;
-  border: 1px solid #6f0101;
-  box-shadow:
-    0 1px 2px rgba(38, 12, 10, 0.18),
-    0 16px 28px -16px rgba(134, 1, 1, 0.4);
   padding: 1rem;
 }
 

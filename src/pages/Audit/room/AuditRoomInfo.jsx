@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import MainLayout from "../../components/layout/MainLayout";
-import useRoomInfo from "../../hooks/audit/useRoomInfo";
-import AuditCard from "../../components/ui/card/audit/AuditCard";
+import MainLayout from "../../../components/layout/MainLayout";
+import useRoomInfo from "../../../hooks/audit/useRoomInfo";
+import AuditCard from "../../../components/ui/card/audit/AuditCard";
 import { useParams } from "react-router-dom";
-import BackButton from "../../components/ui/button/BackButton";
-import { formatDate } from "../../utils/date";
-import { STATUS_CONFIG } from "../../data/audit";
-import Camera from "../../components/camera/Camera";
-import ScanStatusModal from "../../components/ui/status/scanStatusModal";
-import { AuditRoomPDF } from "../../pdf/templates/AuditRoomPDF";
-import { PDFPreviewModal } from "../../components/ui/modal/PDFPreviewModal";
-import AuditSaveRoomModal from "../../components/ui/modal/AuditSaveRoomModal";
-import useAuditRoomPDF from "../../hooks/audit/useAuditRoomPDF";
+import BackButton from "../../../components/ui/button/BackButton";
+import { formatDate } from "../../../utils/date";
+import { STATUS_CONFIG } from "../../../data/audit";
+import Camera from "../../../components/camera/Camera";
+import ScanStatusModal from "../../../components/ui/status/scanStatusModal";
+import { AuditRoomPDF } from "../../../pdf/templates/AuditRoomPDF";
+import { PDFPreviewModal } from "../../../components/ui/modal/PDFPreviewModal";
+import AuditSaveRoomModal from "../../../components/ui/modal/AuditSaveRoomModal";
+import useAuditRoomPDF from "../../../hooks/audit/useAuditRoomPDF";
 import "./AuditRoomInfo.css";
 
 // == Local presentational helpers ==========================================

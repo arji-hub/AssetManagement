@@ -1,11 +1,11 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import MainLayout from "../../components/layout/MainLayout";
-import NewAuditRoomModal from "../../components/ui/modal/NewAuditRoomModal";
-import AuditCard from "../../components/ui/card/audit/AuditCard";
-import AuditRoomHistory from "../../components/panel/AuditRoomHistory";
-import BackButton from "../../components/ui/button/BackButton";
-import useRoomLogs from "../../hooks/audit/useRoomLogs";
+import MainLayout from "../../../components/layout/MainLayout";
+import NewAuditRoomModal from "../../../components/ui/modal/NewAuditRoomModal";
+import AuditCard from "../../../components/ui/card/audit/AuditCard";
+import AuditRoomHistory from "../../../components/panel/AuditRoomHistory";
+import BackButton from "../../../components/ui/button/BackButton";
+import useRoomLogs from "../../../hooks/audit/useRoomLogs";
 import "./AuditRoom.css";
 
 function AuditRoom() {

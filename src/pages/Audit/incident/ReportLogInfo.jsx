@@ -1,12 +1,12 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import MainLayout from "../../components/layout/MainLayout";
-import BackButton from "../../components/ui/button/BackButton";
-import ReportLogPagination from "../../components/ui/pagination/ReportLogPagination";
-import useReportLogInfo from "../../hooks/audit/useReportLogInfo";
-import { formatDate } from "../../utils/date";
-import { PDFPreviewModal } from "../../components/ui/modal/PDFPreviewModal";
-import { ReportLogPDF } from "../../pdf/templates/ReportLogPDF";
+import MainLayout from "../../../components/layout/MainLayout";
+import BackButton from "../../../components/ui/button/BackButton";
+import ReportLogPagination from "../../../components/ui/pagination/ReportLogPagination";
+import useReportLogInfo from "../../../hooks/audit/useReportLogInfo";
+import { formatDate } from "../../../utils/date";
+import { PDFPreviewModal } from "../../../components/ui/modal/PDFPreviewModal";
+import { ReportLogPDF } from "../../../pdf/templates/ReportLogPDF";
 import "./ReportLogInfo.css";
 
 function ReportLogInfo() {

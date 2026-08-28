@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import MainLayout from "../../components/layout/MainLayout";
-import AuditCard from "../../components/ui/card/audit/AuditCard";
-import useReportLog from "../../hooks/audit/useReportLog";
-import ReportLogHistory from "../../components/panel/ReportLogHistory";
-import BackButton from "../../components/ui/button/BackButton";
+import MainLayout from "../../../components/layout/MainLayout";
+import AuditCard from "../../../components/ui/card/audit/AuditCard";
+import useReportLog from "../../../hooks/audit/useReportLog";
+import ReportLogHistory from "../../../components/panel/ReportLogHistory";
+import BackButton from "../../../components/ui/button/BackButton";
 
 import "./ReportLog.css";
 

@@ -1,12 +1,12 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import MainLayout from "../../components/layout/MainLayout";
-import BackButton from "../../components/ui/button/BackButton";
-import ReportLogPagination from "../../components/ui/pagination/ReportLogPagination";
-import GenerateReportLogModal from "../../components/ui/modal/GenerateReportLogModal";
-import AddingStatusModal from "../../components/ui/status/AddingStatusModal";
-import useReportLogCreate from "../../hooks/audit/useReportLogCreate";
-import { formatDate } from "../../utils/date";
+import MainLayout from "../../../components/layout/MainLayout";
+import BackButton from "../../../components/ui/button/BackButton";
+import ReportLogPagination from "../../../components/ui/pagination/ReportLogPagination";
+import GenerateReportLogModal from "../../../components/ui/modal/GenerateReportLogModal";
+import AddingStatusModal from "../../../components/ui/status/AddingStatusModal";
+import useReportLogCreate from "../../../hooks/audit/useReportLogCreate";
+import { formatDate } from "../../../utils/date";
 import "./ReportLogCreate.css";
 
 function ReportLogCreate() {
