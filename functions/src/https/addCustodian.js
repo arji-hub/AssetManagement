@@ -123,6 +123,8 @@ exports.addCustodian = onCall(
           middle_name: middle_name || "",
           last_name,
           role,
+          status: "active",
+          deactivated_at: null,
           created_at: FieldValue.serverTimestamp(),
           created_by: callerUid,
         });

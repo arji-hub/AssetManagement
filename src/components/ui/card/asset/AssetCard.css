@@ -1,0 +1,139 @@
+/* ── Desktop / tablet row ── */
+.asset-card-row {
+  display: grid;
+  grid-template-columns: var(--table-grid-columns);
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.asset-card-row:hover {
+  background: #fbeceb;
+}
+
+.asset-card-row-cell {
+  font-size: 14px;
+  color: #121c2a;
+  min-width: 0;
+}
+
+.asset-card-row-cell .asset-desc-cell {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 1024px) {
+  .asset-card-row {
+    grid-template-columns: var(--table-grid-columns-tablet);
+  }
+  .asset-card-row-cell[data-priority="low"] {
+    display: none;
+  }
+}
+
+@media (max-width: 800px) {
+  .asset-card-row {
+    grid-template-columns: var(--table-grid-columns-mobile);
+  }
+  .asset-card-row-cell[data-priority="medium"] {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .asset-card-row {
+    padding: 12px 16px;
+  }
+}
+
+/* ── Mobile card (unchanged) ── */
+.asset-card {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid #e2beb9;
+  border-radius: 8px;
+  padding: 14px 16px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.asset-card:active {
+  background: #fbeceb;
+}
+
+.asset-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.asset-card-date {
+  font-size: 12px;
+  color: #5a413c;
+}
+
+.asset-card-badge-slot {
+  flex-shrink: 0;
+}
+
+.asset-card-title {
+  margin: 0;
+  font-weight: 700;
+  color: #860100;
+  font-size: 15px;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.asset-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.asset-card-stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #121c2a;
+}
+
+.asset-card-meta-icon {
+  width: 14px;
+  color: #860100;
+  display: flex;
+  justify-content: center;
+  font-size: 12px;
+}
+
+@media (min-width: 481px) and (max-width: 630px) {
+  .asset-card-meta {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+  }
+}
+
+@media (max-width: 630px) {
+  .asset-card-row {
+    display: none;
+  }
+  .asset-card {
+    display: flex;
+  }
+}

@@ -2,25 +2,31 @@ import React from "react";
 import MainLayout from "../../components/layout/MainLayout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { displayDate } from "../../utils/date";
-import { TOP_TABS } from "../../data/transfer";
-import { useTransferPage } from "../../hooks/transfer/useTransferPage";
-import TransferPanel from "../../components/panel/TransferPanel";
-import { ROOM_SUB_TABS } from "../../data/transfer";
+import { TOP_TABS, ROOM_SUB_TABS } from "../../data/transfer";
+import { useTransfers } from "../../hooks/transfer/useTransfers";
+import Table from "../../components/panel/Table";
+import TransferRoomCard from "../../components/ui/card/transfer/TransferRoomCard";
 import TransferRoomModal from "../../components/ui/modal/TransferRoomModal";
+import { TRANSFER_COLUMNS } from "../../data/Columns";
 import "./Transfer.css";
 
 function TransferRoom() {
   const {
+    handleTopTabClick,
+    activeRoomSub,
+    handleSubTabChange,
     showTransferRoomModal,
     handleTransferRoom,
     handleTransferRoomModalClose,
-    handleTopTabClick,
-  } = useTransferPage({ currentTop: "rooms" });
+    items,
+    loading,
+    error,
+    emptyState,
+  } = useTransfers({ currentTop: "rooms" });
 
   return (
     <MainLayout>
       <div className="transfer-page">
-        {/* header */}
         <div className="transfer-header">
           <div className="transfer-header-left">
             <h1 className="title">Transfer</h1>
@@ -38,7 +44,6 @@ function TransferRoom() {
           </div>
         </div>
 
-        {/* top tabs */}
         <div className="transfer-top-tabs">
           {TOP_TABS.map((tab) => (
             <button
@@ -53,29 +58,44 @@ function TransferRoom() {
           ))}
         </div>
 
-        {/* sub tabs */}
         <div className="transfer-sub-tabs">
           {ROOM_SUB_TABS.map((tab) => (
             <button
               key={tab.key}
               className={`transfer-sub-tab${
-                tab.key === "logs" ? " transfer-sub-tab--active" : ""
+                tab.key === activeRoomSub ? " transfer-sub-tab--active" : ""
               }`}
+              onClick={() => handleSubTabChange(tab.key)}
             >
               {tab.label}
             </button>
           ))}
         </div>
 
-        {/* content */}
         <div className="transfer-table-wrap">
-          <TransferPanel group="room_logs" />
+          <Table
+            columns={TRANSFER_COLUMNS.room}
+            items={items}
+            loading={loading}
+            error={error}
+            itemLabel="room transfers"
+            emptyMessage={emptyState.message}
+            emptyIcon={emptyState.icon}
+            hideHeaderOnMobile
+            renderItem={(item) => (
+              <TransferRoomCard
+                key={item.id}
+                request={item}
+                columns={TRANSFER_COLUMNS.room}
+              />
+            )}
+          />
         </div>
 
         {showTransferRoomModal && (
           <TransferRoomModal onClose={handleTransferRoomModalClose} />
         )}
-      </div>
+      </div>  
     </MainLayout>
   );
 }

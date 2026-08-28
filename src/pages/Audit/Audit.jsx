@@ -1,22 +1,20 @@
-import React from "react";
-import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import MainLayout from "../../components/layout/MainLayout";
 import { displayDate } from "../../utils/date";
-import AuditRoom from "../../components/panel/AuditRoom";
-import AuditIncident from "../../components/panel/AuditIncident";
-import useReportLog from "../../hooks/audit/useReportLog";
-import useRoomLogs from "../../hooks/audit/useRoomLogs";
+import AuditPanel from "../../components/panel/AuditPanel";
+import { useAuditRoom } from "../../hooks/audit/useAuditRoom";
+import { useReport } from "../../hooks/audit/useReport";
 import "./Audit.css";
 
 function Audit() {
-  const { user } = useAuth();
+  const navigate = useNavigate();
 
-  const { filteredLogs: reportLogs, handleRowClick: handleReportRowClick } =
-    useReportLog();
-  const {
-    filteredLogs: auditLogs,
-    handleHistoryRowClick: handleAuditRowClick,
-  } = useRoomLogs();
+  const { lastEntry: roomLastEntry, handleClick: handleRoomClick } =
+    useAuditRoom();
+  const { lastEntry: incidentLastEntry, handleClick: handleIncidentClick } =
+    useReport();
+
+  const handleCustodianClick = () => navigate("/custodian");
 
   return (
     <MainLayout>
@@ -32,11 +30,38 @@ function Audit() {
         </div>
 
         <div className="audit-panels">
-          <AuditRoom />
-          <AuditIncident />
+          <AuditPanel
+            icon="qrcode"
+            title="Audit Assets per Room"
+            description="Verify physical assets against system records by room and laboratory locations."
+            lastEntry={roomLastEntry}
+            badgeVariant="danger"
+            onClick={handleRoomClick}
+          />
+          <AuditPanel
+            icon="door-open"
+            title="Room Logs"
+            description="View the history of asset movements and status changes recorded per room."
+            lastEntry={roomLastEntry}
+            badgeVariant="danger"
+            onClick={handleRoomClick}
+          />
+          <AuditPanel
+            icon="clipboard-check"
+            title="Incident Logs"
+            description="View detailed audit report activity, filtered by date range and personnel."
+            lastEntry={incidentLastEntry}
+            badgeVariant="neutral"
+            onClick={handleIncidentClick}
+          />
+          <AuditPanel
+            icon="users"
+            title="Custodian Logs"
+            description="View asset custody records and accountability by custodian."
+            badgeVariant="neutral"
+            onClick={handleCustodianClick}
+          />
         </div>
-
-        
       </div>
     </MainLayout>
   );

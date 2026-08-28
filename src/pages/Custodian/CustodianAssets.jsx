@@ -10,7 +10,7 @@ import { PDFPreviewModal } from "../../components/ui/modal/PDFPreviewModal";
 import { CustodianInventoryPDF } from "../../pdf/templates/CustodianInventoryPDF";
 import BackButton from "../../components/ui/button/BackButton";
 import AssetTable from "../../components/panel/AssetTable";
-import { custodianColumns } from "../../data/assetColumns";
+import { custodianAssetsColumns } from "../../data/Columns";
 
 function CustodianAssets() {
   const { username } = useParams();
@@ -101,7 +101,7 @@ function CustodianAssets() {
 
         {/* ── Asset list - Custodian ── */}
         <AssetTable
-          columns={custodianColumns}
+          columns={custodianAssetsColumns}
           data={filteredAssets}
           loading={loading}
           error={error}

@@ -1,7 +1,7 @@
 import { useAuth } from "../../context/AuthContext";
 import MainLayout from "../../components/layout/MainLayout";
-import ProfileCard from "../../components/ui/card/ProfileCard";
-import LinkedAccountsCard from "../../components/ui/card/LinkedAccountsCard";
+import ProfileCard from "../../components/ui/card/profile/ProfileCard";
+import LinkedAccountsCard from "../../components/ui/card/profile/LinkedAccountsCard";
 import { useProfile } from "../../hooks/profile/useProfile";
 import "./Profile.css";
 import BackButton from "../../components/ui/button/BackButton";

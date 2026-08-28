@@ -24,7 +24,8 @@
   box-sizing: border-box;
   background-color: #ffffff;
   padding: var(--donut-padding);
-  border: 2px solid #ddc3c3;
+  border-radius: 10px;
+  border: 1px solid #ddc3c3;
   box-shadow:
     0 1px 2px rgba(38, 24, 22, 0.04),
     0 12px 24px -14px rgba(38, 24, 22, 0.22);
