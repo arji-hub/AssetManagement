@@ -12,7 +12,7 @@ import { PDFPreviewModal } from "../../components/ui/modal/PDFPreviewModal";
 import { RoomInventoryPDF } from "../../pdf/templates/RoomInventoryPDF";
 import BackButton from "../../components/ui/button/BackButton";
 import AssetTable from "../../components/panel/AssetTable";
-import { roomColumns } from "../../data/assetColumns.jsx";
+import { roomAssetsColumns } from "../../data/Columns.jsx";
 
 function RoomAssets() {
   const { roomName: roomID } = useParams();
@@ -129,7 +129,7 @@ function RoomAssets() {
         {/* ── Asset list - Room ── */}
 
         <AssetTable
-          columns={roomColumns}
+          columns={roomAssetsColumns}
           data={filteredAssets}
           loading={loading}
           error={error}

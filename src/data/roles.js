@@ -31,3 +31,9 @@ export const ROLES_COLOR = {
     text: "#166534",
   },
 };
+
+export const CUSTODIAN_FILTER_OPTIONS = [
+  { key: ROLES.FULLTIME, label: "Full-time" },
+  { key: ROLES.PARTTIME, label: "Part-time" },
+  { key: "archive", label: "Archive" },
+];

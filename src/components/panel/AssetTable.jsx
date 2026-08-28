@@ -1,6 +1,6 @@
 import React from "react";
 import Table from "./Table";
-import AssetCard from "../ui/card/AssetCard";
+import AssetCard from "../ui/card/asset/AssetCard";
 import "./AssetTable.css";
 
 function AssetTable({

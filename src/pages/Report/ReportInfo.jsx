@@ -9,7 +9,7 @@ import { Status } from "../../components/ui/status/assetStatus";
 import { formatDate } from "../../utils/date";
 import { getReportType } from "../../utils/report";
 import LoadingScreen from "../../components/ui/status/LoadingScreen";
-import ReportLog from "../../components/ui/card/ReportLog";
+import ReportLog from "../../components/ui/card/report/ReportLog";
 import ReportActionModal from "../../components/ui/modal/ReportActionModal";
 import "./ReportInfo.css";
 import BackButton from "../../components/ui/button/BackButton";
@@ -60,7 +60,7 @@ function ReportInfo() {
         {/* ── Header ── */}
         <div className="asset-info-header">
           <div className="asset-info-breadcrumb">
-            <BackButton/>
+            <BackButton />
             <span className="breadcrumb-parent">Report Information</span>
           </div>
           {/* ── Actions ── */}

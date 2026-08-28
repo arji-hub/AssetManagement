@@ -1,9 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import usePagination from "../../hooks/shared/usePagination";
+import useTable from "../../hooks/shared/useTable";
 import Pagination from "../ui/pagination/Pagination";
 import "./Table.css";
 
 function Table({
+  columns,
   items,
   renderItem,
   loading,
@@ -13,58 +14,50 @@ function Table({
   desktopPageSize = 12,
   mobilePageSize = 6,
   itemLabel = "items",
+  hideHeaderOnMobile = false,
 }) {
-  const {
-    pagedData,
-    page,
-    totalPages,
-    rangeStart,
-    rangeEnd,
-    total,
-    nextPage,
-    prevPage,
-    isFirstPage,
-    isLastPage,
-  } = usePagination({ data: items, desktopPageSize, mobilePageSize });
-
-  const showPagination = !loading && !error && items.length > 0;
-
-  const renderEmptyState = (icon, message) => (
-    <div className="panel-empty">
-      <FontAwesomeIcon icon={icon} spin={icon === "fa-solid fa-spinner"} />
-      <p>{message}</p>
-    </div>
-  );
+  const { gridStyle, pagedData, emptyState, showPagination, pagination } =
+    useTable({
+      columns,
+      items,
+      loading,
+      error,
+      emptyMessage,
+      emptyIcon,
+      desktopPageSize,
+      mobilePageSize,
+    });
 
   return (
-    <div className="panel-container">
+    <div className="panel-container" style={gridStyle}>
+      {columns && (
+        <div
+          className={`panel-header${hideHeaderOnMobile ? " panel-header--hide-mobile" : ""}`}
+        >
+          {columns.map((col) => (
+            <div
+              key={col.key}
+              className="panel-header-cell"
+              data-priority={col.priority || "high"}
+            >
+              {col.label}
+            </div>
+          ))}
+        </div>
+      )}
+
       <div className="panel-grid">
-        {loading
-          ? renderEmptyState("fa-solid fa-spinner", "Loading…")
-          : error
-            ? renderEmptyState(
-                "fa-solid fa-triangle-exclamation",
-                typeof error === "string" ? error : "Failed to load data.",
-              )
-            : items.length === 0
-              ? renderEmptyState(emptyIcon, emptyMessage)
-              : pagedData.map(renderItem)}
+        {emptyState ? (
+          <div className="panel-empty">
+            <FontAwesomeIcon icon={emptyState.icon} spin={emptyState.spin} />
+            <p>{emptyState.message}</p>
+          </div>
+        ) : (
+          pagedData.map(renderItem)
+        )}
       </div>
 
-      {showPagination && (
-        <Pagination
-          rangeStart={rangeStart}
-          rangeEnd={rangeEnd}
-          total={total}
-          page={page}
-          totalPages={totalPages}
-          onPrev={prevPage}
-          onNext={nextPage}
-          isFirstPage={isFirstPage}
-          isLastPage={isLastPage}
-          itemLabel={itemLabel}
-        />
-      )}
+      {showPagination && <Pagination {...pagination} itemLabel={itemLabel} />}
     </div>
   );
 }

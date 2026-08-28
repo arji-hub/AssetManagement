@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { addCustodian, fetchCustodians } from "../../services/user";
+import { ROLES } from "../../data/roles";
 
 export function useCustodian() {
   // ── Custodians list ───────────────────────────
@@ -20,17 +21,47 @@ export function useCustodian() {
     loadCustodians().finally(() => setIsFetching(false));
   }, [loadCustodians]);
 
-  // ── Role filter ──────────────────────────────────────────────
-  const [roleFilter, setRoleFilter] = useState("all");
+  // ── Filter (role tabs + archive) ──────────────────────────────
+  const [activeFilter, setActiveFilter] = useState(ROLES.FULLTIME);
 
-  const handleRoleFilter = useCallback((value) => {
-    setRoleFilter(value);
+  const handleFilterChange = useCallback((key) => {
+    setActiveFilter(key);
   }, []);
 
+  // ── Search ───────────────────────────────────────────────────
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // ── Asset count filter ─────────────────────────────────────────
+  const [assetCountFilter, setAssetCountFilter] = useState("");
+
+  const isActive = (c) => c.status !== "inactive";
+
   const filteredCustodians = useMemo(() => {
-    if (roleFilter === "all") return custodians;
-    return custodians.filter((c) => c.role === roleFilter);
-  }, [custodians, roleFilter]);
+    const byTab =
+      activeFilter === "archive"
+        ? custodians.filter((c) => c.status === "inactive")
+        : custodians.filter((c) => isActive(c) && c.role === activeFilter);
+
+    const bySearch = searchQuery.trim()
+      ? byTab.filter((c) => {
+          const q = searchQuery.toLowerCase();
+          return (
+            c.fullname?.toLowerCase().includes(q) ||
+            c.username?.toLowerCase().includes(q)
+          );
+        })
+      : byTab;
+
+    return bySearch.filter((c) => {
+      if (assetCountFilter === "none") return c.asset_count === 0;
+      if (assetCountFilter === "low")
+        return c.asset_count >= 1 && c.asset_count <= 10;
+      if (assetCountFilter === "medium")
+        return c.asset_count >= 11 && c.asset_count <= 50;
+      if (assetCountFilter === "high") return c.asset_count > 50;
+      return true;
+    });
+  }, [custodians, activeFilter, searchQuery, assetCountFilter]);
 
   // ── Add Custodian modal ──────────────────────────────────────────────────
   const [showModal, setShowModal] = useState(false);
@@ -40,7 +71,6 @@ export function useCustodian() {
   const closeModal = useCallback(() => setShowModal(false), []);
 
   // ── Status modal ──────────────────────────────────────────────────────────
-  // "idle" | "loading" | "success" | "error"
   const [status, setStatus] = useState("idle");
   const [submitError, setSubmitError] = useState(null);
 
@@ -52,7 +82,6 @@ export function useCustodian() {
 
       try {
         await addCustodian(formData);
-        // Re-fetch so the new custodian appears in the list
         await loadCustodians();
         setStatus("success");
         setShowModal(false);
@@ -78,8 +107,16 @@ export function useCustodian() {
     // list + filter
     custodians: filteredCustodians,
     isFetching,
-    roleFilter,
-    handleRoleFilter,
+    activeFilter,
+    handleFilterChange,
+
+    // search
+    searchQuery,
+    setSearchQuery,
+
+    // asset count filter
+    assetCountFilter,
+    setAssetCountFilter,
 
     // add custodian modal
     showModal,
