@@ -1,7 +1,9 @@
 .report-card-row {
   display: grid;
-  grid-template-columns: var(--report-grid-columns);
+  grid-template-columns: var(--table-grid-columns);
   align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
@@ -17,9 +19,9 @@
 }
 
 .report-card-cell {
-  padding: 14px 16px;
   color: #444;
   font-size: 13px;
+  min-width: 0;
 }
 
 .report-card-id {

@@ -1,41 +1,42 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import MainLayout from "../../components/layout/MainLayout";
 import { ROLES } from "../../data/roles";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./Report.css";
-import ReportPanel from "../../components/panel/ReportPanel";
+import Table from "../../components/panel/Table";
+import ReportCard from "../../components/ui/card/report/ReportCard";
 import ReportModal from "../../components/ui/modal/ReportModal";
 import { displayDate } from "../../utils/date";
-import useReportPage from "../../hooks/report/useReportPage";
 import { TABS } from "../../data/reports";
+import { REPORT_COLUMNS } from "../../data/Columns";
 import { useReports } from "../../hooks/report/useReports";
-import { getReportType } from "../../utils/report";
 
 function Report() {
-  const { data: reports, loading, error } = useReports();
   const { role } = useAuth();
   const isAdmin = role === ROLES.ADMIN;
+  const navigate = useNavigate();
 
   const {
+    data: reports,
+    loading,
+    error,
     activeTab,
     setActiveTab,
     showReportModal,
     handleReportIncident,
     handleModalClose,
     filter,
-  } = useReportPage();
+  } = useReports();
 
   return (
     <MainLayout>
       <div className="report-page">
-        {/* header */}
         <div className="report-header">
           <div className="report-header-left">
             <h1 className="title">Incident</h1>
             <p className="date">{displayDate}</p>
           </div>
-
           <div className="report-header-right">
             {activeTab !== "repair" && (
               <div className="report-filter-segment">
@@ -46,11 +47,7 @@ function Report() {
                 ].map((opt) => (
                   <button
                     key={opt.value}
-                    className={`report-filter-option ${
-                      filter.statusFilter === opt.value
-                        ? "report-filter-option--active"
-                        : ""
-                    }`}
+                    className={`report-filter-option ${filter.statusFilter === opt.value ? "report-filter-option--active" : ""}`}
                     onClick={() => filter.handleStatusFilter(opt.value)}
                   >
                     {opt.label}
@@ -58,7 +55,6 @@ function Report() {
                 ))}
               </div>
             )}
-
             <button
               className="report-incident-btn"
               onClick={handleReportIncident}
@@ -68,14 +64,11 @@ function Report() {
           </div>
         </div>
 
-        {/* tabs */}
         <div className="report-tabs">
           {TABS.map((tab) => (
             <button
               key={tab.key}
-              className={`report-tab${
-                activeTab === tab.key ? " report-tab--active" : ""
-              }`}
+              className={`report-tab${activeTab === tab.key ? " report-tab--active" : ""}`}
               onClick={() => setActiveTab(tab.key)}
             >
               {tab.label}
@@ -83,44 +76,25 @@ function Report() {
           ))}
         </div>
 
-        {/* content */}
         <div className="report-table-wrap">
-          {activeTab === "incident" && (
-            <ReportPanel
-              group="incident"
-              statusFilter={filter.statusFilter}
-              reports={reports}
-              loading={loading}
-              error={error}
-            />
-          )}
-          {activeTab === "repair" && (
-            <ReportPanel
-              group="repair"
-              statusFilter="damaged"
-              reports={reports}
-              loading={loading}
-              error={error}
-            />
-          )}
-          {activeTab === "resolved" && (
-            <ReportPanel
-              group="resolved"
-              statusFilter={filter.statusFilter}
-              reports={reports}
-              loading={loading}
-              error={error}
-            />
-          )}
-          {activeTab === "archive" && (
-            <ReportPanel
-              group="archive"
-              statusFilter={filter.statusFilter}
-              reports={reports}
-              loading={loading}
-              error={error}
-            />
-          )}
+          <Table
+            columns={REPORT_COLUMNS[activeTab]}
+            items={reports}
+            loading={loading}
+            error={error}
+            itemLabel="incidents"
+            emptyMessage="No incidents found."
+            emptyIcon="fa-solid fa-clipboard"
+            hideHeaderOnMobile
+            renderItem={(report) => (
+              <ReportCard
+                key={report.id}
+                report={report}
+                columns={REPORT_COLUMNS[activeTab]}
+                onClick={(r) => navigate(`/report/${r.id}`)}
+              />
+            )}
+          />
         </div>
       </div>
 

@@ -1,8 +1,10 @@
 /* ── Desktop / tablet row ── */
 .asset-card-row {
   display: grid;
-  grid-template-columns: var(--asset-grid-columns);
+  grid-template-columns: var(--table-grid-columns);
   align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
   background: #ffffff;
   cursor: pointer;
   transition: background 0.15s ease;
@@ -13,10 +15,9 @@
 }
 
 .asset-card-row-cell {
-  padding: 14px 24px;
   font-size: 14px;
   color: #121c2a;
-  min-width: 0; /* allow text-overflow/line-clamp to work inside a grid track */
+  min-width: 0;
 }
 
 .asset-card-row-cell .asset-desc-cell {
@@ -29,9 +30,8 @@
 
 @media (max-width: 1024px) {
   .asset-card-row {
-    grid-template-columns: var(--asset-grid-columns-tablet);
+    grid-template-columns: var(--table-grid-columns-tablet);
   }
-
   .asset-card-row-cell[data-priority="low"] {
     display: none;
   }
@@ -39,21 +39,20 @@
 
 @media (max-width: 800px) {
   .asset-card-row {
-    grid-template-columns: var(--asset-grid-columns-mobile);
+    grid-template-columns: var(--table-grid-columns-mobile);
   }
-
   .asset-card-row-cell[data-priority="medium"] {
     display: none;
   }
 }
 
 @media (max-width: 768px) {
-  .asset-card-row-cell {
+  .asset-card-row {
     padding: 12px 16px;
   }
 }
 
-/* ── Mobile card ── */
+/* ── Mobile card (unchanged) ── */
 .asset-card {
   display: none;
   flex-direction: column;
@@ -130,12 +129,10 @@
   }
 }
 
-/* ── Switch row → card ── */
 @media (max-width: 630px) {
   .asset-card-row {
     display: none;
   }
-
   .asset-card {
     display: flex;
   }

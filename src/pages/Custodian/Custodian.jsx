@@ -9,6 +9,7 @@ import { ROLE_FILTER_OPTIONS } from "../../data/roles";
 import { CustodianListPDF } from "../../pdf/templates/CustodianListPDF";
 import { PDFPreviewModal } from "../../components/ui/modal/PDFPreviewModal";
 import { displayDate } from "../../utils/date";
+import { custodianColumns } from "../../data/Columns";
 
 function Custodian() {
   const {
@@ -63,6 +64,7 @@ function Custodian() {
         </div>
         <div className="custodian-cards">
           <Table
+            columns={custodianColumns}
             items={custodians}
             loading={isFetching}
             itemLabel="custodians"

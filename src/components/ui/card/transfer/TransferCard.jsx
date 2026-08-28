@@ -1,56 +1,76 @@
 import React from "react";
-import { Status } from "../../status/assetStatus";
-import { formatDate } from "../../../../utils/date";
-import { TRANSFER_TYPE_LABELS } from "../../../../data/transfer";
 import "./TransferCard.css";
 
-function TransferCard({ request, onClick }) {
+function resolveTransferCardRoles(columns) {
+  const roled = columns.map((col) => ({
+    ...col,
+    _role: col.card?.role || "meta",
+  }));
+
+  return {
+    titleCol: roled.find((c) => c._role === "title"),
+    badgeCol: roled.find((c) => c._role === "badge"),
+    dateCol: roled.find((c) => c._role === "date"),
+    descCol: roled.find((c) => c._role === "desc"),
+    metaCols: roled.filter((c) => c._role === "meta"),
+  };
+}
+
+function TransferCard({ request, columns, onClick }) {
+  const { titleCol, badgeCol, dateCol, descCol, metaCols } =
+    resolveTransferCardRoles(columns);
+
+  const handleClick = () => onClick?.(request);
+
   return (
     <>
       {/* Desktop / tablet grid row */}
-      <div className="transfer-card-row" onClick={() => onClick(request)}>
-        <div className="transfer-card-cell transfer-card-id">
-          {request.asset_id}
-        </div>
-        <div className="transfer-card-cell transfer-card-desc">
-          {request.asset_description}
-        </div>
-        <div className="transfer-card-cell">
-          {TRANSFER_TYPE_LABELS[request.type] ?? request.type}
-        </div>
-        <div className="transfer-card-cell">{request.requested_by_name}</div>
-        <div className="transfer-card-cell transfer-card-status">
-          <Status status={request.status} />
-        </div>
-        <div className="transfer-card-cell">
-          {formatDate(request.created_at)}
-        </div>
+      <div className="transfer-card-row" onClick={handleClick}>
+        {columns.map((col) => (
+          <div
+            key={col.key}
+            className={`transfer-card-cell${
+              col.card?.role === "title" ? " transfer-card-id" : ""
+            }${col.card?.role === "desc" ? " transfer-card-desc" : ""}${
+              col.card?.role === "badge" ? " transfer-card-status" : ""
+            }`}
+            data-priority={col.priority || "high"}
+          >
+            {col.render(request)}
+          </div>
+        ))}
       </div>
 
       {/* Mobile card */}
-      <div className="transfer-card-mobile" onClick={() => onClick(request)}>
+      <div className="transfer-card-mobile" onClick={handleClick}>
         <div className="transfer-card-mobile-header">
-          <Status status={request.status} />
-          <span className="transfer-card-mobile-date">
-            {formatDate(request.created_at)}
-          </span>
+          {badgeCol && badgeCol.render(request)}
+          {dateCol && (
+            <span className="transfer-card-mobile-date">
+              {dateCol.render(request)}
+            </span>
+          )}
         </div>
 
-        <p className="transfer-card-mobile-title">{request.asset_id}</p>
-        {request.asset_description && (
-          <p className="transfer-card-mobile-desc">
-            {request.asset_description}
+        {titleCol && (
+          <p className="transfer-card-mobile-title">
+            {titleCol.render(request)}
           </p>
         )}
 
-        <div className="transfer-card-mobile-meta">
-          <span className="transfer-card-mobile-meta-item">
-            {TRANSFER_TYPE_LABELS[request.type] ?? request.type}
-          </span>
-          <span className="transfer-card-mobile-meta-item">
-            {request.requested_by_name}
-          </span>
-        </div>
+        {descCol && (
+          <p className="transfer-card-mobile-desc">{descCol.render(request)}</p>
+        )}
+
+        {metaCols.length > 0 && (
+          <div className="transfer-card-mobile-meta">
+            {metaCols.map((col) => (
+              <span className="transfer-card-mobile-meta-item" key={col.key}>
+                {col.render(request)}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
     </>
   );

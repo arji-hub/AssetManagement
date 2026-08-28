@@ -8,6 +8,7 @@ import { useRoom } from "../../hooks/room/useRoom";
 import { RoomListPDF } from "../../pdf/templates/RoomListPDF";
 import { PDFPreviewModal } from "../../components/ui/modal/PDFPreviewModal";
 import { displayDate } from "../../utils/date";
+import { roomColumns } from "../../data/Columns";
 
 function Room() {
   const {
@@ -89,6 +90,7 @@ function Room() {
         </div>
         <div className="room-cards">
           <Table
+            columns={roomColumns}
             items={filteredRooms}
             loading={loading}
             error={error}

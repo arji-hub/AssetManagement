@@ -34,36 +34,6 @@ export const STATUS_GROUPS = {
   archive: [REPORT_STATUS.CONDEMNED],
 };
 
-export const COLUMNS = {
-  incident: [
-    "Asset ID",
-    "Narrative",
-    "Location",
-    "Reported By",
-    "Date",
-    "Status",
-  ],
-  repair: ["Asset ID", "Description", "Location", "Reported By", "Date"],
-  resolved: [
-    "Asset ID",
-    "Description",
-    "Location",
-    "Reported By",
-    "Reported At",
-    "Incident",
-    "Resolved At",
-  ],
-  archive: [
-    "Asset ID",
-    "Description",
-    "Location",
-    "Reported By",
-    "Date",
-    "Incident",
-    "Date Resolved",
-  ],
-};
-
 export const ASSET_CLEARING_STATUSES = [
   REPORT_STATUS.WORKING,
   REPORT_STATUS.FOUND,

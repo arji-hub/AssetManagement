@@ -9,8 +9,9 @@ import FilterModal from "../../components/ui/modal/FilterModal";
 import { useAssetFilters } from "../../hooks/asset/useAssetFilters";
 import { useAssets } from "../../hooks/asset/useAssets";
 import { displayDate } from "../../utils/date";
-import AssetTable from "../../components/panel/AssetTable";
-import { assetColumns } from "../../data/assetColumns";
+import Table from "../../components/panel/Table";
+import AssetCard from "../../components/ui/card/asset/AssetCard";
+import { assetColumns } from "../../data/Columns";
 
 function Asset() {
   const { role, currentUser } = useAuth();
@@ -91,12 +92,24 @@ function Asset() {
           </div>
         )}
 
-        <AssetTable
+        <Table
           columns={assetColumns}
-          data={filteredAssets}
+          items={filteredAssets}
           loading={loading}
           error={error}
+          itemLabel="assets"
           emptyMessage="No assets found."
+          emptyIcon="fa-solid fa-box-open"
+          desktopPageSize={20}
+          mobilePageSize={10}
+          renderItem={(asset, index) => (
+            <AssetCard
+              key={asset.id}
+              asset={asset}
+              index={index}
+              columns={assetColumns}
+            />
+          )}
         />
 
         {showFilter && (
