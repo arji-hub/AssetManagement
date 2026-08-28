@@ -114,7 +114,9 @@ function Room() {
             error={error}
             itemLabel="rooms"
             emptyMessage="No rooms found."
-            renderItem={(room) => <RoomCard key={room.id} room={room} />}
+            renderItem={(room) => (
+              <RoomCard key={room.id} room={room} columns={roomColumns} />
+            )}
           />
         </div>
       </div>

@@ -2,81 +2,86 @@ import React from "react";
 import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
-import { formatDate } from "../../../../utils/date";
 import "./RoomCard.css";
 
-function RoomCard({ room, onClick }) {
+function resolveCardRoles(columns) {
+  let titleAssigned = false;
+  const roled = columns.map((col) => {
+    if (col.card?.role) return { ...col, _cardRole: col.card.role };
+    if (!titleAssigned && col.priority !== "low") {
+      titleAssigned = true;
+      return { ...col, _cardRole: "title" };
+    }
+    return { ...col, _cardRole: "meta" };
+  });
+
+  return {
+    titleCol: roled.find((c) => c._cardRole === "title"),
+    dateCol: roled.find((c) => c._cardRole === "date"),
+    assetsCol: roled.find((c) => c._cardRole === "assets"),
+    metaCols: roled.filter(
+      (c) => c._cardRole === "meta" && c.card?.role !== "hidden",
+    ),
+  };
+}
+
+function RoomCard({ room, columns, onClick }) {
   const navigate = useNavigate();
-  const { id, name, assetCount, roomCustodian, last_audited_at } = room;
+  const { id } = room;
+  const { titleCol, dateCol, assetsCol, metaCols } = resolveCardRoles(columns);
 
   const handleClick = () => {
     if (onClick) return onClick(room);
     navigate(`/room/${id}`);
   };
 
-  const auditLabel = last_audited_at
-    ? formatDate(last_audited_at)
-    : "Not yet audited";
-
   return (
     <>
       {/* ── Desktop / tablet row ── */}
       <div className="room-row" onClick={handleClick}>
-        <div className="room-row-cell room-row-name">
-          <FontAwesomeIcon
-            icon="fa-solid fa-door-open"
-            className="icon-door icon-door--open"
-          />
-          <FontAwesomeIcon
-            icon="fa-solid fa-door-closed"
-            className="icon-door icon-door--closed"
-          />
-          {name}
-        </div>
-        <div
-          className="room-row-cell room-row-custodian"
-          data-priority="medium"
-        >
-          {roomCustodian || "—"}
-        </div>
-        <div className="room-row-cell room-row-audit" data-priority="low">
-          {auditLabel}
-        </div>
-        <div className="room-row-cell room-row-assets">
-          <span className="room-row-assets-icon">
-            <FontAwesomeIcon icon="fa-solid fa-box-archive" />
-          </span>
-          <span className="room-row-assets-label">Total Assets</span>
-          <span className="room-row-assets-count">{assetCount}</span>
-        </div>
+        {columns.map((col) => (
+          <div
+            key={col.key}
+            className="room-row-cell"
+            data-priority={col.priority || "high"}
+          >
+            {col.render(room)}
+          </div>
+        ))}
       </div>
 
       {/* ── Mobile card ── */}
       <div className="room-card" onClick={handleClick}>
         <div className="room-card-header">
-          <h3 className="room-name">{name}</h3>
+          {titleCol && <h3 className="room-name">{room.name}</h3>}
         </div>
-        {(roomCustodian || last_audited_at) && (
+
+        {(metaCols.length > 0 || dateCol) && (
           <div className="room-card-meta">
-            {roomCustodian && (
-              <span className="room-card-custodian">
-                <FontAwesomeIcon icon="fa-regular fa-user" />
-                {roomCustodian}
+            {metaCols.map((col) => (
+              <span className="room-card-custodian" key={col.key}>
+                {col.card?.icon && <FontAwesomeIcon icon={col.card.icon} />}
+                {room.roomCustodian || "—"}
+              </span>
+            ))}
+            {dateCol && (
+              <span className="room-card-audit">
+                <FontAwesomeIcon icon="fa-solid fa-clock-rotate-left" />
+                {dateCol.render(room)}
               </span>
             )}
-            <span className="room-card-audit">
-              <FontAwesomeIcon icon="fa-solid fa-clock-rotate-left" />
-              {auditLabel}
-            </span>
           </div>
         )}
-        <div className="room-assets">
-          <span className="assets-icon-room">
-            <FontAwesomeIcon icon="fa-solid fa-box-archive" />
-          </span>
-          <span className="room-assets-label">Total Assets</span>
-          <span className="room-assets-count">{assetCount}</span>
-        </div>
+
+        {assetsCol && (
+          <div className="room-assets">
+            <span className="assets-icon-room">
+              <FontAwesomeIcon icon="fa-solid fa-box-archive" />
+            </span>
+            <span className="room-assets-label">Total Assets</span>
+            <span className="room-assets-count">{room.assetCount ?? 0}</span>
+          </div>
+        )}
       </div>
     </>
   );
@@ -94,6 +99,7 @@ RoomCard.propTypes = {
       PropTypes.object,
     ]),
   }).isRequired,
+  columns: PropTypes.array.isRequired,
   onClick: PropTypes.func,
 };
 

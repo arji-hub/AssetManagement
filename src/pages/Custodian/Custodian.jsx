@@ -41,7 +41,7 @@ function Custodian() {
             <p className="date">{displayDate}</p>
           </div>
           <div className="custodian-settings">
-           {/*  <PDFPreviewModal
+            {/*  <PDFPreviewModal
               title="Custodian List"
               fileName="custodian-list.pdf"
               document={<CustodianListPDF custodians={custodians} />}
@@ -104,7 +104,11 @@ function Custodian() {
             itemLabel="custodians"
             emptyMessage="No custodians found."
             renderItem={(custodian) => (
-              <CustodianCard key={custodian.id} custodian={custodian} />
+              <CustodianCard
+                key={custodian.id}
+                custodian={custodian}
+                columns={custodianColumns}
+              />
             )}
           />
         </div>

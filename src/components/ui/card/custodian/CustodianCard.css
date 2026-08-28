@@ -1,7 +1,7 @@
 /* ══════════════ Desktop / tablet row ══════════════ */
 .custodian-row {
   display: grid;
-  grid-template-columns: 1.5fr 1.5fr 1fr auto; /* name | email | role | assets */
+  grid-template-columns: var(--table-grid-columns);
   align-items: center;
   gap: 12px;
   background: #fff;
@@ -27,12 +27,17 @@
   font-weight: 700;
   font-size: 15px;
   color: #860100;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   display: flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
+}
+
+.custodian-row-name-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 .icon-user {
@@ -66,37 +71,37 @@
   white-space: nowrap;
 }
 
-.custodian-row-role {
-  overflow: hidden;
-}
-
-.custodian-row-assets {
+.custodian-row .custodian-row-cell:last-child {
   display: flex;
   align-items: center;
-  gap: 8px;
-  justify-self: end;
+  justify-content: center;
 }
 
-.custodian-row-assets-icon {
-  color: #860100;
-  font-size: 13px;
-}
-
-.custodian-row-assets-label {
-  color: rgba(134, 1, 0, 1);
-  font-size: 12px;
-  font-weight: 700;
+.custodian-row-cell {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .custodian-row-assets-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
   background: rgba(134, 1, 0, 1);
   color: #fff;
   font-size: 12px;
   font-weight: 700;
+  font-variant-numeric: tabular-nums;
   padding: 3px 12px;
   border-radius: 999px;
-  min-width: 36px;
+  width: 48px;
+  box-sizing: border-box;
+}
+
+/* scope so it doesn't leak to other tables sharing Table.css */
+.custodian-cards .panel-header-cell:last-child {
   text-align: center;
 }
 
@@ -114,19 +119,20 @@
   display: none;
 }
 
-/* ── Drop lower-priority columns before switching to card view ── */
-@media (max-width: 800px) {
+/* ── Tablet: drop "low" priority columns ── */
+@media (max-width: 1024px) {
   .custodian-row {
-    grid-template-columns: 1.5fr 1fr auto; /* name | role | assets */
+    grid-template-columns: var(--table-grid-columns-tablet);
   }
   .custodian-row [data-priority="low"] {
     display: none;
   }
 }
 
-@media (max-width: 630px) {
+/* ── Mobile grid: drop "medium" priority columns too ── */
+@media (max-width: 800px) {
   .custodian-row {
-    grid-template-columns: 1.5fr auto; /* name | assets */
+    grid-template-columns: var(--table-grid-columns-mobile);
   }
   .custodian-row [data-priority="medium"] {
     display: none;
