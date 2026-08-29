@@ -7,7 +7,7 @@
 :root {
   --donut-padding: clamp(0.25rem, 3vw, 1.5rem);
   --donut-gap: clamp(0.75rem, 2vw, 1.5rem);
-  --donut-size: clamp(180px, 20vw, 260px);
+  --donut-size: clamp(140px, 30vw, 260px);
   --chart-title-size: clamp(0.625rem, 1.8vw, 0.75rem);
   --chart-total-size: clamp(1.5rem, 4vw, 2.5rem);
   --legend-percent-size: clamp(0.5rem, 3vw, 0.8rem);
@@ -22,10 +22,10 @@
   overflow: hidden;
   height: 100%;
   box-sizing: border-box;
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   padding: var(--donut-padding);
   border-radius: 10px;
-  border: 1px solid #ddc3c3;
+  border: 1px solid var(--card-border);
   box-shadow:
     0 1px 2px rgba(38, 24, 22, 0.04),
     0 12px 24px -14px rgba(38, 24, 22, 0.22);
@@ -34,7 +34,9 @@
   gap: var(--donut-gap);
   transition:
     transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.25s ease,
+    border-color 0.25s ease;
 }
 
 .donut-chart:hover {
@@ -65,7 +67,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: #8b0000;
+  color: var(--ink-900);
   margin: 0;
   padding-top: 0.25rem;
   line-height: 1.4;
@@ -79,8 +81,8 @@
   width: calc(var(--chart-title-size) * 1.8);
   height: calc(var(--chart-title-size) * 1.8);
   border-radius: 6px;
-  background-color: rgba(139, 0, 0, 0.08);
-  color: #8b0000;
+  background-color: var(--maroon-tint);
+  color: var(--maroon-700);
   font-size: var(--chart-title-size);
 }
 
@@ -93,11 +95,11 @@
   padding: 2rem 1rem;
   text-align: center;
   font-size: 0.875rem;
-  color: #8a6f63;
+  color: var(--text-faint);
 }
 
 .donut-chart__error {
-  color: #d32f2f;
+  color: var(--danger);
   font-weight: 500;
 }
 
@@ -115,7 +117,7 @@
 .donut-chart__empty-text {
   margin: 0;
   font-size: 0.875rem;
-  color: #8a6f63;
+  color: var(--text-faint);
 }
 
 /* ========================================
@@ -172,7 +174,7 @@
 }
 
 .donut-chart__track {
-  stroke: #f4e2de;
+  stroke: var(--track-bg);
   stroke-linecap: butt;
 }
 
@@ -205,7 +207,7 @@
 .donut-chart__total {
   font-size: var(--chart-total-size);
   font-weight: 800;
-  color: #261816;
+  color: var(--text-strong);
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
   line-height: 1;
@@ -216,7 +218,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #8a6f63;
+  color: var(--text-faint);
 }
 
 /* ========================================
@@ -245,8 +247,8 @@
   justify-content: space-between;
   padding: clamp(0.25rem, 1.5vw, 0.5rem);
   border-radius: 0.625rem;
-  background-color: #fbf8f6;
-  border: 1px solid #f0e6e0;
+  background-color: var(--surface-subtle);
+  border: 1px solid var(--border-subtle);
   transition:
     background-color 0.2s ease,
     border-color 0.2s ease,
@@ -274,7 +276,7 @@
   border-radius: 50%;
   flex-shrink: 0;
   box-shadow:
-    0 0 0 2px #ffffff,
+    0 0 0 2px var(--card-bg),
     0 0 0 3px rgba(38, 24, 22, 0.08);
   transition:
     transform 0.2s ease,
@@ -284,14 +286,14 @@
 .donut-chart__legend-item:hover .donut-chart__legend-dot {
   transform: scale(1.2);
   box-shadow:
-    0 0 0 2px #ffffff,
+    0 0 0 2px var(--card-bg),
     0 0 0 3px rgba(38, 24, 22, 0.12);
 }
 
 .donut-chart__legend-status {
   font-size: var(--legend-status-size);
   font-weight: 600;
-  color: #5a413c;
+  color: var(--text-muted);
   text-transform: capitalize;
   letter-spacing: 0.02em;
   line-height: 1.4;
@@ -304,7 +306,7 @@
 .donut-chart__legend-percent {
   font-weight: 800;
   font-size: var(--legend-percent-size);
-  color: #8b0000;
+  color: var(--maroon-700);
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
   line-height: 1;

@@ -1,7 +1,7 @@
 /* ══════════════ Desktop / tablet row ══════════════ */
 .room-row {
   display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr auto;
+  grid-template-columns: var(--table-grid-columns);
   align-items: center;
   gap: 12px;
   background: #fff;
@@ -45,12 +45,18 @@
   font-weight: 700;
   font-size: 15px;
   color: #860100;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.room-row-name-text {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  text-transform: uppercase;
-  display: flex;
-  gap: 10px;
+  min-width: 0;
 }
 
 .room-row-custodian {
@@ -69,49 +75,65 @@
   gap: 6px;
 }
 
-.room-row-assets {
+.room-row .room-row-cell:last-child {
   display: flex;
   align-items: center;
-  gap: 8px;
-  justify-self: end;
+  justify-content: center;
 }
 
-.room-row-assets-icon {
-  color: #860100;
-  font-size: 13px;
-}
-
-.room-row-assets-label {
-  color: rgba(134, 1, 0, 1);
-  font-size: 12px;
-  font-weight: 700;
+.room-row-cell {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .room-row-assets-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
   background: rgba(134, 1, 0, 1);
   color: #fff;
   font-size: 12px;
   font-weight: 700;
+  font-variant-numeric: tabular-nums;
   padding: 3px 12px;
   border-radius: 999px;
-  min-width: 36px;
-  text-align: center;
+  width: 48px;
+  box-sizing: border-box;
 }
 
 .room-card {
   display: none;
 }
 
-/* ── Drop lower-priority columns before switching to card view ── */
-@media (max-width: 800px) {
+/* ── Tablet: drop "low" priority columns ── */
+@media (max-width: 1024px) {
   .room-row {
-    grid-template-columns: 1.5fr 1fr auto;
+    grid-template-columns: var(--table-grid-columns-tablet);
   }
   .room-row [data-priority="low"] {
     display: none;
   }
 }
+
+/* ── Mobile grid: drop "medium" priority columns too ── */
+@media (max-width: 800px) {
+  .room-row {
+    padding: 12px 16px;
+    grid-template-columns: var(--table-grid-columns-mobile);
+  }
+  .room-row [data-priority="medium"] {
+    display: none;
+  }
+}
+
+/* scope :last-child so it doesn't leak to other tables sharing Table.css */
+.room-cards .panel-header-cell:last-child {
+  text-align: center;
+}
+
 /* ══════════════ Mobile card ══════════════ */
 @media (max-width: 630px) {
   .room-row {

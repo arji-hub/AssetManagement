@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import NavButton from "../ui/button/NavButton";
 import "./Navbar.css";
@@ -56,6 +56,18 @@ function Navbar({
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(defaultSidebarOpen);
 
+  const [theme, setTheme] = useState(
+    () => localStorage.getItem("cict-ams-theme") || "light",
+  );
+
+  useEffect(() => {
+    localStorage.setItem("cict-ams-theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  };
+
   const filteredNavItems = navItems.filter((item) =>
     item.roles ? item.roles.includes(userRole) : true,
   );
@@ -76,7 +88,7 @@ function Navbar({
   };
 
   return (
-    <div className="layout-wrapper">
+    <div className="layout-wrapper" data-theme={theme}>
       {/* logout modal */}
       <LogoutModal
         isOpen={showLogoutModal}
@@ -90,12 +102,23 @@ function Navbar({
             ${sidebarOpen ? "sidebar-open" : "sidebar-closed"}
         `}
       >
-        {/*LOGO*/}
-        <div className="sidebar-logo-area">
+        {/*LOGO — click toggles dark/light mode*/}
+        <div
+          className="sidebar-logo-area"
+          onClick={toggleTheme}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              toggleTheme();
+            }
+          }}
+          aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+          title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+        >
           <img src={logo} alt="CICT Logo" className="sidebar-logo-img" />
-          <p className="sidebar-logo-text">
-            College of Information and Communications Technology
-          </p>
+          <p className="sidebar-logo-text">CICT-AMS</p>
         </div>
 
         {/*NAV PATHS*/}

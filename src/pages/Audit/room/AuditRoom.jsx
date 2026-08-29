@@ -7,6 +7,7 @@ import AuditRoomHistory from "../../../components/panel/AuditRoomHistory";
 import BackButton from "../../../components/ui/button/BackButton";
 import useRoomLogs from "../../../hooks/audit/useRoomLogs";
 import "./AuditRoom.css";
+import { pdf } from "@react-pdf/renderer";
 
 function AuditRoom() {
   const {
@@ -18,6 +19,9 @@ function AuditRoom() {
     stats,
     handleHistoryRowClick,
   } = useRoomLogs();
+
+  /* move here list of rooms then per room may view inventory pdf
+  then on top beside new audit or katabi ng search bar there is room pdf btn */
   return (
     <MainLayout>
       <div className="audit-room-page">
