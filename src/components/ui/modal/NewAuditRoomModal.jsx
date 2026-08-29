@@ -191,7 +191,7 @@ function NewAuditRoomModal() {
                           </p>
                           <p className="audit-modal-suggested-item-sub">
                             {room.last_audited_at
-                              ? `Last audited ${formatDate(foundRoom.last_audited_at)}`
+                              ? `Last audited ${formatDate(room.last_audited_at)}`
                               : "No audit recorded"}
                           </p>
                         </div>

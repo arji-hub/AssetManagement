@@ -8,15 +8,17 @@
   display: flex;
   flex-direction: column;
   border-radius: 10px;
-  border: 1px solid #ddc3c3;
+  border: 1px solid var(--card-border);
   padding: 1.25rem 1.5rem;
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   box-shadow:
     0 1px 2px rgba(38, 24, 22, 0.04),
     0 12px 24px -14px rgba(38, 24, 22, 0.22);
   transition:
     transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.25s ease,
+    border-color 0.25s ease;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -27,7 +29,7 @@
 
 .paric-card:hover {
   transform: translateY(-2px);
-  border-color: #f0c9c9;
+  border-color: var(--card-border-hover);
   box-shadow:
     0 2px 4px rgba(38, 24, 22, 0.05),
     0 20px 32px -16px rgba(38, 24, 22, 0.28);
@@ -49,13 +51,13 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #860100;
+  color: var(--ink-900);
 }
 
 .paric-card__total {
   font-size: 1rem;
   font-weight: 800;
-  color: #1a1210;
+  color: var(--text-strong);
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.01em;
   white-space: nowrap;
@@ -63,7 +65,7 @@
 
 .paric-card__empty-text {
   font-size: 0.875rem;
-  color: #8a6f63;
+  color: var(--text-faint);
 }
 
 .paric-treemap {
@@ -76,6 +78,17 @@
   gap: 2px;
 }
 
+/* Brand-colored blocks — fixed across themes, like the nav gradient */
+.paric-treemap__block--par {
+  background: linear-gradient(155deg, #9c0201 0%, #860100 60%, #6f0101 100%);
+  color: #ffffff;
+}
+
+.paric-treemap__block--ics {
+  background: linear-gradient(155deg, #f5aa2c 0%, #ef9c14 60%, #e08c00 100%);
+  color: #4a3200;
+}
+
 .paric-treemap__block {
   position: relative;
   display: flex;
@@ -86,16 +99,6 @@
   box-sizing: border-box;
   overflow: hidden;
   transition: flex-basis 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.paric-treemap__block--par {
-  background: linear-gradient(155deg, #9c0201 0%, #860100 60%, #6f0101 100%);
-  color: #ffffff;
-}
-
-.paric-treemap__block--ics {
-  background: linear-gradient(155deg, #f5aa2c 0%, #ef9c14 60%, #e08c00 100%);
-  color: #4a3200;
 }
 
 .paric-treemap__count {
@@ -115,7 +118,7 @@
   flex-wrap: wrap;
   gap: 0.5rem 1rem;
   margin-top: 5px;
-  border-top: 1px solid #f1e4e4;
+  border-top: 1px solid var(--border-subtle);
 }
 
 .paric-card__meta-values {
@@ -129,7 +132,7 @@
   padding-left: 0.9rem;
   font-size: 0.7rem;
   font-weight: 600;
-  color: #3d2c27;
+  color: var(--text-strong);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -156,7 +159,7 @@
 .paric-card__footnote {
   font-size: 0.75rem;
   font-style: italic;
-  color: #8a6f63;
+  color: var(--text-faint);
 }
 
 /* Compact mode: card is short — tighten spacing and shrink text

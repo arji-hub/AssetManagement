@@ -14,7 +14,6 @@ function MainLayout({ children }) {
 
   return (
     <Navbar
-      title="CICT-AMS"
       userName={`${user?.firstname} ${user?.lastname}`}
       userEmail={user?.email}
       userRole={user?.role}
