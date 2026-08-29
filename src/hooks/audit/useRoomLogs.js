@@ -26,13 +26,31 @@ function useRoomLogs() {
   }, []);
 
   // == Derived state ==========================================================
+  const filteredRooms = useMemo(() => {
+    const query = search.trim().toLowerCase();
+
+    return rooms.filter((room) => {
+      const assetCount = room.assetCount ?? room.total_assets ?? 0;
+      if (assetCount <= 0) return false;
+
+      if (!query) return true;
+
+      const name = (
+        room.name ||
+        room.room_name ||
+        room.room?.name ||
+        ""
+      ).toLowerCase();
+      return name.includes(query);
+    });
+  }, [rooms, search]);
 
   // == Actions ==========================================================
 
   const handleRoomClick = (roomID) => navigate(`/audit/room/${roomID}`);
 
   return {
-    rooms,
+    rooms: filteredRooms,
     roomsLoading,
     roomsError,
     search,

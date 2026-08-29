@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 import "./AuditRoomCard.css";
 
-function AuditRoomCard({ room, columns, onClick }) {
+function AuditRoomCard({ room, columns }) {
   const navigate = useNavigate();
   const displayName = room.name || room.room_name || room.room?.name;
 
@@ -27,7 +27,6 @@ function AuditRoomCard({ room, columns, onClick }) {
   );
 
   const handleClick = () => {
-    if (onClick) return onClick(room);
     navigate(`/audit/room/${room.room_id || room.id}`);
   };
 

@@ -13,14 +13,7 @@ import AuditRoomCard from "../../../components/ui/card/audit/AuditRoomCard";
 import "./AuditRoom.css";
 
 function AuditRoom() {
-  const {
-    rooms,
-    roomsLoading,
-    roomsError,
-    search,
-    setSearch,
-    handleRoomClick,
-  } = useRoomLogs();
+  const { rooms, roomsLoading, roomsError, search, setSearch } = useRoomLogs();
 
   /* move here list of rooms then per room may view inventory pdf
   then on top beside new audit or katabi ng search bar there is room pdf btn */
@@ -62,7 +55,7 @@ function AuditRoom() {
             />
             <input
               type="text"
-              placeholder="Search logs by room"
+              placeholder="Search room"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
