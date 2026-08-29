@@ -29,9 +29,9 @@ function AssetTable({
     <div
       className="asset-table-container"
       style={{
-        "--asset-grid-columns": gridTemplate,
-        "--asset-grid-columns-tablet": gridTemplateNoLow,
-        "--asset-grid-columns-mobile": gridTemplateHighOnly,
+        "--table-grid-columns": gridTemplate,
+        "--table-grid-columns-tablet": gridTemplateNoLow,
+        "--table-grid-columns-mobile": gridTemplateHighOnly,
       }}
     >
       <div className="asset-table-header">

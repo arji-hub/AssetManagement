@@ -9,7 +9,7 @@
 
 .asset-table-header {
   display: grid;
-  grid-template-columns: var(--asset-grid-columns);
+  grid-template-columns: var(--table-grid-columns);
   background: #860100;
 }
 
@@ -25,7 +25,7 @@
 
 @media (max-width: 1024px) {
   .asset-table-header {
-    grid-template-columns: var(--asset-grid-columns-tablet);
+    grid-template-columns: var(--table-grid-columns-tablet);
   }
 
   .asset-table-header-cell[data-priority="low"] {
@@ -35,7 +35,7 @@
 
 @media (max-width: 800px) {
   .asset-table-header {
-    grid-template-columns: var(--asset-grid-columns-mobile);
+    grid-template-columns: var(--table-grid-columns-mobile);
   }
 
   .asset-table-header-cell[data-priority="medium"] {

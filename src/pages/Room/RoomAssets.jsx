@@ -4,15 +4,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import MainLayout from "../../components/layout/MainLayout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FilterModal from "../../components/ui/modal/FilterModal";
-import { Status } from "../../components/ui/status/assetStatus";
 import { useAssetFilters } from "../../hooks/asset/useAssetFilters";
 import { useRoomAssets } from "../../hooks/room/useRoomAssets";
-import { formatDate } from "../../utils/date";
 import { PDFPreviewModal } from "../../components/ui/modal/PDFPreviewModal";
 import { RoomInventoryPDF } from "../../pdf/templates/RoomInventoryPDF";
 import BackButton from "../../components/ui/button/BackButton";
 import AssetTable from "../../components/panel/AssetTable";
-import { roomAssetsColumns } from "../../data/Columns.jsx";
+import { roomAssetsColumns } from "../../data/columns";
 
 function RoomAssets() {
   const { roomName: roomID } = useParams();

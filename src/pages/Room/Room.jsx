@@ -6,10 +6,8 @@ import RoomModal from "../../components/ui/modal/RoomModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRoom } from "../../hooks/room/useRoom";
 import { ROOM_FILTER_OPTIONS } from "../../data/room";
-import { RoomListPDF } from "../../pdf/templates/RoomListPDF";
-import { PDFPreviewModal } from "../../components/ui/modal/PDFPreviewModal";
 import { displayDate } from "../../utils/date";
-import { roomColumns } from "../../data/Columns";
+import { roomColumns } from "../../data/columns";
 
 function Room() {
   const {
@@ -41,12 +39,6 @@ function Room() {
             <p className="date">{displayDate}</p>
           </div>
           <div className="room-settings">
-            {/* <PDFPreviewModal
-              title="Room List"
-              fileName="room-list.pdf"
-              document={<RoomListPDF rooms={filteredRooms} />}
-              triggerLabel="Room List"
-            /> */}
             <div className="search-bar">
               <FontAwesomeIcon
                 icon="fa-solid fa-magnifying-glass"

@@ -10,7 +10,7 @@ import { CUSTODIAN_FILTER_OPTIONS } from "../../data/roles";
 import { CustodianListPDF } from "../../pdf/templates/CustodianListPDF";
 import { PDFPreviewModal } from "../../components/ui/modal/PDFPreviewModal";
 import { displayDate } from "../../utils/date";
-import { custodianColumns } from "../../data/Columns";
+import { custodianColumns } from "../../data/columns";
 
 function Custodian() {
   const {

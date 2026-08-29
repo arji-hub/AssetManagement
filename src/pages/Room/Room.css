@@ -272,6 +272,10 @@
   min-height: 0;
 }
 
+.room-cards .panel-header-cell:nth-last-child(2) {
+  text-align: center;
+}
+
 .room-status {
   font-size: 14px;
   color: #6b7280;

@@ -10,7 +10,7 @@ import { PDFPreviewModal } from "../../components/ui/modal/PDFPreviewModal";
 import { CustodianInventoryPDF } from "../../pdf/templates/CustodianInventoryPDF";
 import BackButton from "../../components/ui/button/BackButton";
 import AssetTable from "../../components/panel/AssetTable";
-import { custodianAssetsColumns } from "../../data/Columns";
+import { custodianAssetsColumns } from "../../data/columns";
 
 function CustodianAssets() {
   const { username } = useParams();
