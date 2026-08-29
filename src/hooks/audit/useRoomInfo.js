@@ -222,21 +222,22 @@ function useRoomInfo(auditID) {
   const hasItems = !loading && auditItems.length > 0;
 
   const handleCompleteAudit = useCallback(async () => {
-    if (!auditID || completingAudit) return;
-    if (audit?.status === "completed") return;
+    if (!auditID || completingAudit) return { ok: false, reason: "blocked" };
+    if (audit?.status === "completed")
+      return { ok: false, reason: "already_completed" };
 
     setCompletingAudit(true);
     setCompleteAuditError(null);
 
     try {
       await completeAuditSession(auditID);
-      // No local setAudit needed — the onSnapshot subscription in
-      // subscribeToAuditByID will pick up the status change automatically.
+      return { ok: true };
     } catch (err) {
       console.error("Failed to complete audit:", err);
       setCompleteAuditError(
         "Failed to save and complete the audit. Please try again.",
       );
+      return { ok: false, error: err };
     } finally {
       setCompletingAudit(false);
     }

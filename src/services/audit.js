@@ -288,11 +288,30 @@ export async function completeAuditSession(auditID) {
   }
 
   const auditRef = doc(db, "audit_room", auditID);
+  const auditSnap = await getDoc(auditRef);
 
-  await updateDoc(auditRef, {
+  if (!auditSnap.exists()) {
+    throw new Error(`completeAuditSession: audit "${auditID}" not found.`);
+  }
+
+  const { room_id } = auditSnap.data();
+  if (!room_id) {
+    throw new Error(`completeAuditSession: audit "${auditID}" has no room_id.`);
+  }
+
+  const roomRef = doc(db, "room", room_id);
+  const completedAt = serverTimestamp();
+
+  const batch = writeBatch(db);
+  batch.update(auditRef, {
     status: "completed",
-    completed_at: serverTimestamp(),
+    completed_at: completedAt,
   });
+  batch.update(roomRef, {
+    last_audited_at: completedAt,
+  });
+
+  await batch.commit();
 }
 
 export async function addUnexpectedDiscrepancy(auditID, assetData, roomId) {

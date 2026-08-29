@@ -53,7 +53,7 @@ function DonutChart({
       dashoffset,
       color:
         status === "Working"
-          ? "#860100"
+          ? "var(--maroon-700)"
           : STATUS_COLORS[status]?.bg || STATUS_COLORS.Undefined.bg,
     };
   });

@@ -1,8 +1,11 @@
 import { Status } from "../components/ui/status/assetStatus";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { formatDate } from "../utils/date";
 import { getReportType } from "../utils/report";
 import { toTitleCase } from "../utils/TextCasing";
 import { TRANSFER_TYPE_LABELS } from "./transfer";
+import { getRole } from "../utils/role";
+import { ROLES_COLOR } from "./roles";
 
 export const assetColumns = [
   {
@@ -134,31 +137,63 @@ export const custodianAssetsColumns = [
   },
 ];
 
-/* ── Rooms (Room list page) ── */
 export const roomColumns = [
   {
     key: "name",
     label: "Room",
-    width: "1.5fr",
+    width: "1.2fr",
     priority: "high",
+    card: { role: "title" },
+    render: (room) => (
+      <span className="room-row-name">
+        <FontAwesomeIcon
+          icon="fa-solid fa-door-open"
+          className="icon-door icon-door--open"
+        />
+        <FontAwesomeIcon
+          icon="fa-solid fa-door-closed"
+          className="icon-door icon-door--closed"
+        />
+        <span className="room-row-name-text">{room.name}</span>
+      </span>
+    ),
   },
   {
     key: "custodian",
     label: "Custodian",
-    width: "1fr",
-    priority: "high",
+    width: "1.3fr",
+    priority: "medium",
+    card: { role: "meta", icon: "fa-regular fa-user" },
+    render: (room) => (
+      <span className="room-row-custodian">{room.roomCustodian || "—"}</span>
+    ),
   },
   {
     key: "audit",
     label: "Last Audited",
     width: "1fr",
-    priority: "medium",
+    priority: "high",
+    card: { role: "date" },
+    render: (room) => (
+      <span className="room-row-audit">
+        {room.last_audited_at
+          ? formatDate(room.last_audited_at)
+          : "Not yet audited"}
+      </span>
+    ),
   },
   {
     key: "assets",
     label: "Total Assets",
-    width: "auto",
+    width: "140px",
     priority: "high",
+    card: { role: "assets" },
+    render: (room) => (
+      <span className="room-row-assets-count">
+        <FontAwesomeIcon icon="fa-solid fa-box-archive" />
+        {room.assetCount ?? 0}
+      </span>
+    ),
   },
 ];
 
@@ -169,24 +204,62 @@ export const custodianColumns = [
     label: "Name",
     width: "1.5fr",
     priority: "high",
+    card: { role: "title" },
+    render: (custodian) => (
+      <span className="custodian-row-name">
+        <FontAwesomeIcon
+          icon="fa-regular fa-user"
+          className="icon-user icon-user--default"
+        />
+        <FontAwesomeIcon
+          icon="fa-solid fa-user"
+          className="icon-user icon-user--hover"
+        />
+        <span className="custodian-row-name-text">{custodian.fullname}</span>
+      </span>
+    ),
   },
   {
     key: "email",
     label: "Email",
     width: "1.5fr",
-    priority: "medium",
+    priority: "low",
+    card: { role: "meta" },
+    render: (custodian) => (
+      <span className="custodian-row-email">{custodian.email || "—"}</span>
+    ),
   },
   {
     key: "role",
     label: "Role",
     width: "1fr",
     priority: "high",
+    card: { role: "badge" },
+    render: (custodian) => {
+      const roleColor = ROLES_COLOR[custodian.role];
+      const badgeStyle = {
+        background: roleColor?.background || "rgba(59, 114, 68, 0.3)",
+        color: roleColor?.text || "#004700",
+      };
+      return (
+        <span className="custodian-badge" style={badgeStyle}>
+          {getRole(custodian.role)}
+        </span>
+      );
+    },
   },
   {
     key: "assets",
     label: "Assets in Custody",
-    width: "auto",
+    width: "140px",
     priority: "high",
+    card: { role: "assets" },
+    render: (custodian) => (
+      <span className="custodian-row-assets-count">
+        <FontAwesomeIcon icon="fa-solid fa-box-archive" />
+        {custodian.asset_count ?? 0}
+      </span>
+    ),
   },
 ];
 
