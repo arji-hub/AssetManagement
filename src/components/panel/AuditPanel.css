@@ -1,18 +1,12 @@
 .audit-panel-card {
-  --audit-maroon: #860100;
-  --audit-amber: #f5aa2c;
-  --audit-border: #e2beb9;
-  --audit-ink: #2b1210;
-  --audit-muted: #7a5d54;
-
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   width: 100%;
   padding: 26px 24px 20px;
-  background: #ffffff; /* 60 — surface */
-  border: 1px solid var(--audit-border);
+  background: var(--surface-card);
+  border: 1px solid var(--card-border);
   border-radius: 14px;
   text-align: left;
   cursor: pointer;
@@ -21,10 +15,11 @@
     border-color 0.2s ease,
     box-shadow 0.25s ease,
     transform 0.15s ease;
+  box-shadow: var(--card-elevated-container-elevation);
 }
 
 .audit-panel-card:hover {
-  border-color: var(--audit-amber); /* 10 — accent surfaces on interaction */
+  border-color: var(--gold-500); /* accent surfaces on interaction */
   box-shadow: 0 12px 28px -14px rgba(134, 1, 0, 0.35);
   transform: translateY(-2px);
 }
@@ -34,7 +29,7 @@
 }
 
 .audit-panel-card:focus-visible {
-  outline: 2px solid var(--audit-maroon);
+  outline: 2px solid var(--maroon-700);
   outline-offset: 3px;
 }
 
@@ -43,7 +38,7 @@
   position: absolute;
   inset: 0 auto 0 0;
   width: 4px;
-  background: var(--audit-maroon); /* 30 — structural */
+  background: var(--maroon-700); /* structural */
   transform: scaleY(0.4);
   transform-origin: top;
   transition: transform 0.25s ease;
@@ -56,7 +51,7 @@
   left: 0;
   width: 100%;
   height: 22px;
-  background: var(--audit-amber); /* 10 — small accent tip */
+  background: var(--gold-500); /* small accent tip */
 }
 
 .audit-panel-card:hover .audit-panel-rail {
@@ -67,7 +62,7 @@
   width: 46px;
   height: 46px;
   border-radius: 12px;
-  background: var(--audit-maroon); /* 30 — structural */
+  background: var(--maroon-700); /* structural */
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -78,7 +73,7 @@
 }
 
 .audit-panel-card:hover .audit-panel-icon {
-  background: #6c0100;
+  background: var(--maroon-800);
 }
 
 .audit-panel-body {
@@ -89,14 +84,14 @@
   font-size: 17px;
   font-weight: 700;
   letter-spacing: -0.01em;
-  color: var(--audit-ink); /* neutral text, not part of the 3-color ratio */
+  color: var(--text-strong);
   margin: 0 0 6px;
 }
 
 .audit-panel-desc {
   font-size: 13.5px;
   line-height: 1.5;
-  color: var(--audit-muted);
+  color: var(--text-muted);
   margin: 0;
 }
 
@@ -104,7 +99,7 @@
 .audit-panel-footer {
   margin-top: 20px;
   padding-top: 14px;
-  border-top: 1px solid var(--audit-border);
+  border-top: 1px solid var(--card-border);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -118,7 +113,7 @@
   gap: 7px;
   font-size: 12px;
   font-weight: 600;
-  color: var(--audit-muted);
+  color: var(--text-muted);
 }
 
 .audit-panel-status-dot {
@@ -130,11 +125,11 @@
 
 /* neutral = amber accent dot, danger = maroon dot (more assertive) */
 .audit-panel-status--neutral .audit-panel-status-dot {
-  background: var(--audit-amber); /* 10 */
+  background: var(--gold-500);
 }
 
 .audit-panel-status--danger .audit-panel-status-dot {
-  background: var(--audit-maroon); /* 30 */
+  background: var(--maroon-700);
   box-shadow: 0 0 0 3px rgba(134, 1, 0, 0.15);
 }
 
@@ -144,7 +139,7 @@
   gap: 6px;
   font-size: 12.5px;
   font-weight: 700;
-  color: var(--audit-maroon); /* 30 */
+  color: var(--maroon-700);
   white-space: nowrap;
 }
 

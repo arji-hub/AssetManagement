@@ -28,26 +28,61 @@ export const getStatusBgColor = (status) => {
 };
 
 export const STATUS_COLORS = {
-  //undefined
-  Undefined: { bg: "rgba(200, 200, 200, 0.7)", color: "#333333" },
+  // undefined
+  Undefined: {
+    bg: "var(--status-neutral-bg)",
+    color: "var(--status-neutral)",
+  },
 
   // asset statuses
-  Working: { bg: "rgba(0, 255, 128, 0.7)", color: "#003d1f" },
-  Condemned: { bg: "rgba(160, 160, 255, 0.7)", color: "#0d0d2e" },
+  Working: {
+    bg: "var(--status-success-2-bg)",
+    color: "var(--status-success-2)",
+  },
+  Condemned: {
+    bg: "var(--status-condemned-bg)",
+    color: "var(--status-condemned)",
+  },
 
   // report statuses
-  Damaged: { bg: "rgba(255, 120, 0, 0.7)", color: "#2e1500" },
-  "For Repair": { bg: "rgba(255, 200, 0, 0.7)", color: "#3d2e00" },
-  Missing: { bg: "rgba(255, 50, 80, 0.7)", color: "#1a0008" },
-  Found: { bg: "rgba(0, 255, 128, 0.7)", color: "#003d1f" },
+  Damaged: {
+    bg: "var(--status-warning-bg)",
+    color: "var(--status-warning)",
+  },
+  "For Repair": {
+    bg: "var(--status-pending-2-bg)",
+    color: "var(--status-pending-2)",
+  },
+  Missing: {
+    bg: "var(--status-danger-2-bg)",
+    color: "var(--status-danger-2)",
+  },
+  Found: {
+    bg: "var(--status-success-2-bg)",
+    color: "var(--status-success-2)",
+  },
 
-  //transfer statuses
-  Pending: { bg: "rgba(255, 200, 0, 0.7)", color: "#3d2e00" },
-  "For Approval": { bg: "rgba(120, 130, 255, 0.7)", color: "#10103d" },
-  Completed: { bg: "rgba(0, 255, 128, 0.7)", color: "#003d1f" },
-  Denied: { bg: "rgba(255, 50, 80, 0.7)", color: "#1a0008" },
+  // transfer statuses
+  Pending: {
+    bg: "var(--status-pending-2-bg)",
+    color: "var(--status-pending-2)",
+  },
+  "For Approval": {
+    bg: "var(--status-info-2-bg)",
+    color: "var(--status-info-2)",
+  },
+  Completed: {
+    bg: "var(--status-success-2-bg)",
+    color: "var(--status-success-2)",
+  },
+  Denied: {
+    bg: "var(--status-danger-2-bg)",
+    color: "var(--status-danger-2)",
+  },
 
   // audit statuses
-  Completed: { bg: "rgba(0, 255, 128, 0.7)", color: "#003d1f" },
-  Ongoing: { bg: "rgba(255, 120, 0, 0.7)", color: "#2e1500" },
+  Ongoing: {
+    bg: "var(--status-warning-bg)",
+    color: "var(--status-warning)",
+  },
 };

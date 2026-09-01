@@ -9,8 +9,9 @@ import { useCustodianAssets } from "../../hooks/custodian/useCustodianAssets";
 import { PDFPreviewModal } from "../../components/ui/modal/PDFPreviewModal";
 import { CustodianInventoryPDF } from "../../pdf/templates/CustodianInventoryPDF";
 import BackButton from "../../components/ui/button/BackButton";
-import AssetTable from "../../components/panel/AssetTable";
-import { custodianAssetsColumns } from "../../data/Columns";
+import Table from "../../components/panel/Table";
+import AssetCard from "../../components/ui/card/asset/AssetCard";
+import { custodianAssetsColumns } from "../../data/columns";
 
 function CustodianAssets() {
   const { username } = useParams();
@@ -100,12 +101,24 @@ function CustodianAssets() {
         )}
 
         {/* ── Asset list - Custodian ── */}
-        <AssetTable
+        <Table
           columns={custodianAssetsColumns}
-          data={filteredAssets}
+          items={filteredAssets}
           loading={loading}
           error={error}
+          itemLabel="assets"
           emptyMessage="No assets found for this custodian."
+          emptyIcon="fa-solid fa-box-open"
+          desktopPageSize={20}
+          mobilePageSize={10}
+          renderItem={(asset, index) => (
+            <AssetCard
+              key={asset.id}
+              asset={asset}
+              index={index}
+              columns={custodianAssetsColumns}
+            />
+          )}
         />
       </div>
 

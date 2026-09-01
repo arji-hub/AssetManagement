@@ -31,14 +31,6 @@ function Audit() {
 
         <div className="audit-panels">
           <AuditPanel
-            icon="qrcode"
-            title="Audit Assets per Room"
-            description="Verify physical assets against system records by room and laboratory locations."
-            lastEntry={roomLastEntry}
-            badgeVariant="danger"
-            onClick={handleRoomClick}
-          />
-          <AuditPanel
             icon="door-open"
             title="Room Logs"
             description="View the history of asset movements and status changes recorded per room."

@@ -41,6 +41,7 @@ function useAuditRoomStart() {
 
   function handleOpen() {
     setIsOpen(true);
+    setTimeout(() => roomInputRef.current?.focus(), 0);
   }
 
   function handleClose() {
@@ -107,6 +108,11 @@ function useAuditRoomStart() {
     handleClose();
   }
 
+  function handleOpenWithRoom(room) {
+    setIsOpen(true);
+    handleSelectRoom(room);
+  }
+
   return {
     roomInputRef,
     isOpen,
@@ -126,6 +132,7 @@ function useAuditRoomStart() {
     handleRoomSearchKeyDown,
     handleSelectRoom,
     handleProceed,
+    handleOpenWithRoom,
   };
 }
 

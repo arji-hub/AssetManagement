@@ -19,16 +19,16 @@ export const ROLE_FILTER_OPTIONS = [
 
 export const ROLES_COLOR = {
   admin: {
-    background: "rgba(220, 38, 38, 0.12)",
-    text: "#991b1b",
+    background: "var(--danger-bg)",
+    text: "var(--danger)",
   },
   fulltime: {
-    background: "rgba(29, 78, 216, 0.12)",
-    text: "#1e3a8a",
+    background: "var(--info-bg)",
+    text: "var(--info)",
   },
   parttime: {
-    background: "rgba(34, 197, 94, 0.12)",
-    text: "#166534",
+    background: "var(--success-bg)",
+    text: "var(--success)",
   },
 };
 

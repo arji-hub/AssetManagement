@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./AssetCard.css";
 
@@ -26,15 +27,18 @@ function resolveCardRoles(columns) {
   };
 }
 
-function AssetCard({ asset, index, columns, onClick }) {
+function AssetCard({ asset, index, columns }) {
+  const navigate = useNavigate();
   const { titleCol, badgeCol, dateCol, metaCols } = resolveCardRoles(columns);
 
-  const handleClick = () => onClick?.(asset);
+  const handleClick = (id) => {
+    navigate(`/asset/info/${id}`);
+  };
 
   return (
     <>
       {/* ── Desktop / tablet row ── */}
-      <div className="asset-card-row" onClick={handleClick}>
+      <div className="asset-card-row" onClick={() => handleClick(asset.id)}>
         {columns.map((col) => (
           <div
             key={col.key}
@@ -53,7 +57,7 @@ function AssetCard({ asset, index, columns, onClick }) {
       </div>
 
       {/* ── Mobile card ── */}
-      <div className="asset-card" onClick={handleClick}>
+      <div className="asset-card" onClick={() => handleClick(asset.id)}>
         <div className="asset-card-header">
           {dateCol && (
             <span className="asset-card-date">
