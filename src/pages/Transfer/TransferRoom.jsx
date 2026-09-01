@@ -7,7 +7,7 @@ import { useTransfers } from "../../hooks/transfer/useTransfers";
 import Table from "../../components/panel/Table";
 import TransferRoomCard from "../../components/ui/card/transfer/TransferRoomCard";
 import TransferRoomModal from "../../components/ui/modal/TransferRoomModal";
-import { TRANSFER_COLUMNS } from "../../data/Columns";
+import { TRANSFER_COLUMNS } from "../../data/columns";
 import "./Transfer.css";
 
 function TransferRoom() {
@@ -95,7 +95,7 @@ function TransferRoom() {
         {showTransferRoomModal && (
           <TransferRoomModal onClose={handleTransferRoomModalClose} />
         )}
-      </div>  
+      </div>
     </MainLayout>
   );
 }

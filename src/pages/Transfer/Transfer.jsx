@@ -9,7 +9,7 @@ import TransferCard from "../../components/ui/card/transfer/TransferCard";
 import TransferModal from "../../components/ui/modal/TransferModal";
 import TransferMR from "../../components/ui/modal/TransferMR";
 import ROLES from "../../data/roles";
-import { TRANSFER_COLUMNS } from "../../data/Columns";
+import { TRANSFER_COLUMNS } from "../../data/columns";
 import "./Transfer.css";
 
 function Transfer() {

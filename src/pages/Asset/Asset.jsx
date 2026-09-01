@@ -11,7 +11,7 @@ import { useAssets } from "../../hooks/asset/useAssets";
 import { displayDate } from "../../utils/date";
 import Table from "../../components/panel/Table";
 import AssetCard from "../../components/ui/card/asset/AssetCard";
-import { assetColumns } from "../../data/Columns";
+import { assetColumns } from "../../data/columns";
 
 function Asset() {
   const { role, currentUser } = useAuth();

@@ -14,22 +14,6 @@
   flex-wrap: wrap;
 }
 
-.title {
-  font-size: 24px !important;
-  font-weight: 700;
-  color: #111;
-  margin: 0;
-  line-height: 1;
-}
-
-.date {
-  font-size: 11px;
-  color: #888;
-  letter-spacing: 0.06em;
-  margin: 0;
-  text-transform: uppercase;
-}
-
 .audit-subtitle {
   font-size: 16px;
   color: #5a413c;

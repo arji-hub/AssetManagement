@@ -5,9 +5,9 @@
   justify-content: space-between;
   gap: 12px;
   padding: 12px 24px 0;
-  border-top: 1px solid #e2beb9;
+  border-top: 1px solid var(--card-border);
   font-size: 13px;
-  color: #5a413c;
+  color: var(--text-muted);
   margin-top: auto;
 }
 
@@ -18,9 +18,9 @@
 }
 
 .panel-page-btn {
-  background: #fff;
-  border: 1px solid #e2beb9;
-  color: #860100;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  color: var(--maroon-700);
   border-radius: 6px;
   width: 30px;
   height: 30px;
@@ -35,8 +35,8 @@
 }
 
 .panel-page-btn:hover:not(:disabled) {
-  background: #fbeceb;
-  border-color: #860100;
+  background: var(--maroon-tint);
+  border-color: var(--maroon-700);
 }
 
 .panel-page-btn:disabled {
@@ -46,7 +46,7 @@
 
 .panel-page-indicator {
   font-weight: 700;
-  color: #860100;
+  color: var(--maroon-700);
   min-width: 48px;
   text-align: center;
 }

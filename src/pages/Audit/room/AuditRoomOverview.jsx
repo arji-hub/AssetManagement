@@ -4,10 +4,16 @@ import MainLayout from "../../../components/layout/MainLayout";
 import useRoomOverview from "../../../hooks/audit/useRoomOverview";
 import AuditConfirmRoomModal from "../../../components/ui/modal/AuditConfirmRoomModal";
 import AuditCard from "../../../components/ui/card/audit/AuditCard";
-import { Status } from "../../../components/ui/status/assetStatus";
-import { formatDate } from "../../../utils/date";
 import BackButton from "../../../components/ui/button/BackButton";
 import useAuditRoomSession from "../../../hooks/audit/useAuditRoomSession";
+import Table from "../../../components/panel/Table";
+import AssetCard from "../../../components/ui/card/asset/AssetCard";
+import DiscrepancyCard from "../../../components/ui/card/audit/DiscrepancyCard";
+import {
+  auditRoomAssetColumns,
+  auditHistoryColumns,
+} from "../../../data/columns/auditColumns";
+import { formatDate } from "../../../utils/date";
 import "./AuditRoomOverview.css";
 
 function AuditRoomOverview() {
@@ -115,71 +121,25 @@ function AuditRoomOverview() {
             </p>
           )}
 
-          {assetsLoading ? (
-            <p className="audit-overview-empty">Loading assets…</p>
-          ) : assets.length === 0 ? (
-            <p className="audit-overview-empty">
-              No assets found in this room.
-            </p>
-          ) : (
-            <div className="audit-overview-scroll-area">
-              {/* Desktop table */}
-              <table className="audit-overview-table">
-                <thead>
-                  <tr>
-                    <th>Description</th>
-                    <th>Category</th>
-                    <th>Custodian</th>
-                    <th>Condition</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {assets.map((asset) => (
-                    <tr
-                      key={asset.id}
-                      onClick={() => navigate(`/asset/info/${asset.id}`)}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <td>{asset.description || "—"}</td>
-                      <td>{asset.category || "—"}</td>
-                      <td>{asset.custodian_name || asset.name || "—"}</td>
-                      <td>
-                        <Status status={asset.status} />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              {/* Mobile card list */}
-              <div className="audit-card-list">
-                {assets.map((asset) => (
-                  <div
-                    className="audit-card-row"
-                    key={asset.id}
-                    onClick={() => navigate(`/asset/info/${asset.id}`)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <p className="audit-card-row-title">
-                      {asset.description || "—"}
-                    </p>
-                    <div className="audit-card-row-meta">
-                      <span className="audit-card-row-label">Category</span>
-                      <span>{asset.category || "—"}</span>
-                    </div>
-                    <div className="audit-card-row-meta">
-                      <span className="audit-card-row-label">Custodian</span>
-                      <span>{asset.custodian_name || asset.name || "—"}</span>
-                    </div>
-                    <div className="audit-card-row-meta">
-                      <span className="audit-card-row-label">Condition</span>
-                      <Status status={asset.status} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          <Table
+            columns={auditRoomAssetColumns}
+            items={assets}
+            loading={assetsLoading}
+            error={assetsError}
+            itemLabel="assets"
+            emptyMessage="No assets found in this room."
+            emptyIcon="fa-solid fa-box-open"
+            desktopPageSize={20}
+            mobilePageSize={10}
+            renderItem={(asset, index) => (
+              <AssetCard
+                key={asset.id}
+                asset={asset}
+                index={index}
+                columns={auditRoomAssetColumns}
+              />
+            )}
+          />
         </div>
 
         {/* Previous audits */}
@@ -192,98 +152,26 @@ function AuditRoomOverview() {
             </p>
           )}
 
-          {auditsLoading ? (
-            <p className="audit-overview-empty">Loading audit history…</p>
-          ) : previousAudits.length === 0 ? (
-            <p className="audit-overview-empty">No audits conducted yet.</p>
-          ) : (
-            <div className="audit-overview-scroll-area">
-              {/* Desktop table */}
-              <table className="audit-overview-table">
-                <thead>
-                  <tr>
-                    <th>Audit No.</th>
-                    <th>Conducted by</th>
-                    <th>Date</th>
-                    <th>Audited</th>
-                    <th>Discrepancies</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {previousAudits.map((audit) => (
-                    <tr
-                      key={audit.id}
-                      onClick={() =>
-                        navigate(`/audit/room/${roomID}/${audit.id}`)
-                      }
-                      style={{ cursor: "pointer" }}
-                    >
-                      <td className="audit-history-audit-no">
-                        {audit.audit_no}
-                      </td>
-                      <td>{audit.audited_by_name || "—"}</td>
-                      <td className="audit-history-muted">
-                        {formatDate(audit.completed_at ?? audit.created_at)}
-                      </td>
-                      <td>
-                        {audit.audited_count}/{audit.total_assets}
-                      </td>
-                      <td
-                        className={
-                          audit.discrepancy_count > 0
-                            ? "audit-history-discrepancy"
-                            : ""
-                        }
-                      >
-                        {audit.discrepancy_count ?? 0}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              {/* Mobile card list */}
-              <div className="audit-card-list">
-                {previousAudits.map((audit) => (
-                  <div className="audit-card-row" key={audit.id}>
-                    <p className="audit-card-row-title audit-history-audit-no">
-                      {audit.audit_no}
-                    </p>
-                    <div className="audit-card-row-meta">
-                      <span className="audit-card-row-label">Conducted by</span>
-                      <span>{audit.audited_by_name || "—"}</span>
-                    </div>
-                    <div className="audit-card-row-meta">
-                      <span className="audit-card-row-label">Date</span>
-                      <span className="audit-history-muted">
-                        {formatDate(audit.completed_at ?? audit.created_at)}
-                      </span>
-                    </div>
-                    <div className="audit-card-row-meta">
-                      <span className="audit-card-row-label">Audited</span>
-                      <span>
-                        {audit.audited_count}/{audit.total_assets}
-                      </span>
-                    </div>
-                    <div className="audit-card-row-meta">
-                      <span className="audit-card-row-label">
-                        Discrepancies
-                      </span>
-                      <span
-                        className={
-                          audit.discrepancy_count > 0
-                            ? "audit-history-discrepancy"
-                            : ""
-                        }
-                      >
-                        {audit.discrepancy_count ?? 0}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          <Table
+            columns={auditHistoryColumns}
+            items={previousAudits}
+            loading={auditsLoading}
+            error={auditsError}
+            itemLabel="audits"
+            emptyMessage="No audits conducted yet."
+            emptyIcon="fa-solid fa-clock-rotate-left"
+            desktopPageSize={20}
+            mobilePageSize={10}
+            renderItem={(audit, index) => (
+              <DiscrepancyCard
+                key={audit.id}
+                audit={audit}
+                index={index}
+                columns={auditHistoryColumns}
+                roomID={roomID}
+              />
+            )}
+          />
         </div>
       </div>
     </MainLayout>

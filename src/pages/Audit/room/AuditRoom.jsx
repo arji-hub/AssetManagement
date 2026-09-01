@@ -1,24 +1,20 @@
-import React from "react";
+import { useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MainLayout from "../../../components/layout/MainLayout";
 import NewAuditRoomModal from "../../../components/ui/modal/NewAuditRoomModal";
 import AuditCard from "../../../components/ui/card/audit/AuditCard";
-import AuditRoomHistory from "../../../components/panel/AuditRoomHistory";
 import BackButton from "../../../components/ui/button/BackButton";
 import useRoomLogs from "../../../hooks/audit/useRoomLogs";
+import { RoomListPDF } from "../../../pdf/templates/RoomListPDF";
+import { PDFPreviewModal } from "../../../components/ui/modal/PDFPreviewModal";
+import { roomAuditColumns } from "../../../data/columns";
+import Table from "../../../components/panel/Table";
+import AuditRoomCard from "../../../components/ui/card/audit/AuditRoomCard";
 import "./AuditRoom.css";
-import { pdf } from "@react-pdf/renderer";
 
 function AuditRoom() {
-  const {
-    filteredLogs,
-    logsLoading,
-    logsError,
-    search,
-    setSearch,
-    stats,
-    handleHistoryRowClick,
-  } = useRoomLogs();
+  const { rooms, roomsLoading, roomsError, search, setSearch } = useRoomLogs();
+  const openWithRoomRef = useRef(null);
 
   /* move here list of rooms then per room may view inventory pdf
   then on top beside new audit or katabi ng search bar there is room pdf btn */
@@ -38,25 +34,21 @@ function AuditRoom() {
           </div>
 
           <div className="audit-room-header-actions">
-            <NewAuditRoomModal />
+            <NewAuditRoomModal
+              onReady={(fn) => {
+                openWithRoomRef.current = fn;
+              }}
+            />
           </div>
         </div>
 
         <div className="audit-room-stats">
-          <AuditCard
-            variant="secondary"
-            label="Total audits"
-            value={logsLoading ? "—" : stats.totalAudits}
-          />
-          <AuditCard
-            variant="primary"
-            label="Rooms pending"
-            value={logsLoading ? "—" : stats.roomsPending}
-          />
+          <AuditCard variant="secondary" label="Total audits" value={"—"} />
+          <AuditCard variant="primary" label="Rooms not audited" value={"—"} />
           <AuditCard
             variant="neutral"
             label="Avg. discrepancy rate"
-            value={logsLoading ? "—" : `${stats.avgDiscrepancyRate}%`}
+            value={"—"}
           />
         </div>
 
@@ -68,23 +60,37 @@ function AuditRoom() {
             />
             <input
               type="text"
-              placeholder="Search logs by room or auditor..."
+              placeholder="Search room"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
+          <PDFPreviewModal
+            title="Room List"
+            fileName="room-list.pdf"
+            document={<RoomListPDF rooms={rooms} />}
+            triggerLabel="Room List"
+          />
         </div>
 
-        {logsError && (
-          <p className="audit-room-error" role="alert">
-            {logsError}
-          </p>
-        )}
-
-        <AuditRoomHistory
-          sessions={filteredLogs}
-          handleRowClick={handleHistoryRowClick}
-        />
+        <div className="room-audit">
+          <Table
+            columns={roomAuditColumns}
+            items={rooms}
+            loading={roomsLoading}
+            error={roomsError}
+            itemLabel="rooms"
+            emptyMessage="No rooms found."
+            renderItem={(room) => (
+              <AuditRoomCard
+                key={room.id}
+                room={room}
+                columns={roomAuditColumns}
+                onClick={() => openWithRoomRef.current?.(room)}
+              />
+            )}
+          />
+        </div>
       </div>
     </MainLayout>
   );

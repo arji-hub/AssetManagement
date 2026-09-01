@@ -12,39 +12,54 @@
   justify-content: space-between;
   gap: 16px;
 }
+/* == Title group (premium header, flex row) ================================= */
 
 .audit-overview-title-group {
-  background: #fdfdfd;
-  border: 1px solid #e2beb9;
-  border-bottom: 2px solid #f5aa2c;
-  border-radius: 10px;
-  padding: 14px 20px;
   display: flex;
   flex-direction: row;
-  align-items: baseline;
-  gap: 8px;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  padding: 4px 5px;
+  border-left: 1px solid var(--border-subtle);
 }
 
 .audit-overview-eyebrow {
-  font-size: 14px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  font-size: 10.5px;
   font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: capitalize;
-  color: #860100;
-  margin: 0;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--maroon-700);
+  background: var(--maroon-tint);
+  border-radius: 999px;
+  padding: 4px 10px;
+  white-space: nowrap;
 }
 
 .audit-overview-room-name {
-  font-size: 22px;
-  font-weight: 700;
-  color: #121c2a;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 1.4rem !important;
+  letter-spacing: 0.1em;
+  color: var(--text-strong);
   text-transform: uppercase;
-  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .audit-overview-error {
-  flex-basis: 100%;
+  flex-shrink: 0;
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--danger);
+  background: var(--danger-bg);
+  border-radius: 999px;
+  padding: 4px 10px;
+  white-space: nowrap;
 }
 
 /* stats */
@@ -71,6 +86,21 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+  max-height: 60dvh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.audit-overview-table-wrap
+  :is(
+    .asset-card-row-cell,
+    .discrepancy-card-row-cell,
+    .panel-header-cell
+  ):nth-child(4),
+.audit-overview-table-wrap
+  :is(.discrepancy-card-row-cell, .panel-header-cell):nth-child(5) {
+  text-align: center;
+  justify-content: center;
 }
 
 .audit-overview-scroll-area {
@@ -203,17 +233,28 @@
 }
 
 /* ── Responsive breakpoint ── */
-@media (max-width: 480px) {
+@media (max-width: 540px) {
   .audit-overview-header {
     flex-direction: column;
     align-items: flex-start;
   }
+
   .audit-overview-title-group {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 2px;
+    flex-wrap: wrap;
+    row-gap: 6px;
+    padding: 4px 5px;
+  }
+
+  .audit-overview-room-name {
+    font-size: 1.1rem !important;
+    white-space: normal;
+  }
+
+  .audit-overview-error {
+    flex-basis: 100%;
   }
 }
+
 @media (max-width: 768px) {
   .audit-overview-page {
     padding: 16px;

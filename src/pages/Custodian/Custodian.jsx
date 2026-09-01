@@ -1,5 +1,6 @@
 import MainLayout from "../../components/layout/MainLayout";
 import "./Custodian.css";
+import "../../components/layout/Toolbar.css";
 import Table from "../../components/panel/Table";
 import CustodianCard from "../../components/ui/card/custodian/CustodianCard";
 import CustodianModal from "../../components/ui/modal/CustodianModal";
@@ -10,7 +11,7 @@ import { CUSTODIAN_FILTER_OPTIONS } from "../../data/roles";
 import { CustodianListPDF } from "../../pdf/templates/CustodianListPDF";
 import { PDFPreviewModal } from "../../components/ui/modal/PDFPreviewModal";
 import { displayDate } from "../../utils/date";
-import { custodianColumns } from "../../data/Columns";
+import { custodianColumns } from "../../data/columns";
 
 function Custodian() {
   const {

@@ -9,7 +9,7 @@ import ReportCard from "../../components/ui/card/report/ReportCard";
 import ReportModal from "../../components/ui/modal/ReportModal";
 import { displayDate } from "../../utils/date";
 import { TABS } from "../../data/reports";
-import { REPORT_COLUMNS } from "../../data/Columns";
+import { REPORT_COLUMNS } from "../../data/columns";
 import { useReports } from "../../hooks/report/useReports";
 
 function Report() {

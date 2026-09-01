@@ -4,8 +4,8 @@
   grid-template-columns: var(--table-grid-columns);
   align-items: center;
   gap: 12px;
-  background: #fff;
-  border: 1px solid #e2beb9;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 10px;
   padding: 12px 16px;
   cursor: pointer;
@@ -16,8 +16,8 @@
 }
 
 .room-row:hover {
-  background: #fbeceb;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  background: var(--maroon-tint);
+  box-shadow: var(--shadow-sm);
   transform: translateY(-1px);
 }
 
@@ -44,7 +44,7 @@
 .room-row-name {
   font-weight: 700;
   font-size: 15px;
-  color: #860100;
+  color: var(--text-strong);
   text-transform: uppercase;
   display: flex;
   align-items: center;
@@ -61,7 +61,7 @@
 
 .room-row-custodian {
   font-size: 13px;
-  color: #5a413c;
+  color: var(--text-muted);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -69,13 +69,14 @@
 
 .room-row-audit {
   font-size: 13px;
-  color: #5a413c;
+  color: var(--text-muted);
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.room-row .room-row-cell:last-child {
+.room-row .room-row-cell:last-child,
+.room-row .room-row-cell:nth-last-child(2) {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -93,7 +94,7 @@
   align-items: center;
   justify-content: center;
   gap: 5px;
-  background: rgba(134, 1, 0, 1);
+  background: var(--maroon-gradient);
   color: #fff;
   font-size: 12px;
   font-weight: 700;
@@ -134,6 +135,10 @@
   text-align: center;
 }
 
+.room-cards .panel-header-cell:nth-last-child(2) {
+  text-align: center;
+}
+
 /* ══════════════ Mobile card ══════════════ */
 @media (max-width: 630px) {
   .room-row {
@@ -144,15 +149,15 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    background: #ffffff;
-    border: 1px solid #d1d5db;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
     border-radius: 10px;
     padding: 18px;
     width: auto;
     flex: 1 1 240px;
     cursor: pointer;
     margin-right: 5px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-sm);
     transition:
       transform 0.2s ease,
       box-shadow 0.2s ease;
@@ -160,21 +165,21 @@
 
   .room-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--card-elevated-container-elevation);
   }
 
   .room-card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: #860100;
+    color: var(--maroon-700);
   }
 
   .room-name {
     margin: 0;
     font-size: clamp(0.75rem, 4vw, 1.05rem);
     font-weight: 700;
-    color: #121c2a;
+    color: var(--text-strong);
     text-transform: uppercase;
   }
 
@@ -184,14 +189,14 @@
     justify-content: space-between;
     gap: 8px;
     padding-bottom: 8px;
-    border-bottom: 1px dashed #e5e7eb;
+    border-bottom: 1px dashed var(--border-subtle);
     font-size: 12px;
-    color: #5a413c;
+    color: var(--text-muted);
   }
 
   .room-card-custodian {
     font-weight: 600;
-    color: #e7970d;
+    color: var(--gold-500);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -207,12 +212,12 @@
 
   .room-card-audit svg {
     font-size: 11px;
-    color: #860100;
+    color: var(--maroon-700);
   }
 
   .room-assets {
-    background: rgba(134, 1, 0, 0.08);
-    border: 1px solid #e5e7eb;
+    background: var(--maroon-tint);
+    border: 1px solid var(--border-subtle);
     border-radius: 8px;
     padding: 12px 14px;
     display: flex;
@@ -221,18 +226,18 @@
   }
 
   .assets-icon-room {
-    color: #860100;
+    color: var(--maroon-700);
     font-size: 18px;
   }
 
   .room-assets-label {
-    color: rgba(134, 1, 0, 1);
+    color: var(--maroon-700);
     font-size: 14px;
     font-weight: 700;
   }
 
   .room-assets-count {
-    background: rgba(134, 1, 0, 1);
+    background: var(--maroon-700);
     color: #fff;
     font-size: 13px;
     font-weight: 700;

@@ -4,14 +4,14 @@
   gap: 12px;
   align-items: center;
   padding: 12px 16px;
-  border: 1px solid var(--color-border, #e5e7eb);
+  border: 1px solid var(--card-border);
   border-radius: 8px;
-  background-color: var(--color-surface-hover, #f9fafb);
+  background-color: var(--surface-subtle);
 }
 
 .transfer-card-row-room .transfer-card-cell {
   font-size: 14px;
-  color: var(--color-text, #111827);
+  color: var(--text-strong);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -63,8 +63,8 @@
   .transfer-card-room-mobile {
     display: flex;
     flex-direction: column;
-    background-color: var(--color-surface-hover, #f9fafb);
-    border: 1px solid var(--color-border, #e5e7eb);
+    background-color: var(--surface-subtle);
+    border: 1px solid var(--card-border);
     border-radius: 8px;
     padding: 14px 16px;
   }
@@ -78,18 +78,18 @@
 
   .transfer-card-room-mobile-id {
     font-weight: 600;
-    color: var(--color-text, #111827);
+    color: var(--text-strong);
     font-size: 14px;
   }
 
   .transfer-card-room-mobile-date {
     font-size: 12px;
-    color: #888;
+    color: var(--text-muted);
   }
 
   .transfer-card-room-mobile-desc {
     font-size: 13px;
-    color: #666;
+    color: var(--text-muted);
     margin: 0 0 10px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -108,8 +108,8 @@
   .transfer-card-room-mobile-room {
     padding: 2px 10px;
     border-radius: 999px;
-    background: #f0f0f0;
-    color: #666;
+    background: var(--track-bg);
+    color: var(--text-muted);
     font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
@@ -119,12 +119,12 @@
   }
 
   .transfer-card-room-mobile-room--to {
-    background: #ffeaea;
-    color: #860100;
+    background: var(--maroon-tint);
+    color: var(--maroon-700);
   }
 
   .transfer-card-room-mobile-arrow {
-    color: #999;
+    color: var(--text-faint);
     font-size: 12px;
   }
 }

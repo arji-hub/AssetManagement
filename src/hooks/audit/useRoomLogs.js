@@ -1,78 +1,61 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchAuditRooms } from "../../services/audit";
+import { fetchRooms } from "../../services/room";
 
 function useRoomLogs() {
   const navigate = useNavigate();
 
-  // ── Logs ──────────────────────────────────────────────────────────────
-  const [logs, setLogs] = useState([]);
-  const [logsLoading, setLogsLoading] = useState(true);
-  const [logsError, setLogsError] = useState("");
+  // ── Rooms ─────────────────────────────────────────────────────────────
+  const [rooms, setRooms] = useState([]);
+  const [roomsLoading, setRoomsLoading] = useState(true);
+  const [roomsError, setRoomsError] = useState("");
 
   // ── Search ────────────────────────────────────────────────────────────
   const [search, setSearch] = useState("");
 
   // == Data loading ==========================================================
-
   useEffect(() => {
-    setLogsLoading(true);
-    setLogsError("");
+    setRoomsLoading(true);
+    setRoomsError("");
 
-    fetchAuditRooms()
-      .then(setLogs)
-      .catch((err) => setLogsError(err.message ?? "Failed to load audit logs."))
-      .finally(() => setLogsLoading(false));
+    fetchRooms()
+      .then(setRooms)
+      .catch((err) => setRoomsError(err.message ?? "Failed to load rooms."))
+      .finally(() => setRoomsLoading(false));
   }, []);
 
   // == Derived state ==========================================================
+  const filteredRooms = useMemo(() => {
+    const query = search.trim().toLowerCase();
 
-  const filteredLogs = useMemo(() => {
-    const term = search.trim().toLowerCase();
+    return rooms.filter((room) => {
+      const assetCount = room.assetCount ?? room.total_assets ?? 0;
+      if (assetCount <= 0) return false;
 
-    if (!term) return logs;
+      if (!query) return true;
 
-    const result = logs.filter((log) =>
-      [log.room_id, log.audited_by_name]
-        .filter(Boolean)
-        .some((field) => field.toLowerCase().includes(term)),
-    );
-
-    return result;
-  }, [logs, search]);
-
-  const stats = useMemo(() => {
-    const totalAudits = logs.length;
-    const roomsPending = logs.filter(
-      (log) => log.status === "in_progress",
-    ).length;
-
-    const discrepancyCount = logs.filter((log) => log.has_discrepancies).length;
-    const avgDiscrepancyRate =
-      totalAudits === 0
-        ? 0
-        : Math.round((discrepancyCount / totalAudits) * 100);
-
-    return {
-      totalAudits,
-      roomsPending,
-      avgDiscrepancyRate,
-    };
-  }, [logs]);
+      const name = (
+        room.name ||
+        room.room_name ||
+        room.room?.name ||
+        ""
+      ).toLowerCase();
+      return name.includes(query);
+    });
+  }, [rooms, search]);
 
   // == Actions ==========================================================
 
-  const handleHistoryRowClick = (roomID, auditID) =>
-    navigate(`/audit/room/${roomID}/${auditID}`);
+  const handleRoomClick = (roomID) => navigate(`/audit/room/${roomID}`);
 
   return {
-    filteredLogs,
-    logsLoading,
-    logsError,
+    rooms: filteredRooms,
+    roomsLoading,
+    roomsError,
     search,
     setSearch,
-    stats,
-    handleHistoryRowClick,
+    handleRoomClick,
   };
 }
 

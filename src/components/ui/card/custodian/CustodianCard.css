@@ -4,8 +4,8 @@
   grid-template-columns: var(--table-grid-columns);
   align-items: center;
   gap: 12px;
-  background: #fff;
-  border: 1px solid #d1d5db;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 10px;
   padding: 12px 16px;
   cursor: pointer;
@@ -17,16 +17,16 @@
 }
 
 .custodian-row:hover {
-  background: #fbeceb;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  background: var(--maroon-tint);
+  box-shadow: var(--shadow-sm);
   transform: translateY(-1px);
-  border-color: rgba(134, 1, 0, 1);
+  border-color: var(--maroon-700);
 }
 
 .custodian-row-name {
   font-weight: 700;
   font-size: 15px;
-  color: #860100;
+  color: var(--text-strong);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -65,7 +65,7 @@
 
 .custodian-row-email {
   font-size: 13px;
-  color: #5a413c;
+  color: var(--text-muted);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -89,7 +89,7 @@
   align-items: center;
   justify-content: center;
   gap: 5px;
-  background: rgba(134, 1, 0, 1);
+  background: var(--maroon-700);
   color: #fff;
   font-size: 12px;
   font-weight: 700;
@@ -149,14 +149,14 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    background: #ffffff;
-    border: 1px solid #d1d5db;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
     border-radius: 10px;
     padding: 18px;
     width: auto;
     flex: 1 1 240px;
     cursor: pointer;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-sm);
     transition:
       transform 0.2s ease,
       box-shadow 0.2s ease;
@@ -164,14 +164,14 @@
 
   .custodian-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
-    border-color: rgba(134, 1, 0, 1);
+    box-shadow: var(--card-elevated-container-elevation);
+    border-color: var(--maroon-700);
   }
 
   .custodian-card-top {
     display: flex;
     flex-direction: row;
-    color: #860100;
+    color: var(--maroon-700);
   }
 
   .custodian-card-top .custodian-badge {
@@ -210,13 +210,13 @@
     margin-top: auto;
     font-size: clamp(14px, 1.5vw, 26px);
     font-weight: 600;
-    color: #860100;
+    color: var(--maroon-700);
   }
 
   .custodian-email {
     margin: 0;
     font-size: 12px;
-    color: #6b7280;
+    color: var(--text-muted);
     overflow: hidden;
     text-align: center;
     width: 100%;
@@ -242,7 +242,7 @@
   }
 
   .assets-divider {
-    background: rgba(245, 170, 44, 0.15);
+    background: var(--maroon-tint);
     display: flex;
     justify-content: space-between;
     padding: 5px;
@@ -251,7 +251,7 @@
   }
 
   .assets-icon {
-    color: #860100;
+    color: var(--maroon-700);
     font-size: 12px;
     padding: 0;
     display: flex;
@@ -261,7 +261,7 @@
 
   .assets-label {
     display: flex;
-    color: #860100;
+    color: var(--maroon-700);
     font-size: clamp(12px, 1vw, 16px);
     text-align: center;
     white-space: nowrap;
@@ -269,7 +269,7 @@
   }
 
   .assets-count {
-    background: #860100;
+    background: var(--maroon-700);
     color: #ffffff;
     border-radius: 5px;
     font-size: clamp(12px, 1vw, 16px);

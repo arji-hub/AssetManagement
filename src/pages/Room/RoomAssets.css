@@ -15,12 +15,12 @@
   flex-shrink: 0;
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
   gap: 16px;
   flex-wrap: wrap;
 }
 
-/* ── Header + back button ───────────────────────────────────── */
+/* ── Header: back button + combined room/custodian block ───────── */
 .room-assets-header {
   display: flex;
   align-items: center;
@@ -28,102 +28,102 @@
   gap: 16px;
   row-gap: 10px;
 }
-.room-assets-eyebrow-icon {
-  display: block;
-  font-size: large;
-  color: #f5aa2c;
-  margin-bottom: 4px;
+
+/* ── Combined context block (minimal: no card chrome, just stacked content) ── */
+.room-context-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+}
+
+.room-context-primary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  width: 100%;
 }
 
 .room-assets-title {
-  display: flex;
   margin: 0;
-  font-size: clamp(24px, 3vw, 34px);
+  font-size: clamp(20px, 2.6vw, 28px);
   font-weight: 800;
-  line-height: 1.1;
-  color: #860100;
-  align-items: center;
+  line-height: 1;
+  color: var(--text-strong);
   text-transform: uppercase;
   letter-spacing: -0.01em;
+  min-width: 0;
 }
 
-/* ── Heading row: title + top custodian card ─────────────────── */
-.room-assets-heading {
-  flex: 0 0 auto;
-  margin-left: auto;
-  margin-right: auto;
+.room-assets-title-text {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 28ch;
 }
 
-.room-assets-heading-main {
-  display: flex;
-  padding: 10px 20px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #9c0201 0%, #6b0000 100%);
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.1),
-    0 6px 16px -6px rgba(134, 1, 0, 0.45);
-}
-
-.room-assets-heading-main .room-assets-title {
-  color: #ffffff;
-}
-/* ── Top Custodian card ───────────────────────────────────────── */
-.top-custodian-card {
+/* ── Edit room name button ── */
+.room-title-edit-btn {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 7px 18px;
-  border-radius: 999px;
-  background: linear-gradient(180deg, #ffffff 0%, #fdfaf5 100%);
-  border: 1px solid #eee0c8;
-  box-shadow:
-    0 1px 2px rgba(134, 1, 0, 0.04),
-    0 4px 14px -6px rgba(134, 1, 0, 0.14);
+  justify-content: center;
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--text-faint);
+  font-size: 12px;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.room-title-edit-btn:hover {
+  background: var(--maroon-tint);
+  color: var(--maroon-700);
+}
+
+.room-title-edit-btn:active {
+  transform: scale(0.94);
+}
+
+/* ── Custodian row ── */
+.room-context-custodian {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.custodian-icon-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 10px;
+  color: var(--maroon-700);
 }
 
 .top-custodian-info {
   display: flex;
-  flex-direction: column;
-  line-height: 1.25;
-}
-
-.top-custodian-eyebrow {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #b58a2e;
+  align-items: center;
+  min-width: 0;
 }
 
 .top-custodian-name {
-  font-size: 13.5px;
+  font-size: 11.5px;
   font-weight: 600;
-  color: #111827;
+  color: var(--text-faint);
   white-space: nowrap;
-}
-
-.top-custodian-count {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-left: 14px;
-  border-left: 1px solid #eee0c8;
-  line-height: 1.1;
-}
-
-.top-custodian-count-value {
-  font-variant-numeric: tabular-nums;
-  font-family: "Sansation";
-  font-weight: 700;
-  font-size: 16px;
-  color: #860100;
-}
-
-.top-custodian-count-label {
-  font-size: 9.5px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: #9ca3af;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 20ch;
 }
 
 /* ── Settings / filters ─────────────────────────────────────── */
@@ -135,7 +135,7 @@
   justify-content: flex-end;
 }
 
-/* ── Audit Logs button (same styling as PDF trigger button) ── */
+/* ── Audit Logs button ── */
 .audit-logs-btn {
   display: flex;
   align-items: center;
@@ -151,21 +151,17 @@
   border: none;
   cursor: pointer;
   white-space: nowrap;
-  background: linear-gradient(135deg, #9c0201 0%, #6b0000 100%);
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.1),
-    0 6px 16px -6px rgba(134, 1, 0, 0.5);
+  background: var(--maroon-gradient);
+  box-shadow: var(--shadow-sm);
   transition:
-    background 0.2s ease,
     box-shadow 0.2s ease,
-    transform 0.15s ease;
+    transform 0.15s ease,
+    filter 0.2s ease;
 }
 
 .audit-logs-btn:hover {
-  background: linear-gradient(135deg, #ac0201 0%, #7a0000 100%);
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.1),
-    0 8px 20px -6px rgba(134, 1, 0, 0.55);
+  filter: brightness(1.08);
+  box-shadow: var(--card-elevated-container-elevation);
 }
 
 .audit-logs-btn:active {
@@ -178,12 +174,12 @@
   align-items: center;
   gap: 7px;
   padding: 8px 16px;
-  background: #fff;
-  border: 1.5px solid #ddd;
+  background: var(--card-bg);
+  border: 1.5px solid var(--card-border);
   border-radius: 8px;
   font-size: 13px;
   font-weight: 500;
-  color: #555;
+  color: var(--text-faint);
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
@@ -191,12 +187,12 @@
 
 .filter-button:hover,
 .filter-button--active {
-  border-color: #860100;
-  color: #860100;
+  border-color: var(--maroon-700);
+  color: var(--maroon-700);
 }
 
 .filter-badge {
-  background: #860100;
+  background: var(--maroon-700);
   color: #fff;
   font-size: 10.5px;
   font-weight: 700;
@@ -206,8 +202,8 @@
 }
 
 .filter-button--active .filter-badge {
-  background: #f5aa2c;
-  color: #860100;
+  background: var(--gold-500);
+  color: var(--maroon-700);
 }
 
 @media (max-width: 640px) {
@@ -221,19 +217,13 @@
     align-items: flex-start;
   }
 
-  .room-assets-header {
-  }
-
-  .room-assets-heading {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .top-custodian-card {
-    width: 100%;
+  .room-assets-title-text,
+  .top-custodian-name {
+    max-width: none;
   }
 
   .room-assets-settings {
+    width: 100%;
     justify-content: flex-start;
   }
 }
