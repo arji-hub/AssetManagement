@@ -11,7 +11,7 @@
 .room-top {
   position: sticky;
   top: 0;
-  background: #f0f2f5;
+  background: var(--app-bg);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -35,22 +35,6 @@
 
 .room-header {
   flex-shrink: 0;
-}
-
-.title {
-  font-size: 24px !important;
-  font-weight: 700;
-  color: #111;
-  margin: 0;
-  line-height: 1;
-}
-
-.date {
-  font-size: 11px;
-  color: #888;
-  letter-spacing: 0.06em;
-  margin: 0;
-  text-transform: uppercase;
 }
 
 .room-settings {
@@ -116,7 +100,7 @@
   display: flex;
   align-items: center;
   gap: 22px;
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .room-sub-tab {
@@ -126,18 +110,18 @@
   padding: 0 0 10px;
   font-size: 14px;
   font-weight: 600;
-  color: #999;
+  color: var(--text-faint);
   position: relative;
   white-space: nowrap;
   transition: color 0.15s;
 }
 
 .room-sub-tab:hover {
-  color: #860100;
+  color: var(--maroon-700);
 }
 
 .room-sub-tab--active {
-  color: #860100;
+  color: var(--maroon-700);
 }
 
 .room-sub-tab--active::after {
@@ -147,7 +131,7 @@
   right: 0;
   bottom: -1px;
   height: 2px;
-  background: #860100;
+  background: var(--maroon-700);
   border-radius: 2px;
 }
 
@@ -175,96 +159,6 @@
   }
 }
 
-.search-icon {
-  position: absolute;
-  left: 10px;
-  color: #860100;
-  font-size: 13px;
-  pointer-events: none;
-}
-
-.search-bar {
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-
-.search-bar input {
-  font-size: clamp(12px, 1vw, 14px);
-  padding: 6px 10px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  background: #ffffff;
-  padding-left: 32px;
-  color: #111827;
-  outline: none;
-  width: 180px;
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.search-bar input::placeholder {
-  color: #9ca3af;
-}
-
-.search-bar input:focus {
-  border-color: #860100;
-  box-shadow: 0 0 0 3px rgba(134, 1, 0, 0.1);
-}
-
-.filters {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.filters label {
-  font-size: clamp(12px, 1vw, 14px);
-  font-weight: 500;
-  color: #860100 !important;
-  white-space: nowrap;
-}
-
-.filters select {
-  font-size: clamp(12px, 1vw, 14px);
-  padding: 6px 10px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  background: #ffffff;
-  color: #111827;
-  cursor: pointer;
-  outline: none;
-  transition: border-color 0.2s ease;
-}
-
-.filters select:focus {
-  border-color: #860100;
-}
-
-.settings-button {
-  font-size: clamp(12px, 1vw, 14px);
-  font-weight: 500;
-  padding: 7px 16px;
-  background: #860100;
-  color: #ffffff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  white-space: nowrap;
-  transition:
-    background 0.2s ease,
-    transform 0.1s ease;
-}
-
-.settings-button:hover {
-  background: #6b0000;
-}
-
-.settings-button:active {
-  transform: scale(0.97);
-}
-
 .room-cards {
   flex: 1;
   display: flex;
@@ -278,12 +172,12 @@
 
 .room-status {
   font-size: 14px;
-  color: #6b7280;
+  color: var(--text-muted);
   padding: 24px 0;
   width: 100%;
   text-align: center;
 }
 
 .room-status--error {
-  color: #860100;
+  color: var(--danger);
 }

@@ -1,11 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useNavigate } from "react-router-dom";
 import "./AuditRoomCard.css";
 
-function AuditRoomCard({ room, columns }) {
-  const navigate = useNavigate();
+function AuditRoomCard({ room, columns, onClick }) {
   const displayName = room.name || room.room_name || room.room?.name;
 
   let titleAssigned = false;
@@ -27,7 +25,7 @@ function AuditRoomCard({ room, columns }) {
   );
 
   const handleClick = () => {
-    navigate(`/audit/room/${room.room_id || room.id}`);
+    onClick?.(room);
   };
 
   return (

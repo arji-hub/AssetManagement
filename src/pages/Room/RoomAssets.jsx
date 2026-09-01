@@ -6,16 +6,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FilterModal from "../../components/ui/modal/FilterModal";
 import { useAssetFilters } from "../../hooks/asset/useAssetFilters";
 import { useRoomAssets } from "../../hooks/room/useRoomAssets";
-import { PDFPreviewModal } from "../../components/ui/modal/PDFPreviewModal";
-import { RoomInventoryPDF } from "../../pdf/templates/RoomInventoryPDF";
 import BackButton from "../../components/ui/button/BackButton";
-import AssetTable from "../../components/panel/AssetTable";
+import Table from "../../components/panel/Table";
+import AssetCard from "../../components/ui/card/asset/AssetCard";
 import { roomAssetsColumns } from "../../data/columns";
 
 function RoomAssets() {
   const { roomName: roomID } = useParams();
-  const navigate = useNavigate();
-
   const { assets, loading, error, roomName, topCustodian, handleAuditLogs } =
     useRoomAssets(roomID);
 
@@ -33,6 +30,7 @@ function RoomAssets() {
     custodians,
     loadingOptions,
   } = useAssetFilters(assets);
+  const handleEdit = () => {};
 
   const isEmpty = filteredAssets.length === 0;
 
@@ -43,29 +41,30 @@ function RoomAssets() {
         <div className="room-assets-top">
           <div className="room-assets-header">
             <BackButton />
-            <div className="room-assets-heading-main">
-              <FontAwesomeIcon
-                icon="fa-solid fa-door-open"
-                className="room-assets-eyebrow-icon"
-              />
-              <h1 className="room-assets-title">{roomName}</h1>
-            </div>
-            <div className="room-assets-heading">
+
+            <div className="room-context-card">
+              <div className="room-context-primary">
+                <h1 className="room-assets-title">
+                  <span className="room-assets-title-text">{roomName}</span>
+                </h1>
+                <button
+                  className="room-title-edit-btn"
+                  onClick={handleEdit}
+                  aria-label="Edit room name"
+                >
+                  <FontAwesomeIcon icon="fa-regular fa-pen-to-square" />
+                </button>
+              </div>
+
               {topCustodian && (
-                <div className="top-custodian-card">
+                <div className="room-context-custodian">
+                  <span className="custodian-icon-badge">
+                    <FontAwesomeIcon icon="fa-solid fa-user-shield" />
+                  </span>
                   <span className="top-custodian-info">
-                    <span className="top-custodian-eyebrow">
-                      Room Custodian
-                    </span>
                     <span className="top-custodian-name">
                       {topCustodian.name}
                     </span>
-                  </span>
-                  <span className="top-custodian-count">
-                    <span className="top-custodian-count-value">
-                      {topCustodian.count}
-                    </span>
-                    <span className="top-custodian-count-label">assets</span>
                   </span>
                 </div>
               )}
@@ -79,14 +78,6 @@ function RoomAssets() {
                 Audit Logs
               </button>
             )}
-            <PDFPreviewModal
-              title="Room Inventory Form"
-              fileName={`room-inventory-${roomID}.pdf`}
-              document={
-                <RoomInventoryPDF roomName={roomName} assets={filteredAssets} />
-              }
-              triggerLabel="Room Inventory Form"
-            />
             <button
               className={`filter-button ${activeFilterCount > 0 ? "filter-button--active" : ""}`}
               onClick={() => setShowFilter(true)}
@@ -125,13 +116,24 @@ function RoomAssets() {
         )}
 
         {/* ── Asset list - Room ── */}
-
-        <AssetTable
+        <Table
           columns={roomAssetsColumns}
-          data={filteredAssets}
+          items={filteredAssets}
           loading={loading}
           error={error}
+          itemLabel="assets"
           emptyMessage="No assets found"
+          emptyIcon="fa-solid fa-box-open"
+          desktopPageSize={20}
+          mobilePageSize={10}
+          renderItem={(asset, index) => (
+            <AssetCard
+              key={asset.id}
+              asset={asset}
+              index={index}
+              columns={roomAssetsColumns}
+            />
+          )}
         />
       </div>
 

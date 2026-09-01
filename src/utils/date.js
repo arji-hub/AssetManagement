@@ -90,3 +90,36 @@ export function getTimeValue(created_at) {
   const parsed = new Date(created_at).getTime();
   return Number.isNaN(parsed) ? 0 : parsed;
 }
+
+export function formatTime(value) {
+  if (!value) return "—";
+
+  try {
+    let date;
+
+    // Firestore Timestamp with .toDate() method
+    if (typeof value?.toDate === "function") {
+      date = value.toDate();
+    }
+    // Firestore Timestamp { seconds, nanoseconds }
+    else if (value?.seconds !== undefined) {
+      date = new Date(
+        value.seconds * 1000 + Math.floor((value.nanoseconds || 0) / 1_000_000)
+      );
+    }
+    // Standard Date, ISO string, or numeric timestamp
+    else {
+      date = new Date(value);
+    }
+
+    if (Number.isNaN(date.getTime())) return "—";
+
+    return date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  } catch {
+    return "—";
+  }
+}

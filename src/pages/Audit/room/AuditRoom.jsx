@@ -1,4 +1,4 @@
-import React from "react";
+import { useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MainLayout from "../../../components/layout/MainLayout";
 import NewAuditRoomModal from "../../../components/ui/modal/NewAuditRoomModal";
@@ -14,6 +14,7 @@ import "./AuditRoom.css";
 
 function AuditRoom() {
   const { rooms, roomsLoading, roomsError, search, setSearch } = useRoomLogs();
+  const openWithRoomRef = useRef(null);
 
   /* move here list of rooms then per room may view inventory pdf
   then on top beside new audit or katabi ng search bar there is room pdf btn */
@@ -33,7 +34,11 @@ function AuditRoom() {
           </div>
 
           <div className="audit-room-header-actions">
-            <NewAuditRoomModal />
+            <NewAuditRoomModal
+              onReady={(fn) => {
+                openWithRoomRef.current = fn;
+              }}
+            />
           </div>
         </div>
 
@@ -81,6 +86,7 @@ function AuditRoom() {
                 key={room.id}
                 room={room}
                 columns={roomAuditColumns}
+                onClick={() => openWithRoomRef.current?.(room)}
               />
             )}
           />

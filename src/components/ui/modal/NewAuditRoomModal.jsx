@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useAuditRoomStart from "../../../hooks/audit/useAuditRoomStart";
 import { formatDate } from "../../../utils/date";
 import "./NewAuditRoomModal.css";
 
-function NewAuditRoomModal() {
+function NewAuditRoomModal({ onReady }) {
   const {
     roomInputRef,
     isOpen,
@@ -19,12 +19,17 @@ function NewAuditRoomModal() {
     suggestedRooms,
     suggestedLoading,
     handleOpen,
+    handleOpenWithRoom,
     handleClose,
     handleFindRoom,
     handleRoomSearchKeyDown,
     handleSelectRoom,
     handleProceed,
   } = useAuditRoomStart();
+
+  useEffect(() => {
+    onReady?.(handleOpenWithRoom);
+  }, [handleOpenWithRoom, onReady]);
 
   const [showDropdown, setShowDropdown] = useState(false);
   const foundRoom = roomResults[0] ?? null;
@@ -98,7 +103,6 @@ function NewAuditRoomModal() {
                     onBlur={() => setTimeout(() => setShowDropdown(false), 120)}
                     onKeyDown={handleRoomSearchKeyDown}
                     disabled={roomLoading}
-                    autoFocus
                   />
                   {showDropdown && filteredOptions.length > 0 && (
                     <ul className="audit-autocomplete-list">
@@ -212,7 +216,7 @@ function NewAuditRoomModal() {
                   disabled={!selectedRoom}
                   onClick={handleProceed}
                 >
-                  Proceed to audit session
+                  Proceed to audit
                   <FontAwesomeIcon icon="arrow-right" />
                 </button>
               </div>

@@ -1,5 +1,6 @@
 import MainLayout from "../../components/layout/MainLayout";
 import "./Custodian.css";
+import "../../components/layout/Toolbar.css";
 import Table from "../../components/panel/Table";
 import CustodianCard from "../../components/ui/card/custodian/CustodianCard";
 import CustodianModal from "../../components/ui/modal/CustodianModal";

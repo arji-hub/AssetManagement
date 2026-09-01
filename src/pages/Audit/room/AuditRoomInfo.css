@@ -37,41 +37,54 @@
   margin-top: 2px;
 }
 
+/* == Title group (premium header, flex row) ================================= */
+
 .audit-session-title-group {
-  background: #fdfdfd;
-  border: 1px solid #e2beb9;
-  border-bottom: 2px solid #f5aa2c;
-  border-radius: 10px;
-  padding: 14px 20px;
   display: flex;
   flex-direction: row;
-  align-items: baseline;
-  gap: 8px;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  padding: 4px 5px;
+  border-left: 1px solid var(--border-subtle);
 }
 
 .audit-session-eyebrow {
-  font-size: 14px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  font-size: 10.5px;
   font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: capitalize;
-  color: #860100;
-  margin: 0;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--maroon-700);
+  background: var(--maroon-tint);
+  border-radius: 999px;
+  padding: 4px 10px;
+  white-space: nowrap;
 }
 
 .audit-session-room-name {
-  font-size: 22px;
-  font-weight: 700;
-  color: #121c2a;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 1.4rem !important;
+  letter-spacing: 0.1em;
+  color: var(--text-strong);
   text-transform: uppercase;
-  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .audit-session-error {
-  flex-basis: 100%;
+  flex-shrink: 0;
   margin: 0;
-  font-size: 14px;
-  color: #dc2626;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--danger);
+  background: var(--danger-bg);
+  border-radius: 999px;
+  padding: 4px 10px;
+  white-space: nowrap;
 }
 
 /* ── Camera Scan Button ── */
@@ -141,6 +154,7 @@
   cursor: not-allowed;
   transform: none;
 }
+
 /* == Discrepancy banner ===================================================== */
 
 .audit-session-discrepancy-banner {
@@ -204,20 +218,17 @@
   margin: 0;
 }
 
+/* Slight visual distinction for the discrepancy section title */
+.audit-session-section-title--discrepancy {
+  color: #dc2626;
+}
+
 .audit-session-empty {
   font-size: 14px;
   color: #8e706b;
   text-align: center;
   padding: 24px 0;
   margin: 0;
-}
-
-.audit-session-scroll-area {
-  overflow-x: auto;
-  overflow-y: auto;
-  max-height: 60dvh;
-  min-width: 0;
-  -webkit-overflow-scrolling: touch;
 }
 
 /* == Meta grid (audit details section) ====================================== */
@@ -250,41 +261,7 @@
   letter-spacing: 0.05em;
 }
 
-/* == Desktop table ============================================================ */
-
-.audit-session-table {
-  width: 100%;
-  min-width: 640px;
-  border-collapse: collapse;
-  font-size: 14px;
-}
-
-.audit-session-table th {
-  text-align: left;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: #5a413c;
-  padding: 10px 12px;
-  border-bottom: 1px solid #e2beb9;
-}
-
-.audit-session-table td {
-  padding: 12px;
-  border-bottom: 1px solid #f3e9e8;
-  color: #121c2a;
-}
-
-.audit-session-table tbody tr:last-child td {
-  border-bottom: none;
-}
-
-.audit-session-table tbody tr {
-  cursor: pointer;
-}
-
-/* == Status badges (matches StatusBadge component in JSX) ==================== */
+/* == Status badges (matches AuditStatusBadge component) ====================== */
 
 .audit-status-badge {
   display: inline-flex;
@@ -313,130 +290,17 @@
   color: #dc2626;
 }
 
+.audit-status-badge--unexpected {
+  background: rgba(220, 38, 38, 0.12);
+  color: #dc2626;
+}
+
 .audit-status-badge--unknown {
   background: #f3e9e8;
   color: #8e706b;
 }
 
-/* == Mobile card list (matches .audit-session-card-list in JSX) ============== */
-
-.audit-session-card-list {
-  display: none;
-}
-
-.audit-session-card {
-  border: 1px solid #e2beb9;
-  border-radius: 10px;
-  padding: 12px 14px;
-  background: #ffffff;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.audit-session-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 4px;
-}
-
-.audit-session-card-title {
-  font-size: 14px;
-  font-weight: 700;
-  color: #860100;
-  margin: 0;
-}
-
-.audit-session-card-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.audit-session-card-meta-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 12px;
-  color: #5a413c;
-  gap: 8px;
-}
-
-.audit-session-card-meta-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #7d6359;
-  min-width: 18px;
-  font-size: 14px;
-}
-.audit-session-card-meta-row:first-child .audit-session-card-meta-value {
-  font-weight: 1000;
-  color: #1a2634;
-}
-
-.audit-session-card-meta-value {
-  flex: 1;
-  color: #121c2a;
-}
-
-/* == Responsive breakpoint ==================================================== */
-
-@media (max-width: 540px) {
-  .audit-session-title-group {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 2px;
-    flex: 1 1 auto;
-    max-width: 150px;
-  }
-
-  .audit-session-card-label-description {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-align: right;
-    min-width: 150px;
-    white-space: nowrap;
-    margin-left: 15px;
-  }
-}
-
-@media (max-width: 768px) {
-  .audit-session-page {
-    padding: 16px;
-  }
-
-  .audit-session-header-left {
-    width: 100%;
-  }
-
-  .audit-session-table-wrap {
-    padding: 12px;
-  }
-
-  .audit-session-scroll-area {
-    max-height: 50dvh;
-  }
-
-  .audit-session-meta-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .audit-session-table {
-    display: none;
-  }
-
-  .audit-session-card-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-}
-/* == Verify Button ============================================================ */
+/* == Verify button ============================================================ */
 
 .audit-session-verify-btn {
   display: inline-flex;
@@ -471,32 +335,72 @@
   cursor: not-allowed;
 }
 
-/* Mobile full-width variant */
 .audit-session-verify-btn--full-width {
   width: 100%;
   justify-content: center;
   margin-top: 8px;
 }
 
-/* Responsive adjustments */
+/* Center the LAST cell in both tables (6th cell in Audit, 5th cell in Discrepancies) */
+.audit-session-table-wrap
+  :is(
+    .audit-item-card-row-cell,
+    .discrepancy-item-card-row-cell,
+    .panel-header-cell
+  ):last-child {
+  text-align: center;
+  justify-content: center;
+}
+
+/* Center the SECOND-TO-LAST cell in both tables (5th cell in Audit, 4th cell in Discrepancies) */
+.audit-session-table-wrap
+  :is(
+    .audit-item-card-row-cell,
+    .discrepancy-item-card-row-cell,
+    .panel-header-cell
+  ):nth-last-child(2) {
+  text-align: center;
+  justify-content: center;
+}
+
+/* == Responsive breakpoint ==================================================== */
+
+@media (max-width: 540px) {
+  .audit-session-title-group {
+    flex-wrap: wrap;
+    row-gap: 6px;
+    padding: 10px 16px;
+  }
+
+  .audit-session-room-name {
+    font-size: 17px;
+    white-space: normal;
+  }
+
+  .audit-session-error {
+    flex-basis: 100%;
+  }
+} 
+
 @media (max-width: 768px) {
+  .audit-session-page {
+    padding: 16px;
+  }
+
+  .audit-session-header-left {
+    width: 100%;
+  }
+
+  .audit-session-table-wrap {
+    padding: 12px;
+  }
+
+  .audit-session-meta-grid {
+    grid-template-columns: 1fr;
+  }
+
   .audit-session-verify-btn {
     padding: 8px 10px;
     font-size: 12px;
   }
-}
-
-.audit-status-badge--unexpected {
-  background: rgba(220, 38, 38, 0.12);
-  color: #dc2626;
-}
-
-/* Slight visual distinction for the discrepancy section title */
-.audit-session-section-title--discrepancy {
-  color: #dc2626;
-}
-
-/* Slight left-accent on discrepancy cards, mirroring the discrepancy banner's red */
-.audit-session-card--discrepancy {
-  border-left: 3px solid #dc2626;
 }

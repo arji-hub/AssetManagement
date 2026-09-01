@@ -10,7 +10,7 @@
   display: grid;
   grid-template-columns: var(--table-grid-columns);
   gap: 12px;
-  background: #860100;
+  background: var(--maroon-gradient);
   border-radius: 5px;
   padding: 12px 16px;
 }
@@ -74,7 +74,7 @@
 
   /* Firefox */
   scrollbar-width: thin;
-  scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
 }
 
 /* Chrome/Edge/Safari */
@@ -85,11 +85,11 @@
   background: transparent;
 }
 .panel-grid::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--scrollbar-thumb);
   border-radius: 4px;
 }
 .panel-grid::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--scrollbar-thumb-hover);
 }
 
 .panel-empty {

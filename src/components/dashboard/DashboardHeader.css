@@ -9,6 +9,7 @@
   background: linear-gradient(135deg, #860100 0%, #9c0707 90%, #9e1616 100%);
   border-radius: 10px;
   padding: 1rem;
+  box-shadow: var(--card-elevated-container-elevation);
 }
 
 /* Thin gold accent along the bottom edge — a quiet nod to the

@@ -1,15 +1,11 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "./AssetCard.css";
+import "./DiscrepancyItemCard.css";
 
 function resolveCardRoles(columns) {
   let titleAssigned = false;
   const roled = columns.map((col) => {
     if (col.card?.role) return { ...col, _cardRole: col.card.role };
-
-    if (col.key === "status") return { ...col, _cardRole: "badge" };
-    if (/date/i.test(col.key)) return { ...col, _cardRole: "date" };
     if (!titleAssigned && col.priority !== "low") {
       titleAssigned = true;
       return { ...col, _cardRole: "title" };
@@ -27,66 +23,59 @@ function resolveCardRoles(columns) {
   };
 }
 
-function AssetCard({ asset, index, columns }) {
-  const navigate = useNavigate();
+function DiscrepancyItemCard({ item, index, columns }) {
   const { titleCol, badgeCol, dateCol, metaCols } = resolveCardRoles(columns);
-
-  const handleClick = (id) => {
-    navigate(`/asset/info/${id}`);
-  };
 
   return (
     <>
       {/* ── Desktop / tablet row ── */}
-      <div className="asset-card-row" onClick={() => handleClick(asset.id)}>
+      <div className="discrepancy-item-card-row">
         {columns.map((col) => (
           <div
             key={col.key}
-            className="asset-card-row-cell"
+            className="discrepancy-item-card-row-cell"
             data-priority={col.priority || "high"}
           >
-            {col.key === "desc" ? (
-              <span className="asset-desc-cell">
-                {col.render(asset, index)}
-              </span>
-            ) : (
-              col.render(asset, index)
-            )}
+            {col.render(item, index)}
           </div>
         ))}
       </div>
 
       {/* ── Mobile card ── */}
-      <div className="asset-card" onClick={() => handleClick(asset.id)}>
-        <div className="asset-card-header">
-          {dateCol && (
-            <span className="asset-card-date">
-              {dateCol.render(asset, index)}
-            </span>
+      <div className="discrepancy-item-card">
+        <div className="discrepancy-item-card-header">
+          {titleCol && (
+            <p className="discrepancy-item-card-title">
+              {titleCol.render(item, index)}
+            </p>
           )}
           {badgeCol && (
-            <div className="asset-card-badge-slot">
-              {badgeCol.render(asset, index)}
+            <div className="discrepancy-item-card-badge-slot">
+              {badgeCol.render(item, index)}
             </div>
           )}
         </div>
 
-        {titleCol && (
-          <p className="asset-card-title">{titleCol.render(asset, index)}</p>
-        )}
-
-        {metaCols.length > 0 && (
-          <div className="asset-card-meta">
+        {(metaCols.length > 0 || dateCol) && (
+          <div className="discrepancy-item-card-meta">
             {metaCols.map((col) => (
-              <span className="asset-card-stat" key={col.key}>
+              <span className="discrepancy-item-card-stat" key={col.key}>
                 {col.card?.icon && (
-                  <span className="asset-card-meta-icon">
+                  <span className="discrepancy-item-card-meta-icon">
                     <FontAwesomeIcon icon={col.card.icon} />
                   </span>
                 )}
-                {col.render(asset, index)}
+                {col.render(item, index)}
               </span>
             ))}
+            {dateCol && (
+              <span className="discrepancy-item-card-stat">
+                <span className="discrepancy-item-card-meta-icon">
+                  <FontAwesomeIcon icon="fa-solid fa-calendar-check" />
+                </span>
+                {dateCol.render(item, index)}
+              </span>
+            )}
           </div>
         )}
       </div>
@@ -94,4 +83,4 @@ function AssetCard({ asset, index, columns }) {
   );
 }
 
-export default AssetCard;
+export default DiscrepancyItemCard;
