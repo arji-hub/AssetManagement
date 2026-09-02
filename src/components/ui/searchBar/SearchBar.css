@@ -1,0 +1,39 @@
+/* src/components/ui/SearchBar/SearchBar.css */
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+
+.search-bar .search-icon {
+  position: absolute;
+  left: 10px;
+  color: var(--maroon-700);
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.search-bar input {
+  width: 100%;
+  font-size: clamp(12px, 1vw, 14px);
+  padding: 6px 10px 6px 32px;
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  background: var(--card-bg);
+  color: var(--text-strong);
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.search-bar input::placeholder {
+  color: var(--text-faint);
+}
+
+.search-bar input:focus {
+  border-color: var(--maroon-700);
+  box-shadow: 0 0 0 3px var(--maroon-tint);
+}

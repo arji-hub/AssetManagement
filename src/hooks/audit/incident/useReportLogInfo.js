@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchReportLogById } from "../../services/audit";
-import { getName } from "../../services/user";
+import { fetchReportLogById } from "../../../services/audit";
+import { getName } from "../../../services/user";
 
 function useReportLogInfo() {
   const { logID } = useParams();

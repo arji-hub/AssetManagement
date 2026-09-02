@@ -12,7 +12,7 @@
 
 /* ── Container ──────────────────────────────────────────────── */
 .filter-container {
-  background: #ffffff;
+  background: var(--card-bg);
   border-radius: 10px;
   width: 100%;
   max-width: 380px;
@@ -28,21 +28,21 @@
   justify-content: space-between;
   align-items: center;
   padding: 18px 20px 14px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--card-border);
 }
 
 .filter-title {
   margin: 0;
   font-size: 18px;
   font-weight: 700;
-  color: #111827;
+  color: var(--text-strong);
 }
 
 .filter-close {
   background: none;
   border: none;
   font-size: 18px;
-  color: #6b7280;
+  color: var(--text-faint);
   cursor: pointer;
   padding: 4px;
   display: flex;
@@ -55,8 +55,8 @@
 }
 
 .filter-close:hover {
-  color: #111827;
-  background: #f3f4f6;
+  color: var(--text-strong);
+  background: var(--card-border);
 }
 
 /* ── Body ───────────────────────────────────────────────────── */
@@ -78,12 +78,12 @@
 }
 
 .filter-body::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+  background: var(--card-border);
   border-radius: 999px;
 }
 
 .filter-body::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
+  background: var(--text-faint);
 }
 
 /* ── Section ────────────────────────────────────────────────── */
@@ -97,14 +97,14 @@
   margin: 0;
   font-size: 11px;
   font-weight: 700;
-  color: #6b7280;
+  color: var(--text-faint);
   letter-spacing: 0.07em;
 }
 
 /* ── Divider ────────────────────────────────────────────────── */
 .filter-divider {
   height: 1px;
-  background: #e5e7eb;
+  background: var(--card-border);
 }
 
 /* ── Chips ──────────────────────────────────────────────────── */
@@ -118,31 +118,31 @@
   font-size: clamp(11px, 1vw, 13px);
   font-weight: 500;
   padding: 6px 14px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--card-border);
   border-radius: 999px;
-  background: #f9fafb;
-  color: #374151;
+  background: var(--card-bg);
+  color: var(--text-strong);
   cursor: pointer;
   transition: all 0.15s ease;
   white-space: nowrap;
 }
 
 .filter-chip:hover {
-  border-color: #860100;
-  color: #860100;
-  background: rgba(134, 1, 0, 0.04);
+  border-color: var(--maroon-700);
+  color: var(--maroon-700);
+  background: var(--maroon-tint);
 }
 
 .filter-chip--active {
-  background: #860100;
+  background: var(--maroon-700);
   color: #ffffff;
-  border-color: #860100;
+  border-color: var(--maroon-700);
 }
 
 .filter-chip--active:hover {
-  background: #6b0000;
+  background: var(--maroon-800);
   color: #ffffff;
-  border-color: #6b0000;
+  border-color: var(--maroon-800);
 }
 
 /* ── Filter list (search + select stacked) ──────────────────── */
@@ -154,61 +154,58 @@
 .filter-search-wrapper {
   display: flex;
   align-items: center;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--card-border);
   border-radius: 6px;
-  background: #f9fafb;
+  background: var(--card-bg);
   padding: 0 10px;
   gap: 8px;
   transition:
     border-color 0.2s ease,
-    background 0.2s ease;
+    box-shadow 0.2s ease;
 }
 
 .filter-search-wrapper:focus-within {
-  border-color: #860100;
-  background: #ffffff;
+  border-color: var(--maroon-700);
+  box-shadow: 0 0 0 3px var(--maroon-tint);
 }
 
 .filter-search-icon {
   font-size: 12px;
-  color: #860100;
+  color: var(--maroon-700);
   flex-shrink: 0;
   pointer-events: none;
 }
 
 .filter-search-input {
   width: 100%;
-  font-size: 13px;
+  font-size: clamp(12px, 1vw, 14px);
   padding: 7px 0;
   border: none;
   background: transparent;
-  color: #111827;
+  color: var(--text-strong);
   outline: none;
 }
 
 .filter-search-input::placeholder {
-  color: #9ca3af;
+  color: var(--text-faint);
 }
 
 /* ── Selects ────────────────────────────────────────────────── */
 .filter-select {
-  font-size: 13px;
+  font-size: clamp(12px, 1vw, 14px);
   padding: 8px 10px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--card-border);
   border-radius: 6px;
-  background: #f9fafb;
-  color: #111827;
+  background: var(--card-bg);
+  color: var(--text-strong);
   cursor: pointer;
   outline: none;
   width: 100%;
-  transition:
-    border-color 0.2s ease,
-    background 0.2s ease;
+  transition: border-color 0.2s ease;
 }
 
 .filter-select:focus {
-  border-color: #860100;
-  background: #ffffff;
+  border-color: var(--maroon-700);
 }
 
 /* Scrollable multi-option select (Room & Custodian) */
@@ -223,7 +220,7 @@
 }
 
 .filter-select--scrollable option:checked {
-  background: #860100;
+  background: var(--maroon-700);
   color: #ffffff;
 }
 
@@ -232,7 +229,7 @@
 .filter-empty {
   margin: 0;
   font-size: 13px;
-  color: #9ca3af;
+  color: var(--text-faint);
 }
 
 /* ── Footer ─────────────────────────────────────────────────── */
@@ -242,16 +239,16 @@
   align-items: center;
   gap: 10px;
   padding: 14px 20px;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--card-border);
 }
 
 .filter-clear {
   font-size: 14px;
   font-weight: 500;
   padding: 8px 16px;
-  background: #ffffff;
-  color: #374151;
-  border: 1px solid #d1d5db;
+  background: var(--card-bg);
+  color: var(--text-strong);
+  border: 1px solid var(--card-border);
   border-radius: 6px;
   cursor: pointer;
   transition:
@@ -260,15 +257,15 @@
 }
 
 .filter-clear:hover {
-  background: #f3f4f6;
-  border-color: #9ca3af;
+  background: var(--card-border);
+  border-color: var(--text-faint);
 }
 
 .filter-apply {
   font-size: 14px;
   font-weight: 600;
   padding: 8px 20px;
-  background: #860100;
+  background: var(--maroon-700);
   color: #ffffff;
   border: none;
   border-radius: 6px;
@@ -279,7 +276,7 @@
 }
 
 .filter-apply:hover {
-  background: #6b0000;
+  background: var(--maroon-800);
 }
 
 .filter-apply:active {

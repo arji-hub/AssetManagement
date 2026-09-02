@@ -21,6 +21,29 @@
   z-index: 9999;
 }
 
+.settings-button {
+  font-size: clamp(12px, 1vw, 14px);
+  font-weight: 500;
+  padding: 7px 16px;
+  background: var(--maroon-800);
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.2s ease,
+    transform 0.1s ease;
+}
+
+.settings-button:hover {
+  background: var(--maroon-800);
+}
+
+.settings-button:active {
+  transform: scale(0.97);
+}
+
 @media (max-width: 780px) {
   .room-top {
     flex-direction: column;
@@ -40,58 +63,14 @@
 .room-settings {
   display: flex;
   align-items: center;
-  justify-content: space-around;
   flex-wrap: wrap;
   gap: 12px;
   margin-bottom: 10px;
 }
 
-@media (max-width: 605px) {
+@media (max-width: 490px) {
   .room-settings {
     justify-content: space-between;
-  }
-
-  .room-settings .filters {
-    order: 4;
-    margin-left: auto;
-  }
-
-  .room-settings .settings-button {
-    order: 2;
-  }
-
-  .room-settings .search-bar {
-    order: 3;
-  }
-
-  .room-settings > *:first-child {
-    order: 1;
-    flex-basis: 50%;
-  }
-}
-
-@media (max-width: 400px) {
-  .room-settings {
-    justify-content: space-between;
-  }
-
-  .room-settings .filters {
-    order: 3;
-    margin-right: auto;
-    margin-left: 0;
-  }
-
-  .room-settings .settings-button {
-    order: 4;
-  }
-
-  .room-settings .search-bar {
-    order: 1;
-  }
-
-  .room-settings > *:first-child {
-    order: 2;
-    flex-basis: 0;
   }
 }
 

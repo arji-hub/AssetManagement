@@ -1,9 +1,11 @@
+// src/pages/Audit/Audit.jsx
 import { useNavigate } from "react-router-dom";
 import MainLayout from "../../components/layout/MainLayout";
 import { displayDate } from "../../utils/date";
 import AuditPanel from "../../components/panel/AuditPanel";
-import { useAuditRoom } from "../../hooks/audit/useAuditRoom";
-import { useReport } from "../../hooks/audit/useReport";
+import { useAuditRoom } from "../../hooks/audit/room/useAuditRoom";
+import { useReport } from "../../hooks/audit/incident/useReport";
+import useCustodianLogs from "../../hooks/audit/custodian/useCustodianLogs";
 import "./Audit.css";
 
 function Audit() {
@@ -13,8 +15,9 @@ function Audit() {
     useAuditRoom();
   const { lastEntry: incidentLastEntry, handleClick: handleIncidentClick } =
     useReport();
+  const { custodians } = useCustodianLogs();
 
-  const handleCustodianClick = () => navigate("/custodian");
+  const handleCustodianClick = () => navigate("/audit/custodian");
 
   return (
     <MainLayout>
@@ -35,7 +38,8 @@ function Audit() {
             title="Room Logs"
             description="View the history of asset movements and status changes recorded per room."
             lastEntry={roomLastEntry}
-            badgeVariant="danger"
+            entryLabel="Last entry"
+            badgeVariant="neutral"
             onClick={handleRoomClick}
           />
           <AuditPanel
@@ -43,6 +47,7 @@ function Audit() {
             title="Incident Logs"
             description="View detailed audit report activity, filtered by date range and personnel."
             lastEntry={incidentLastEntry}
+            entryLabel="Last entry"
             badgeVariant="neutral"
             onClick={handleIncidentClick}
           />
@@ -50,7 +55,9 @@ function Audit() {
             icon="users"
             title="Custodian Logs"
             description="View asset custody records and accountability by custodian."
-            badgeVariant="neutral"
+            lastEntry={custodians.length}
+            entryLabel="Total custodians:"
+            badgeVariant="danger"
             onClick={handleCustodianClick}
           />
         </div>

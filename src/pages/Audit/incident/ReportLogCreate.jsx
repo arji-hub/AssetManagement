@@ -4,7 +4,7 @@ import MainLayout from "../../../components/layout/MainLayout";
 import BackButton from "../../../components/ui/button/BackButton";
 import GenerateReportLogModal from "../../../components/modal/GenerateReportLogModal";
 import AddingStatusModal from "../../../components/ui/status/AddingStatusModal";
-import useReportLogCreate from "../../../hooks/audit/useReportLogCreate";
+import useReportLogCreate from "../../../hooks/audit/incident/useReportLogCreate";
 import { reportLogCreateColumns } from "../../../data/columns";
 import Table from "../../../components/panel/Table";
 import ReportLogCreateCard from "../../../components/ui/card/audit/ReportLogCreateCard";
