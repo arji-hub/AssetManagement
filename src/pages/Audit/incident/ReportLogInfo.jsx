@@ -2,11 +2,13 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MainLayout from "../../../components/layout/MainLayout";
 import BackButton from "../../../components/ui/button/BackButton";
-import ReportLogPagination from "../../../components/ui/pagination/ReportLogPagination";
 import useReportLogInfo from "../../../hooks/audit/useReportLogInfo";
 import { formatDate } from "../../../utils/date";
-import { PDFPreviewModal } from "../../../components/ui/modal/PDFPreviewModal";
+import { PDFPreviewModal } from "../../../components/modal/PDFPreviewModal";
 import { ReportLogPDF } from "../../../pdf/templates/ReportLogPDF";
+import { reportLogInfoColumns } from "../../../data/columns";
+import Table from "../../../components/panel/Table";
+import ReportLogInfoCard from "../../../components/ui/card/audit/ReportLogInfoCard";
 import "./ReportLogInfo.css";
 
 function ReportLogInfo() {
@@ -19,12 +21,6 @@ function ReportLogInfo() {
     typeFilter,
     setTypeFilter,
     filteredReports,
-    paginatedReports,
-    currentPage,
-    totalPages,
-    goToPage,
-    nextPage,
-    prevPage,
     handleRowClick,
   } = useReportLogInfo();
 
@@ -150,153 +146,24 @@ function ReportLogInfo() {
           )}
         </div>
 
-        {/* Desktop table */}
-        <div className="report-log-info-table-wrapper">
-          <table className="report-log-info-table">
-            <thead>
-              <tr>
-                <th>Report No.</th>
-                <th>Description</th>
-                <th>Type</th>
-                <th>Reported By</th>
-                <th>Location</th>
-                <th>Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading && (
-                <tr>
-                  <td colSpan={6} className="report-log-info-table-empty">
-                    Loading reports...
-                  </td>
-                </tr>
-              )}
-
-              {!loading && filteredReports.length === 0 && (
-                <tr>
-                  <td colSpan={6} className="report-log-info-table-empty">
-                    No reports match your filters.
-                  </td>
-                </tr>
-              )}
-
-              {!loading &&
-                paginatedReports.map((report) => (
-                  <tr key={report.id} onClick={() => handleRowClick(report.id)}>
-                    <td>{report.report_no}</td>
-                    <td>{report.description}</td>
-                    <td>
-                      <span
-                        className={`report-log-info-type-badge report-log-info-type-${report.type}`}
-                      >
-                        {report.type}
-                      </span>
-                    </td>
-                    <td>
-                      {report.reported_by ? report.reported_by_name : "---"}
-                    </td>
-                    <td>{report.location}</td>
-                    <td>{formatDate(report.created_at)}</td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Mobile card list */}
-        <div className="report-log-info-card-list">
-          {loading && (
-            <p className="report-log-info-card-empty">Loading reports...</p>
-          )}
-
-          {!loading && filteredReports.length === 0 && (
-            <p className="report-log-info-card-empty">
-              No reports match your filters.
-            </p>
-          )}
-
-          {!loading &&
-            paginatedReports.map((report) => (
-              <div
+        <div className="report-log-info-table">
+          <Table
+            columns={reportLogInfoColumns}
+            items={filteredReports}
+            loading={loading}
+            error={error}
+            itemLabel="reports"
+            emptyMessage="No reports match your filters."
+            renderItem={(report) => (
+              <ReportLogInfoCard
                 key={report.id}
-                className="report-log-info-card"
+                report={report}
+                columns={reportLogInfoColumns}
                 onClick={() => handleRowClick(report.id)}
-              >
-                <div className="report-log-info-card-header">
-                  <p className="report-log-info-card-title">
-                    {report.report_no}
-                  </p>
-                  <span
-                    className={`report-log-info-type-badge report-log-info-type-${report.type}`}
-                  >
-                    {report.type}
-                  </span>
-                </div>
-                <div className="report-log-info-card-meta">
-                  {report.description && (
-                    <div className="report-log-info-card-meta-row">
-                      <div className="report-log-info-card-description">
-                        <div
-                          className="report-log-info-card-meta-icon"
-                          title="Description"
-                        >
-                          <FontAwesomeIcon icon="fa-solid fa-file-lines" />
-                        </div>
-                        <span className="report-log-info-card-meta-value">
-                          {report.description}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-
-                  {report.location && (
-                    <div className="report-log-info-card-meta-row">
-                      <div className="report-log-info-card-description">
-                        <div
-                          className="report-log-info-card-meta-icon"
-                          title="Location"
-                        >
-                          <FontAwesomeIcon icon="fa-solid fa-location-dot" />
-                        </div>
-                        <span className="report-log-info-card-meta-value">
-                          {report.location}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-
-                  {(report.reported_by_name || report.reported_by) && (
-                    <div className="report-log-info-card-meta-row">
-                      <div className="report-log-info-card-custodian">
-                        <div
-                          className="report-log-info-card-meta-icon"
-                          title="Reported by"
-                        >
-                          <FontAwesomeIcon icon="fa-solid fa-user" />
-                        </div>
-                        <span className="report-log-info-card-meta-value">
-                          {report.reported_by_name ?? report.reported_by}
-                        </span>
-                      </div>
-                      <div className="report-log-info-card-date">
-                        {formatDate(report.created_at)}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-        </div>
-
-        {!loading && filteredReports.length > 0 && (
-          <ReportLogPagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPrev={prevPage}
-            onNext={nextPage}
-            onGoToPage={goToPage}
+              />
+            )}
           />
-        )}
+        </div>
       </div>
     </MainLayout>
   );

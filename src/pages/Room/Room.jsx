@@ -3,7 +3,7 @@ import "./Room.css";
 import "../../components/layout/Toolbar.css";
 import Table from "../../components/panel/Table";
 import RoomCard from "../../components/ui/card/room/RoomCard";
-import RoomModal from "../../components/ui/modal/RoomModal";
+import RoomModal from "../../components/modal/RoomModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRoom } from "../../hooks/room/useRoom";
 import { ROOM_FILTER_OPTIONS } from "../../data/room";

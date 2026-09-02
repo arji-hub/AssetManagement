@@ -7,7 +7,7 @@ import {
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
 import "./QRModal.css";
-import Camera from "../../camera/Camera";
+import Camera from "../camera/Camera";
 
 function QRModal({ onScan, onImageUpload }) {
   const fileInputRef = useRef(null);

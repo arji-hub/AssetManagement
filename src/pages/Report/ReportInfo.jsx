@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import MainLayout from "../../components/layout/MainLayout";
 import { fetchReportByID } from "../../services/report";
 import { useAuth } from "../../context/AuthContext";
@@ -8,14 +8,12 @@ import { ROLES } from "../../data/roles";
 import { Status } from "../../components/ui/status/assetStatus";
 import { formatDate } from "../../utils/date";
 import { getReportType } from "../../utils/report";
-import LoadingScreen from "../../components/ui/status/LoadingScreen";
 import ReportLog from "../../components/ui/card/report/ReportLog";
-import ReportActionModal from "../../components/ui/modal/ReportActionModal";
+import ReportActionModal from "../../components/modal/ReportActionModal";
 import "./ReportInfo.css";
 import BackButton from "../../components/ui/button/BackButton";
 
 function ReportInfo() {
-  const navigate = useNavigate();
   const { id } = useParams();
   const { role } = useAuth();
   const isAdmin = role === ROLES.ADMIN;
@@ -220,7 +218,7 @@ function ReportInfo() {
         </div>
 
         {/* Status Log */}
-        <div className="report-log-card">
+        <div className="report-info-status-card">
           <span className="report-info-section-label">STATUS HISTORY</span>
           <div className="report-info-log">
             {report.status_log.map((log, index) => (

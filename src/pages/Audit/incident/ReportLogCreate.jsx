@@ -2,12 +2,14 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MainLayout from "../../../components/layout/MainLayout";
 import BackButton from "../../../components/ui/button/BackButton";
-import ReportLogPagination from "../../../components/ui/pagination/ReportLogPagination";
-import GenerateReportLogModal from "../../../components/ui/modal/GenerateReportLogModal";
+import GenerateReportLogModal from "../../../components/modal/GenerateReportLogModal";
 import AddingStatusModal from "../../../components/ui/status/AddingStatusModal";
 import useReportLogCreate from "../../../hooks/audit/useReportLogCreate";
-import { formatDate } from "../../../utils/date";
+import { reportLogCreateColumns } from "../../../data/columns";
+import Table from "../../../components/panel/Table";
+import ReportLogCreateCard from "../../../components/ui/card/audit/ReportLogCreateCard";
 import "./ReportLogCreate.css";
+import DateRangeModal from "../../../components/modal/DateRangeModal";
 
 function ReportLogCreate() {
   const {
@@ -22,12 +24,6 @@ function ReportLogCreate() {
     endDate,
     setEndDate,
     filteredReports,
-    paginatedReports,
-    currentPage,
-    totalPages,
-    goToPage,
-    nextPage,
-    prevPage,
     selectedIds,
     toggleSelect,
     toggleSelectAll,
@@ -105,23 +101,14 @@ function ReportLogCreate() {
             ))}
           </div>
 
-          <div className="report-log-date-range">
-            <input
-              type="date"
-              className="report-log-date-input"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              aria-label="Start date"
-            />
-            <span className="report-log-date-separator">to</span>
-            <input
-              type="date"
-              className="report-log-date-input"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              aria-label="End date"
-            />
-          </div>
+          <DateRangeModal
+            startDate={startDate}
+            endDate={endDate}
+            onApply={(start, end) => {
+              setStartDate(start);
+              setEndDate(end);
+            }}
+          />
         </div>
 
         {error && (
@@ -163,149 +150,26 @@ function ReportLogCreate() {
           </div>
         )}
 
-        {/* Desktop table */}
-        <div className="report-log-table-wrapper">
-          <table className="report-log-table">
-            <thead>
-              <tr>
-                <th className="report-log-table-checkbox-col"></th>
-                <th>Report No.</th>
-                <th>Description</th>
-                <th>Type</th>
-                <th>Reported By</th>
-                <th>Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading && (
-                <tr>
-                  <td colSpan={5} className="report-log-table-empty">
-                    Loading reports...
-                  </td>
-                </tr>
-              )}
-
-              {!loading && filteredReports.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="report-log-table-empty">
-                    No reports match your filters.
-                  </td>
-                </tr>
-              )}
-
-              {!loading &&
-                paginatedReports.map((report) => (
-                  <tr
-                    key={report.id}
-                    onClick={() => handleReportClick(report.id)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <td>
-                      <input
-                        type="checkbox"
-                        checked={selectedIds.has(report.id)}
-                        onChange={() => toggleSelect(report.id)}
-                      />
-                    </td>
-                    <td>{report.report_no}</td>
-                    <td>{report.description}</td>
-                    <td>
-                      <span
-                        className={`report-log-type-badge report-log-type-${report.type}`}
-                      >
-                        {report.type}
-                      </span>
-                    </td>
-                    <td>{report.reported_by_name}</td>
-                    <td>{formatDate(report.created_at)}</td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Mobile card list */}
-        <div className="report-log-card-list">
-          {loading && (
-            <p className="report-log-card-empty">Loading reports...</p>
-          )}
-
-          {!loading && filteredReports.length === 0 && (
-            <p className="report-log-card-empty">
-              No reports match your filters.
-            </p>
-          )}
-
-          {!loading &&
-            paginatedReports.map((report) => (
-              <div
+        <div className="report-log-create-table">
+          <Table
+            columns={reportLogCreateColumns}
+            items={filteredReports}
+            loading={loading}
+            error={error}
+            itemLabel="reports"
+            emptyMessage="No reports match your filters."
+            renderItem={(report) => (
+              <ReportLogCreateCard
                 key={report.id}
-                className={`report-log-card ${
-                  selectedIds.has(report.id) ? "report-log-card-selected" : ""
-                }`}
-              >
-                <div className="report-log-card-header">
-                  <input
-                    type="checkbox"
-                    checked={selectedIds.has(report.id)}
-                    onChange={() => toggleSelect(report.id)}
-                  />
-                  <p className="report-log-card-title">{report.report_no}</p>
-                  <span
-                    className={`report-log-type-badge report-log-type-${report.type}`}
-                  >
-                    {report.type}
-                  </span>
-                </div>
-                <div className="report-log-card-meta">
-                  {report.description && (
-                    <div className="report-log-card-meta-row">
-                      <div className="report-log-card-description">
-                        <div
-                          className="report-log-card-meta-icon"
-                          title="Description"
-                        >
-                          <FontAwesomeIcon icon="fa-solid fa-file-lines" />
-                        </div>
-
-                        <span className="report-log-card-meta-value">
-                          {report.description}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                  {report.reported_by_name && (
-                    <div className="report-log-card-meta-row">
-                      <div className="report-log-card-custodian">
-                        <div
-                          className="report-log-card-meta-icon"
-                          title="Reported by"
-                        >
-                          <FontAwesomeIcon icon="fa-solid fa-user" />
-                        </div>
-                        <span className="report-log-card-meta-value">
-                          {report.reported_by_name}
-                        </span>
-                      </div>
-                      <div className="report-log-card-date">
-                        {formatDate(report.created_at)}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-        </div>
-
-        {!loading && filteredReports.length > 0 && (
-          <ReportLogPagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPrev={prevPage}
-            onNext={nextPage}
-            onGoToPage={goToPage}
+                report={report}
+                columns={reportLogCreateColumns}
+                selected={selectedIds.has(report.id)}
+                onToggleSelect={toggleSelect}
+                onClick={(r) => handleReportClick(r.id)}
+              />
+            )}
           />
-        )}
+        </div>
 
         {isGenerateModalOpen && (
           <GenerateReportLogModal

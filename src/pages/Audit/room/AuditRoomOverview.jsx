@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import MainLayout from "../../../components/layout/MainLayout";
 import useRoomOverview from "../../../hooks/audit/useRoomOverview";
-import AuditConfirmRoomModal from "../../../components/ui/modal/AuditConfirmRoomModal";
+import AuditConfirmRoomModal from "../../../components/modal/AuditConfirmRoomModal";
 import AuditCard from "../../../components/ui/card/audit/AuditCard";
 import BackButton from "../../../components/ui/button/BackButton";
 import useAuditRoomSession from "../../../hooks/audit/useAuditRoomSession";

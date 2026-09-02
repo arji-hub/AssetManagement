@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { formatDate } from "../../utils/date";
-import { PDFPreviewModal } from "../../components/ui/modal/PDFPreviewModal";
+import { PDFPreviewModal } from "../../components/modal/PDFPreviewModal";
 import { RoomInventoryPDF } from "../../pdf/templates/RoomInventoryPDF";
 import { useRoomAssets } from "../../hooks/room/useRoomAssets";
 

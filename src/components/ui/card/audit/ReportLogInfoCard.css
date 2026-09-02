@@ -1,0 +1,109 @@
+/* ══════════════ Desktop / tablet row ══════════════ */
+.report-log-info-row {
+  display: grid;
+  grid-template-columns: var(--table-grid-columns);
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.report-log-info-row:hover {
+  background: var(--surface-subtle);
+}
+
+.report-log-info-row-cell {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 1024px) {
+  .report-log-info-row {
+    grid-template-columns: var(--table-grid-columns-tablet);
+  }
+  .report-log-info-row [data-priority="low"] {
+    display: none;
+  }
+}
+
+@media (max-width: 800px) {
+  .report-log-info-row {
+    grid-template-columns: var(--table-grid-columns-mobile);
+  }
+  .report-log-info-row [data-priority="medium"] {
+    display: none;
+  }
+}
+
+.report-log-info-card {
+  display: none;
+}
+
+/* ══════════════ Mobile card ══════════════ */
+@media (max-width: 630px) {
+  .report-log-info-row {
+    display: none;
+  }
+
+  .report-log-info-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    background: var(--card-bg);
+    cursor: pointer;
+  }
+
+  .report-log-info-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .report-log-info-card-title {
+    flex: 1;
+    margin: 0;
+    font-weight: 700;
+    color: var(--text-strong);
+  }
+
+  .report-log-info-card-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .report-log-info-card-meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .report-log-info-card-meta-item {
+    display: flex;
+    gap: 5px;
+  }
+
+  .report-log-info-card-meta-icon {
+    width: 16px;
+    color: var(--maroon-700);
+    display: flex;
+    justify-content: center;
+  }
+
+  .report-log-info-card-meta-value {
+    font-size: 14px;
+    color: var(--text-strong);
+  }
+
+  .report-log-info-card-date {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+}

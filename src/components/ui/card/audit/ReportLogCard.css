@@ -1,0 +1,178 @@
+/* ══════════════ Desktop / tablet row ══════════════ */
+.report-log-row {
+  display: grid;
+  grid-template-columns: var(--table-grid-columns);
+  align-items: center;
+  gap: 12px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    box-shadow 0.15s,
+    transform 0.15s;
+}
+
+.report-log-row:hover {
+  background: var(--maroon-tint);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+.report-log-row-cell {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.report-log-row-cell[data-priority="high"]:first-child {
+  font-weight: 700;
+  color: #860100;
+  text-transform: none;
+}
+
+.report-log-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  background: #e6eeff;
+  color: #5a413c;
+}
+
+.report-log-damaged {
+  color: #ba1a1a;
+  font-weight: 700;
+}
+
+.report-log-missing {
+  color: #8a5c00;
+  font-weight: 700;
+}
+
+.report-log-muted {
+  color: #5a413c;
+}
+
+@media (max-width: 1024px) {
+  .report-log-row {
+    grid-template-columns: var(--table-grid-columns-tablet);
+  }
+  .report-log-row [data-priority="low"] {
+    display: none;
+  }
+}
+
+@media (max-width: 800px) {
+  .report-log-row {
+    padding: 12px 16px;
+    grid-template-columns: var(--table-grid-columns-mobile);
+  }
+  .report-log-row [data-priority="medium"] {
+    display: none;
+  }
+}
+
+.report-log-card {
+  display: none;
+}
+
+/* ══════════════ Mobile card ══════════════ */
+@media (max-width: 630px) {
+  .report-log-row {
+    display: none;
+  }
+
+  .report-log-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    cursor: pointer;
+    margin-right: 5px;
+    box-shadow: var(--shadow-sm);
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .report-log-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--card-elevated-container-elevation);
+  }
+
+  .report-log-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .report-log-card-title {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    font-weight: 700;
+    color: #860100;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .report-log-card-badge-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .report-log-card-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .report-log-card-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .report-log-card-stat {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .report-log-card-stat-label {
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .report-log-card-meta-icon {
+    width: 14px;
+    color: #860100;
+    display: flex;
+    justify-content: center;
+    font-size: 12px;
+  }
+
+  .report-log-card-date {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+}

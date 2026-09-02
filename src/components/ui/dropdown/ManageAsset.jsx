@@ -2,10 +2,10 @@
 
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import TransferModal from "../modal/TransferModal";
-import ReportModal from "../modal/ReportModal";
-import TransferMR from "../modal/TransferMR";
-import TransferRoomModal from "../modal/TransferRoomModal";
+import TransferModal from "../../modal/TransferModal";
+import ReportModal from "../../modal/ReportModal";
+import TransferMR from "../../modal/TransferMR";
+import TransferRoomModal from "../../modal/TransferRoomModal";
 import useManageAsset from "../../../hooks/asset/useManageAsset";
 import "./ManageAsset.css";
 

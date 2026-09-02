@@ -1,8 +1,8 @@
 import { React, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import useTransferRequest from "../../../hooks/transfer/useTransferRequest";
+import useTransferRequest from "../../hooks/transfer/useTransferRequest";
 import "./TransferModal.css";
-import AddingStatusModal from "../status/AddingStatusModal";
+import AddingStatusModal from "../ui/status/AddingStatusModal";
 
 function TransferModal({ onClose, assetID = "" }) {
   const {

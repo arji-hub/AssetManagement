@@ -1,0 +1,123 @@
+/* ══════════════ Desktop / tablet row ══════════════ */
+.report-log-create-row {
+  display: grid;
+  grid-template-columns: 40px var(--table-grid-columns);
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-top: 1px solid #f0dedc;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.report-log-create-row:hover {
+  background: #fbeceb;
+}
+
+.report-log-create-row-selected {
+  background: #fbeceb;
+}
+
+.report-log-create-row-checkbox {
+  display: flex;
+  justify-content: center;
+}
+
+.report-log-create-row-cell {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 1024px) {
+  .report-log-create-row {
+    grid-template-columns: 40px var(--table-grid-columns-tablet);
+  }
+  .report-log-create-row [data-priority="low"] {
+    display: none;
+  }
+}
+
+@media (max-width: 800px) {
+  .report-log-create-row {
+    grid-template-columns: 40px var(--table-grid-columns-mobile);
+  }
+  .report-log-create-row [data-priority="medium"] {
+    display: none;
+  }
+}
+
+.report-log-create-card {
+  display: none;
+}
+
+/* ══════════════ Mobile card ══════════════ */
+@media (max-width: 630px) {
+  .report-log-create-row {
+    display: none;
+  }
+
+  .report-log-create-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid #e2beb9;
+    border-radius: 8px;
+    padding: 14px 16px;
+    background: #ffffff;
+    cursor: pointer;
+  }
+
+  .report-log-create-card-selected {
+    border-color: #860100;
+    background: #fbeceb;
+  }
+
+  .report-log-create-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .report-log-create-card-title {
+    flex: 1;
+    margin: 0;
+    font-weight: 700;
+    color: #121c2a;
+  }
+
+  .report-log-create-card-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .report-log-create-card-meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .report-log-create-card-meta-item {
+    display: flex;
+    gap: 5px;
+  }
+
+  .report-log-create-card-meta-icon {
+    width: 16px;
+    color: #860100;
+    display: flex;
+    justify-content: center;
+  }
+
+  .report-log-create-card-meta-value {
+    font-size: 14px;
+    color: #121c2a;
+  }
+
+  .report-log-create-card-date {
+    font-size: 12px;
+    color: #5a413c;
+  }
+}

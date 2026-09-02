@@ -6,7 +6,7 @@ import { ROLES } from "../../data/roles";
 import "./Report.css";
 import Table from "../../components/panel/Table";
 import ReportCard from "../../components/ui/card/report/ReportCard";
-import ReportModal from "../../components/ui/modal/ReportModal";
+import ReportModal from "../../components/modal/ReportModal";
 import { displayDate } from "../../utils/date";
 import { TABS } from "../../data/reports";
 import { REPORT_COLUMNS } from "../../data/columns";
