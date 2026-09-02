@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { subscribeToAssetsInRoom, fetchRoom } from "../../services/room";
-import useRoomOverview from "../audit/useRoomOverview";
+import useRoomOverview from "../audit/room/useRoomOverview";
 import { useNavigate } from "react-router-dom";
 
 export function useRoomAssets(roomID) {

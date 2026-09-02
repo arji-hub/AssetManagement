@@ -1,6 +1,5 @@
 import MainLayout from "../../components/layout/MainLayout";
 import "./Custodian.css";
-import "../../components/layout/Toolbar.css";
 import Table from "../../components/panel/Table";
 import CustodianCard from "../../components/ui/card/custodian/CustodianCard";
 import CustodianModal from "../../components/modal/CustodianModal";
@@ -10,6 +9,8 @@ import { useCustodian } from "../../hooks/custodian/useCustodian";
 import { CUSTODIAN_FILTER_OPTIONS } from "../../data/roles";
 import { displayDate } from "../../utils/date";
 import { custodianColumns } from "../../data/columns";
+import SearchBar from "../../components/ui/searchBar/SearchBar";
+import AssetCountFilter from "../../components/ui/filter/AssetCountFilter";
 
 function Custodian() {
   const {
@@ -40,41 +41,18 @@ function Custodian() {
             <p className="date">{displayDate}</p>
           </div>
           <div className="custodian-settings">
-            {/*  <PDFPreviewModal
-              title="Custodian List"
-              fileName="custodian-list.pdf"
-              document={<CustodianListPDF custodians={custodians} />}
-              triggerLabel="Custodian List"
-            /> */}
-            <div className="search-bar">
-              <FontAwesomeIcon
-                icon="fa-solid fa-magnifying-glass"
-                className="search-icon"
-              />
-              <input
-                type="text"
-                placeholder="Search custodians..."
+            <div className="search-bar-wrapper">
+              <SearchBar
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={setSearchQuery}
+                placeholder="Search custodians..."
               />
             </div>
-            <div className="filters">
-              <label htmlFor="asset-count-filter" className="filters-label">
-                Assets:
-              </label>
-              <select
-                id="asset-count-filter"
-                name="assetCount"
-                value={assetCountFilter}
-                onChange={(e) => setAssetCountFilter(e.target.value)}
-              >
-                <option value="">All</option>
-                <option value="none">None (0)</option>
-                <option value="low">Low (1–10)</option>
-                <option value="medium">Medium (11–50)</option>
-                <option value="high">High (50+)</option>
-              </select>
-            </div>
+            <AssetCountFilter
+              value={assetCountFilter}
+              onChange={setAssetCountFilter}
+            />
+
             <button className="settings-button" onClick={openModal}>
               Add Custodian
             </button>

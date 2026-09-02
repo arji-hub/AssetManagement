@@ -129,29 +129,6 @@
   flex: 1;
 }
 
-.audit-room-search-icon {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #5a413c;
-  font-size: 14px;
-}
-
-.audit-room-search input {
-  width: 100%;
-  padding: 10px 12px 10px 36px;
-  border: 1px solid #e2beb9;
-  border-radius: 8px;
-  font-size: 14px;
-  background: #ffffff;
-}
-
-.audit-room-search input:focus {
-  outline: none;
-  border-color: #860100;
-}
-
 @media (max-width: 768px) {
   .audit-room-page {
     flex: none;

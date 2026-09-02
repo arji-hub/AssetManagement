@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
-import { fetchRoom, subscribeToAssetsInRoom } from "../../services/room";
-import { fetchAuditRoomsByRoomID } from "../../services/audit";
+import { fetchRoom, subscribeToAssetsInRoom } from "../../../services/room";
+import { fetchAuditRoomsByRoomID } from "../../../services/audit";
 
 function useRoomOverview(roomId) {
   // ── Room ──────────────────────────────────────────────────────────────
@@ -91,7 +91,9 @@ function useRoomOverview(roomId) {
   // Last audited date — prefer the most recent completed audit
   const lastAuditedAt = useMemo(() => {
     if (previousAudits.length === 0) return null;
-    return previousAudits[0].completed_at ?? previousAudits[0].created_at ?? null;
+    return (
+      previousAudits[0].completed_at ?? previousAudits[0].created_at ?? null
+    );
   }, [previousAudits]);
 
   return {

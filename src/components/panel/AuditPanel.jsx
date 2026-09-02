@@ -8,10 +8,13 @@ function AuditPanel({
   title,
   description,
   lastEntry,
-  badgeVariant = "neutral",
-  actionLabel = "Open",
+  entryLabel = "Last entry",
+  badgeVariant,
+  actionLabel = "View",
   onClick,
 }) {
+  const hasEntry = lastEntry !== null && lastEntry !== undefined;
+
   return (
     <button className="audit-panel-card" onClick={onClick} type="button">
       <span className="audit-panel-rail" aria-hidden="true" />
@@ -30,7 +33,7 @@ function AuditPanel({
           className={`audit-panel-status audit-panel-status--${badgeVariant}`}
         >
           <span className="audit-panel-status-dot" aria-hidden="true" />
-          {lastEntry ? `Last entry ${lastEntry}` : "No recent entries"}
+          {hasEntry ? `${entryLabel} ${lastEntry}` : "No recent entries"}
         </span>
 
         <span className="audit-panel-action">
@@ -50,7 +53,8 @@ AuditPanel.propTypes = {
   icon: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired,
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
-  lastEntry: PropTypes.string,
+  lastEntry: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  entryLabel: PropTypes.string,
   badgeVariant: PropTypes.oneOf(["danger", "neutral"]),
   actionLabel: PropTypes.string,
   onClick: PropTypes.func,

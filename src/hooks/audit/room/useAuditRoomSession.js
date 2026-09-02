@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-import { addAuditRoom } from "../../services/audit";
-import { subscribeToAssetsInRoom } from "../../services/room";
+import { useAuth } from "../../../context/AuthContext";
+import { addAuditRoom } from "../../../services/audit";
+import { subscribeToAssetsInRoom } from "../../../services/room";
 import useRoomOverview from "./useRoomOverview";
 
 function useAuditRoomSession(roomID) {

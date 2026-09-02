@@ -4,10 +4,10 @@ import {
   updateAuditItem,
   completeAuditSession,
   addUnexpectedDiscrepancy,
-} from "../../services/audit";
-import { useRoomAssets } from "../room/useRoomAssets";
+} from "../../../services/audit";
+import { useRoomAssets } from "../../room/useRoomAssets";
 import useRoomOverview from "./useRoomOverview";
-import { fetchAssetByID } from "../../services/asset";
+import { fetchAssetByID } from "../../../services/asset";
 import { useNavigate } from "react-router-dom";
 
 function useRoomInfo(auditID) {

@@ -1,23 +1,32 @@
+// src/pages/Audit/room/AuditRoom.jsx
 import { useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MainLayout from "../../../components/layout/MainLayout";
 import NewAuditRoomModal from "../../../components/modal/NewAuditRoomModal";
 import AuditCard from "../../../components/ui/card/audit/AuditCard";
 import BackButton from "../../../components/ui/button/BackButton";
-import useRoomLogs from "../../../hooks/audit/useRoomLogs";
+import useRoomLogs from "../../../hooks/audit/room/useRoomLogs";
 import { RoomListPDF } from "../../../pdf/templates/RoomListPDF";
 import { PDFPreviewModal } from "../../../components/modal/PDFPreviewModal";
 import { roomAuditColumns } from "../../../data/columns";
 import Table from "../../../components/panel/Table";
 import AuditRoomCard from "../../../components/ui/card/audit/AuditRoomCard";
+import SearchBar from "../../../components/ui/searchBar/SearchBar";
 import "./AuditRoom.css";
 
 function AuditRoom() {
-  const { rooms, roomsLoading, roomsError, search, setSearch } = useRoomLogs();
+  const {
+    rooms,
+    roomsLoading,
+    roomsError,
+    search,
+    setSearch,
+    totalAudits,
+    roomsNotAudited,
+    avgDiscrepancyRate,
+  } = useRoomLogs();
   const openWithRoomRef = useRef(null);
 
-  /* move here list of rooms then per room may view inventory pdf
-  then on top beside new audit or katabi ng search bar there is room pdf btn */
   return (
     <MainLayout>
       <div className="audit-room-page">
@@ -43,26 +52,29 @@ function AuditRoom() {
         </div>
 
         <div className="audit-room-stats">
-          <AuditCard variant="secondary" label="Total audits" value={"—"} />
-          <AuditCard variant="primary" label="Rooms not audited" value={"—"} />
+          <AuditCard
+            variant="secondary"
+            label="Total audits"
+            value={totalAudits}
+          />
+          <AuditCard
+            variant="primary"
+            label="Rooms not audited"
+            value={roomsNotAudited}
+          />
           <AuditCard
             variant="neutral"
             label="Avg. discrepancy rate"
-            value={"—"}
+            value={`${avgDiscrepancyRate}%`}
           />
         </div>
 
         <div className="audit-room-filter">
           <div className="audit-room-search">
-            <FontAwesomeIcon
-              icon="magnifying-glass"
-              className="audit-room-search-icon"
-            />
-            <input
-              type="text"
-              placeholder="Search room"
+            <SearchBar
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={setSearch}
+              placeholder="Search room"
             />
           </div>
           <PDFPreviewModal

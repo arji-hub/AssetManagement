@@ -1,5 +1,5 @@
 /* ══════════════ Desktop / tablet row ══════════════ */
-.room-audit-row {
+.custodian-audit-row {
   display: grid;
   grid-template-columns: var(--table-grid-columns);
   align-items: center;
@@ -15,7 +15,7 @@
     transform 0.15s;
 }
 
-.room-audit-row:hover {
+.custodian-audit-row:hover {
   background: var(--maroon-tint);
   box-shadow: var(--shadow-sm);
   transform: translateY(-1px);
@@ -34,14 +34,14 @@
   display: inline-block;
 }
 
-.room-audit-row:hover .icon-door--open {
+.custodian-audit-row:hover .icon-door--open {
   display: inline-block;
 }
-.room-audit-row:hover .icon-door--closed {
+.custodian-audit-row:hover .icon-door--closed {
   display: none;
 }
 
-.room-audit-row-name {
+.custodian-audit-row-name {
   font-weight: 700;
   font-size: 15px;
   color: var(--text-strong);
@@ -52,14 +52,14 @@
   min-width: 0;
 }
 
-.room-audit-row-name-text {
+.custodian-audit-row-name-text {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   min-width: 0;
 }
 
-.room-audit-row-custodian {
+.custodian-audit-row-role {
   font-size: 13px;
   color: var(--text-muted);
   overflow: hidden;
@@ -67,7 +67,7 @@
   white-space: nowrap;
 }
 
-.room-audit-row-audit {
+.custodian-audit-row-audit {
   font-size: 13px;
   color: var(--text-muted);
   display: flex;
@@ -75,25 +75,25 @@
   gap: 6px;
 }
 
-.room-audit-row-cell:nth-last-child(2) {
+.custodian-audit-row-cell:nth-last-child(2) {
   display: flex;
   justify-content: center;
 }
 
-.room-audit-row .room-audit-row-cell:last-child {
+.custodian-audit-row .custodian-audit-row-cell:last-child {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.room-audit-row-cell {
+.custodian-audit-row-cell {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.room-audit-row-assets-count {
+.custodian-audit-row-assets-count {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -109,46 +109,46 @@
   box-sizing: border-box;
 }
 
-.room-audit-card {
+.custodian-audit-card {
   display: none;
 }
 
 /* ── Tablet: drop "low" priority columns ── */
 @media (max-width: 1024px) {
-  .room-audit-row {
+  .custodian-audit-row {
     grid-template-columns: var(--table-grid-columns-tablet);
   }
-  .room-audit-row [data-priority="low"] {
+  .custodian-audit-row [data-priority="low"] {
     display: none;
   }
 }
 
 /* ── Mobile grid: drop "medium" priority columns too ── */
 @media (max-width: 800px) {
-  .room-audit-row {
+  .custodian-audit-row {
     padding: 12px 16px;
     grid-template-columns: var(--table-grid-columns-mobile);
   }
-  .room-audit-row [data-priority="medium"] {
+  .custodian-audit-row [data-priority="medium"] {
     display: none;
   }
 }
 
 /* scope :last-child so it doesn't leak to other tables sharing Table.css */
-.room-audit-audit .panel-header-cell:last-child {
+.custodian-audit .panel-header-cell:last-child {
   text-align: center;
 }
-.room-audit-audit .panel-header-cell:nth-last-child(2) {
+.custodian-audit .panel-header-cell:nth-last-child(2) {
   text-align: center;
 }
 
 /* ══════════════ Mobile card ══════════════ */
 @media (max-width: 630px) {
-  .room-audit-row {
+  .custodian-audit-row {
     display: none;
   }
 
-  .room-audit-card {
+  .custodian-audit-card {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -166,19 +166,19 @@
       box-shadow 0.2s ease;
   }
 
-  .room-audit-card:hover {
+  .custodian-audit-card:hover {
     transform: translateY(-2px);
     box-shadow: var(--card-elevated-container-elevation);
   }
 
-  .room-audit-card-header {
+  .custodian-audit-card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     color: var(--maroon-700);
   }
 
-  .room-audit-name {
+  .custodian-audit-name {
     margin: 0;
     font-size: clamp(0.75rem, 4vw, 1.05rem);
     font-weight: 700;
@@ -186,7 +186,7 @@
     text-transform: uppercase;
   }
 
-  .room-audit-card-meta {
+  .custodian-audit-card-meta {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -197,7 +197,7 @@
     color: var(--text-muted);
   }
 
-  .room-audit-card-custodian {
+  .custodian-audit-card-role {
     font-weight: 600;
     color: var(--gold-500);
     overflow: hidden;
@@ -205,7 +205,7 @@
     white-space: nowrap;
   }
 
-  .room-audit-card-audit {
+  .custodian-audit-card-audit {
     display: flex;
     align-items: center;
     gap: 5px;
@@ -213,12 +213,12 @@
     flex-shrink: 0;
   }
 
-  .room-audit-card-audit svg {
+  .custodian-audit-card-audit svg {
     font-size: 11px;
     color: var(--maroon-700);
   }
 
-  .room-audit-assets {
+  .custodian-audit-assets {
     background: var(--maroon-tint);
     border: 1px solid var(--border-subtle);
     border-radius: 8px;
@@ -228,18 +228,18 @@
     align-items: center;
   }
 
-  .assets-icon-room-audit {
+  .assets-icon-custodian-audit {
     color: var(--maroon-700);
     font-size: 18px;
   }
 
-  .room-audit-assets-label {
+  .custodian-audit-assets-label {
     color: var(--maroon-600);
     font-size: 14px;
     font-weight: 700;
   }
 
-  .room-audit-assets-count {
+  .custodian-audit-assets-count {
     background: var(--maroon-600);
     color: #fff;
     font-size: 13px;
@@ -250,7 +250,7 @@
     text-align: center;
   }
 
-  .room-audit-card-form {
+  .custodian-audit-card-form {
     display: flex;
     justify-content: center;
     padding-top: 4px;
