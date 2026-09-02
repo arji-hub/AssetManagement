@@ -7,7 +7,7 @@ import { ROLES } from "../../data/roles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./Asset.css";
 import FilterModal from "../../components/modal/FilterModal";
-import SearchBar from "../../components/ui/SearchBar/SearchBar";
+import SearchBar from "../../components/ui/searchBar/SearchBar";
 import { useAssetFilters } from "../../hooks/asset/useAssetFilters";
 import { useAssets } from "../../hooks/asset/useAssets";
 import { displayDate } from "../../utils/date";
