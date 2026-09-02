@@ -6,3 +6,6 @@ export { custodianColumns } from "./custodianColumns";
 export { REPORT_COLUMNS } from "./reportColumns";
 export { TRANSFER_COLUMNS } from "./transferColumns";
 export { roomAuditColumns } from "./roomAuditColumns";
+export { reportLogColumns } from "./reportLogColumns";
+export { reportLogInfoColumns } from "./reportLogInfoColumns";
+export { reportLogCreateColumns } from "./reportLogCreateColumns";

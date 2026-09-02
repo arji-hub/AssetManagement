@@ -5,7 +5,7 @@ import MainLayout from "../../components/layout/MainLayout";
 import { ROLES } from "../../data/roles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./Asset.css";
-import FilterModal from "../../components/ui/modal/FilterModal";
+import FilterModal from "../../components/modal/FilterModal";
 import { useAssetFilters } from "../../hooks/asset/useAssetFilters";
 import { useAssets } from "../../hooks/asset/useAssets";
 import { displayDate } from "../../utils/date";

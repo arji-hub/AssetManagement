@@ -2,10 +2,10 @@
 
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import useReportRegistration from "../../../hooks/report/useReportRegistration";
+import useReportRegistration from "../../hooks/report/useReportRegistration";
 import "./ReportModal.css";
-import { REPORT_TYPES } from "../../../data/reports";
-import AddingStatusModal from "../status/AddingStatusModal";
+import { REPORT_TYPES } from "../../data/reports";
+import AddingStatusModal from "../ui/status/AddingStatusModal";
 
 function ReportModal({ onClose, assetID = "" }) {
   const {

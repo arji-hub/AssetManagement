@@ -5,8 +5,8 @@ import alabBulsu from "../../assets/image/alabBulsu.jpg";
 import CICTLOGO from "../../assets/logo/CICTLOGO.png";
 import BULSULOGO from "../../assets/logo/BULSULOGO.png";
 
-import QRModal from "../../components/ui/modal/QRModal";
-import QRInfo from "../../components/ui/modal/QRInfo";
+import QRModal from "../../components/modal/QRModal";
+import QRInfo from "../../components/modal/QRInfo";
 import QRStatusModal from "../../components/ui/status/QRStatusModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQrcode } from "@fortawesome/free-solid-svg-icons";

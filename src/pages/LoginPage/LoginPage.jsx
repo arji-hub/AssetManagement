@@ -1,4 +1,4 @@
-import LoginModal from "../../components/ui/modal/LoginModal";
+import LoginModal from "../../components/modal/LoginModal";
 import { Link } from "react-router-dom";
 
 import bulsuGate from "../../assets/image/bulsuGate.png";

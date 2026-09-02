@@ -192,51 +192,6 @@
   margin-left: auto;
 }
 
-/* Desktop table */
-.report-log-info-table-wrapper {
-  overflow-x: auto;
-  border: 1px solid var(--card-border);
-  border-radius: 8px;
-}
-
-.report-log-info-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-}
-
-.report-log-info-table thead {
-  background: var(--maroon-tint);
-}
-
-.report-log-info-table th {
-  text-align: left;
-  padding: 12px 16px;
-  font-weight: 700;
-  color: var(--maroon-900);
-  white-space: nowrap;
-}
-
-.report-log-info-table td {
-  padding: 12px 16px;
-  border-top: 1px solid var(--border-subtle);
-  color: var(--text-strong);
-}
-
-.report-log-info-table tbody tr {
-  cursor: pointer;
-}
-
-.report-log-info-table tbody tr:hover {
-  background: var(--surface-subtle);
-}
-
-.report-log-info-table-empty {
-  text-align: center;
-  padding: 32px 0;
-  color: var(--text-muted);
-}
-
 .report-log-info-type-badge {
   display: inline-block;
   padding: 4px 10px;
@@ -256,71 +211,13 @@
   color: var(--missing);
 }
 
-/* Mobile card list */
-.report-log-info-card-list {
-  display: none;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.report-log-info-card {
-  border: 1px solid var(--card-border);
-  border-radius: 8px;
-  padding: 14px 16px;
-  background: var(--card-bg);
+.report-log-info-table {
+  flex: none;
+  height: 500px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  cursor: pointer;
-}
-
-.report-log-info-card-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.report-log-info-card-title {
-  flex: 1;
-  margin: 0;
-  font-weight: 700;
-  color: var(--text-strong);
-}
-
-.report-log-info-card-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.report-log-info-card-meta-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.report-log-info-card-description,
-.report-log-info-card-custodian {
-  display: flex;
-  gap: 5px;
-}
-
-.report-log-info-card-meta-icon {
-  width: 16px;
-  color: var(--maroon-700);
-  display: flex;
-  justify-content: center;
-}
-
-.report-log-info-card-meta-value {
-  font-size: 14px;
-  color: var(--text-strong);
-}
-
-.report-log-info-card-empty {
-  text-align: center;
-  padding: 32px 0;
-  color: var(--text-muted);
+  min-height: 0;
+  overflow: hidden;
 }
 
 @media (max-width: 768px) {
@@ -344,14 +241,9 @@
   .report-log-info-select {
     width: 100%;
   }
-}
 
-@media (max-width: 630px) {
-  .report-log-info-table-wrapper {
-    display: none;
-  }
-
-  .report-log-info-card-list {
-    display: flex;
+  .report-log-info-table {
+    flex: none;
+    min-height: 400px;
   }
 }

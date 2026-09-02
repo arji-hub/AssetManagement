@@ -1,9 +1,9 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import { GoogleIcon, MicrosoftIcon } from "../../../assets/OAuthIcons";
-import CICTLOGO from "../../../assets/logo/CICTLOGO.png";
-import { useLogin } from "../../../hooks/login/useLogin";
+import { GoogleIcon, MicrosoftIcon } from "../../assets/OAuthIcons";
+import CICTLOGO from "../../assets/logo/CICTLOGO.png";
+import { useLogin } from "../../hooks/login/useLogin";
 import "./LoginModal.css";
 
 function LoginModal() {

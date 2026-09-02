@@ -6,7 +6,7 @@ import { TOP_TABS, ROOM_SUB_TABS } from "../../data/transfer";
 import { useTransfers } from "../../hooks/transfer/useTransfers";
 import Table from "../../components/panel/Table";
 import TransferRoomCard from "../../components/ui/card/transfer/TransferRoomCard";
-import TransferRoomModal from "../../components/ui/modal/TransferRoomModal";
+import TransferRoomModal from "../../components/modal/TransferRoomModal";
 import { TRANSFER_COLUMNS } from "../../data/columns";
 import "./Transfer.css";
 

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { STATUS_COLORS } from "../../../../data/assets";
 import LabelCard from "./LabelCard";
 import { formatCurrency } from "../../../../utils/formatCurrency";
-import ViewAssetDocument from "../../modal/ViewAssetDocument";
+import ViewAssetDocument from "../../../modal/ViewAssetDocument";
 import "./InfoCard.css";
 import { formatDate } from "../../../../utils/date";
 

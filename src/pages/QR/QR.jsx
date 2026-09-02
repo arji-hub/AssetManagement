@@ -1,14 +1,15 @@
 import React from "react";
 import { useAuth } from "../../context/AuthContext";
 import MainLayout from "../../components/layout/MainLayout";
-import QRModal from "../../components/ui/modal/QRModal";
+import QRModal from "../../components/modal/QRModal";
 import QRStatusModal from "../../components/ui/status/QRStatusModal";
 import { useQRScanner } from "../../hooks/camera/useQRScanner";
 import "./QR.css";
 
 function QR() {
   const { user } = useAuth();
-  const { status, errorMessage, handleImageUpload, handleScan, reset } = useQRScanner();
+  const { status, errorMessage, handleImageUpload, handleScan, reset } =
+    useQRScanner();
 
   return (
     <MainLayout>

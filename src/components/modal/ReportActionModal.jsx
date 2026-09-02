@@ -1,8 +1,8 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import useReportAction from "../../../hooks/report/useReportAction";
-import AddingStatusModal from "../status/AddingStatusModal";
-import { ACTION_LABELS } from "../../../data/reports";
+import useReportAction from "../../hooks/report/useReportAction";
+import AddingStatusModal from "../ui/status/AddingStatusModal";
+import { ACTION_LABELS } from "../../data/reports";
 import "./ReportModal.css";
 
 function ReportActionModal({ report, newStatus, onClose, onSuccess }) {
