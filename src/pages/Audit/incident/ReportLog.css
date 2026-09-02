@@ -130,15 +130,18 @@
   border-color: #860100;
 }
 
-.report-log-error {
-  color: #860100;
-  font-size: 14px;
+.report-log-table {
+  flex: none;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
 }
 
-.report-log-empty {
+.report-log-table .panel-header-cell:nth-last-child(2),
+.report-log-table .panel-header-cell:nth-last-child(1) {
   text-align: center;
-  color: #5a413c;
-  padding: 32px 0;
 }
 
 @media (max-width: 768px) {
@@ -168,6 +171,11 @@
 
   .report-log-search {
     max-width: none;
+  }
+
+  .report-log-table {
+    flex: none;
+    min-height: 400px;
   }
 }
 

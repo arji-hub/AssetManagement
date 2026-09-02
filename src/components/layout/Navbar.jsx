@@ -5,7 +5,7 @@ import "./Navbar.css";
 import logo from "../../assets/logo/CICTLOGO.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ROLES } from "../../data/roles";
-import LogoutModal from "../ui/modal/LogoutModal";
+import LogoutModal from "../modal/LogoutModal";
 import { useNavigate } from "react-router-dom";
 
 const allRoles = [ROLES.ADMIN, ROLES.PARTTIME, ROLES.FULLTIME];

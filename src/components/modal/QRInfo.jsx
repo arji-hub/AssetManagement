@@ -2,11 +2,11 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./QRInfo.css";
-import { STATUS_COLORS } from "../../../data/assets";
-import { formatCurrency } from "../../../utils/formatCurrency";
-import { formatDate } from "../../../utils/date";
-import cictLogo from "../../../assets/logo/CICTLOGO.png";
-import ViewAssetDocument from "../modal/ViewAssetDocument";
+import { STATUS_COLORS } from "../../data/assets";
+import { formatCurrency } from "../../utils/formatCurrency";
+import { formatDate } from "../../utils/date";
+import cictLogo from "../../assets/logo/CICTLOGO.png";
+import ViewAssetDocument from "./ViewAssetDocument";
 
 function displayValue(value) {
   if (value === null || value === undefined || value === "") return "—";

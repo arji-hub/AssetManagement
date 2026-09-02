@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MainLayout from "../../../components/layout/MainLayout";
 import AuditCard from "../../../components/ui/card/audit/AuditCard";
 import useReportLog from "../../../hooks/audit/useReportLog";
-import ReportLogHistory from "../../../components/panel/ReportLogHistory";
 import BackButton from "../../../components/ui/button/BackButton";
+import { reportLogColumns } from "../../../data/columns";
+import Table from "../../../components/panel/Table";
+import ReportLogCard from "../../../components/ui/card/audit/ReportLogCard";
 
 import "./ReportLog.css";
 
@@ -79,17 +81,24 @@ function ReportLog() {
           </div>
         </div>
 
-        {logsError && (
-          <p className="report-log-error" role="alert">
-            {logsError}
-          </p>
-        )}
-
-        <ReportLogHistory logs={filteredLogs} handleRowClick={handleRowClick} />
-
-        {filteredLogs.length === 0 && !logsLoading && (
-          <p className="report-log-empty">No report logs yet.</p>
-        )}
+        <div className="report-log-table">
+          <Table
+            columns={reportLogColumns}
+            items={filteredLogs}
+            loading={logsLoading}
+            error={logsError}
+            itemLabel="logs"
+            emptyMessage="No report logs yet."
+            renderItem={(log) => (
+              <ReportLogCard
+                key={log.id}
+                log={log}
+                columns={reportLogColumns}
+                onClick={() => handleRowClick(log.id)}
+              />
+            )}
+          />
+        </div>
       </div>
     </MainLayout>
   );

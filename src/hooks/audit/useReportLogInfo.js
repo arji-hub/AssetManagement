@@ -3,8 +3,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import { fetchReportLogById } from "../../services/audit";
 import { getName } from "../../services/user";
 
-const PAGE_SIZE = 10;
-
 function useReportLogInfo() {
   const { logID } = useParams();
   const navigate = useNavigate();
@@ -15,7 +13,6 @@ function useReportLogInfo() {
 
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
-  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     let cancelled = false;
@@ -85,32 +82,6 @@ function useReportLogInfo() {
     });
   }, [reports, search, typeFilter]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredReports.length / PAGE_SIZE));
-
-  const paginatedReports = useMemo(() => {
-    const start = (currentPage - 1) * PAGE_SIZE;
-    return filteredReports.slice(start, start + PAGE_SIZE);
-  }, [filteredReports, currentPage]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [search, typeFilter]);
-
-  const goToPage = useCallback(
-    (page) => {
-      setCurrentPage(Math.min(Math.max(page, 1), totalPages));
-    },
-    [totalPages],
-  );
-
-  const nextPage = useCallback(() => {
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-  }, [totalPages]);
-
-  const prevPage = useCallback(() => {
-    setCurrentPage((prev) => Math.max(prev - 1, 1));
-  }, []);
-
   const handleRowClick = useCallback(
     (reportId) => {
       navigate(`/report/${reportId}`);
@@ -127,12 +98,6 @@ function useReportLogInfo() {
     typeFilter,
     setTypeFilter,
     filteredReports,
-    paginatedReports,
-    currentPage,
-    totalPages,
-    goToPage,
-    nextPage,
-    prevPage,
     handleRowClick,
   };
 }

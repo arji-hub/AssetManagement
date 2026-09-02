@@ -3,8 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { subscribeToReports } from "../../services/report";
 import { generateReportLog } from "../../services/audit";
 
-const PAGE_SIZE = 10;
-
 function getReportType(report) {
   const firstStatus = report.status_log?.[0]?.status;
   if (firstStatus === "damaged") return "damaged";
@@ -33,7 +31,6 @@ function useReportLogCreate() {
   const [endDate, setEndDate] = useState("");
 
   const [selectedIds, setSelectedIds] = useState(new Set());
-  const [currentPage, setCurrentPage] = useState(1);
 
   const [isGenerateModalOpen, setIsGenerateModalOpen] = useState(false);
   const [logName, setLogName] = useState("");
@@ -95,37 +92,7 @@ function useReportLogCreate() {
       });
   }, [reports, search, typeFilter, startDate, endDate]);
 
-  // Reset to page 1 whenever filters change the result set
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [search, typeFilter, startDate, endDate]);
-
-  const totalPages = Math.max(1, Math.ceil(filteredReports.length / PAGE_SIZE));
-
-  // Clamp in case filteredReports shrinks (e.g. realtime update) below current page
-  const safePage = Math.min(currentPage, totalPages);
-
-  const paginatedReports = useMemo(() => {
-    const start = (safePage - 1) * PAGE_SIZE;
-    return filteredReports.slice(start, start + PAGE_SIZE);
-  }, [filteredReports, safePage]);
-
-  const goToPage = useCallback(
-    (page) => {
-      setCurrentPage(Math.min(Math.max(1, page), totalPages));
-    },
-    [totalPages],
-  );
-
-  const nextPage = useCallback(() => {
-    goToPage(safePage + 1);
-  }, [goToPage, safePage]);
-
-  const prevPage = useCallback(() => {
-    goToPage(safePage - 1);
-  }, [goToPage, safePage]);
-
-  // Select all/deselect all applies to the FULL filtered set, not just the current page
+  // Select all/deselect all applies to the FULL filtered set
   const allFilteredSelected =
     filteredReports.length > 0 &&
     filteredReports.every((report) => selectedIds.has(report.id));
@@ -227,12 +194,6 @@ function useReportLogCreate() {
     endDate,
     setEndDate,
     filteredReports,
-    paginatedReports,
-    currentPage: safePage,
-    totalPages,
-    goToPage,
-    nextPage,
-    prevPage,
     selectedIds,
     toggleSelect,
     toggleSelectAll,

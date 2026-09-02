@@ -4,7 +4,7 @@ import {
   faTriangleExclamation,
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
-import AddingStatusModal from "../status/AddingStatusModal";
+import AddingStatusModal from "../ui/status/AddingStatusModal";
 import "./AuditSaveRoomModal.css";
 
 function AuditConfirmSaveModal({

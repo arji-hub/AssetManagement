@@ -1,12 +1,12 @@
 import { useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MainLayout from "../../../components/layout/MainLayout";
-import NewAuditRoomModal from "../../../components/ui/modal/NewAuditRoomModal";
+import NewAuditRoomModal from "../../../components/modal/NewAuditRoomModal";
 import AuditCard from "../../../components/ui/card/audit/AuditCard";
 import BackButton from "../../../components/ui/button/BackButton";
 import useRoomLogs from "../../../hooks/audit/useRoomLogs";
 import { RoomListPDF } from "../../../pdf/templates/RoomListPDF";
-import { PDFPreviewModal } from "../../../components/ui/modal/PDFPreviewModal";
+import { PDFPreviewModal } from "../../../components/modal/PDFPreviewModal";
 import { roomAuditColumns } from "../../../data/columns";
 import Table from "../../../components/panel/Table";
 import AuditRoomCard from "../../../components/ui/card/audit/AuditRoomCard";

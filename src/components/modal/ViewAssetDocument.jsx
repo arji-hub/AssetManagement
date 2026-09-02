@@ -1,6 +1,6 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import useDocumentViewer from "../../../hooks/camera/useDocumentViewer";
+import useDocumentViewer from "../../hooks/camera/useDocumentViewer";
 import "./ViewAssetDocument.css";
 
 function ViewAssetDocument({ doc_image_url, children }) {

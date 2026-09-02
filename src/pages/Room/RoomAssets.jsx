@@ -3,7 +3,7 @@ import "./RoomAssets.css";
 import { useParams, useNavigate } from "react-router-dom";
 import MainLayout from "../../components/layout/MainLayout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import FilterModal from "../../components/ui/modal/FilterModal";
+import FilterModal from "../../components/modal/FilterModal";
 import { useAssetFilters } from "../../hooks/asset/useAssetFilters";
 import { useRoomAssets } from "../../hooks/room/useRoomAssets";
 import BackButton from "../../components/ui/button/BackButton";
