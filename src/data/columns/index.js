@@ -9,3 +9,4 @@ export { roomAuditColumns } from "./roomAuditColumns";
 export { reportLogColumns } from "./reportLogColumns";
 export { reportLogInfoColumns } from "./reportLogInfoColumns";
 export { reportLogCreateColumns } from "./reportLogCreateColumns";
+export { custodianAuditColumns } from "./custodianAuditColumns";

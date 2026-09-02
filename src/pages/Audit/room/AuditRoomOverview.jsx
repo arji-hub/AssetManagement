@@ -1,11 +1,11 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import MainLayout from "../../../components/layout/MainLayout";
-import useRoomOverview from "../../../hooks/audit/useRoomOverview";
+import useRoomOverview from "../../../hooks/audit/room/useRoomOverview";
 import AuditConfirmRoomModal from "../../../components/modal/AuditConfirmRoomModal";
 import AuditCard from "../../../components/ui/card/audit/AuditCard";
 import BackButton from "../../../components/ui/button/BackButton";
-import useAuditRoomSession from "../../../hooks/audit/useAuditRoomSession";
+import useAuditRoomSession from "../../../hooks/audit/room/useAuditRoomSession";
 import Table from "../../../components/panel/Table";
 import AssetCard from "../../../components/ui/card/asset/AssetCard";
 import DiscrepancyCard from "../../../components/ui/card/audit/DiscrepancyCard";

@@ -2,11 +2,12 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MainLayout from "../../../components/layout/MainLayout";
 import AuditCard from "../../../components/ui/card/audit/AuditCard";
-import useReportLog from "../../../hooks/audit/useReportLog";
+import useReportLog from "../../../hooks/audit/incident/useReportLog";
 import BackButton from "../../../components/ui/button/BackButton";
 import { reportLogColumns } from "../../../data/columns";
 import Table from "../../../components/panel/Table";
 import ReportLogCard from "../../../components/ui/card/audit/ReportLogCard";
+import SearchBar from "../../../components/ui/searchBar/SearchBar";
 
 import "./ReportLog.css";
 
@@ -67,18 +68,12 @@ function ReportLog() {
         </div>
 
         <div className="report-log-filter">
-          <div className="report-log-search">
-            <FontAwesomeIcon
-              icon="magnifying-glass"
-              className="report-log-search-icon"
-            />
-            <input
-              type="text"
-              placeholder="Search logs by log no. or description..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
+          <SearchBar
+            value={search}
+            onChange={setSearch}
+            placeholder="Search logs by log no. or description..."
+            className="search-bar--constrained"
+          />
         </div>
 
         <div className="report-log-table">

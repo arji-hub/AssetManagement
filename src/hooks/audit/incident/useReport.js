@@ -1,16 +1,15 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchLastAuditRoomDate } from "../../services/audit";
-import { formatTimeAgo } from "../../services/audit";
+import { fetchLastReportLogDate, formatTimeAgo } from "../../../services/audit";
 
-export function useAuditRoom() {
+export function useReport() {
   const navigate = useNavigate();
   const [lastEntry, setLastEntry] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
 
-    fetchLastAuditRoomDate()
+    fetchLastReportLogDate()
       .then((date) => {
         if (!cancelled) setLastEntry(formatTimeAgo(date));
       })
@@ -24,7 +23,7 @@ export function useAuditRoom() {
   }, []);
 
   function handleClick() {
-    navigate("/audit/room");
+    navigate("/audit/report");
   }
 
   return { lastEntry, handleClick };

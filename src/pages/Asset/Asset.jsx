@@ -1,3 +1,4 @@
+// src/pages/Asset/Asset.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -6,6 +7,7 @@ import { ROLES } from "../../data/roles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./Asset.css";
 import FilterModal from "../../components/modal/FilterModal";
+import SearchBar from "../../components/ui/SearchBar/SearchBar";
 import { useAssetFilters } from "../../hooks/asset/useAssetFilters";
 import { useAssets } from "../../hooks/asset/useAssets";
 import { displayDate } from "../../utils/date";
@@ -26,6 +28,8 @@ function Asset() {
     setShowFilter,
     filters,
     setFilters,
+    search,
+    setSearch,
     activeFilterCount,
     filteredAssets,
     handleApplyFilters,
@@ -47,6 +51,13 @@ function Asset() {
           </div>
 
           <div className="asset-header-right">
+            <SearchBar
+              value={search}
+              onChange={setSearch}
+              placeholder="Search assets..."
+              className="asset-search-wrap"
+            />
+
             <button
               className={`asset-filter-btn${activeFilterCount > 0 ? " asset-filter-btn--active" : ""}`}
               onClick={() => setShowFilter(true)}

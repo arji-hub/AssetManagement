@@ -1,0 +1,126 @@
+/* src/pages/audit/custodian/AuditCustodian.css */
+
+.audit-custodian-page {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #d43418 transparent;
+}
+
+.audit-custodian-page::-webkit-scrollbar {
+  width: 6px;
+}
+
+.audit-custodian-page::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.audit-custodian-page::-webkit-scrollbar-thumb {
+  background: #c9b3af;
+  border-radius: 3px;
+}
+
+.audit-custodian-page::-webkit-scrollbar-thumb:hover {
+  background: #8e706b;
+}
+
+.audit-custodian-header {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.audit-custodian-header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.audit-custodian-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #5c0100;
+  margin: 0 0 8px;
+}
+
+.audit-custodian-subtitle {
+  font-size: 16px;
+  color: #5a413c;
+  margin: 0;
+}
+
+.audit-custodian-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.audit-custodian-filter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.audit-custodian-search {
+  position: relative;
+  max-width: 420px;
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .audit-custodian-page {
+    flex: none;
+    height: auto;
+    min-height: 100%;
+    padding: 16px;
+  }
+
+  .audit-custodian-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .audit-custodian-filter {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .audit-custodian-search {
+    max-width: none;
+  }
+
+  .custodian-audit {
+    flex: none;
+    min-height: 400px;
+  }
+}
+
+@media (max-width: 370px) {
+  .audit-custodian-header-left {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.custodian-audit {
+  flex: none;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.custodian-audit .panel-header-cell:nth-last-child(2),
+.custodian-audit .panel-header-cell:nth-last-child(1) {
+  text-align: center;
+}

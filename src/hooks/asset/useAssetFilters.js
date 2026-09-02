@@ -1,3 +1,4 @@
+// src/hooks/asset/useAssetFilters.js
 import { useState, useEffect, useMemo } from "react";
 import { fetchCustodians } from "../../services/user";
 import { fetchRooms } from "../../services/room";
@@ -12,9 +13,12 @@ const INITIAL_FILTERS = {
   custodian: "",
 };
 
+const SEARCHABLE_FIELDS = ["id", "description", "serial_number"];
+
 export function useAssetFilters(assets = []) {
   const [showFilter, setShowFilter] = useState(false);
   const [filters, setFilters] = useState(INITIAL_FILTERS);
+  const [search, setSearch] = useState("");
 
   const [rooms, setRooms] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -61,6 +65,8 @@ export function useAssetFilters(assets = []) {
   };
 
   const filteredAssets = useMemo(() => {
+    const query = toLowerCase(search.trim());
+
     return assets.filter((asset) => {
       //status if condemn
       if (!filters.status && asset.status === "Condemned") return false;
@@ -72,7 +78,7 @@ export function useAssetFilters(assets = []) {
       if (filters.category && asset.category_id !== filters.category)
         return false;
 
-      //custodian
+      //room
       if (filters.room === UNALLOCATED_ROOM) {
         if (asset.room_id) return false;
       } else if (filters.room && asset.room_id !== toLowerCase(filters.room)) {
@@ -88,15 +94,26 @@ export function useAssetFilters(assets = []) {
       ) {
         return false;
       }
+
+      //search
+      if (query) {
+        const matches = SEARCHABLE_FIELDS.some((field) =>
+          toLowerCase(asset[field] ?? "").includes(query),
+        );
+        if (!matches) return false;
+      }
+
       return true;
     });
-  }, [assets, filters]);
+  }, [assets, filters, search]);
 
   return {
     showFilter,
     setShowFilter,
     setFilters,
     filters,
+    search,
+    setSearch,
     activeFilterCount,
     filteredAssets,
     handleApplyFilters,

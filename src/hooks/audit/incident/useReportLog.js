@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { subscribeToReportLogs } from "../../services/audit";
+import { subscribeToReportLogs } from "../../../services/audit";
 
 function useReportLog() {
   const navigate = useNavigate();

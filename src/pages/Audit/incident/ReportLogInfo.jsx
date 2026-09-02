@@ -2,7 +2,7 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MainLayout from "../../../components/layout/MainLayout";
 import BackButton from "../../../components/ui/button/BackButton";
-import useReportLogInfo from "../../../hooks/audit/useReportLogInfo";
+import useReportLogInfo from "../../../hooks/audit/incident/useReportLogInfo";
 import { formatDate } from "../../../utils/date";
 import { PDFPreviewModal } from "../../../components/modal/PDFPreviewModal";
 import { ReportLogPDF } from "../../../pdf/templates/ReportLogPDF";

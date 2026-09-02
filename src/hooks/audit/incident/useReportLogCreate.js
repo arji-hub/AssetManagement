@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { subscribeToReports } from "../../services/report";
-import { generateReportLog } from "../../services/audit";
+import { subscribeToReports } from "../../../services/report";
+import { generateReportLog } from "../../../services/audit";
 
 function getReportType(report) {
   const firstStatus = report.status_log?.[0]?.status;

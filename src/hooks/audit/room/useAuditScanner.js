@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import {
   decodeImageData,
   decodeImageFileWithTimeout,
-} from "../../utils/qrDecode";
+} from "../../../utils/qrDecode";
 
 const ASSET_QR_PATTERN = /^\/asset\/([^/]+)\/?$/;
 

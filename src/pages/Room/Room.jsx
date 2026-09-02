@@ -1,6 +1,5 @@
 import MainLayout from "../../components/layout/MainLayout";
 import "./Room.css";
-import "../../components/layout/Toolbar.css";
 import Table from "../../components/panel/Table";
 import RoomCard from "../../components/ui/card/room/RoomCard";
 import RoomModal from "../../components/modal/RoomModal";
@@ -9,6 +8,8 @@ import { useRoom } from "../../hooks/room/useRoom";
 import { ROOM_FILTER_OPTIONS } from "../../data/room";
 import { displayDate } from "../../utils/date";
 import { roomColumns } from "../../data/columns";
+import SearchBar from "../../components/ui/searchBar/SearchBar";
+import AssetCountFilter from "../../components/ui/filter/AssetCountFilter";
 
 function Room() {
   const {
@@ -40,35 +41,19 @@ function Room() {
             <p className="date">{displayDate}</p>
           </div>
           <div className="room-settings">
-            <div className="search-bar">
-              <FontAwesomeIcon
-                icon="fa-solid fa-magnifying-glass"
-                className="search-icon"
-              />
-              <input
-                type="text"
-                placeholder="Search rooms..."
+            <div className="search-bar-wrapper">
+              <SearchBar
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={setSearchQuery}
+                placeholder="Search rooms..."
               />
             </div>
-            <div className="filters">
-              <label htmlFor="asset-count-filter" className="filters-label">
-                Assets:
-              </label>
-              <select
-                id="asset-count-filter"
-                name="assetCount"
-                value={assetCountFilter}
-                onChange={(e) => setAssetCountFilter(e.target.value)}
-              >
-                <option value="">All</option>
-                <option value="none">None (0)</option>
-                <option value="low">Low (1–10)</option>
-                <option value="medium">Medium (11–50)</option>
-                <option value="high">High (50+)</option>
-              </select>
-            </div>
+
+            <AssetCountFilter
+              value={assetCountFilter}
+              onChange={setAssetCountFilter}
+            />
+
             <button className="settings-button" onClick={openModal}>
               Add Room
             </button>

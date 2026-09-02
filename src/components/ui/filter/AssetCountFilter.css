@@ -1,0 +1,30 @@
+/* src/components/ui/assetCountFilter/AssetCountFilter.css */
+
+.asset-count-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.asset-count-filter-label {
+  font-size: clamp(12px, 1vw, 14px);
+  font-weight: 500;
+  color: var(--maroon-700);
+  white-space: nowrap;
+}
+
+.asset-count-filter-select {
+  font-size: clamp(12px, 1vw, 14px);
+  padding: 6px 10px;
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  background: var(--card-bg);
+  color: var(--text-strong);
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.asset-count-filter-select:focus {
+  border-color: var(--maroon-700);
+}
