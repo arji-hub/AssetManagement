@@ -17,3 +17,4 @@ exports.migrateRoomIdsStep1_CreateNewRooms =
   require("./script/migrate").migrateRoomIdsStep1_CreateNewRooms;
 exports.migrateRoomIdsStep2_RepointAssetsAndCleanup =
   require("./script/migrate").migrateRoomIdsStep2_RepointAssetsAndCleanup;
+exports.onRoomUpdated = require("./triggers/onRoomUpdated").onRoomUpdated;
