@@ -13,3 +13,7 @@ exports.onReportCreated = require("./triggers/onReportNotify").onReportCreated;
 exports.onReportUpdated = require("./triggers/onReportNotify").onReportUpdated;
 exports.onTransferRoomCreated =
   require("./triggers/onTransferRoomNotify").onTransferRoomCreated;
+exports.migrateRoomIdsStep1_CreateNewRooms =
+  require("./script/migrate").migrateRoomIdsStep1_CreateNewRooms;
+exports.migrateRoomIdsStep2_RepointAssetsAndCleanup =
+  require("./script/migrate").migrateRoomIdsStep2_RepointAssetsAndCleanup;

@@ -25,6 +25,7 @@ function AssetInfo() {
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, [assetId]);
+
   if (loading)
     return (
       <MainLayout>

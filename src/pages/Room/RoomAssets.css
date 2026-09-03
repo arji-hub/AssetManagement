@@ -190,6 +190,18 @@
     transform 0.15s ease;
 }
 
+.archive-room-btn--restore {
+  background: var(--success-bg);
+  border-color: var(--success);
+  color: var(--success);
+}
+
+.archive-room-btn--restore:hover {
+  background: var(--success-bg);
+  border-color: var(--success);
+  filter: brightness(0.96);
+}
+
 .archive-room-btn:hover {
   background: var(--hover-tint);
   border-color: var(--text-faint);
