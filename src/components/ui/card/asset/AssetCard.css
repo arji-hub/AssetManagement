@@ -28,6 +28,18 @@
   text-overflow: ellipsis;
 }
 
+.asset-card-row-cell {
+  font-size: 14px;
+  color: var(--text-strong);
+  min-width: 0;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.asset-card-row-cell:nth-child(-n + 2) {
+  text-align: left;
+}
+
 @media (max-width: 1024px) {
   .asset-card-row {
     grid-template-columns: var(--table-grid-columns-tablet);

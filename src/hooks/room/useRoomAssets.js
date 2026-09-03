@@ -40,5 +40,21 @@ export function useRoomAssets(roomID) {
     navigate(`/audit/room/${roomID}`);
   };
 
-  return { assets, roomName, loading, error, topCustodian, handleAuditLogs };
+  const handleEdit = () => {};
+
+  const handleArchiveRoom = async () => {
+    // confirm + Firestore update (e.g. rooms/{roomID}.status = "archived")
+    // navigate away afterward if needed
+  };
+
+  return {
+    assets,
+    roomName,
+    loading,
+    error,
+    topCustodian,
+    handleAuditLogs,
+    handleEdit,
+    handleArchiveRoom,
+  };
 }

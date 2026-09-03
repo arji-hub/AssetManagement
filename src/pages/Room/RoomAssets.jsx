@@ -13,8 +13,16 @@ import { roomAssetsColumns } from "../../data/columns";
 
 function RoomAssets() {
   const { roomName: roomID } = useParams();
-  const { assets, loading, error, roomName, topCustodian, handleAuditLogs } =
-    useRoomAssets(roomID);
+  const {
+    assets,
+    loading,
+    error,
+    roomName,
+    topCustodian,
+    handleAuditLogs,
+    handleEdit,
+    handleArchiveRoom,
+  } = useRoomAssets(roomID);
 
   const {
     showFilter,
@@ -30,7 +38,6 @@ function RoomAssets() {
     custodians,
     loadingOptions,
   } = useAssetFilters(assets);
-  const handleEdit = () => {};
 
   const isEmpty = filteredAssets.length === 0;
 
@@ -87,6 +94,10 @@ function RoomAssets() {
               {activeFilterCount > 0 && (
                 <span className="filter-badge">{activeFilterCount}</span>
               )}
+            </button>
+            <button className="archive-room-btn" onClick={handleArchiveRoom}>
+              <FontAwesomeIcon icon="fa-solid fa-box-archive" />
+              Archive
             </button>
           </div>
         </div>
