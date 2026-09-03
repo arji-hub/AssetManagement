@@ -60,7 +60,7 @@ function InfoCard({ asset }) {
         <div className="info-card-labels-grid">
           <LabelCard
             label="Current Location"
-            value={asset.room_id}
+            value={asset.room_name || "—"}
             onClick={
               asset.room_id
                 ? () => navigate(`/room/${asset.room_id}`)

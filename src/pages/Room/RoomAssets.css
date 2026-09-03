@@ -165,6 +165,53 @@
   transform: scale(0.98);
 }
 
+/* ── Archive Room button (muted, low-emphasis) ──────────────── */
+.archive-room-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-family: "Sansation";
+  font-weight: bold;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--text-faint);
+  border: 1.5px solid var(--card-border);
+  background: var(--card-bg);
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: none;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.archive-room-btn--restore {
+  background: var(--success-bg);
+  border-color: var(--success);
+  color: var(--success);
+}
+
+.archive-room-btn--restore:hover {
+  background: var(--success-bg);
+  border-color: var(--success);
+  filter: brightness(0.96);
+}
+
+.archive-room-btn:hover {
+  background: var(--hover-tint);
+  border-color: var(--text-faint);
+  color: var(--text-muted);
+}
+
+.archive-room-btn:active {
+  transform: scale(0.98);
+}
+
 /* ── Filter button ──────────────────── */
 .filter-button {
   display: flex;

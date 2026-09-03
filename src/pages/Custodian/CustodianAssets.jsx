@@ -35,6 +35,9 @@ function CustodianAssets() {
     loadingOptions,
   } = useAssetFilters(assets);
 
+  const handleEdit = () => {};
+  const handleArchive = () => {};
+
   return (
     <MainLayout>
       <div className="assets-page">
@@ -42,12 +45,27 @@ function CustodianAssets() {
         <div className="assets-top">
           <div className="assets-header">
             <BackButton />
-            <div>
-              <h1 className="assets-title">Assets in Custody</h1>
-              <p className="assets-subtitle">
-                {/*italic email */}
-                <strong>{fullname}</strong> • <em>{email}</em>
-              </p>
+
+            <div className="custodian-context-card">
+              <div className="custodian-context-primary">
+                <h1 className="assets-title">
+                  <span className="assets-title-text">{fullname}</span>
+                </h1>
+                <button
+                  className="custodian-title-edit-btn"
+                  onClick={handleEdit}
+                  aria-label="Edit custodian name"
+                >
+                  <FontAwesomeIcon icon="fa-regular fa-pen-to-square" />
+                </button>
+              </div>
+
+              <div className="custodian-context-email">
+                <span className="email-icon-badge">
+                  <FontAwesomeIcon icon="fa-solid fa-envelope" />
+                </span>
+                <span className="custodian-email-text">{email}</span>
+              </div>
             </div>
           </div>
 
@@ -63,6 +81,7 @@ function CustodianAssets() {
               }
               triggerLabel="Custodian Inventory Form"
             />
+
             <button
               className={`filter-button ${activeFilterCount > 0 ? "filter-button--active" : ""}`}
               onClick={() => setShowFilter(true)}
@@ -72,6 +91,11 @@ function CustodianAssets() {
               {activeFilterCount > 0 && (
                 <span className="filter-badge">{activeFilterCount}</span>
               )}
+            </button>
+
+            <button className="archive-custodian-btn" onClick={handleArchive}>
+              <FontAwesomeIcon icon="fa-solid fa-box-archive" />
+              Archive
             </button>
           </div>
         </div>

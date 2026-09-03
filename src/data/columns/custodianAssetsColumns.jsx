@@ -22,7 +22,7 @@ export const custodianAssetsColumns = [
     label: "Room",
     width: "1.2fr",
     priority: "medium",
-    render: (a) => a.room_id,
+    render: (a) => a.room_name,
     card: { icon: "fa-solid fa-door-open" },
   },
   {

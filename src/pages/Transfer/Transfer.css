@@ -132,6 +132,15 @@
   min-height: 0;
 }
 
+.panel-header-cell {
+  text-align: center;
+}
+
+.panel-header-cell:nth-child(1),
+.panel-header-cell:nth-child(2) {
+  text-align: left;
+}
+
 /* ── empty state ── */
 .transfer-empty {
   display: flex;

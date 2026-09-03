@@ -10,11 +10,34 @@ import BackButton from "../../components/ui/button/BackButton";
 import Table from "../../components/panel/Table";
 import AssetCard from "../../components/ui/card/asset/AssetCard";
 import { roomAssetsColumns } from "../../data/columns";
+import InputModal from "../../components/modal/InputModal";
 
 function RoomAssets() {
   const { roomName: roomID } = useParams();
-  const { assets, loading, error, roomName, topCustodian, handleAuditLogs } =
-    useRoomAssets(roomID);
+  const {
+    assets,
+    loading,
+    error,
+    roomName,
+    roomStatus,
+    isActive,
+    topCustodian,
+    handleAuditLogs,
+    handleEdit,
+    showEditModal,
+    editValue,
+    setEditValue,
+    editSubmitting,
+    editError,
+    handleEditSubmit,
+    handleEditClose,
+    handleArchiveRoom,
+    showArchiveModal,
+    archiveSubmitting,
+    archiveError,
+    handleArchiveConfirm,
+    handleArchiveClose,
+  } = useRoomAssets(roomID);
 
   const {
     showFilter,
@@ -30,7 +53,6 @@ function RoomAssets() {
     custodians,
     loadingOptions,
   } = useAssetFilters(assets);
-  const handleEdit = () => {};
 
   const isEmpty = filteredAssets.length === 0;
 
@@ -87,6 +109,17 @@ function RoomAssets() {
               {activeFilterCount > 0 && (
                 <span className="filter-badge">{activeFilterCount}</span>
               )}
+            </button>
+            <button
+              className={`archive-room-btn ${!isActive ? "archive-room-btn--restore" : ""}`}
+              onClick={handleArchiveRoom}
+            >
+              <FontAwesomeIcon
+                icon={
+                  isActive ? "fa-solid fa-box-archive" : "fa-solid fa-box-open"
+                }
+              />
+              {isActive ? "Archive" : "Restore"}
             </button>
           </div>
         </div>
@@ -149,6 +182,49 @@ function RoomAssets() {
           categories={categories}
           custodians={custodians}
           loadingOptions={loadingOptions}
+        />
+      )}
+
+      {/* ── Edit Room Name Modal ── */}
+      {showEditModal && (
+        <InputModal
+          title="Rename Room"
+          description="Update the display name for this room."
+          inputHeader="Room Name"
+          infotext="This name will appear throughout the app wherever this room is referenced."
+          value={editValue}
+          onChange={setEditValue}
+          onSubmit={handleEditSubmit}
+          onClose={handleEditClose}
+          isSubmitting={editSubmitting}
+          error={editError}
+          submitLabel="Save"
+        />
+      )}
+
+      {/* ── Archive Room Modal ── */}
+      {showArchiveModal && (
+        <InputModal
+          title={isActive ? "Archive Room" : "Restore Room"}
+          description={
+            isActive
+              ? "This room will be marked inactive and removed from selection when moving assets."
+              : "This room will be marked active again and available for asset assignments."
+          }
+          inputHeader="Room Name"
+          infotext={
+            isActive
+              ? "Archiving does not delete this room's history — past transfer logs and audits referencing it will remain intact."
+              : "Restoring makes this room selectable again for asset transfers and audits."
+          }
+          value={roomName}
+          onChange={() => {}}
+          onSubmit={handleArchiveConfirm}
+          onClose={handleArchiveClose}
+          isSubmitting={archiveSubmitting}
+          error={archiveError}
+          submitLabel={isActive ? "Archive" : "Restore"}
+          readOnly
         />
       )}
     </MainLayout>
