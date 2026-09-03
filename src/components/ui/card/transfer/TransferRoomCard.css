@@ -22,14 +22,13 @@
   font-weight: 600;
 }
 
-.transfer-card-row-room .transfer-card-desc {
-  text-align: left;
+.transfer-card-row-room .transfer-card-cell {
+  text-align: center;
 }
 
-.transfer-card-row-room .transfer-card-from,
-.transfer-card-row-room .transfer-card-to,
-.transfer-card-row-room .transfer-card-date {
-  text-align: center;
+.transfer-card-row-room .transfer-card-id,
+.transfer-card-row-room .transfer-card-desc {
+  text-align: left;
 }
 
 @media (max-width: 1024px) {

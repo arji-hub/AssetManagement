@@ -18,7 +18,7 @@ import { updateAssetRoom } from "./asset";
 import { getName, getAdmin } from "./user";
 import ROLES from "../data/roles";
 import { TRANSFER_TYPES, STATUS } from "../data/transfer";
-import { roomCount } from "./room.js";
+import { roomCount, resolveRoomName } from "./room.js";
 
 const COLLECTION = "transfer_request";
 
@@ -261,7 +261,30 @@ export function subscribeToRoomLogs(callback, onError) {
   const col = collection(db, "transfer_room");
   return onSnapshot(
     query(col, orderBy("created_at", "desc")),
-    (snap) => callback(sortByCreatedAtDesc(snapshotToItems(snap))),
+    async (snap) => {
+      const items = sortByCreatedAtDesc(snapshotToItems(snap));
+
+      const uniqueIDs = [
+        ...new Set(
+          items.flatMap((item) =>
+            [item.move_to, item.room_from].filter(Boolean),
+          ),
+        ),
+      ];
+      await Promise.all(uniqueIDs.map(resolveRoomName));
+
+      const enriched = await Promise.all(
+        items.map(async (item) => ({
+          ...item,
+          move_to: await resolveRoomName(item.move_to),
+          room_from: item.room_from
+            ? await resolveRoomName(item.room_from)
+            : null,
+        })),
+      );
+
+      callback(enriched);
+    },
     (err) => onError?.(err),
   );
 }

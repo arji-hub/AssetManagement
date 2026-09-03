@@ -59,6 +59,7 @@ export async function fetchRooms() {
         assetCount: data.assetCount ?? 0,
         roomCustodian: topCustodian || "",
         last_audited_at: data.last_audited_at,
+        status: data.status ?? "active",
       };
     }),
   );
@@ -91,6 +92,8 @@ export function subscribeToRooms(callback, onError) {
   return unsubscribe;
 }
 
+const roomNameCache = new Map();
+
 export async function fetchRoom(id) {
   const roomID = toLowerCase(id);
   const snap = await getDoc(doc(db, "room", roomID));
@@ -103,7 +106,22 @@ export async function fetchRoom(id) {
     name: data.name,
     assetCount: data.assetCount ?? 0,
     last_audited_at: data.last_audited_at ?? null,
+    status: data.status ?? "active",
   };
+}
+
+export async function resolveRoomName(roomID) {
+  if (!roomID) return null;
+  if (roomNameCache.has(roomID)) return roomNameCache.get(roomID);
+
+  try {
+    const room = await fetchRoom(roomID);
+    roomNameCache.set(roomID, room.name);
+    return room.name;
+  } catch (err) {
+    roomNameCache.set(roomID, roomID);
+    return roomID;
+  }
 }
 
 export async function addRoom(data, role) {
@@ -225,4 +243,75 @@ export async function fetchRoomsByLastAudited(newestFirst, count) {
   });
 
   return rooms.slice(0, count);
+}
+
+export async function editRoom(roomID, newName, role) {
+  if (role !== "admin") {
+    throw new Error("Permission denied: only admins can edit rooms.");
+  }
+
+  const trimmedName = newName?.trim();
+  if (!trimmedName) {
+    throw new Error("Room name cannot be empty.");
+  }
+
+  const roomRef = doc(db, "room", roomID);
+
+  const roomSnap = await getDoc(roomRef);
+  if (!roomSnap.exists()) {
+    throw new Error("Room not found.");
+  }
+
+  await updateDoc(roomRef, {
+    name: trimmedName,
+    updated_at: serverTimestamp(),
+  });
+}
+
+export async function archiveRoom(roomID, role) {
+  if (role !== "admin") {
+    throw new Error("Permission denied: only admins can archive rooms.");
+  }
+
+  const roomRef = doc(db, "room", roomID);
+
+  const roomSnap = await getDoc(roomRef);
+  if (!roomSnap.exists()) {
+    throw new Error("Room not found.");
+  }
+
+  const roomData = roomSnap.data();
+  if (roomData.assetCount > 0) {
+    throw new Error(
+      `Cannot archive "${roomData.name}": ${roomData.assetCount} asset(s) still assigned to this room.`,
+    );
+  }
+
+  await updateDoc(roomRef, {
+    status: "inactive",
+    updated_at: serverTimestamp(),
+  });
+}
+
+export async function restoreRoom(roomID, role) {
+  if (role !== "admin") {
+    throw new Error("Permission denied: only admins can restore rooms.");
+  }
+
+  const roomRef = doc(db, "room", roomID);
+
+  const roomSnap = await getDoc(roomRef);
+  if (!roomSnap.exists()) {
+    throw new Error("Room not found.");
+  }
+
+  const roomData = roomSnap.data();
+  if (roomData.status === "active") {
+    throw new Error(`"${roomData.name}" is already active.`);
+  }
+
+  await updateDoc(roomRef, {
+    status: "active",
+    updated_at: serverTimestamp(),
+  });
 }

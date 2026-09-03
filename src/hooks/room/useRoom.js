@@ -30,11 +30,12 @@ export function useRoom() {
   const [assetCountFilter, setAssetCountFilter] = useState("");
 
   const isActive = (r) => r.status !== "inactive";
+  const isArchived = (r) => r.status === "inactive";
 
   const filteredRooms = useMemo(() => {
     const byTab =
       activeFilter === "archive"
-        ? rooms.filter((r) => r.status === "inactive")
+        ? rooms.filter((r) => isArchived(r))
         : rooms.filter((r) => isActive(r));
 
     const bySearch = searchQuery.trim()

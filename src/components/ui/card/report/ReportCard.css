@@ -22,6 +22,12 @@
   color: var(--text-muted);
   font-size: 13px;
   min-width: 0;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.report-card-cell:nth-child(-n + 2) {
+  text-align: left;
 }
 
 .report-card-id {
@@ -33,7 +39,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: var(--text-faint);
+  color: var(--text-muted);
 }
 
 .report-card-status {

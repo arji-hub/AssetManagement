@@ -205,7 +205,7 @@ export function CustodianInventoryPDF({ custodianName, assets = [] }) {
   const rows = assets.map((a) => ({
     name: a.description || "",
     category: a.category_id || "",
-    room: a.room_id || "",
+    room: a.room_name || "",  
     status: a.status || "",
     date: formatCellDate(a.created_at),
   }));
