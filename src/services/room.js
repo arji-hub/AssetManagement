@@ -11,6 +11,7 @@ import {
   increment,
   where,
   query,
+  runTransaction,
 } from "firebase/firestore";
 import { toLowerCase, toSlug } from "../utils/TextCasing";
 import { getName } from "./user";
@@ -123,6 +124,22 @@ export async function resolveRoomName(roomID) {
     return roomID;
   }
 }
+async function generateRoomID() {
+  const counterRef = doc(db, "counters", "room");
+
+  const roomID = await runTransaction(db, async (transaction) => {
+    const counterSnap = await transaction.get(counterRef);
+    const current = counterSnap.exists() ? (counterSnap.data().count ?? 0) : 0;
+    const next = current + 1;
+
+    transaction.set(counterRef, { count: next }, { merge: true });
+
+    const padded = String(next).padStart(3, "0");
+    return `rm-${padded}`;
+  });
+
+  return roomID;
+}
 
 export async function addRoom(data, role) {
   if (role !== "admin") {
@@ -133,16 +150,12 @@ export async function addRoom(data, role) {
     throw new Error("Room name is required.");
   }
 
-  const normalizedName = toSlug(data.name);
-  const roomRef = doc(db, "room", normalizedName);
-
-  const existing = await getDoc(roomRef);
-  if (existing.exists()) {
-    throw new Error(`Room "${data.name}" already exists.`);
-  }
+  const roomID = await generateRoomID();
+  const roomRef = doc(db, "room", roomID);
 
   const payload = {
     name: data.name,
+    status: "active",
     assetCount: 0,
     last_audited_at: null,
 
@@ -153,7 +166,7 @@ export async function addRoom(data, role) {
 
   await setDoc(roomRef, payload);
 
-  return data.name;
+  return roomID;
 }
 
 export async function roomCount(room_id, direction = "increment") {
