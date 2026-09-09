@@ -2,7 +2,16 @@ import "./Form.css";
 import "./Media.css";
 import ImagePanel from "./ImagePanel";
 
-function Media({ assetImage, setAssetImage, docImage, setDocImage }) {
+function Media({
+  assetImage,
+  setAssetImage,
+  docImage,
+  setDocImage,
+  acquisitionType,
+}) {
+  const isDonated = acquisitionType === "donated";
+  const docTitle = isDonated ? "Deed of Donation" : "PAR / ICS Document";
+
   return (
     <div className="reg-card">
       <p className="reg-card-title">Asset Media</p>
@@ -18,7 +27,7 @@ function Media({ assetImage, setAssetImage, docImage, setDocImage }) {
           required
         />
         <ImagePanel
-          title="PAR / ICS Document"
+          title={docTitle}
           image={docImage}
           onImageChange={setDocImage}
           required
