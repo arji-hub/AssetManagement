@@ -207,31 +207,64 @@ const generateQR = async (assetId) => {
   return canvas.toDataURL("image/png");
 };
 
+// fields that differ by acquisition type — shared across every record in a batch
+function acquisitionFields(data) {
+  const isDonated = data.acquisition_type === "donated";
+  return {
+    acquisition_type: data.acquisition_type,
+    cost: isDonated ? null : parseFloat(data.unit_value),
+    donated_by: isDonated ? data.donated_by || null : null,
+  };
+}
+
 export async function addAsset(data, role) {
   if (role !== "admin") {
     throw new Error("Permission denied: only admins can register assets.");
   }
-  const assetId = await generateAssetId();
 
-  const [assetImageUrl, docImageUrl, qrCodeUrl] = await Promise.all([
-    uploadImage(data.assetImageFile, `assets/${assetId}/asset-image`),
-    uploadImage(data.docImageFile, `assets/${assetId}/asset-document`),
-    generateQR(assetId),
+  const qty = parseInt(data.qty, 10) || 1;
+  const isIndividual = data.tracking_mode === "individual" && qty > 1;
+  const recordCount = isIndividual ? qty : 1;
+  const isDonated = data.acquisition_type === "donated";
+
+  // one shared upload for the whole submission — a batch reuses these URLs
+  // across every generated record instead of re-uploading per unit
+  const batchId = recordCount > 1 ? `batch_${Date.now()}` : null;
+  const uploadKey = batchId || "pending"; // placeholder path for the single-record case
+
+  const [assetImageUrl, docImageUrl] = await Promise.all([
+    uploadImage(data.assetImageFile, `assets/${uploadKey}/asset-image`),
+    uploadImage(
+      data.docImageFile,
+      `assets/${uploadKey}/${isDonated ? "deed-of-donation" : "asset-document"}`,
+    ),
   ]);
 
-  const payload = {
-    asset_id: assetId,
+  const docUrlFields = isDonated
+    ? { par_ics_doc_url: null, donation_form_url: docImageUrl }
+    : { par_ics_doc_url: docImageUrl, donation_form_url: null };
+
+  const records = await Promise.all(
+    Array.from({ length: recordCount }, async () => {
+      const assetId = await generateAssetId();
+      const qrCodeUrl = await generateQR(assetId);
+      return { assetId, qrCodeUrl };
+    }),
+  );
+
+  const basePayload = {
     serial_number: data.serial_number || null,
     category_id: data.category_id,
     description: data.description,
     date_acquired: data.date_acquired,
-    unit_value: parseFloat(data.unit_value),
-    qty: parseInt(data.qty, 10),
+    ...acquisitionFields(data),
+    qty: isIndividual ? 1 : qty, // individual records are 1 unit each; single_bulk keeps the full qty
+    tracking_mode: isIndividual ? "individual" : "single_bulk",
+    batch_id: batchId,
     status: "Working",
     remarks: data.remarks || null,
     asset_image_url: assetImageUrl || null,
-    doc_image_url: docImageUrl || null,
-    qr_code_url: qrCodeUrl || null,
+    ...docUrlFields,
     property_custodian: data.primary_custodian || null,
     local_mr: null,
     room_id: data.room_id || null,
@@ -239,14 +272,23 @@ export async function addAsset(data, role) {
     updated_at: serverTimestamp(),
   };
 
-  await setDoc(doc(db, "asset", assetId), payload);
+  await Promise.all(
+    records.map(({ assetId, qrCodeUrl }) =>
+      setDoc(doc(db, "asset", assetId), {
+        ...basePayload,
+        asset_id: assetId,
+        qr_code_url: qrCodeUrl || null,
+      }),
+    ),
+  );
 
-  const countUpdates = [categoryCount(data.category_id)];
-  if (data.room_id) {
-    countUpdates.push(roomCount(data.room_id));
-  }
+  const countUpdates = records.flatMap(() => [
+    categoryCount(data.category_id),
+    ...(data.room_id ? [roomCount(data.room_id)] : []),
+  ]);
   await Promise.all(countUpdates);
-  return assetId;
+
+  return records.map((r) => r.assetId);
 }
 
 export async function updateAssetStatus(assetId, status) {
