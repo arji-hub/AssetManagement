@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { addAsset } from "../../services/asset";
 import { useAuth } from "../../context/AuthContext";
 import { fetchCustodians } from "../../services/user";
@@ -13,16 +12,18 @@ const INITIAL_FORM = {
   category_id: "",
   date_acquired: todayISO,
   description: "",
-  unit_value: "1.00",
+  acquisition_type: "purchased", // "purchased" | "donated"
+  unit_value: "1.00", // cost — only used when purchased
+  donated_by: "", // only used when donated
   remarks: "",
   qty: "1",
+  tracking_mode: "single_bulk", // "single_bulk" | "individual" — only meaningful when qty > 1
   primary_custodian: "",
   local_custodian: "",
   room_id: "",
 };
 
 export function useAssetRegistrationForm() {
-  const navigate = useNavigate();
   const { role } = useAuth();
 
   const [step, setStep] = useState(1);
@@ -35,10 +36,7 @@ export function useAssetRegistrationForm() {
   const [showSkipWarning, setShowSkipWarning] = useState(false);
 
   // ── step 1 validation (fields + serial number check) ──────────────────────
-  const {
-    error: basicInfoError,
-    isValid: basicInfoValid,
-  } = useBasicInfo(form);
+  const { error: basicInfoError, isValid: basicInfoValid } = useBasicInfo(form);
 
   // ── dropdown data ────────────────────────────────────────────────────────
   const [custodians, setCustodians] = useState([]);
@@ -76,13 +74,31 @@ export function useAssetRegistrationForm() {
     }
   }, [form.primary_custodian, form.room_id]);
 
+  // reset tracking_mode if qty is edited back down to 1
+  useEffect(() => {
+    const qty = parseInt(form.qty, 10);
+    if ((!qty || qty <= 1) && form.tracking_mode !== "single_bulk") {
+      setForm((prev) => ({ ...prev, tracking_mode: "single_bulk" }));
+    }
+  }, [form.qty]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const canProceed = () => {
-    if (step === 1) return basicInfoValid;
+    if (step === 1) {
+      if (!basicInfoValid) return false;
+
+      const isDonated = form.acquisition_type === "donated";
+      if (isDonated && !form.donated_by.trim()) return false;
+
+      const qty = parseInt(form.qty, 10) || 1;
+      if (qty > 1 && !form.tracking_mode) return false;
+
+      return true;
+    }
     if (step === 2) return assetImage !== null && docImage !== null;
     return true;
   };

@@ -72,6 +72,7 @@ function AssetRegistration() {
               setAssetImage={setAssetImage}
               docImage={docImage}
               setDocImage={setDocImage}
+              acquisitionType={form.acquisition_type}
             />
           )}
           {step === 3 && (
