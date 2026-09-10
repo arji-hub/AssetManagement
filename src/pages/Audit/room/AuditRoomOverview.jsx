@@ -112,7 +112,7 @@ function AuditRoomOverview() {
         </div>
 
         {/* Asset list */}
-        <div className="audit-overview-table-wrap">
+        <div className="audit-overview-table-wrap audit-overview-assets-wrap">
           <h3 className="audit-overview-section-title">Assets in this room</h3>
 
           {assetsError && (
@@ -143,7 +143,7 @@ function AuditRoomOverview() {
         </div>
 
         {/* Previous audits */}
-        <div className="audit-overview-table-wrap">
+        <div className="audit-overview-table-wrap audit-overview-audits-wrap">
           <h3 className="audit-overview-section-title">Previous audits</h3>
 
           {auditsError && (

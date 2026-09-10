@@ -34,7 +34,13 @@ export function useAssetFilters(assets = []) {
             fetchCategories(),
             fetchCustodians(),
           ]);
-        setRooms(fetchedRooms.map((r) => (typeof r === "string" ? r : r.name)));
+        setRooms(
+          fetchedRooms.map((r) =>
+            typeof r === "string"
+              ? { id: r, name: r }
+              : { id: r.id, name: r.name },
+          ),
+        );
         setCategories(
           fetchedCategories.map((c) => (typeof c === "string" ? c : c.name)),
         );
@@ -54,6 +60,32 @@ export function useAssetFilters(assets = []) {
 
   const activeFilterCount = Object.values(filters).filter(Boolean).length;
 
+  // NEW: resolve each active filter's stored value (often an id) to a display label
+  const getFilterLabel = (key, value) => {
+    if (key === "room") {
+      if (value === UNALLOCATED_ROOM) return "Unallocated";
+      return rooms.find((r) => r.id === value)?.name ?? value;
+    }
+    if (key === "custodian") {
+      if (value === UNASSIGNED_CUSTODIAN) return "Unassigned";
+      return value; // already stored as a fullname string
+    }
+    return value; // status, category (until category is also switched to {id,name})
+  };
+
+  // NEW: ready-to-render list of active filters, id resolved to name
+  const activeFilters = useMemo(
+    () =>
+      Object.entries(filters)
+        .filter(([, val]) => Boolean(val))
+        .map(([key, val]) => ({
+          key,
+          value: val,
+          label: getFilterLabel(key, val),
+        })),
+    [filters, rooms, custodians],
+  );
+
   const handleApplyFilters = (newFilters) => {
     setFilters(newFilters);
     setShowFilter(false);
@@ -62,6 +94,10 @@ export function useAssetFilters(assets = []) {
   const handleClearFilters = () => {
     setFilters(INITIAL_FILTERS);
     setShowFilter(false);
+  };
+
+  const handleRemoveFilter = (key) => {
+    setFilters((prev) => ({ ...prev, [key]: "" }));
   };
 
   const filteredAssets = useMemo(() => {
@@ -81,7 +117,7 @@ export function useAssetFilters(assets = []) {
       //room
       if (filters.room === UNALLOCATED_ROOM) {
         if (asset.room_id) return false;
-      } else if (filters.room && asset.room_id !== toLowerCase(filters.room)) {
+      } else if (filters.room && asset.room_id !== filters.room) {
         return false;
       }
 
@@ -115,6 +151,8 @@ export function useAssetFilters(assets = []) {
     search,
     setSearch,
     activeFilterCount,
+    activeFilters,
+    handleRemoveFilter,
     filteredAssets,
     handleApplyFilters,
     handleClearFilters,

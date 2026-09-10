@@ -25,7 +25,7 @@
     grid-template-columns: var(--table-grid-columns-tablet);
   }
   .discrepancy-card-row-cell[data-priority="low"] {
-    display: none;
+    display: none !important;
   }
 }
 
@@ -34,7 +34,7 @@
     grid-template-columns: var(--table-grid-columns-mobile);
   }
   .discrepancy-card-row-cell[data-priority="medium"] {
-    display: none;
+    display: none !important;
   }
 }
 

@@ -41,8 +41,8 @@ export const custodianAuditColumns = [
   {
     key: "role",
     label: "Type",
-    width: "1fr",
-    priority: "medium",
+    width: "0.5fr",
+    priority: "low",
     render: (audit) => (
       <span className="custodian-audit-row-role">
         {audit.role === "fulltime" ? "Full-time" : "Part-time"}
@@ -50,17 +50,12 @@ export const custodianAuditColumns = [
     ),
   },
   {
-    key: "last_audit",
-    label: "Last Audit",
-    width: "1fr",
-    priority: "high",
-    card: { role: "date" },
+    key: "email",
+    label: "Email",
+    width: "1.5fr",
+    priority: "medium",
     render: (audit) => (
-      <span className="custodian-audit-row-audit">
-        {audit.audited_at || audit.last_audited_at
-          ? formatDate(audit.audited_at || audit.last_audited_at)
-          : "Not yet audited"}
-      </span>
+      <span className="custodian-audit-row-email">{audit.email}</span>
     ),
   },
   {

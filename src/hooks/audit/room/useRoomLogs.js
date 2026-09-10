@@ -1,24 +1,32 @@
-// src/hooks/audit/useRoomLogs.js
-import { useState, useEffect, useMemo, useCallback } from "react";
+// src/hooks/audit/room/useRoomLogs.js
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchAuditRooms } from "../../../services/audit";
 import { fetchRooms } from "../../../services/room";
 
+function toMillis(value) {
+  if (!value) return null;
+  if (typeof value?.toDate === "function") return value.toDate().getTime();
+  if (typeof value?.seconds === "number") return value.seconds * 1000;
+  const t = new Date(value).getTime();
+  return Number.isNaN(t) ? null : t;
+}
+
 function useRoomLogs() {
   const navigate = useNavigate();
 
-  // ── Rooms ─────────────────────────────────────────────────────────────
   const [rooms, setRooms] = useState([]);
   const [roomsLoading, setRoomsLoading] = useState(true);
   const [roomsError, setRoomsError] = useState("");
 
-  // ── Audit records ────────────────────────────────────────────────────
   const [auditRooms, setAuditRooms] = useState([]);
 
-  // ── Search ────────────────────────────────────────────────────────────
   const [search, setSearch] = useState("");
 
-  // == Data loading ==========================================================
+  // NEW: audit filter mode
+  const [auditFilter, setAuditFilter] = useState("recent_desc");
+  // "recent_desc" | "recent_asc" | "not_audited"
+
   useEffect(() => {
     setRoomsLoading(true);
     setRoomsError("");
@@ -34,8 +42,17 @@ function useRoomLogs() {
 
   // == Derived state ==========================================================
 
-  // Most recent audit per room. fetchAuditRooms() already orders by
-  // created_at desc, so the first match per room_id is the latest.
+  const roomNameById = useMemo(() => {
+    const map = new Map();
+    rooms.forEach((room) => {
+      map.set(
+        room.id,
+        room.name || room.room_name || room.room?.name || "Unknown room",
+      );
+    });
+    return map;
+  }, [rooms]);
+
   const latestAuditByRoom = useMemo(() => {
     const map = new Map();
     for (const audit of auditRooms) {
@@ -61,10 +78,10 @@ function useRoomLogs() {
   const filteredRooms = useMemo(() => {
     const query = search.trim().toLowerCase();
 
-    return roomsWithAuditInfo.filter((room) => {
+    // 1. base filter: has assets + matches search
+    let result = roomsWithAuditInfo.filter((room) => {
       const assetCount = room.assetCount ?? room.total_assets ?? 0;
       if (assetCount <= 0) return false;
-
       if (!query) return true;
 
       const name = (
@@ -75,9 +92,28 @@ function useRoomLogs() {
       ).toLowerCase();
       return name.includes(query);
     });
-  }, [roomsWithAuditInfo, search]);
 
-  // ── Stats for AuditCard row ─────────────────────────────────────────
+    // 2. apply audit filter mode
+    if (auditFilter === "not_audited") {
+      result = result.filter((room) => !room.audited_at);
+    } else {
+      const sorted = [...result].sort((a, b) => {
+        const aMs = toMillis(a.audited_at);
+        const bMs = toMillis(b.audited_at);
+
+        if (aMs === null && bMs === null) return 0;
+        if (aMs === null) return 1;
+        if (bMs === null) return -1;
+
+        const diff = bMs - aMs;
+        return auditFilter === "recent_asc" ? -diff : diff;
+      });
+      result = sorted;
+    }
+
+    return result;
+  }, [roomsWithAuditInfo, search, auditFilter]);
+
   const qualifyingRooms = useMemo(
     () =>
       roomsWithAuditInfo.filter(
@@ -107,7 +143,17 @@ function useRoomLogs() {
     return Math.round((totalRate / withAssets.length) * 100);
   }, [auditRooms]);
 
-  // == Actions ==========================================================
+  const previousAudits = useMemo(() => {
+    return auditRooms
+      .map((audit) => ({
+        ...audit,
+        room_name:
+          roomNameById.get(audit.room_id) ?? audit.room_name ?? "Unknown room",
+      }))
+      .sort(
+        (a, b) => new Date(b.created_at ?? 0) - new Date(a.created_at ?? 0),
+      );
+  }, [auditRooms, roomNameById]);
 
   const handleRoomClick = (roomID) => navigate(`/audit/room/${roomID}`);
 
@@ -117,10 +163,13 @@ function useRoomLogs() {
     roomsError,
     search,
     setSearch,
+    auditFilter,
+    setAuditFilter,
     handleRoomClick,
     totalAudits,
     roomsNotAudited,
     avgDiscrepancyRate,
+    previousAudits,
   };
 }
 

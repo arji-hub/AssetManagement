@@ -1,3 +1,4 @@
+// DiscrepancyCard.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -20,7 +21,10 @@ function resolveCardRoles(columns) {
     titleCol: roled.find((c) => c._cardRole === "title"),
     dateCol: roled.find((c) => c._cardRole === "date"),
     metaCols: roled.filter(
-      (c) => c._cardRole === "meta" && c.card?.role !== "hidden",
+      (c) =>
+        c._cardRole === "meta" &&
+        c.card?.role !== "hidden" &&
+        c.priority !== "low", // NEW: drop low-priority cols on mobile too
     ),
   };
 }
@@ -29,17 +33,15 @@ function DiscrepancyCard({ audit, index, columns, roomID }) {
   const navigate = useNavigate();
   const { titleCol, dateCol, metaCols } = resolveCardRoles(columns);
 
-  const handleClick = (id) => {
-    navigate(`/audit/room/${roomID}/${id}`);
+  const handleClick = (item) => {
+    const targetRoomID = item.room_id ?? roomID;
+    navigate(`/audit/room/${targetRoomID}/${item.id}`);
   };
 
   return (
     <>
       {/* ── Desktop / tablet row ── */}
-      <div
-        className="discrepancy-card-row"
-        onClick={() => handleClick(audit.id)}
-      >
+      <div className="discrepancy-card-row" onClick={() => handleClick(audit)}>
         {columns.map((col) => (
           <div
             key={col.key}
@@ -52,7 +54,7 @@ function DiscrepancyCard({ audit, index, columns, roomID }) {
       </div>
 
       {/* ── Mobile card ── */}
-      <div className="discrepancy-card" onClick={() => handleClick(audit.id)}>
+      <div className="discrepancy-card" onClick={() => handleClick(audit)}>
         <div className="discrepancy-card-header">
           {dateCol && (
             <span className="discrepancy-card-date">
