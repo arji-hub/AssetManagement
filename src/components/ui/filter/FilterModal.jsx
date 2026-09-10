@@ -2,10 +2,10 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import "./FilterModal.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ASSET_STATUS } from "../../data/assets";
-import { useAuth } from "../../context/AuthContext";
-import { ROLES } from "../../data/roles";
-import { UNALLOCATED_ROOM, UNASSIGNED_CUSTODIAN } from "../../data/assets";
+import { ASSET_STATUS } from "../../../data/assets";
+import { useAuth } from "../../../context/AuthContext";
+import { ROLES } from "../../../data/roles";
+import { UNALLOCATED_ROOM, UNASSIGNED_CUSTODIAN } from "../../../data/assets";
 
 function FilterModal({
   filters,
@@ -134,11 +134,13 @@ function FilterModal({
                       <option value={UNALLOCATED_ROOM}>Unallocated</option>
                       {safeRooms
                         .filter((room) =>
-                          room.toLowerCase().includes(roomSearch.toLowerCase()),
+                          room.name
+                            .toLowerCase()
+                            .includes(roomSearch.toLowerCase()),
                         )
                         .map((room) => (
-                          <option key={room} value={room}>
-                            {room}
+                          <option key={room.id} value={room.id}>
+                            {room.name}
                           </option>
                         ))}
                     </select>

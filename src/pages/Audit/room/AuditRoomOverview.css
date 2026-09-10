@@ -1,3 +1,5 @@
+/* AuditRoomOverview.css */
+
 .audit-overview-page {
   padding: 24px;
   display: flex;
@@ -91,16 +93,20 @@
   -webkit-overflow-scrolling: touch;
 }
 
-.audit-overview-table-wrap
-  :is(
-    .asset-card-row-cell,
-    .discrepancy-card-row-cell,
-    .panel-header-cell
-  ):nth-child(4),
-.audit-overview-table-wrap
-  :is(.discrepancy-card-row-cell, .panel-header-cell):nth-child(5) {
-  text-align: center;
+/* Assets table — only the last column centered */
+.audit-overview-assets-wrap .asset-card-row-cell:last-child {
+  display: flex;
+  align-items: center;
   justify-content: center;
+  text-align: center;
+}
+
+/* Previous audits table — last 3 columns centered */
+.audit-overview-audits-wrap .discrepancy-card-row-cell:nth-last-child(-n + 3) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 .audit-overview-scroll-area {

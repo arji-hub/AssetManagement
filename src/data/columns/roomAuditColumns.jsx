@@ -1,3 +1,4 @@
+// roomAuditColumns.jsx
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { formatDate } from "../../utils/date";
 import { PDFPreviewModal } from "../../components/modal/PDFPreviewModal";
@@ -79,5 +80,61 @@ export const roomAuditColumns = [
     priority: "high",
     card: { role: "action" },
     render: (audit) => <AuditFormCell audit={audit} />,
+  },
+];
+
+export const previousAuditColumns = [
+  {
+    key: "room_name",
+    label: "Room",
+    width: "1.2fr",
+    priority: "high",
+    card: { role: "title" },
+    render: (audit) => audit.room_name ?? "Unknown room",
+  },
+  {
+    key: "audit_no",
+    label: "Audit No.",
+    width: "1fr",
+    priority: "high",
+    render: (audit) => audit.audit_no ?? "—",
+  },
+  {
+    key: "audited_by_name",
+    label: "Conducted By",
+    width: "1fr",
+    priority: "medium",
+    card: { icon: "fa-solid fa-user" },
+    render: (audit) => audit.audited_by_name ?? "—",
+  },
+  {
+    key: "created_at",
+    label: "Date",
+    width: "1fr",
+    priority: "medium",
+    card: { role: "date" },
+    render: (audit) => (audit.created_at ? formatDate(audit.created_at) : "—"),
+  },
+  {
+    key: "discrepancy_count",
+    label: "Discrepancies",
+    width: "140px",
+    priority: "low",
+    card: { icon: "fa-solid fa-triangle-exclamation" },
+    render: (audit) => audit.discrepancy_count ?? 0,
+  },
+  {
+    key: "status",
+    label: "Status",
+    width: "140px",
+    priority: "low",
+    card: { icon: "fa-solid fa-circle-check" },
+    render: (audit) => (
+      <span
+        className={`audit-status-badge audit-status-badge--${audit.status}`}
+      >
+        {audit.status}
+      </span>
+    ),
   },
 ];

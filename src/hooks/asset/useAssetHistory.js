@@ -5,6 +5,7 @@ import {
   subscribeToTransfersByAsset,
   subscribeToRoomTransfersByAsset,
 } from "../../services/transfer";
+import { fetchRoom } from "../../services/room";
 import {
   formatDateTime,
   splitDateTime,
@@ -121,15 +122,48 @@ export function useAssetHistory(assetId) {
       },
     );
 
+    const roomNameCache = new Map();
+
+    async function resolveRoom(id) {
+      if (!id) return { id: null, name: null };
+      if (roomNameCache.has(id)) return roomNameCache.get(id);
+      try {
+        const room = await fetchRoom(id);
+        const resolved = { id: room.id, name: room.name };
+        roomNameCache.set(id, resolved);
+        return resolved;
+      } catch {
+        // room deleted or lookup failed — fall back gracefully
+        const fallback = { id, name: "Unknown room" };
+        roomNameCache.set(id, fallback);
+        return fallback;
+      }
+    }
+
+    async function enrichTransfers(rawTransfers) {
+      return Promise.all(
+        rawTransfers.map(async (t) => {
+          const [to, from] = await Promise.all([
+            resolveRoom(t.move_to),
+            resolveRoom(t.room_from),
+          ]);
+          return {
+            ...t,
+            move_to: to.name,
+            move_to_id: to.id,
+            room_from: from.name,
+            room_from_id: from.id,
+          };
+        }),
+      );
+    }
+
     const unsub3 = subscribeToRoomTransfersByAsset(
       assetId,
-      (data) => {
-        setRoomTransfers(data);
-        setLoadedFlags((prev) => {
-          const next = { ...prev, roomTransfers: true };
-
-          return next;
-        });
+      async (data) => {
+        const enriched = await enrichTransfers(data);
+        setRoomTransfers(enriched);
+        setLoadedFlags((prev) => ({ ...prev, roomTransfers: true }));
       },
       handleError("roomTransfers"),
     );

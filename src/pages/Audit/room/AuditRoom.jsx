@@ -1,6 +1,6 @@
 // src/pages/Audit/room/AuditRoom.jsx
 import { useRef } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useNavigate } from "react-router-dom";
 import MainLayout from "../../../components/layout/MainLayout";
 import NewAuditRoomModal from "../../../components/modal/NewAuditRoomModal";
 import AuditCard from "../../../components/ui/card/audit/AuditCard";
@@ -8,24 +8,34 @@ import BackButton from "../../../components/ui/button/BackButton";
 import useRoomLogs from "../../../hooks/audit/room/useRoomLogs";
 import { RoomListPDF } from "../../../pdf/templates/RoomListPDF";
 import { PDFPreviewModal } from "../../../components/modal/PDFPreviewModal";
-import { roomAuditColumns } from "../../../data/columns";
+import RoomAuditFilter from "../../../components/ui/filter/RoomAuditFilter";
+import { roomAuditColumns, previousAuditColumns } from "../../../data/columns";
 import Table from "../../../components/panel/Table";
 import AuditRoomCard from "../../../components/ui/card/audit/AuditRoomCard";
+import DiscrepancyCard from "../../../components/ui/card/audit/DiscrepancyCard";
 import SearchBar from "../../../components/ui/searchBar/SearchBar";
 import "./AuditRoom.css";
 
 function AuditRoom() {
+  const navigate = useNavigate();
   const {
     rooms,
     roomsLoading,
     roomsError,
     search,
     setSearch,
+    auditFilter,
+    setAuditFilter,
     totalAudits,
     roomsNotAudited,
     avgDiscrepancyRate,
+    previousAudits,
   } = useRoomLogs();
   const openWithRoomRef = useRef(null);
+
+  const handleOpenRoom = (room) => {
+    navigate(`/audit/room/${room.id}`);
+  };
 
   return (
     <MainLayout>
@@ -77,28 +87,59 @@ function AuditRoom() {
               placeholder="Search room"
             />
           </div>
-          <PDFPreviewModal
-            title="Room List"
-            fileName="room-list.pdf"
-            document={<RoomListPDF rooms={rooms} />}
-            triggerLabel="Room List"
-          />
+
+          <div className="audit-room-filter-actions">
+            <RoomAuditFilter value={auditFilter} onChange={setAuditFilter} />
+            <PDFPreviewModal
+              title="Room List"
+              fileName="room-list.pdf"
+              document={<RoomListPDF rooms={rooms} />}
+              triggerLabel="Room List"
+            />
+          </div>
         </div>
 
-        <div className="room-audit">
+        <div className="audit-room-primary-section">
+          <div className="room-audit">
+            <Table
+              columns={roomAuditColumns}
+              items={rooms}
+              loading={roomsLoading}
+              error={roomsError}
+              itemLabel="rooms"
+              emptyMessage="No rooms found."
+              renderItem={(room) => (
+                <AuditRoomCard
+                  key={room.id}
+                  room={room}
+                  columns={roomAuditColumns}
+                  onClick={() => handleOpenRoom(room)}
+                />
+              )}
+            />
+          </div>
+        </div>
+
+        {/* Previous audits across all rooms — secondary panel */}
+        <div className="audit-room-history-section">
+          <h3 className="audit-room-section-title audit-room-section-title--secondary">
+            Previous Audits
+          </h3>
           <Table
-            columns={roomAuditColumns}
-            items={rooms}
+            columns={previousAuditColumns}
+            items={previousAudits}
             loading={roomsLoading}
             error={roomsError}
-            itemLabel="rooms"
-            emptyMessage="No rooms found."
-            renderItem={(room) => (
-              <AuditRoomCard
-                key={room.id}
-                room={room}
-                columns={roomAuditColumns}
-                onClick={() => openWithRoomRef.current?.(room)}
+            itemLabel="audits"
+            emptyMessage="No previous audits found."
+            desktopPageSize={10}
+            mobilePageSize={5}
+            renderItem={(audit, index) => (
+              <DiscrepancyCard
+                key={audit.id}
+                audit={audit}
+                index={index}
+                columns={previousAuditColumns}
               />
             )}
           />

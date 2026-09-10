@@ -22,6 +22,10 @@ import { roomCount } from "./room";
 import QRCodeStyling from "qr-code-styling";
 import CICTLogo from "../assets/logo/CICTLOGO.png";
 import { toLowerCase, toTitleCase } from "../utils/TextCasing";
+import {
+  logInitialCustodianAssignment,
+  logInitialRoomAssignment,
+} from "./transfer";
 
 export function subscribeToAssets(role, currentUserUid, callback, onError) {
   const assetsRef = collection(db, "asset");
@@ -217,7 +221,7 @@ function acquisitionFields(data) {
   };
 }
 
-export async function addAsset(data, role) {
+export async function addAsset(data, role, requestedBy) {
   if (role !== "admin") {
     throw new Error("Permission denied: only admins can register assets.");
   }
@@ -272,6 +276,7 @@ export async function addAsset(data, role) {
     updated_at: serverTimestamp(),
   };
 
+  // ── create the asset docs first ──
   await Promise.all(
     records.map(({ assetId, qrCodeUrl }) =>
       setDoc(doc(db, "asset", assetId), {
@@ -279,6 +284,34 @@ export async function addAsset(data, role) {
         asset_id: assetId,
         qr_code_url: qrCodeUrl || null,
       }),
+    ),
+  );
+
+  // ── then log the initial assignment history, now that the assets exist ──
+  await Promise.all(
+    records.map(({ assetId }) =>
+      Promise.all([
+        data.primary_custodian
+          ? logInitialCustodianAssignment(
+              {
+                asset_id: assetId,
+                asset_description: data.description,
+                custodian_uid: data.primary_custodian,
+              },
+              requestedBy,
+            )
+          : null,
+        data.room_id
+          ? logInitialRoomAssignment(
+              {
+                asset_id: assetId,
+                asset_name: data.description,
+                room_id: data.room_id,
+              },
+              requestedBy.uid,
+            )
+          : null,
+      ]),
     ),
   );
 
