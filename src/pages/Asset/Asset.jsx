@@ -6,7 +6,7 @@ import MainLayout from "../../components/layout/MainLayout";
 import { ROLES } from "../../data/roles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./Asset.css";
-import FilterModal from "../../components/modal/FilterModal";
+import FilterModal from "../../components/ui/filter/FilterModal";
 import SearchBar from "../../components/ui/searchBar/SearchBar";
 import { useAssetFilters } from "../../hooks/asset/useAssetFilters";
 import { useAssets } from "../../hooks/asset/useAssets";
@@ -27,10 +27,11 @@ function Asset() {
     showFilter,
     setShowFilter,
     filters,
-    setFilters,
     search,
     setSearch,
     activeFilterCount,
+    activeFilters,
+    handleRemoveFilter,
     filteredAssets,
     handleApplyFilters,
     handleClearFilters,
@@ -82,21 +83,17 @@ function Asset() {
 
         {activeFilterCount > 0 && (
           <div className="asset-active-filters">
-            {Object.entries(filters).map(([key, val]) =>
-              val ? (
-                <span key={key} className="asset-active-pill">
-                  {val}
-                  <button
-                    onClick={() =>
-                      setFilters((prev) => ({ ...prev, [key]: "" }))
-                    }
-                    aria-label={`Remove ${key} filter`}
-                  >
-                    <FontAwesomeIcon icon="fa-solid fa-xmark" />
-                  </button>
-                </span>
-              ) : null,
-            )}
+            {activeFilters.map(({ key, label }) => (
+              <span key={key} className="asset-active-pill">
+                {label}
+                <button
+                  onClick={() => handleRemoveFilter(key)}
+                  aria-label={`Remove ${key} filter`}
+                >
+                  <FontAwesomeIcon icon="fa-solid fa-xmark" />
+                </button>
+              </span>
+            ))}
             <button className="asset-clear-all" onClick={handleClearFilters}>
               Clear all
             </button>

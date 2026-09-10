@@ -69,7 +69,7 @@ function BasicInfo({ form, onChange, categories, loadingOptions, error }) {
             value={form.category_id}
             onChange={onChange}
           >
-            <option value="">Select Category</option>
+            <option value="">--Select Category--</option>
             {ASSET_CATEGORIES.map((c) => (
               <option key={c} value={c}>
                 {c}

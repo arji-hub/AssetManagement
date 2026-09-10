@@ -1,10 +1,10 @@
-/* src/components/ui/assetCountFilter/AssetCountFilter.css */
+/* src/components/ui/filter/RoomAuditFilter.css */
 
-.asset-count-filter {
+.room-audit-filter {
   position: relative;
 }
 
-.asset-count-filter-btn {
+.room-audit-filter-btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -20,27 +20,22 @@
   transition: border-color 0.2s ease;
 }
 
-.asset-count-filter-btn:hover,
-.asset-count-filter-btn:focus {
+.room-audit-filter-btn:hover,
+.room-audit-filter-btn:focus {
   border-color: var(--maroon-700);
 }
 
-.asset-count-filter-btn svg {
+.room-audit-filter-btn svg {
   color: var(--maroon-700);
   font-size: 13px;
 }
 
-.asset-count-filter-active {
-  font-weight: 700;
-  color: var(--maroon-700);
-}
-
-.asset-count-filter-menu {
+.room-audit-filter-menu {
   position: absolute;
   top: calc(100% + 6px);
   right: 0;
   z-index: 20;
-  min-width: 180px;
+  min-width: 220px;
   background: var(--card-bg);
   border: 1px solid var(--card-border);
   border-radius: 8px;
@@ -51,7 +46,7 @@
   gap: 2px;
 }
 
-.asset-count-filter-item {
+.room-audit-filter-item {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -66,16 +61,16 @@
   transition: background 0.15s ease;
 }
 
-.asset-count-filter-item:hover {
+.room-audit-filter-item:hover {
   background: var(--maroon-tint, rgba(134, 1, 0, 0.08));
 }
 
-.asset-count-filter-item--active {
+.room-audit-filter-item--active {
   color: var(--maroon-700);
   font-weight: 700;
 }
 
-.asset-count-filter-item svg {
+.room-audit-filter-item svg {
   color: var(--maroon-700);
   font-size: 12px;
 }

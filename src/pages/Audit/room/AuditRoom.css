@@ -128,6 +128,25 @@
   max-width: 420px;
   flex: 1;
 }
+.audit-room-filter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.audit-room-filter-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.audit-room-search {
+  position: relative;
+  max-width: 420px;
+  flex: 1;
+}
 
 @media (max-width: 768px) {
   .audit-room-page {
@@ -158,6 +177,12 @@
     gap: 12px;
   }
 
+  .audit-room-filter-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
   .audit-room-search {
     max-width: none;
   }
@@ -175,6 +200,71 @@
   }
 }
 
+@media (max-width: 768px) {
+  .audit-room-page {
+    flex: none;
+    height: auto;
+    min-height: 100%;
+    padding: 16px;
+  }
+
+  .audit-room-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .audit-room-header-actions {
+    width: 30%;
+    min-width: 160px;
+  }
+
+  .audit-room-btn-secondary,
+  .audit-room-btn-primary {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .audit-room-search {
+    max-width: none;
+  }
+
+  .room-audit {
+    flex: none;
+    min-height: 400px;
+  }
+}
+
+@media (max-width: 370px) {
+  .audit-room-header-left {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* == Primary panel — the main rooms table ================================== */
+
+.audit-room-primary-section {
+  background: #ffffff;
+  border: 1px solid #e2beb9;
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: 0 6px 18px rgba(134, 1, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.audit-room-section-title {
+  margin: 0;
+  font-weight: 700;
+}
+
+.audit-room-section-title--secondary {
+  font-size: 14px;
+  color: #8e706b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
 .room-audit {
   flex: none;
   height: 500px;
@@ -186,5 +276,24 @@
 
 .room-audit .panel-header-cell:nth-last-child(2),
 .room-audit .panel-header-cell:nth-last-child(1) {
+  text-align: center;
+}
+
+/* == Secondary panel — previous audits, visually quieter ==================== */
+
+.audit-room-history-section {
+  background: #fbf7f6;
+  border: 1px solid #e2beb9;
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.audit-room-history-section .discrepancy-card-row-cell:nth-child(n + 3) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
 }

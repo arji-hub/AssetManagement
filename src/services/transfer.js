@@ -554,3 +554,75 @@ export async function condemnAsset(assetID) {
     throw new Error(`Failed to condemn asset: ${err.message}`);
   }
 }
+
+//------------------UPON ASSET CREATION-----------------
+export async function logInitialCustodianAssignment(
+  { asset_id, asset_description, custodian_uid },
+  requestedBy, // { uid, name, role }
+) {
+  if (!custodian_uid) return null;
+
+  const [toInfo, custodianSnap] = await Promise.all([
+    getName(custodian_uid),
+    getDoc(doc(db, "user", custodian_uid)),
+  ]);
+
+  const toName = toInfo?.fullname || null;
+  const custodianRole = custodianSnap.exists()
+    ? custodianSnap.data().role
+    : null;
+
+  const now = serverTimestamp();
+  const col = collection(db, COLLECTION);
+
+  const docData = {
+    asset_id,
+    asset_description,
+    requested_by: requestedBy.uid,
+    requested_by_name: requestedBy.name,
+    requested_by_role: requestedBy.role,
+    notes: "Initial assignment upon asset registration.",
+    status: "completed",
+    type: TRANSFER_TYPES.ASSIGN,
+    completed_at: now,
+    created_at: now,
+    updated_at: now,
+    acknowledgments: {
+      admin: buildAck(true, requestedBy.uid),
+      from: buildAck(true, null),
+      to: { ...buildAck(true, custodian_uid, toName), role: custodianRole },
+    },
+    status_log: [
+      {
+        action: "created",
+        by: requestedBy.role,
+        by_name: requestedBy.name,
+        date: new Date(),
+        note: "Initial assignment upon asset registration.",
+      },
+    ],
+  };
+
+  const docRef = await addDoc(col, docData);
+  return { id: docRef.id, ...docData };
+}
+
+export async function logInitialRoomAssignment(
+  { asset_id, asset_name, room_id },
+  moveByUid,
+) {
+  if (!room_id) return null;
+
+  const col = collection(db, "transfer_room");
+  const docData = {
+    asset_id,
+    asset_name,
+    room_from: null,
+    move_to: room_id,
+    move_by: moveByUid,
+    created_at: serverTimestamp(),
+  };
+
+  const docRef = await addDoc(col, docData);
+  return { id: docRef.id, ...docData };
+}

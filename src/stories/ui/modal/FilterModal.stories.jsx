@@ -1,6 +1,6 @@
 import { MemoryRouter } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
-import FilterModal from "../../../components/ui/modal/FilterModal";
+import FilterModal from "../../../components/ui/filter/FilterModal";
 
 const BASE_FILTERS = { status: "", category: "", room: "", custodian: "" };
 

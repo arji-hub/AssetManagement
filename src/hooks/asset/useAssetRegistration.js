@@ -24,7 +24,7 @@ const INITIAL_FORM = {
 };
 
 export function useAssetRegistrationForm() {
-  const { role } = useAuth();
+  const { role, user } = useAuth();
 
   const [step, setStep] = useState(1);
   const [form, setForm] = useState(INITIAL_FORM);
@@ -133,6 +133,10 @@ export function useAssetRegistrationForm() {
     setSaveStatus("loading");
     setSaveError(null);
     try {
+      const fullname = [user.firstname, user.middlename, user.lastname]
+        .filter((part) => part && part !== "_")
+        .join(" ");
+
       await addAsset(
         {
           ...form,
@@ -140,6 +144,7 @@ export function useAssetRegistrationForm() {
           docImageFile: docImage.file,
         },
         role,
+        { uid: user.uid, name: fullname, role: user.role },
       );
       setSaveStatus("success");
     } catch (err) {
@@ -150,7 +155,6 @@ export function useAssetRegistrationForm() {
       setSaving(false);
     }
   };
-
   const fulltimeCustodians = custodians.filter((c) => c.role === "fulltime");
 
   return {
