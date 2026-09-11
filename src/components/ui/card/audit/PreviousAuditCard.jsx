@@ -1,13 +1,16 @@
-// DiscrepancyCard.jsx
+// PreviousAuditCard.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "./DiscrepancyCard.css";
+import "./PreviousAuditCard.css";
 
 function resolveCardRoles(columns) {
   let titleAssigned = false;
   const roled = columns.map((col) => {
-    if (col.card?.role) return { ...col, _cardRole: col.card.role };
+    if (col.card?.role) {
+      if (col.card.role === "title") titleAssigned = true;
+      return { ...col, _cardRole: col.card.role };
+    }
 
     if (col.key === "date") return { ...col, _cardRole: "date" };
     if (!titleAssigned && col.priority !== "low") {
@@ -20,18 +23,20 @@ function resolveCardRoles(columns) {
   return {
     titleCol: roled.find((c) => c._cardRole === "title"),
     dateCol: roled.find((c) => c._cardRole === "date"),
+    headerLeftCol: roled.find((c) => c._cardRole === "headerLeft"),
     metaCols: roled.filter(
       (c) =>
         c._cardRole === "meta" &&
         c.card?.role !== "hidden" &&
-        c.priority !== "low", // NEW: drop low-priority cols on mobile too
+        c.priority !== "low", // drop low-priority cols on mobile too
     ),
   };
 }
 
-function DiscrepancyCard({ audit, index, columns, roomID }) {
+function PreviousAuditCard({ audit, index, columns, roomID }) {
   const navigate = useNavigate();
-  const { titleCol, dateCol, metaCols } = resolveCardRoles(columns);
+  const { titleCol, dateCol, headerLeftCol, metaCols } =
+    resolveCardRoles(columns);
 
   const handleClick = (item) => {
     const targetRoomID = item.room_id ?? roomID;
@@ -41,11 +46,14 @@ function DiscrepancyCard({ audit, index, columns, roomID }) {
   return (
     <>
       {/* ── Desktop / tablet row ── */}
-      <div className="discrepancy-card-row" onClick={() => handleClick(audit)}>
+      <div
+        className="previous-audit-card-row"
+        onClick={() => handleClick(audit)}
+      >
         {columns.map((col) => (
           <div
             key={col.key}
-            className="discrepancy-card-row-cell"
+            className="previous-audit-card-row-cell"
             data-priority={col.priority || "high"}
           >
             {col.render(audit, index)}
@@ -54,31 +62,46 @@ function DiscrepancyCard({ audit, index, columns, roomID }) {
       </div>
 
       {/* ── Mobile card ── */}
-      <div className="discrepancy-card" onClick={() => handleClick(audit)}>
-        <div className="discrepancy-card-header">
+      <div className="previous-audit-card" onClick={() => handleClick(audit)}>
+        <div className="previous-audit-card-header">
+          {headerLeftCol && (
+            <span className="previous-audit-card-header-left">
+              {headerLeftCol.card?.icon && (
+                <FontAwesomeIcon icon={headerLeftCol.card.icon} />
+              )}
+              {headerLeftCol.render(audit, index)}
+            </span>
+          )}
           {dateCol && (
-            <span className="discrepancy-card-date">
+            <span className="previous-audit-card-date">
               {dateCol.render(audit, index)}
             </span>
           )}
         </div>
 
         {titleCol && (
-          <p className="discrepancy-card-title">
+          <p className="previous-audit-card-title">
             {titleCol.render(audit, index)}
           </p>
         )}
 
         {metaCols.length > 0 && (
-          <div className="discrepancy-card-meta">
+          <div className="previous-audit-card-meta">
             {metaCols.map((col) => (
-              <span className="discrepancy-card-stat" key={col.key}>
+              <span className="previous-audit-card-stat" key={col.key}>
                 {col.card?.icon && (
-                  <span className="discrepancy-card-meta-icon">
+                  <span className="previous-audit-card-meta-icon">
                     <FontAwesomeIcon icon={col.card.icon} />
                   </span>
                 )}
-                {col.render(audit, index)}
+                {col.label && (
+                  <span className="previous-audit-card-meta-label">
+                    {col.label}:
+                  </span>
+                )}
+                <span className="previous-audit-card-meta-value">
+                  {col.render(audit, index)}
+                </span>
               </span>
             ))}
           </div>
@@ -88,4 +111,4 @@ function DiscrepancyCard({ audit, index, columns, roomID }) {
   );
 }
 
-export default DiscrepancyCard;
+export default PreviousAuditCard;

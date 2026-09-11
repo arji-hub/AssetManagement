@@ -88,9 +88,21 @@
   gap: 10px;
 }
 
-.asset-card-date {
+.asset-card-category {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 12px;
-  color: var(--text-muted);
+  font-weight: 600 !important;
+  color: var(--maroon-700);
+}
+
+.asset-card-category-icon {
+  width: 14px;
+  display: flex;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--maroon-700);
 }
 
 .asset-card-badge-slot {
@@ -133,7 +145,7 @@
   font-size: 12px;
 }
 
-@media (min-width: 481px) and (max-width: 630px) {
+@media (min-width: 280px){
   .asset-card-meta {
     flex-direction: row;
     flex-wrap: wrap;

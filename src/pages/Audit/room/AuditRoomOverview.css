@@ -93,19 +93,24 @@
   -webkit-overflow-scrolling: touch;
 }
 
-/* Assets table — only the last column centered */
-.audit-overview-assets-wrap .asset-card-row-cell:last-child {
+/* Previous audits table — Assets Audited & Discrepancies columns centered */
+.audit-overview-audits-wrap .previous-audit-card-row-cell:nth-child(3),
+.audit-overview-audits-wrap .previous-audit-card-row-cell:nth-child(4) {
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
 }
 
-/* Previous audits table — last 3 columns centered */
-.audit-overview-audits-wrap .discrepancy-card-row-cell:nth-last-child(-n + 3) {
+.audit-overview-audits-wrap .previous-audit-card-row-cell:nth-child(5) {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: right;
+  text-align: center;
+}
+
+.audit-overview-audits-wrap .panel-header-cell:nth-child(3),
+.audit-overview-audits-wrap .panel-header-cell:nth-child(4) {
   text-align: center;
 }
 

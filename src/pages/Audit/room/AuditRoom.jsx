@@ -12,7 +12,7 @@ import RoomAuditFilter from "../../../components/ui/filter/RoomAuditFilter";
 import { roomAuditColumns, previousAuditColumns } from "../../../data/columns";
 import Table from "../../../components/panel/Table";
 import AuditRoomCard from "../../../components/ui/card/audit/AuditRoomCard";
-import DiscrepancyCard from "../../../components/ui/card/audit/DiscrepancyCard";
+import PreviousAuditCard from "../../../components/ui/card/audit/PreviousAuditCard";
 import SearchBar from "../../../components/ui/searchBar/SearchBar";
 import "./AuditRoom.css";
 
@@ -135,7 +135,7 @@ function AuditRoom() {
             desktopPageSize={10}
             mobilePageSize={5}
             renderItem={(audit, index) => (
-              <DiscrepancyCard
+              <PreviousAuditCard
                 key={audit.id}
                 audit={audit}
                 index={index}

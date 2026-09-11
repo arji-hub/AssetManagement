@@ -87,54 +87,41 @@ export const previousAuditColumns = [
   {
     key: "room_name",
     label: "Room",
-    width: "1.2fr",
+    width: "1.4fr",
     priority: "high",
     card: { role: "title" },
     render: (audit) => audit.room_name ?? "Unknown room",
   },
   {
-    key: "audit_no",
-    label: "Audit No.",
-    width: "1fr",
-    priority: "high",
-    render: (audit) => audit.audit_no ?? "—",
-  },
-  {
     key: "audited_by_name",
     label: "Conducted By",
-    width: "1fr",
-    priority: "medium",
-    card: { icon: "fa-solid fa-user" },
+    width: "1.2fr",
+    priority: "high",
+    card: { role: "headerLeft", icon: "fa-solid fa-user" },
     render: (audit) => audit.audited_by_name ?? "—",
   },
   {
-    key: "created_at",
-    label: "Date",
-    width: "1fr",
+    key: "audited",
+    label: "Assets Audited",
+    width: "140px",
     priority: "medium",
-    card: { role: "date" },
-    render: (audit) => (audit.created_at ? formatDate(audit.created_at) : "—"),
+    card: { icon: "fa-solid fa-clipboard-check" },
+    render: (audit) => `${audit.audited_count ?? 0}/${audit.total_assets ?? 0}`,
   },
   {
     key: "discrepancy_count",
     label: "Discrepancies",
     width: "140px",
-    priority: "low",
+    priority: "medium",
     card: { icon: "fa-solid fa-triangle-exclamation" },
     render: (audit) => audit.discrepancy_count ?? 0,
   },
   {
-    key: "status",
-    label: "Status",
-    width: "140px",
-    priority: "low",
-    card: { icon: "fa-solid fa-circle-check" },
-    render: (audit) => (
-      <span
-        className={`audit-status-badge audit-status-badge--${audit.status}`}
-      >
-        {audit.status}
-      </span>
-    ),
+    key: "created_at",
+    label: "Date",
+    width: "1fr",
+    priority: "high",
+    card: { role: "date" },
+    render: (audit) => (audit.created_at ? formatDate(audit.created_at) : "—"),
   },
 ];

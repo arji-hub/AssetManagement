@@ -148,6 +148,22 @@
   flex: 1;
 }
 
+/* Previous audits table — Assets Audited & Discrepancies columns centered */
+.audit-room-history-section .previous-audit-card-row-cell:nth-child(3),
+.audit-room-history-section .previous-audit-card-row-cell:nth-child(4) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.audit-room-history-section .previous-audit-card-row-cell:nth-child(5) {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  text-align: center;
+}
+
 @media (max-width: 768px) {
   .audit-room-page {
     flex: none;
