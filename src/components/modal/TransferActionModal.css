@@ -1,7 +1,7 @@
 .transfer-action-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: var(--overlay);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -19,7 +19,7 @@
 }
 
 .transfer-action-modal {
-  background: #ffffff;
+  background: var(--card-bg);
   border-radius: 12px;
   width: 100%;
   max-width: 440px;
@@ -51,11 +51,11 @@
 }
 
 .transfer-action-header--approve {
-  background: #860100;
+  background: var(--maroon-700);
 }
 
 .transfer-action-header--decline {
-  background: #f5aa2c;
+  background: var(--gold-500);
 }
 
 .transfer-action-header h2 {
@@ -94,14 +94,14 @@
   display: flex;
   gap: 10px;
   align-items: flex-start;
-  background: rgba(245, 170, 44, 0.06);
-  border: 1px solid rgba(134, 1, 0, 0.2);
+  background: color-mix(in srgb, var(--gold-500) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--maroon-700) 20%, transparent);
   border-radius: 8px;
   padding: 12px 14px;
 }
 
 .transfer-action-info-icon {
-  color: #860100;
+  color: var(--maroon-700);
   font-size: 15px;
   flex-shrink: 0;
   margin-top: 2px;
@@ -110,7 +110,7 @@
 .transfer-action-info-text {
   margin: 0;
   font-size: 12px;
-  color: #860100;
+  color: var(--maroon-700);
   line-height: 1.6;
 }
 
@@ -124,7 +124,7 @@
 .transfer-action-field label {
   font-size: 13px;
   font-weight: 600;
-  color: #374151;
+  color: var(--text-strong);
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
@@ -132,17 +132,17 @@
 .transfer-action-optional {
   font-weight: 400;
   text-transform: none;
-  color: #9ca3af;
+  color: var(--text-faint);
   font-size: 11px;
 }
 
 .transfer-action-field textarea {
   padding: 10px 14px;
-  border: 1.5px solid #d1d5db;
+  border: 1.5px solid var(--card-border);
   border-radius: 8px;
   font-size: 14px;
-  color: #860100;
-  background: #ffffff;
+  color: var(--maroon-700);
+  background: var(--card-bg);
   outline: none;
   resize: vertical;
   font-family: inherit;
@@ -153,13 +153,13 @@
 }
 
 .transfer-action-field textarea:focus {
-  border-color: #860100;
-  box-shadow: 0 0 0 3px rgba(134, 1, 0, 0.1);
+  border-color: var(--maroon-700);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--maroon-700) 10%, transparent);
 }
 
 .transfer-action-char-count {
   font-size: 11px;
-  color: #9ca3af;
+  color: var(--text-faint);
   text-align: right;
 }
 
@@ -195,33 +195,33 @@
 }
 
 .transfer-action-modal-btn--cancel {
-  background: #ffffff;
-  color: #860100;
-  border: 1.5px solid #860100;
+  background: var(--card-bg);
+  color: var(--maroon-700);
+  border: 1.5px solid var(--maroon-700);
 }
 
 .transfer-action-modal-btn--cancel:hover:not(:disabled) {
-  background: rgba(134, 1, 0, 0.05);
+  background: color-mix(in srgb, var(--maroon-700) 5%, transparent);
 }
 
 .transfer-action-modal-btn--approve {
-  background: #860100;
+  background: var(--maroon-700);
   color: #ffffff;
 }
 
 .transfer-action-modal-btn--approve:hover:not(:disabled) {
-  background: #f5aa2c;
-  color: #860100;
+  background: var(--gold-500);
+  color: var(--maroon-700);
 }
 
 .transfer-action-modal-btn--decline {
-  background: #f5aa2c;
-  color: #860100;
+  background: var(--gold-500);
+  color: var(--maroon-700);
 }
 
 .transfer-action-modal-btn--decline:hover:not(:disabled) {
-  background: #e09a1e;
-  color: #860100;
+  background: color-mix(in srgb, var(--gold-500) 90%, black);
+  color: var(--maroon-700);
 }
 
 .action-btn--approve {
@@ -234,13 +234,13 @@
   border-radius: 8px;
   border: none;
   cursor: pointer;
-  background: #860100;
+  background: var(--maroon-700);
   color: #ffffff;
   transition: background 0.2s;
 }
 
 .action-btn--approve:hover {
-  background: #5d0100;
+  background: color-mix(in srgb, var(--maroon-700) 85%, black);
 }
 
 .action-btn--decline {
@@ -251,16 +251,16 @@
   font-size: 13px;
   font-weight: 600;
   border-radius: 8px;
-  border: 1.5px solid #f5aa2c;
+  border: 1.5px solid var(--gold-500);
   cursor: pointer;
-  background: #ffffff;
-  color: #f5aa2c;
+  background: var(--card-bg);
+  color: var(--gold-500);
   transition:
     background 0.2s,
     color 0.2s;
 }
 
 .action-btn--decline:hover {
-  background: #f5aa2c;
+  background: var(--gold-500);
   color: #ffffff;
 }

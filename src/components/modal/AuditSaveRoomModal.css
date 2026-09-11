@@ -1,7 +1,7 @@
 .audit-save-confirm-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--overlay);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -10,7 +10,7 @@
 }
 
 .audit-save-confirm-content {
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 12px;
   padding: 24px;
   width: 100%;
@@ -43,8 +43,8 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: #fdecea;
-  color: #9c0201;
+  background: var(--danger-bg);
+  color: var(--maroon-600);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -55,14 +55,14 @@
   margin: 0;
   font-size: 17px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--text-strong);
 }
 
 .audit-save-confirm-content p {
   margin: 0 0 16px;
   font-size: 14px;
   line-height: 1.5;
-  color: #444;
+  color: var(--text-muted);
   text-align: center;
 }
 
@@ -76,8 +76,8 @@
 .audit-save-confirm-stat {
   flex: 1;
   max-width: 140px;
-  background: #f7f7f8;
-  border: 1px solid #ececec;
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 10px 8px;
   display: flex;
@@ -89,16 +89,16 @@
 .audit-save-confirm-stat-value {
   font-size: 18px;
   font-weight: 700;
-  color: #860100;
+  color: var(--maroon-700);
 }
 
 .audit-save-confirm-stat-flag {
-  color: #b30000;
+  color: var(--danger);
 }
 
 .audit-save-confirm-stat-label {
   font-size: 11px;
-  color: #666;
+  color: var(--text-muted);
   text-align: center;
 }
 
@@ -107,11 +107,11 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  background: #fff7e6;
-  border: 1px solid #f5aa2c;
+  background: var(--missing-bg);
+  border: 1px solid var(--gold-500);
   border-radius: 8px;
   padding: 8px 10px;
-  color: #8a5a00;
+  color: var(--missing);
   font-size: 12.5px;
   margin-bottom: 16px !important;
 }
@@ -134,23 +134,25 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  transition: background 0.15s ease, opacity 0.15s ease;
+  transition:
+    background 0.15s ease,
+    opacity 0.15s ease;
 }
 
 .audit-save-confirm-cancel {
-  background: #f0f0f0;
-  color: #333;
+  background: var(--surface-muted);
+  color: var(--text-strong);
 }
 
 .audit-save-confirm-cancel:hover {
-  background: #e4e4e4;
+  background: var(--hover-tint);
 }
 
 .audit-save-confirm-proceed {
-  background: #860100;
+  background: var(--maroon-700);
   color: #fff;
 }
 
 .audit-save-confirm-proceed:hover {
-  background: #6e0100;
+  background: var(--maroon-800);
 }

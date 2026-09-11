@@ -49,9 +49,6 @@ function AssetInfo() {
             <span className="breadcrumb-parent">Asset Information</span>
           </div>
           <div className="asset-info-actions">
-            <button className="action-btn" disabled>
-              <i className="ti ti-download" aria-hidden="true" /> wala pa
-            </button>
             <ViewAssetDocument doc_image_url={asset.doc_image_url} />
             <ViewAssetQR qr_code_url={asset.qr_code_url} assetID={assetId} />
             <ManageAsset asset={asset} />

@@ -6,8 +6,8 @@
   max-height: 80vh; /* ← constrains height so content can overflow */
   overflow-y: auto;
   max-width: 720px;
-  background: #ffffff;
-  border: 1px solid #e5e5e5;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 10px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
   padding: 28px;
@@ -18,7 +18,7 @@
   align-items: center;
   gap: 16px;
   padding-bottom: 20px;
-  border-bottom: 2px solid #860100;
+  border-bottom: 2px solid var(--maroon-700);
 }
 
 .profile-avatar {
@@ -26,8 +26,8 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: #860100;
-  color: #f5aa2c;
+  background: var(--maroon-700);
+  color: var(--gold-500);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -46,7 +46,7 @@
   margin: 0;
   font-size: 20px;
   font-weight: 700;
-  color: #860100;
+  color: var(--maroon-700);
   line-height: 1.3;
   overflow-wrap: break-word;
 }
@@ -59,7 +59,7 @@
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.03em;
-  background: #860100;
+  background: var(--maroon-700);
   color: #ffffff;
 }
 
@@ -70,9 +70,9 @@
   gap: 6px;
   padding: 8px 16px;
   border-radius: 6px;
-  border: 1.5px solid #860100;
-  background: #ffffff;
-  color: #860100;
+  border: 1.5px solid var(--maroon-700);
+  background: var(--card-bg);
+  color: var(--maroon-700);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -82,20 +82,20 @@
 }
 
 .profile-edit-btn:hover {
-  background: #f5aa2c;
-  border-color: #f5aa2c;
+  background: var(--gold-500);
+  border-color: var(--gold-500);
   color: #ffffff;
 }
 
 .profile-edit-btn.is-editing {
-  background: #860100;
-  border-color: #860100;
+  background: var(--maroon-700);
+  border-color: var(--maroon-700);
   color: #ffffff;
 }
 
 .profile-divider {
   height: 1px;
-  background: #eee;
+  background: var(--border-subtle);
   margin: 10px 0;
 }
 
@@ -103,11 +103,11 @@
   margin: 0 0 16px;
   font-size: 13px;
   font-weight: 700;
-  color: #860100;
+  color: var(--maroon-700);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   padding-left: 10px;
-  border-left: 3px solid #f5aa2c;
+  border-left: 3px solid var(--gold-500);
 }
 
 .profile-grid {
@@ -133,18 +133,18 @@
 .profile-form-field label {
   font-size: 11px;
   font-weight: 600;
-  color: #999;
+  color: var(--text-faint);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .profile-form-field input {
   padding: 10px 12px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--card-border);
   border-radius: 6px;
   font-size: 14px;
-  color: #1a1a1a;
-  background: #ffffff;
+  color: var(--text-strong);
+  background: var(--card-bg);
   transition:
     border-color 0.15s ease,
     box-shadow 0.15s ease;
@@ -152,8 +152,8 @@
 
 .profile-form-field input:focus {
   outline: none;
-  border-color: #f5aa2c;
-  box-shadow: 0 0 0 3px rgba(245, 170, 44, 0.18);
+  border-color: var(--gold-500);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold-500) 18%, transparent);
 }
 
 .profile-form-actions {
@@ -174,13 +174,13 @@
 }
 
 .profile-cancel-btn {
-  background: #ffffff;
-  color: #860100;
-  border: 1.5px solid #860100;
+  background: var(--card-bg);
+  color: var(--maroon-700);
+  border: 1.5px solid var(--maroon-700);
 }
 
 .profile-cancel-btn:hover {
-  background: #fdf2f2;
+  background: color-mix(in srgb, var(--maroon-700) 5%, transparent);
 }
 
 .profile-cancel-btn:disabled {
@@ -189,22 +189,22 @@
 }
 
 .profile-save-btn {
-  background: #860100;
+  background: var(--maroon-700);
   color: #ffffff;
 }
 
 .profile-save-btn:hover {
-  background: #f5aa2c;
+  background: var(--gold-500);
 }
 
 .profile-save-btn:disabled {
   cursor: not-allowed;
   opacity: 0.5;
-  background: #860100;
+  background: var(--maroon-700);
 }
 
 .profile-save-btn:disabled:hover {
-  background: #860100;
+  background: var(--maroon-700);
 }
 
 /* ── Mobile ── */
