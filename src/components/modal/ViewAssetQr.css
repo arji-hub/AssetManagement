@@ -4,7 +4,7 @@
 .qr-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
+  background: var(--overlay);
   backdrop-filter: blur(2px);
   display: flex;
   align-items: center;
@@ -25,7 +25,7 @@
 /* ── Modal content ── */
 .qr-modal-content {
   position: relative;
-  background: #ffffff;
+  background: var(--card-bg);
   border-radius: 14px;
   padding: 28px;
   max-width: 360px;
@@ -36,7 +36,7 @@
   gap: 20px;
   z-index: 10000;
 
-  border: 1px solid rgba(134, 1, 0, 0.1);
+  border: 1px solid var(--maroon-tint);
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.1),
     0 20px 40px -10px rgba(134, 1, 0, 0.35),
@@ -53,7 +53,7 @@
   right: 16px;
   height: 2px;
   border-radius: 2px;
-  background: linear-gradient(90deg, #f5aa2c, transparent);
+  background: linear-gradient(90deg, var(--gold-500), transparent);
   opacity: 0.7;
 }
 
@@ -74,8 +74,8 @@
   height: 220px;
   object-fit: contain;
   border-radius: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background: #fafafa;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-subtle);
   padding: 12px;
 }
 
@@ -107,7 +107,7 @@
   border: none;
   cursor: pointer;
 
-  background: linear-gradient(135deg, #9c0201 0%, #6b0000 100%);
+  background: var(--maroon-gradient);
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.1),
     0 8px 20px -6px rgba(134, 1, 0, 0.5);
@@ -163,11 +163,11 @@
   font-weight: bold;
   font-size: 12px;
   letter-spacing: 0.02em;
-  color: #860100;
-  border: 1px solid rgba(134, 1, 0, 0.1);
+  color: var(--maroon-700);
+  border: 1px solid var(--maroon-tint);
   cursor: pointer;
 
-  background: #fffafa;
+  background: var(--surface-subtle);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 
   transition:
@@ -180,7 +180,11 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #ac0201 0%, #7a0000 100%);
+  background: linear-gradient(
+    135deg,
+    var(--maroon-600) 0%,
+    var(--maroon-800) 100%
+  );
   opacity: 0;
   transition: opacity 0.25s ease;
   z-index: 0;

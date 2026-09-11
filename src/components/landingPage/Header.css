@@ -23,6 +23,25 @@
     0 1px 0 rgba(134, 1, 0, 0.08);
 
   backdrop-filter: blur(12px);
+
+  transition:
+    height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.35s ease,
+    backdrop-filter 0.35s ease,
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+/* Glassmorphism + subtle shrink once the page has scrolled past the threshold */
+.header--scrolled {
+  height: 58px;
+  background: rgba(253, 245, 245, 0.55);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom-color: rgba(134, 1, 0, 0.18);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.08),
+    0 1px 0 rgba(134, 1, 0, 0.1);
 }
 
 .header-logo {
@@ -36,6 +55,22 @@
   width: 48px;
   height: 48px;
   flex-shrink: 0;
+  transition:
+    width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.header--scrolled .header-logo img {
+  width: 36px;
+  height: 36px;
+}
+
+.header-logo span {
+  transition: font-size 0.35s ease;
+}
+
+.header--scrolled .header-logo span {
+  font-size: clamp(11px, 4vw, 24px);
 }
 
 .header-logo span {
@@ -72,7 +107,7 @@
 
   padding: 0;
 
-  height: 80px;
+  height: 70px;
 
   display: flex;
   align-items: center;
@@ -80,7 +115,13 @@
   font-size: 1rem;
   color: #666;
 
-  transition: 0.25s;
+  transition:
+    color 0.25s,
+    height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.header--scrolled .nav-link {
+  height: 58px;
 }
 
 .nav-link:hover {

@@ -160,7 +160,7 @@
 .modal-info p {
   margin: 0;
   font-size: 12px;
-  color: #860100;
+  color: var(--danger);
   line-height: 1.6;
 }
 

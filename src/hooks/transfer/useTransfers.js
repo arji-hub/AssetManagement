@@ -74,7 +74,6 @@ export function useTransfers({ currentTop = "transfers" } = {}) {
     const onData = (data) => {
       setRawItems(data);
       setLoading(false);
-      console.log("useTransfers: received data", data);
     };
 
     const onErr = (err) => {

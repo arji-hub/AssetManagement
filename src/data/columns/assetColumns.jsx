@@ -1,4 +1,5 @@
 import { Status } from "../../components/ui/status/assetStatus";
+import { formatDate } from "../../utils/date";
 
 export const assetColumns = [
   {
@@ -33,18 +34,17 @@ export const assetColumns = [
     card: { icon: "fa-solid fa-boxes-stacked" },
   },
   {
-    key: "value",
-    label: "Unit Value",
-    width: "1fr",
-    priority: "low",
-    render: (a) => `₱${a.unit_value?.toLocaleString() ?? "—"}`,
-    card: { icon: "fa-solid fa-peso-sign" },
-  },
-  {
     key: "status",
     label: "Status",
     width: "1fr",
     priority: "high",
     render: (a) => <Status status={a.status} />,
+  },
+  {
+    key: "date",
+    label: "Date Acquired",
+    width: "1.2fr",
+    priority: "low",
+    render: (a) => formatDate(a.date_acquired),
   },
 ];

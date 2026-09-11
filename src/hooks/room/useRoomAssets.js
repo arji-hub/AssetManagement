@@ -130,7 +130,6 @@ export function useRoomAssets(roomID) {
   return {
     assets,
     roomName,
-    roomStatus,
     isActive,
     loading,
     error,

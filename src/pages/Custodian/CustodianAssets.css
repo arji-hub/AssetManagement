@@ -64,34 +64,6 @@
   max-width: 28ch;
 }
 
-/* ── Edit custodian name button ── */
-.custodian-title-edit-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  border: none;
-  background: transparent;
-  color: var(--text-faint);
-  font-size: 12px;
-  cursor: pointer;
-  transition:
-    background 0.15s ease,
-    color 0.15s ease;
-}
-
-.custodian-title-edit-btn:hover {
-  background: var(--maroon-tint);
-  color: var(--maroon-700);
-}
-
-.custodian-title-edit-btn:active {
-  transform: scale(0.94);
-}
-
 /* ── Email row ── */
 .custodian-context-email {
   display: flex;

@@ -2,7 +2,7 @@
 .generate-report-log-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: var(--overlay);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -21,7 +21,7 @@
 
 /* Modal container */
 .generate-report-log-modal {
-  background: #ffffff;
+  background: var(--card-bg);
   border-radius: 12px;
   width: 100%;
   max-width: 440px;
@@ -47,7 +47,7 @@
 
 /* Header */
 .generate-report-log-modal-header {
-  background: #860100;
+  background: var(--maroon-700);
   padding: 18px 24px;
   display: flex;
   align-items: center;
@@ -102,18 +102,18 @@
 .generate-report-log-modal-field label {
   font-size: 13px;
   font-weight: 600;
-  color: #374151;
+  color: var(--text-strong);
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
 
 .generate-report-log-modal-field input {
   padding: 10px 14px;
-  border: 1.5px solid #d1d5db;
+  border: 1.5px solid var(--card-border);
   border-radius: 8px;
   font-size: 14px;
-  color: #111827;
-  background: #ffffff;
+  color: var(--text-strong);
+  background: var(--card-bg);
   outline: none;
   font-family: inherit;
   box-sizing: border-box;
@@ -123,20 +123,20 @@
 }
 
 .generate-report-log-modal-field input:focus {
-  border-color: #860100;
-  box-shadow: 0 0 0 3px rgba(134, 1, 0, 0.1);
+  border-color: var(--maroon-700);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--maroon-700) 10%, transparent);
 }
 
 .generate-report-log-modal-field input:disabled {
-  background-color: #f9fafb;
-  color: #9ca3af;
+  background-color: var(--surface-muted);
+  color: var(--text-faint);
   cursor: not-allowed;
 }
 
 .generate-report-log-modal-char-count {
   align-self: flex-end;
   font-size: 12px;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 /* summary */
@@ -144,14 +144,14 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(34, 197, 94, 0.06);
-  border: 1px solid rgba(34, 197, 94, 0.25);
+  background: var(--success-bg);
+  border: 1px solid color-mix(in srgb, var(--success) 25%, transparent);
   border-radius: 8px;
   padding: 10px 14px;
 }
 
 .generate-report-log-modal-summary svg {
-  color: #16a34a;
+  color: var(--success);
   font-size: 16px;
   flex-shrink: 0;
 }
@@ -160,7 +160,7 @@
   margin: 0;
   font-size: 13px;
   font-weight: 600;
-  color: #111827;
+  color: var(--text-strong);
 }
 
 /* Info box */
@@ -168,14 +168,14 @@
   display: flex;
   gap: 10px;
   align-items: flex-start;
-  background: rgba(245, 170, 44, 0.06);
-  border: 1px solid rgba(134, 1, 0, 0.2);
+  background: color-mix(in srgb, var(--gold-500) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--maroon-700) 20%, transparent);
   border-radius: 8px;
   padding: 12px 14px;
 }
 
 .info-icon {
-  color: #860100;
+  color: var(--maroon-700);
   font-size: 16px;
   flex-shrink: 0;
   margin-top: 2px;
@@ -184,7 +184,7 @@
 .info-text {
   margin: 0;
   font-size: 12px;
-  color: #860100;
+  color: var(--maroon-700);
   line-height: 1.6;
 }
 
@@ -221,20 +221,20 @@
 }
 
 .generate-report-log-modal-btn--cancel {
-  background: #ffffff;
-  color: #860100;
-  border: 1.5px solid #860100;
+  background: var(--card-bg);
+  color: var(--maroon-700);
+  border: 1.5px solid var(--maroon-700);
 }
 
 .generate-report-log-modal-btn--cancel:hover:not(:disabled) {
-  background: rgba(134, 1, 0, 0.05);
+  background: color-mix(in srgb, var(--maroon-700) 5%, transparent);
 }
 
 .generate-report-log-modal-btn--submit {
-  background: #f5aa2c;
-  color: #860100;
+  background: var(--gold-500);
+  color: var(--maroon-700);
 }
 
 .generate-report-log-modal-btn--submit:hover:not(:disabled) {
-  background: #e09a1e;
+  background: color-mix(in srgb, var(--gold-500) 90%, black);
 }

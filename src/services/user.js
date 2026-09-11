@@ -9,6 +9,7 @@ import {
   onSnapshot,
   where,
   limit,
+  serverTimestamp,
 } from "firebase/firestore";
 import { getFunctions, httpsCallable } from "firebase/functions";
 import { toLowerCase } from "../utils/TextCasing";
@@ -100,6 +101,7 @@ export async function findCustodian(identifier) {
     email: d.email,
     fullname,
     role: d.role,
+    status: d.status ?? "active",
     asset_count,
   };
 }
@@ -280,4 +282,65 @@ export async function getName(uid) {
       .filter(Boolean)
       .join(" "),
   };
+}
+
+export async function archiveCustodian(uid, role) {
+  if (role !== "admin") {
+    throw new Error("Permission denied: only admins can archive custodians.");
+  }
+
+  const userRef = doc(db, "user", uid);
+  const userSnap = await getDoc(userRef);
+  if (!userSnap.exists()) {
+    throw new Error("Custodian not found.");
+  }
+
+  const userData = userSnap.data();
+  const count = await assetCount(uid);
+  if (count > 0) {
+    const fullname = [
+      userData.first_name,
+      userData.middle_name,
+      userData.last_name,
+    ]
+      .filter(Boolean)
+      .join(" ");
+    throw new Error(
+      `Cannot archive "${fullname}": ${count} asset(s) still assigned to this custodian.`,
+    );
+  }
+
+  await updateDoc(userRef, {
+    status: "inactive",
+    updated_at: serverTimestamp(),
+  });
+}
+
+export async function restoreCustodian(uid, role) {
+  if (role !== "admin") {
+    throw new Error("Permission denied: only admins can restore custodians.");
+  }
+
+  const userRef = doc(db, "user", uid);
+  const userSnap = await getDoc(userRef);
+  if (!userSnap.exists()) {
+    throw new Error("Custodian not found.");
+  }
+
+  const userData = userSnap.data();
+  if (userData.status !== "inactive") {
+    const fullname = [
+      userData.first_name,
+      userData.middle_name,
+      userData.last_name,
+    ]
+      .filter(Boolean)
+      .join(" ");
+    throw new Error(`"${fullname}" is already active.`);
+  }
+
+  await updateDoc(userRef, {
+    status: "active",
+    updated_at: serverTimestamp(),
+  });
 }

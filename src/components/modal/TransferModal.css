@@ -1,8 +1,9 @@
+/* TransferModal.css */
 /* Overlay */
 .transfer-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: var(--overlay);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -21,7 +22,7 @@
 
 /* Modal container */
 .transfer-modal {
-  background: #ffffff;
+  background: var(--card-bg);
   border-radius: 12px;
   width: 100%;
   max-width: 460px;
@@ -47,7 +48,7 @@
 
 /* Header */
 .transfer-modal-header {
-  background: #860100;
+  background: var(--maroon-700);
   padding: 18px 24px;
   display: flex;
   align-items: center;
@@ -97,7 +98,7 @@
 .transfer-modal-field label {
   font-size: 13px;
   font-weight: 600;
-  color: #374151;
+  color: var(--text-muted);
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
@@ -105,11 +106,11 @@
 .transfer-modal-field input,
 .transfer-modal-field textarea {
   padding: 10px 14px;
-  border: 1.5px solid #d1d5db;
+  border: 1.5px solid var(--border);
   border-radius: 8px;
   font-size: 14px;
-  color: #111827;
-  background: #ffffff;
+  color: var(--text-strong);
+  background: var(--card-bg);
   outline: none;
   font-family: inherit;
   resize: none;
@@ -120,31 +121,31 @@
 
 .transfer-modal-field input:focus,
 .transfer-modal-field textarea:focus {
-  border-color: #860100;
-  box-shadow: 0 0 0 3px rgba(134, 1, 0, 0.1);
+  border-color: var(--maroon-700);
+  box-shadow: 0 0 0 3px var(--maroon-tint);
 }
 
 .transfer-modal-field input:disabled,
 .transfer-modal-field textarea:disabled {
-  background: #f9fafb;
-  color: #9ca3af;
+  background: var(--surface-muted);
+  color: var(--text-faint);
   cursor: not-allowed;
 }
 
 .transfer-modal-field.has-error input {
-  border-color: #dc2626;
-  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px var(--danger-bg);
 }
 
 .transfer-modal-error {
   font-size: 12px;
-  color: #dc2626;
+  color: var(--danger);
   font-weight: 500;
 }
 
 .transfer-modal-char-count {
   font-size: 11px;
-  color: #9ca3af;
+  color: var(--text-faint);
   text-align: right;
 }
 
@@ -161,9 +162,9 @@
 .transfer-modal-find-btn {
   flex-shrink: 0;
   width: 42px;
-  border: 1.5px solid #860100;
+  border: 1.5px solid var(--maroon-700);
   border-radius: 8px;
-  background: #860100;
+  background: var(--maroon-700);
   color: #ffffff;
   font-size: 14px;
   cursor: pointer;
@@ -171,7 +172,7 @@
 }
 
 .transfer-modal-find-btn:hover:not(:disabled) {
-  background: #5d0100;
+  background: var(--maroon-900);
 }
 
 .transfer-modal-find-btn:disabled {
@@ -184,14 +185,14 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(34, 197, 94, 0.06);
-  border: 1px solid rgba(34, 197, 94, 0.25);
+  background: var(--success-bg);
+  border: 1px solid var(--success-bg);
   border-radius: 8px;
   padding: 10px 14px;
 }
 
 .transfer-modal-preview svg {
-  color: #16a34a;
+  color: var(--success);
   font-size: 16px;
   flex-shrink: 0;
 }
@@ -200,21 +201,21 @@
   margin: 0;
   font-size: 13px;
   font-weight: 600;
-  color: #111827;
+  color: var(--text-strong);
 }
 
 .transfer-modal-preview-sub {
   margin: 2px 0 0;
   font-size: 12px;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 /* submit error */
 .transfer-modal-submit-error {
   font-size: 13px;
-  color: #dc2626;
-  background: rgba(220, 38, 38, 0.06);
-  border: 1px solid rgba(220, 38, 38, 0.2);
+  color: var(--danger);
+  background: var(--danger-bg);
+  border: 1px solid var(--danger-bg);
   border-radius: 8px;
   padding: 10px 14px;
 }
@@ -224,14 +225,14 @@
   display: flex;
   gap: 10px;
   align-items: flex-start;
-  background: rgba(245, 170, 44, 0.06);
-  border: 1px solid rgba(134, 1, 0, 0.2);
+  background: color-mix(in srgb, var(--gold-500) 6%, transparent);
+  border: 1px solid var(--maroon-tint);
   border-radius: 8px;
   padding: 12px 14px;
 }
 
 .info-icon {
-  color: #860100;
+  color: var(--maroon-700);
   font-size: 16px;
   flex-shrink: 0;
   margin-top: 2px;
@@ -240,7 +241,7 @@
 .info-text {
   margin: 0;
   font-size: 12px;
-  color: #860100;
+  color: var(--maroon-700);
   line-height: 1.6;
 }
 
@@ -277,18 +278,18 @@
 }
 
 .transfer-modal-btn--cancel {
-  background: #ffffff;
-  color: #860100;
-  border: 1.5px solid #860100;
+  background: var(--card-bg);
+  color: var(--maroon-700);
+  border: 1.5px solid var(--maroon-700);
 }
 
 .transfer-modal-btn--cancel:hover:not(:disabled) {
-  background: rgba(134, 1, 0, 0.05);
+  background: var(--maroon-tint);
 }
 
 .transfer-modal-btn--submit {
-  background: #f5aa2c;
-  color: #860100;
+  background: var(--gold-500);
+  color: var(--maroon-600);
 }
 
 .transfer-modal-btn--submit:hover:not(:disabled) {
@@ -300,7 +301,7 @@
   display: flex;
   gap: 4px;
   padding: 4px;
-  background: #f3f4f6;
+  background: var(--surface-muted);
   border-radius: 10px;
 }
 
@@ -314,7 +315,7 @@
   border: none;
   border-radius: 7px;
   background: transparent;
-  color: #6b7280;
+  color: var(--text-muted);
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.01em;
@@ -330,17 +331,17 @@
 }
 
 .transfer-modal-mode-btn:hover:not(:disabled):not(.is-active) {
-  color: #374151;
+  color: var(--text-strong);
 }
 
 .transfer-modal-mode-btn.is-active {
-  background: #ffffff;
-  color: #860100;
+  background: var(--card-bg);
+  color: var(--maroon-700);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 }
 
 .transfer-modal-mode-btn.is-active.is-remove {
-  color: #dc2626;
+  color: var(--danger);
 }
 
 .transfer-modal-mode-btn:disabled {
@@ -350,13 +351,13 @@
 
 /* Remove-mode warning variant of the info box */
 .modal-info.is-warning {
-  background: rgba(220, 38, 38, 0.06);
-  border-color: rgba(220, 38, 38, 0.25);
+  background: var(--danger-bg);
+  border-color: var(--danger-bg);
 }
 
 .modal-info.is-warning .info-icon,
 .modal-info.is-warning .info-text {
-  color: #dc2626;
+  color: var(--danger);
 }
 
 .transfer-autocomplete-wrapper {
@@ -368,8 +369,8 @@
   top: calc(100% + 4px);
   left: 0;
   right: 42px; /* clears the find button width */
-  background: #ffffff;
-  border: 1.5px solid #d1d5db;
+  background: var(--card-bg);
+  border: 1.5px solid var(--border);
   border-radius: 8px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
   max-height: 220px;
@@ -391,16 +392,16 @@
 }
 
 .transfer-autocomplete-list li:hover {
-  background: rgba(134, 1, 0, 0.06);
+  background: var(--maroon-tint);
 }
 
 .transfer-autocomplete-name {
   font-size: 13px;
   font-weight: 600;
-  color: #111827;
+  color: var(--text-strong);
 }
 
 .transfer-autocomplete-email {
   font-size: 12px;
-  color: #6b7280;
+  color: var(--text-muted);
 }

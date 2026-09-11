@@ -1,5 +1,5 @@
 /* ── Desktop / tablet row ── */
-.asset-card-row {
+.previous-audit-card-row {
   display: grid;
   grid-template-columns: var(--table-grid-columns);
   align-items: center;
@@ -10,62 +10,42 @@
   transition: background 0.15s ease;
 }
 
-.asset-card-row:hover {
+.previous-audit-card-row:hover {
   background: var(--maroon-tint);
 }
 
-.asset-card-row-cell {
+.previous-audit-card-row-cell {
   font-size: 14px;
   color: var(--text-strong);
   min-width: 0;
-}
-
-.asset-card-row-cell .asset-desc-cell {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.asset-card-row-cell {
-  font-size: 14px;
-  color: var(--text-strong);
-  min-width: 0;
-  text-align: center;
-  text-transform: capitalize;
-}
-
-.asset-card-row-cell:nth-child(-n + 2) {
-  text-align: left;
 }
 
 @media (max-width: 1024px) {
-  .asset-card-row {
+  .previous-audit-card-row {
     grid-template-columns: var(--table-grid-columns-tablet);
   }
-  .asset-card-row-cell[data-priority="low"] {
-    display: none;
+  .previous-audit-card-row-cell[data-priority="low"] {
+    display: none !important;
   }
 }
 
 @media (max-width: 800px) {
-  .asset-card-row {
+  .previous-audit-card-row {
     grid-template-columns: var(--table-grid-columns-mobile);
   }
-  .asset-card-row-cell[data-priority="medium"] {
-    display: none;
+  .previous-audit-card-row-cell[data-priority="medium"] {
+    display: none !important;
   }
 }
 
 @media (max-width: 768px) {
-  .asset-card-row {
+  .previous-audit-card-row {
     padding: 12px 16px;
   }
 }
 
-/* ── Mobile card (unchanged) ── */
-.asset-card {
+/* ── Mobile card ── */
+.previous-audit-card {
   display: none;
   flex-direction: column;
   gap: 10px;
@@ -77,58 +57,52 @@
   transition: background 0.15s ease;
 }
 
-.asset-card:active {
+.previous-audit-card:active {
   background: var(--maroon-tint);
 }
 
-.asset-card-header {
+.previous-audit-card-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 10px;
 }
 
-.asset-card-category {
+.previous-audit-card-header-left {
   display: flex;
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  font-weight: 600 !important;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.previous-audit-card-header-left svg {
+  width: 12px;
   color: var(--maroon-700);
 }
 
-.asset-card-category-icon {
-  width: 14px;
-  display: flex;
-  justify-content: center;
-  font-size: 11px;
-  color: var(--maroon-700);
+.previous-audit-card-date {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-left: auto;
 }
 
-.asset-card-badge-slot {
-  flex-shrink: 0;
-}
-
-.asset-card-title {
+.previous-audit-card-title {
   margin: 0;
   font-weight: 700;
   color: var(--text-strong);
   font-size: 15px;
   line-height: 1.35;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-.asset-card-meta {
+.previous-audit-card-meta {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.asset-card-stat {
+.previous-audit-card-stat {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -137,7 +111,7 @@
   color: var(--text-strong);
 }
 
-.asset-card-meta-icon {
+.previous-audit-card-meta-icon {
   width: 14px;
   color: var(--maroon-700);
   display: flex;
@@ -145,19 +119,36 @@
   font-size: 12px;
 }
 
-@media (min-width: 280px){
-  .asset-card-meta {
+.previous-audit-card-date-label {
+  font-weight: 600;
+  margin-right: 4px;
+  color: var(--text-muted);
+}
+
+.previous-audit-card-meta-label {
+  font-weight: 500;
+  color: var(--text-faint);
+}
+
+.previous-audit-card-meta-value {
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+@media (min-width: 280px) {
+  .previous-audit-card-meta {
     flex-direction: row;
     flex-wrap: wrap;
+    justify-content: space-between;
     gap: 6px 16px;
   }
 }
 
 @media (max-width: 630px) {
-  .asset-card-row {
+  .previous-audit-card-row {
     display: none;
   }
-  .asset-card {
+  .previous-audit-card {
     display: flex;
   }
 }

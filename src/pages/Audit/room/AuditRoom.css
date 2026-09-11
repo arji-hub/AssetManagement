@@ -7,7 +7,7 @@
   min-height: 0;
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: #d43418 transparent;
+  scrollbar-color: var(--maroon-600) transparent;
 }
 
 .audit-room-page::-webkit-scrollbar {
@@ -19,12 +19,12 @@
 }
 
 .audit-room-page::-webkit-scrollbar-thumb {
-  background: #c9b3af;
+  background: var(--scrollbar-thumb);
   border-radius: 3px;
 }
 
 .audit-room-page::-webkit-scrollbar-thumb:hover {
-  background: #8e706b;
+  background: var(--scrollbar-thumb-hover);
 }
 
 .audit-room-header {
@@ -45,13 +45,13 @@
 .audit-room-title {
   font-size: 24px;
   font-weight: 600;
-  color: #5c0100;
+  color: var(--text-strong);
   margin: 0 0 8px;
 }
 
 .audit-room-subtitle {
   font-size: 16px;
-  color: #5a413c;
+  color: var(--text-muted);
   margin: 0;
 }
 
@@ -66,10 +66,10 @@
   align-items: center;
   gap: 8px;
   padding: 10px 20px;
-  border: 1px solid #8e706b;
+  border: 1px solid var(--text-faint);
   border-radius: 8px;
   background: transparent;
-  color: #121c2a;
+  color: var(--text-strong);
   font-weight: 700;
   cursor: pointer;
   transition:
@@ -78,7 +78,7 @@
 }
 
 .audit-room-btn-secondary:hover {
-  background: #e6eeff;
+  background: var(--hover-tint);
 }
 
 .audit-room-btn-secondary:active {
@@ -92,11 +92,11 @@
   padding: 10px 24px;
   border: none;
   border-radius: 8px;
-  background: #860100;
+  background: var(--maroon-700);
   color: #ffffff;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(134, 1, 0, 0.25);
+  box-shadow: 0 4px 12px var(--maroon-tint);
   transition:
     filter 0.15s ease,
     transform 0.1s ease;
@@ -146,6 +146,22 @@
   position: relative;
   max-width: 420px;
   flex: 1;
+}
+
+/* Previous audits table — Assets Audited & Discrepancies columns centered */
+.audit-room-history-section .previous-audit-card-row-cell:nth-child(3),
+.audit-room-history-section .previous-audit-card-row-cell:nth-child(4) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.audit-room-history-section .previous-audit-card-row-cell:nth-child(5) {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  text-align: center;
 }
 
 @media (max-width: 768px) {
@@ -243,11 +259,11 @@
 /* == Primary panel — the main rooms table ================================== */
 
 .audit-room-primary-section {
-  background: #ffffff;
-  border: 1px solid #e2beb9;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 12px;
   padding: 10px;
-  box-shadow: 0 6px 18px rgba(134, 1, 0, 0.08);
+  box-shadow: 0 6px 18px var(--maroon-tint);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -260,7 +276,7 @@
 
 .audit-room-section-title--secondary {
   font-size: 14px;
-  color: #8e706b;
+  color: var(--text-faint);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -282,8 +298,8 @@
 /* == Secondary panel — previous audits, visually quieter ==================== */
 
 .audit-room-history-section {
-  background: #fbf7f6;
-  border: 1px solid #e2beb9;
+  background: var(--surface-subtle);
+  border: 1px solid var(--card-border);
   border-radius: 10px;
   padding: 16px;
   display: flex;

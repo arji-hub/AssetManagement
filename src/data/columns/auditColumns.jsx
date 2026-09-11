@@ -43,38 +43,33 @@ export const auditHistoryColumns = [
   {
     key: "audit_no",
     label: "Audit No.",
-    width: "1fr",
+    width: "1.2fr",
     priority: "high",
+    card: { role: "title" },
     render: (a) => a.audit_no || "—",
   },
   {
     key: "audited_by",
-    label: "Conducted by",
-    width: "1.4fr",
-    priority: "medium",
-    render: (a) => a.audited_by_name || "—",
-    card: { icon: "fa-solid fa-user" },
-  },
-  {
-    key: "date",
-    label: "Date",
-    width: "1fr",
+    label: "Conducted By",
+    width: "1.2fr",
     priority: "high",
-    render: (a) => formatDate(a.completed_at ?? a.created_at),
+    card: { role: "headerLeft", icon: "fa-solid fa-user" },
+    render: (a) => a.audited_by_name || "—",
   },
   {
     key: "audited",
-    label: "Audited",
-    width: "0.8fr",
-    priority: "low",
-    render: (a) => `${a.audited_count}/${a.total_assets}`,
+    label: "Assets Audited",
+    width: "140px",
+    priority: "medium",
     card: { icon: "fa-solid fa-clipboard-check" },
+    render: (a) => `${a.audited_count ?? 0}/${a.total_assets ?? 0}`,
   },
   {
     key: "discrepancies",
     label: "Discrepancies",
-    width: "1fr",
-    priority: "high",
+    width: "140px",
+    priority: "medium",
+    card: { icon: "fa-solid fa-triangle-exclamation" },
     render: (a) => (
       <span
         className={a.discrepancy_count > 0 ? "audit-history-discrepancy" : ""}
@@ -82,6 +77,14 @@ export const auditHistoryColumns = [
         {a.discrepancy_count ?? 0}
       </span>
     ),
+  },
+  {
+    key: "date",
+    label: "Date",
+    width: "1fr",
+    priority: "high",
+    card: { role: "date" },
+    render: (a) => formatDate(a.completed_at ?? a.created_at),
   },
 ];
 

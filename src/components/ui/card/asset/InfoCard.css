@@ -12,12 +12,12 @@
   align-items: center;
   gap: 16px;
   flex-wrap: wrap;
-  background: var(--maroon-700);
+  background: #860100;
   padding: 18px 32px;
 }
 
 .info-card-category-label {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--gold-500);
   letter-spacing: 0.05em;
@@ -38,7 +38,6 @@
   padding: 3px 12px;
   border-radius: 4px;
   font-size: 12px;
-  font-weight: 800;
   letter-spacing: 0.04em;
 }
 
@@ -120,7 +119,7 @@
 .info-card-detail-label {
   font-size: 11px;
   font-weight: 700;
-  color: var(--maroon-700);
+  color: var(--maroon-600);
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
