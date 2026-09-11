@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./Header.css";
 import CICTLOGO from "../../assets/logo/CICTLOGO.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,6 +8,23 @@ import { useNavigate } from "react-router-dom";
 export default function Header({ onNavigate }) {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    // Threshold before the header switches into its "scrolled" look.
+    const SCROLL_THRESHOLD = 40;
+
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > SCROLL_THRESHOLD);
+    };
+
+    // Run once on mount in case the page loads already scrolled
+    // (e.g. navigating back with scroll position restored).
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleNavigate = (section) => {
     onNavigate(section);
@@ -15,7 +32,7 @@ export default function Header({ onNavigate }) {
   };
 
   return (
-    <header className="header">
+    <header className={`header ${isScrolled ? "header--scrolled" : ""}`}>
       <div className="header-logo">
         <img src={CICTLOGO} alt="CICT Logo" />
         <span>CICT-AMS Project</span>
