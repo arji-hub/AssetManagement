@@ -9,6 +9,7 @@ function resolveCardRoles(columns) {
     if (col.card?.role) return { ...col, _cardRole: col.card.role };
 
     if (col.key === "status") return { ...col, _cardRole: "badge" };
+    if (col.key === "category") return { ...col, _cardRole: "category" };
     if (/date/i.test(col.key)) return { ...col, _cardRole: "date" };
     if (!titleAssigned && col.priority !== "low") {
       titleAssigned = true;
@@ -20,7 +21,7 @@ function resolveCardRoles(columns) {
   return {
     titleCol: roled.find((c) => c._cardRole === "title"),
     badgeCol: roled.find((c) => c._cardRole === "badge"),
-    dateCol: roled.find((c) => c._cardRole === "date"),
+    categoryCol: roled.find((c) => c._cardRole === "category"),
     metaCols: roled.filter(
       (c) => c._cardRole === "meta" && c.card?.role !== "hidden",
     ),
@@ -29,7 +30,8 @@ function resolveCardRoles(columns) {
 
 function AssetCard({ asset, index, columns }) {
   const navigate = useNavigate();
-  const { titleCol, badgeCol, dateCol, metaCols } = resolveCardRoles(columns);
+  const { titleCol, badgeCol, categoryCol, metaCols } =
+    resolveCardRoles(columns);
 
   const handleClick = (id) => {
     navigate(`/asset/info/${id}`);
@@ -59,9 +61,14 @@ function AssetCard({ asset, index, columns }) {
       {/* ── Mobile card ── */}
       <div className="asset-card" onClick={() => handleClick(asset.id)}>
         <div className="asset-card-header">
-          {dateCol && (
-            <span className="asset-card-date">
-              {dateCol.render(asset, index)}
+          {categoryCol && (
+            <span className="asset-card-category">
+              {categoryCol.card?.icon && (
+                <span className="asset-card-category-icon">
+                  <FontAwesomeIcon icon={categoryCol.card.icon} />
+                </span>
+              )}
+              {categoryCol.render(asset, index)}
             </span>
           )}
           {badgeCol && (

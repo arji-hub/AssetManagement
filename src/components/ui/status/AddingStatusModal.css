@@ -2,7 +2,7 @@
 .status-overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--overlay);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -11,8 +11,8 @@
 
 /* ── Container ── */
 .status-container {
-  background-color: #ffffff;
-  border-radius: 12px;
+  background-color: var(--card-bg);
+  border-radius: var(--radius-md);
   padding: 48px 40px;
   width: 100%;
   max-width: 420px;
@@ -21,15 +21,15 @@
   align-items: center;
   gap: 16px;
   text-align: center;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--card-elevated-container-elevation);
 }
 
 /* ── Spinner ── */
 .status-spinner {
   width: 56px;
   height: 56px;
-  border: 5px solid #f0f0f0;
-  border-top-color: #860100;
+  border: 5px solid var(--track-bg);
+  border-top-color: var(--maroon-700);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -47,31 +47,31 @@
 }
 
 .status-icon--success {
-  color: #22c55e;
+  color: var(--success);
 }
 
 .status-icon--error {
-  color: #860100;
+  color: var(--maroon-700);
 }
 
 /* ── Title ── */
 .status-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--ink-900);
   margin: 0;
 }
 
 /* ── Message ── */
 .status-message {
   font-size: 0.9rem;
-  color: #555555;
+  color: var(--ink-600);
   margin: 0;
   line-height: 1.5;
 }
 
 .status-message--error {
-  color: #860100;
+  color: var(--maroon-700);
   font-weight: 500;
 }
 
@@ -92,12 +92,12 @@
 }
 
 .status-btn--success {
-  background-color: #860100;
+  background-color: var(--maroon-700);
   color: #ffffff;
 }
 
 .status-btn--error {
-  background-color: #f5f5f5;
-  color: #860100;
-  border: 1.5px solid #860100;
+  background-color: var(--surface-muted);
+  color: var(--maroon-700);
+  border: 1.5px solid var(--maroon-700);
 }

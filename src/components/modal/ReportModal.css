@@ -1,8 +1,9 @@
+/* ReportModal.css */
 /* Overlay */
 .report-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: var(--overlay);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -21,7 +22,7 @@
 
 /* Modal container */
 .report-modal {
-  background: #ffffff;
+  background: var(--card-bg);
   border-radius: 12px;
   width: 100%;
   max-width: 460px;
@@ -47,7 +48,7 @@
 
 /* Header */
 .report-modal-header {
-  background: #860100;
+  background: var(--maroon-700);
   padding: 18px 24px;
   display: flex;
   align-items: center;
@@ -97,7 +98,7 @@
 .report-modal-field label {
   font-size: 13px;
   font-weight: 600;
-  color: #374151;
+  color: var(--text-muted);
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
@@ -105,11 +106,11 @@
 .report-modal-field input,
 .report-modal-field textarea {
   padding: 10px 14px;
-  border: 1.5px solid #d1d5db;
+  border: 1.5px solid var(--border);
   border-radius: 8px;
   font-size: 14px;
-  color: #111827;
-  background: #ffffff;
+  color: var(--text-strong);
+  background: var(--card-bg);
   outline: none;
   font-family: inherit;
   resize: none;
@@ -120,37 +121,37 @@
 
 .report-modal-field input:focus,
 .report-modal-field textarea:focus {
-  border-color: #860100;
-  box-shadow: 0 0 0 3px rgba(134, 1, 0, 0.1);
+  border-color: var(--maroon-700);
+  box-shadow: 0 0 0 3px var(--maroon-tint);
 }
 
 .report-modal-field input:disabled,
 .report-modal-field textarea:disabled {
-  background: #f9fafb;
-  color: #9ca3af;
+  background: var(--surface-muted);
+  color: var(--text-faint);
   cursor: not-allowed;
 }
 
 .report-modal-field.has-error input {
-  border-color: #dc2626;
-  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px var(--danger-bg);
 }
 
 .report-modal-error {
   font-size: 12px;
-  color: #dc2626;
+  color: var(--danger);
   font-weight: 500;
 }
 
 .report-modal-char-count {
   font-size: 11px;
-  color: #9ca3af;
+  color: var(--text-faint);
   text-align: right;
 }
 
 .report-modal-type-toggle {
   display: flex;
-  background: #f3f4f6;
+  background: var(--surface-muted);
   border-radius: 10px;
   padding: 4px;
   position: relative;
@@ -163,7 +164,7 @@
   border: none;
   border-radius: 7px;
   background: transparent;
-  color: #6b7280;
+  color: var(--text-muted);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -173,7 +174,7 @@
 }
 
 .report-modal-type-btn.active {
-  color: #f5aa2c;
+  color: var(--gold-500);
 }
 
 .report-modal-type-btn:disabled {
@@ -187,7 +188,7 @@
   top: 4px;
   bottom: 4px;
   width: calc(50% - 4px);
-  background: #860100;
+  background: var(--maroon-700);
   border-radius: 7px;
   transition: transform 0.2s ease;
   left: 4px;
@@ -210,9 +211,9 @@
 .report-modal-find-btn {
   flex-shrink: 0;
   width: 42px;
-  border: 1.5px solid #860100;
+  border: 1.5px solid var(--maroon-700);
   border-radius: 8px;
-  background: #860100;
+  background: var(--maroon-700);
   color: #ffffff;
   font-size: 14px;
   cursor: pointer;
@@ -220,7 +221,7 @@
 }
 
 .report-modal-find-btn:hover:not(:disabled) {
-  background: #5d0100;
+  background: var(--maroon-900);
 }
 
 .report-modal-find-btn:disabled {
@@ -233,14 +234,14 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(34, 197, 94, 0.06);
-  border: 1px solid rgba(34, 197, 94, 0.25);
+  background: var(--success-bg);
+  border: 1px solid var(--success-bg);
   border-radius: 8px;
   padding: 10px 14px;
 }
 
 .report-modal-asset-preview svg {
-  color: #16a34a;
+  color: var(--success);
   font-size: 16px;
   flex-shrink: 0;
 }
@@ -249,13 +250,13 @@
   margin: 0;
   font-size: 13px;
   font-weight: 600;
-  color: #111827;
+  color: var(--text-strong);
 }
 
 .report-modal-asset-preview-sub {
   margin: 2px 0 0;
   font-size: 12px;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 /* photo upload */
@@ -266,9 +267,9 @@
   justify-content: center;
   gap: 8px;
   padding: 24px;
-  border: 1.5px dashed #d1d5db;
+  border: 1.5px dashed var(--border);
   border-radius: 8px;
-  color: #9ca3af;
+  color: var(--text-faint);
   font-size: 13px;
   cursor: pointer;
   transition:
@@ -277,8 +278,8 @@
 }
 
 .report-modal-photo-upload:hover {
-  border-color: #860100;
-  color: #860100;
+  border-color: var(--maroon-700);
+  color: var(--maroon-700);
 }
 
 .report-modal-photo-upload svg {
@@ -293,7 +294,7 @@
   position: relative;
   border-radius: 8px;
   overflow: hidden;
-  border: 1.5px solid #d1d5db;
+  border: 1.5px solid var(--border);
 }
 
 .report-modal-photo-preview img {
@@ -328,9 +329,9 @@
 /* submit error */
 .report-modal-submit-error {
   font-size: 13px;
-  color: #dc2626;
-  background: rgba(220, 38, 38, 0.06);
-  border: 1px solid rgba(220, 38, 38, 0.2);
+  color: var(--danger);
+  background: var(--danger-bg);
+  border: 1px solid var(--danger-bg);
   border-radius: 8px;
   padding: 10px 14px;
 }
@@ -340,14 +341,14 @@
   display: flex;
   gap: 10px;
   align-items: flex-start;
-  background: rgba(245, 170, 44, 0.06);
-  border: 1px solid rgba(134, 1, 0, 0.2);
+  background: color-mix(in srgb, var(--gold-500) 6%, transparent);
+  border: 1px solid var(--maroon-tint);
   border-radius: 8px;
   padding: 12px 14px;
 }
 
 .info-icon {
-  color: #860100;
+  color: var(--maroon-700);
   font-size: 16px;
   flex-shrink: 0;
   margin-top: 2px;
@@ -356,7 +357,7 @@
 .info-text {
   margin: 0;
   font-size: 12px;
-  color: #860100;
+  color: var(--maroon-700);
   line-height: 1.6;
 }
 
@@ -393,18 +394,18 @@
 }
 
 .report-modal-btn--cancel {
-  background: #ffffff;
-  color: #860100;
-  border: 1.5px solid #860100;
+  background: var(--card-bg);
+  color: var(--maroon-700);
+  border: 1.5px solid var(--maroon-700);
 }
 
 .report-modal-btn--cancel:hover:not(:disabled) {
-  background: rgba(134, 1, 0, 0.05);
+  background: var(--maroon-tint);
 }
 
 .report-modal-btn--submit {
-  background: #f5aa2c;
-  color: #860100;
+  background: var(--gold-500);
+  color: var(--maroon-600);
 }
 
 .report-modal-btn--submit:hover:not(:disabled) {

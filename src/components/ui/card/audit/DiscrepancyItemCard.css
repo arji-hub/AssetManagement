@@ -72,6 +72,14 @@
   gap: 8px;
 }
 
+@media (min-width: 280px) {
+  .discrepancy-item-card-meta {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+  }
+}
+
 .discrepancy-item-card-stat {
   display: flex;
   align-items: center;

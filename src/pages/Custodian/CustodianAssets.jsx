@@ -12,13 +12,26 @@ import BackButton from "../../components/ui/button/BackButton";
 import Table from "../../components/panel/Table";
 import AssetCard from "../../components/ui/card/asset/AssetCard";
 import { custodianAssetsColumns } from "../../data/columns";
+import InputModal from "../../components/modal/InputModal";
 
 function CustodianAssets() {
   const { username } = useParams();
   const navigate = useNavigate();
 
-  const { assets, loading, error, fullname, email } =
-    useCustodianAssets(username);
+  const {
+    assets,
+    loading,
+    error,
+    fullname,
+    email,
+    isActive,
+    handleArchiveCustodian,
+    showArchiveModal,
+    archiveSubmitting,
+    archiveError,
+    handleArchiveConfirm,
+    handleArchiveClose,
+  } = useCustodianAssets(username);
 
   const {
     showFilter,
@@ -52,13 +65,6 @@ function CustodianAssets() {
                 <h1 className="assets-title">
                   <span className="assets-title-text">{fullname}</span>
                 </h1>
-                <button
-                  className="custodian-title-edit-btn"
-                  onClick={handleEdit}
-                  aria-label="Edit custodian name"
-                >
-                  <FontAwesomeIcon icon="fa-regular fa-pen-to-square" />
-                </button>
               </div>
 
               <div className="custodian-context-email">
@@ -94,9 +100,16 @@ function CustodianAssets() {
               )}
             </button>
 
-            <button className="archive-custodian-btn" onClick={handleArchive}>
-              <FontAwesomeIcon icon="fa-solid fa-box-archive" />
-              Archive
+            <button
+              className={`archive-custodian-btn ${!isActive ? "archive-custodian-btn--restore" : ""}`}
+              onClick={handleArchiveCustodian}
+            >
+              <FontAwesomeIcon
+                icon={
+                  isActive ? "fa-solid fa-box-archive" : "fa-solid fa-box-open"
+                }
+              />
+              {isActive ? "Archive" : "Restore"}
             </button>
           </div>
         </div>
@@ -155,6 +168,30 @@ function CustodianAssets() {
           categories={categories}
           custodians={custodians}
           loadingOptions={loadingOptions}
+        />
+      )}
+      {showArchiveModal && (
+        <InputModal
+          title={isActive ? "Archive Custodian" : "Restore Custodian"}
+          description={
+            isActive
+              ? "This custodian will be marked inactive and excluded from asset assignment options."
+              : "This custodian will be marked active again and available for asset assignments."
+          }
+          inputHeader="Custodian Name"
+          infotext={
+            isActive
+              ? "Archiving does not delete this custodian's history — past transfer logs and audits referencing them will remain intact."
+              : "Restoring makes this custodian selectable again for asset transfers and audits."
+          }
+          value={fullname}
+          onChange={() => {}}
+          onSubmit={handleArchiveConfirm}
+          onClose={handleArchiveClose}
+          isSubmitting={archiveSubmitting}
+          error={archiveError}
+          submitLabel={isActive ? "Archive" : "Restore"}
+          readOnly
         />
       )}
     </MainLayout>

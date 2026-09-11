@@ -9,7 +9,7 @@
   min-height: 0;
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: #d43418 transparent;
+  scrollbar-color: var(--maroon-600) transparent;
 }
 
 .audit-custodian-page::-webkit-scrollbar {
@@ -21,12 +21,12 @@
 }
 
 .audit-custodian-page::-webkit-scrollbar-thumb {
-  background: #c9b3af;
+  background: var(--scrollbar-thumb);
   border-radius: 3px;
 }
 
 .audit-custodian-page::-webkit-scrollbar-thumb:hover {
-  background: #8e706b;
+  background: var(--scrollbar-thumb-hover);
 }
 
 .audit-custodian-header {
@@ -47,13 +47,13 @@
 .audit-custodian-title {
   font-size: 24px;
   font-weight: 600;
-  color: #5c0100;
+  color: var(--text-strong);
   margin: 0 0 8px;
 }
 
 .audit-custodian-subtitle {
   font-size: 16px;
-  color: #5a413c;
+  color: var(--text-muted);
   margin: 0;
 }
 

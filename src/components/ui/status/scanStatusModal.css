@@ -8,18 +8,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--overlay);
   animation: scanFadeIn 0.2s ease;
   z-index: 1000;
 }
 
 .scan-modal-container {
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 8px;
   padding: 36px 32px 32px;
   width: 100%;
   max-width: 360px;
-  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--card-elevated-container-elevation);
   animation: scanSlideUp 0.3s ease;
   position: relative;
   display: flex;
@@ -31,8 +31,8 @@
 .scan-modal-spinner {
   width: 60px;
   height: 60px;
-  border: 4px solid #f0f0f2;
-  border-top: 4px solid #860100;
+  border: 4px solid var(--track-bg);
+  border-top: 4px solid var(--maroon-700);
   border-radius: 50%;
   animation: scanSpin 0.8s linear infinite;
   margin-bottom: 20px;
@@ -52,17 +52,17 @@
 }
 
 .scan-modal-icon--success {
-  background: #e8f5e9;
-  color: #2e7d32;
+  background: var(--success-bg);
+  color: var(--success);
 }
 
 .scan-modal-icon--error {
-  background: #ffebee;
-  color: #c62828;
+  background: var(--danger-bg);
+  color: var(--danger);
 }
 
 .scan-modal-icon--duplicate {
-  color: #f5aa2c;
+  color: var(--gold-500);
 }
 
 /* ── Title ── */
@@ -71,18 +71,18 @@
   font-size: 24px;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: #111;
+  color: var(--text-strong);
   margin-bottom: 20px;
 }
 
 /* ── Item Info Card ── */
 .scan-modal-item-info {
   width: 100%;
-  background: #f8f9fb;
+  background: var(--surface-subtle);
   border-radius: 6px;
   padding: 16px;
   margin-bottom: 20px;
-  border-left: 4px solid #860100;
+  border-left: 4px solid var(--maroon-700);
 }
 
 .scan-modal-item-row {
@@ -100,14 +100,14 @@
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.05em;
-  color: #888;
+  color: var(--text-faint);
   text-transform: uppercase;
 }
 
 .scan-modal-item-value {
   font-size: 14px;
   font-weight: 500;
-  color: #222;
+  color: var(--text-strong);
   word-break: break-word;
   line-height: 1.4;
 }
@@ -117,7 +117,7 @@
 }
 
 .scan-item-id-success {
-  color: #2e7d32;
+  color: var(--success);
   font-weight: 700;
 }
 
@@ -126,7 +126,7 @@
   text-align: center;
   font-size: 14px;
   line-height: 1.6;
-  color: #555;
+  color: var(--text-muted);
   margin-bottom: 20px;
   min-height: 42px;
   display: flex;
@@ -135,23 +135,23 @@
 }
 
 .scan-modal-message--success {
-  color: #2e7d32;
+  color: var(--success);
   font-weight: 600;
-  background: #f1f8f5;
+  background: var(--success-bg);
   padding: 12px;
   border-radius: 4px;
 }
 
 .scan-modal-message--error {
-  color: #c62828;
+  color: var(--danger);
   font-weight: 500;
-  background: #ffe5e5;
+  background: var(--danger-bg);
   padding: 12px;
   border-radius: 4px;
 }
 
 .scan-modal-message--duplicate {
-  color: #b8860b;
+  color: var(--missing);
 }
 
 /* ── Buttons ── */
@@ -178,12 +178,12 @@
 }
 
 .scan-modal-btn--success {
-  background: #860100;
+  background: var(--maroon-700);
   color: #fff;
 }
 
 .scan-modal-btn--success:hover {
-  background: #5d0100;
+  background: var(--maroon-900);
   transform: translateY(-2px);
 }
 
@@ -192,13 +192,13 @@
 }
 
 .scan-modal-btn--error {
-  background: #ffebee;
-  color: #c62828;
-  border: 1px solid #c62828;
+  background: var(--danger-bg);
+  color: var(--danger);
+  border: 1px solid var(--danger);
 }
 
 .scan-modal-btn--error:hover {
-  background: #ffcdd2;
+  background: var(--card-border-hover);
 }
 
 .scan-modal-btn--error:active {
@@ -206,23 +206,23 @@
 }
 
 .scan-modal-btn--duplicate {
-  background-color: #f5aa2c;
-  color: #1a1a1a;
+  background-color: var(--gold-500);
+  color: var(--text-strong);
 }
 
 .scan-modal-btn--duplicate:hover {
-  background-color: #e0991f;
+  background-color: var(--gold-400);
 }
 
 .scan-modal-btn--warning {
-  background: #fff4e0;
-  color: #a65c00;
-  border: 1px solid #f5aa2c;
+  background: var(--missing-bg);
+  color: var(--missing);
+  border: 1px solid var(--gold-500);
 }
 
 .scan-modal-btn--warning:hover:not(:disabled) {
-  background: #f5aa2c;
-  color: #1a1a1a;
+  background: var(--gold-500);
+  color: var(--text-strong);
 }
 
 .scan-modal-btn--warning:active:not(:disabled) {

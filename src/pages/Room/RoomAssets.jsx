@@ -19,7 +19,6 @@ function RoomAssets() {
     loading,
     error,
     roomName,
-    roomStatus,
     isActive,
     topCustodian,
     handleAuditLogs,

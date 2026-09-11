@@ -6,12 +6,12 @@
   padding: 10px 16px;
   border: none;
   border-radius: 8px;
-  background: #860100;
+  background: var(--maroon-700);
   color: #ffffff;
   font-weight: 700;
   font-size: 14px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(134, 1, 0, 0.25);
+  box-shadow: 0 4px 12px var(--maroon-tint);
   transition:
     filter 0.15s ease,
     transform 0.1s ease;
@@ -28,7 +28,7 @@
 .new-audit-confirm-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 15, 20, 0.55);
+  background: var(--overlay);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -43,12 +43,12 @@
 }
 
 .new-audit-confirm-content {
-  background: #ffffff;
+  background: var(--card-bg);
   border-radius: 12px;
   width: 100%;
   max-width: 420px;
   padding: 24px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--card-elevated-container-elevation);
   animation: audit-confirm-in 0.18s ease-out;
 }
 
@@ -56,14 +56,14 @@
   margin: 0 0 8px;
   font-size: 18px;
   font-weight: 600;
-  color: #111827;
+  color: var(--text-strong);
 }
 
 .new-audit-confirm-content p {
   margin: 0 0 20px;
   font-size: 14px;
   line-height: 1.5;
-  color: #4b5563;
+  color: var(--text-muted);
 }
 
 .new-audit-confirm-actions {
@@ -87,21 +87,21 @@
 }
 
 .new-audit-confirm-cancel {
-  background: #f3f4f6;
-  color: #374151;
+  background: var(--surface-muted);
+  color: var(--text-muted);
 }
 
 .new-audit-confirm-cancel:hover {
-  background: #e5e7eb;
+  background: var(--hover-tint);
 }
 
 .new-audit-confirm-proceed {
-  background: #059669;
+  background: var(--success);
   color: #ffffff;
 }
 
 .new-audit-confirm-proceed:hover {
-  background: #047857;
+  filter: brightness(0.9);
 }
 
 .new-audit-confirm-proceed svg,
@@ -121,12 +121,12 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #860100;
+  background: var(--maroon-700);
   color: #ffffff;
 }
 
 .new-audit-confirm-return:hover {
-  background: #6e0100;
+  background: var(--maroon-800);
 }
 
 @keyframes audit-confirm-in {
@@ -155,7 +155,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #fef3c7;
+  background: var(--missing-bg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -163,7 +163,7 @@
 }
 
 .new-audit-confirm-icon svg {
-  color: #d97706;
+  color: var(--missing);
   width: 18px;
   height: 18px;
 }

@@ -52,7 +52,7 @@ function InfoCard({ asset }) {
         <span className="info-card-category-label">
           {asset.category_id || "Uncategorized"}
         </span>
-        <StatusBadge status={asset.status} />
+
         <span className="info-card-date-label">
           {formatDate(asset.date_acquired) || "----"}
         </span>
@@ -62,7 +62,9 @@ function InfoCard({ asset }) {
         {/* ── Left: description + field grid ── */}
         <div className="info-card-detail-col">
           <div className="info-card-title-block">
-            <span className="info-card-title-label">Asset Name</span>
+            <span className="info-card-title-label">
+              <StatusBadge status={asset.status} />
+            </span>
             <h1 className="info-card-description">
               {asset.description || "—"}
             </h1>

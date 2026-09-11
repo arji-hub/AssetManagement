@@ -8,7 +8,7 @@ import BackButton from "../../../components/ui/button/BackButton";
 import useAuditRoomSession from "../../../hooks/audit/room/useAuditRoomSession";
 import Table from "../../../components/panel/Table";
 import AssetCard from "../../../components/ui/card/asset/AssetCard";
-import DiscrepancyCard from "../../../components/ui/card/audit/DiscrepancyCard";
+import PreviousAuditCard from "../../../components/ui/card/audit/PreviousAuditCard";
 import {
   auditRoomAssetColumns,
   auditHistoryColumns,
@@ -163,7 +163,7 @@ function AuditRoomOverview() {
             desktopPageSize={20}
             mobilePageSize={10}
             renderItem={(audit, index) => (
-              <DiscrepancyCard
+              <PreviousAuditCard
                 key={audit.id}
                 audit={audit}
                 index={index}

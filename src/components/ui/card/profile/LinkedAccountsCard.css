@@ -1,8 +1,8 @@
 .linked-accounts-card {
   width: 100%;
   max-width: 720px;
-  background: #ffffff;
-  border: 1px solid #e5e5e5;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 10px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
   padding: 28px;
@@ -12,24 +12,24 @@
   margin: 0 0 4px;
   font-size: 13px;
   font-weight: 700;
-  color: #860100;
+  color: var(--maroon-700);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   padding-left: 10px;
-  border-left: 3px solid #f5aa2c;
+  border-left: 3px solid var(--gold-500);
 }
 
 .linked-accounts-subtitle {
   margin: 8px 0 20px;
   font-size: 13px;
-  color: #888;
+  color: var(--text-faint);
 }
 
 .linked-accounts-error {
   font-size: 13px;
-  color: #c0392b;
-  background: #fdf2f2;
-  border: 1px solid #f5c6c6;
+  color: var(--danger);
+  background: var(--danger-bg);
+  border: 1px solid color-mix(in srgb, var(--danger) 30%, transparent);
   border-radius: 6px;
   padding: 8px 12px;
   margin-bottom: 16px;
@@ -46,13 +46,13 @@
   align-items: center;
   gap: 14px;
   padding: 14px 16px;
-  border: 1px solid #eee;
+  border: 1px solid var(--border-subtle);
   border-radius: 8px;
   transition: border-color 0.15s ease;
 }
 
 .linked-account-row:hover {
-  border-color: #ddd;
+  border-color: var(--card-border);
 }
 
 .linked-account-icon {
@@ -60,7 +60,7 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: #f9f9f9;
+  background: var(--surface-muted);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -77,12 +77,12 @@
 .linked-account-name {
   font-size: 14px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--text-strong);
 }
 
 .linked-account-email {
   font-size: 12px;
-  color: #2e7d32;
+  color: var(--success);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -90,16 +90,16 @@
 
 .linked-account-status {
   font-size: 12px;
-  color: #999;
+  color: var(--text-faint);
 }
 
 .linked-account-btn {
   flex-shrink: 0;
   padding: 8px 16px;
   border-radius: 6px;
-  border: 1.5px solid #860100;
-  background: #ffffff;
-  color: #860100;
+  border: 1.5px solid var(--maroon-700);
+  background: var(--card-bg);
+  color: var(--maroon-700);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -110,19 +110,19 @@
 }
 
 .linked-account-btn:hover {
-  background: #860100;
+  background: var(--maroon-700);
   color: #ffffff;
 }
 
 .linked-account-btn.is-connected {
-  border-color: #ddd;
-  color: #999;
+  border-color: var(--card-border);
+  color: var(--text-faint);
 }
 
 .linked-account-btn.is-connected:hover {
-  background: #fdf2f2;
-  border-color: #c0392b;
-  color: #c0392b;
+  background: var(--danger-bg);
+  border-color: var(--danger);
+  color: var(--danger);
 }
 
 .linked-account-btn:disabled {

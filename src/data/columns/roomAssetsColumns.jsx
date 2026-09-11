@@ -1,5 +1,4 @@
 import { Status } from "../../components/ui/status/assetStatus";
-import { formatDate } from "../../utils/date";
 
 export const roomAssetsColumns = [
   {
@@ -33,10 +32,11 @@ export const roomAssetsColumns = [
     render: (a) => <Status status={a.status} />,
   },
   {
-    key: "date",
-    label: "Date Assigned",
-    width: "1.2fr",
+    key: "qty",
+    label: "Qty",
+    width: "0.6fr",
     priority: "low",
-    render: (a) => formatDate(a.date),
+    render: (a) => a.qty ?? 1,
+    card: { icon: "fa-solid fa-boxes-stacked" },
   },
 ];

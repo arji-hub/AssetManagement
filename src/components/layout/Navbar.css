@@ -81,8 +81,8 @@
   --danger: #ba1a1a;
   --danger-bg: rgba(186, 26, 26, 0.08);
   --maroon-tint: rgba(134, 1, 1, 0.08);
-  --scrollbar-thumb: #e2beb9;
-  --scrollbar-thumb-hover: #d4a49d;
+  --scrollbar-thumb: rgba(0, 0, 0, 0.2);
+  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.35);
   --card-border-hover: #f0c9c9;
 
   /* semantic aliases for roles (used in CustodianCard) */
@@ -130,7 +130,7 @@
 
 .layout-wrapper[data-theme="dark"] {
   /* brand — brightened so red/gold still pop against dark surfaces */
-  --maroon-900: #8a0000;
+  --maroon-900: #860100;
   --maroon-800: #b10a0a;
   --maroon-700: #e21b2f;
   --maroon-600: #f50909;
@@ -484,6 +484,7 @@
   overflow-y: auto;
   background: var(--app-bg);
   scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
 }
 
 .main-content::-webkit-scrollbar {
@@ -495,12 +496,12 @@
 }
 
 .main-content::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--scrollbar-thumb);
   border-radius: 3px;
 }
 
 .main-content::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.35);
+  background: var(--scrollbar-thumb-hover);
 }
 
 .title {
