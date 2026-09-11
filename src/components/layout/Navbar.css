@@ -297,6 +297,12 @@
   overflow-y: auto;
   overflow-x: hidden;
 }
+
+/* pushes Settings (and anything after it) to the bottom of sidebar-nav,
+   just above the logout footer */
+.nav-settings-wrapper {
+  margin-top: auto;
+}
 /* #endregion */
 
 /* #region ─── SIDEBAR FOOTER ───  */

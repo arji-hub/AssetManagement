@@ -32,6 +32,7 @@ import Profile from "./pages/Profile/Profile";
 import ReportInfo from "./pages/Report/ReportInfo";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import About from "./pages/LandingPage/About";
+import ProfileSettings from "./pages/Settings/profile/Profile";
 
 function App() {
   const { user, loading } = useAuth();
@@ -62,6 +63,8 @@ function App() {
         <Route element={<ProtectedRoute />}>
           {/* PROFILE PAGE */}
           <Route path="/profile" element={<Profile />} />
+          {/* SETTINGS PAGE */}
+          <Route path="/settings/profile" element={<ProfileSettings />} />
 
           {/* DASHBOARD PAGE */}
           <Route path="/dashboard" element={<Dashboard />} />

@@ -135,6 +135,19 @@ function Navbar({
               }}
             />
           ))}
+
+          {/*SETTINGS — pinned to bottom, sits just above the logout footer*/}
+          <div className="nav-settings-wrapper">
+            <NavButton
+              label="Settings"
+              icon="gear"
+              isActive={activePath.startsWith("/settings")}
+              onClick={() => {
+                onNavigate("/settings/profile");
+                setSidebarOpen(false);
+              }}
+            />
+          </div>
         </nav>
 
         {/*FOOTER*/}

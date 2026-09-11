@@ -14,10 +14,6 @@ function Profile() {
   return (
     <MainLayout>
       <div className="profile-page">
-        <div className="back-button">
-          <BackButton />
-        </div>
-
         <ProfileCard user={user} />
         <LinkedAccountsCard {...linkedAccounts} />
       </div>

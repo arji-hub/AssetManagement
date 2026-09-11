@@ -1,0 +1,119 @@
+/* ---------------------------------------------------------
+   Page shell
+--------------------------------------------------------- */
+.settings-page {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding: clamp(12px, 3vw, 24px);
+  height: 100%;
+  min-height: 0;
+  gap: 5px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+/* ---------------------------------------------------------
+   Page heading
+--------------------------------------------------------- */
+
+.settings-page-header h1 {
+  font-size: 24px !important;
+  color: var(--text-strong);
+  margin: 0;
+  line-height: 1;
+}
+
+.settings-page-header p {
+  font-size: 11px;
+  color: var(--text-faint);
+  letter-spacing: 0.06em;
+  margin: 0;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.settings-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  scrollbar-width: none;
+}
+
+.settings-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.settings-tab {
+  position: relative;
+  flex-shrink: 0;
+  text-decoration: none;
+  display: inline-block;
+  padding: 12px 4px;
+  margin-right: clamp(1px, 1vw, 28px);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-faint);
+  transition: color 0.15s ease;
+  white-space: nowrap;
+}
+
+.settings-tab:last-child {
+  margin-right: 0;
+}
+
+.settings-tab:hover {
+  color: var(--text-strong);
+}
+
+.settings-tab.is-active {
+  color: var(--maroon-700);
+  font-weight: 600;
+}
+
+.settings-tab.is-active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--maroon-700);
+  border-radius: 2px 2px 0 0;
+}
+
+@media (max-width: 680px) {
+  .settings-page {
+    width: 100%;
+    padding: 24px 18px 40px;
+  }
+
+  .settings-page-header {
+    margin-bottom: 20px;
+  }
+
+  .settings-page-header h1 {
+    font-size: 28px;
+  }
+
+  .settings-content {
+    margin-top: 18px;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .settings-page {
+    padding-inline: 14px;
+  }
+
+  .settings-tab {
+    font-size: 13px;
+  }
+
+  .settings-tabs {
+    flex: 1;
+    justify-content: flex-start;
+  }
+}
