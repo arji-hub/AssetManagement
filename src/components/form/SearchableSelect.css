@@ -1,0 +1,136 @@
+/* SearchableSelect.css */
+
+.reg-searchable {
+  position: relative;
+}
+
+.reg-searchable-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+
+  padding: 0.6rem 0.75rem;
+
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  color: #333;
+
+  font: inherit;
+  font-size: 0.85rem;
+  text-align: left;
+
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.reg-searchable-trigger:hover {
+  border-color: #b8b8b8;
+}
+
+.reg-searchable-trigger:focus-visible {
+  outline: none;
+  border-color: #860100;
+  box-shadow: 0 0 0 2px rgba(134, 1, 0, 0.15);
+}
+
+.reg-searchable-trigger:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.reg-searchable-trigger.reg-input--error {
+  border-color: #860100;
+}
+
+.reg-searchable-placeholder {
+  color: #9a9a9a;
+}
+
+.reg-searchable-caret {
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid #808080;
+  border-bottom: 2px solid #808080;
+  transform: rotate(45deg);
+  margin-top: -4px;
+}
+
+.reg-searchable-panel {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 20;
+
+  display: flex;
+  flex-direction: column;
+
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.reg-searchable-search {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+
+  border: none;
+  border-bottom: 1px solid #eee;
+
+  font: inherit;
+  font-size: 0.84rem;
+  color: #333;
+
+  outline: none;
+}
+
+.reg-searchable-search:focus {
+  border-bottom-color: #860100;
+}
+
+.reg-searchable-search::placeholder {
+  color: #aaa;
+}
+
+.reg-searchable-list {
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.reg-searchable-option {
+  padding: 0.5rem 0.65rem;
+  border-radius: 6px;
+
+  font-size: 0.85rem;
+  color: #333;
+
+  cursor: pointer;
+}
+
+.reg-searchable-option:hover {
+  background: #fff8f7;
+  color: #860100;
+}
+
+.reg-searchable-option--active {
+  background: #fff8f7;
+  color: #860100;
+  font-weight: 600;
+}
+
+.reg-searchable-empty {
+  padding: 0.6rem 0.65rem;
+  color: #9a9a9a;
+  font-size: 0.8rem;
+  font-style: italic;
+}

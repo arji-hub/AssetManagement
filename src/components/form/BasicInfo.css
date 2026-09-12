@@ -89,3 +89,115 @@
   overflow-y: auto;
   padding-right: 0.25rem;
 }
+
+/* ─── Category dropdown (custom, scrollable) ─────────────────────────────
+   A native <select>'s popup is rendered by the browser/OS, so it can't
+   be height-capped or made scrollable via CSS. This replaces it with a
+   small trigger button + an absolutely-positioned panel that caps its
+   own height and scrolls once the category list grows past it. */
+.reg-category-dropdown {
+  position: relative;
+}
+
+.reg-category-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+
+  padding: 0.6rem 0.75rem;
+
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  color: #333;
+
+  font: inherit;
+  font-size: 0.85rem;
+  text-align: left;
+
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.reg-category-trigger:hover {
+  border-color: #b8b8b8;
+}
+
+.reg-category-trigger:focus-visible {
+  outline: none;
+  border-color: #860100;
+  box-shadow: 0 0 0 2px rgba(134, 1, 0, 0.15);
+}
+
+.reg-category-trigger:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.reg-category-trigger.reg-input--error {
+  border-color: #860100;
+}
+
+.reg-category-placeholder {
+  color: #9a9a9a;
+}
+
+.reg-category-caret {
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid #808080;
+  border-bottom: 2px solid #808080;
+  transform: rotate(45deg);
+  margin-top: -4px;
+}
+
+.reg-category-panel {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 20;
+
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+
+  max-height: 240px;
+  overflow-y: auto;
+
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.reg-category-option {
+  padding: 0.5rem 0.65rem;
+  border-radius: 6px;
+
+  font-size: 0.85rem;
+  color: #333;
+
+  cursor: pointer;
+}
+
+.reg-category-option:hover {
+  background: #fff8f7;
+  color: #860100;
+}
+
+.reg-category-option--active {
+  background: #fff8f7;
+  color: #860100;
+  font-weight: 600;
+}
+
+.reg-category-empty {
+  padding: 0.6rem 0.65rem;
+  color: #9a9a9a;
+  font-size: 0.8rem;
+  font-style: italic;
+}

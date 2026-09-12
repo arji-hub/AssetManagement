@@ -1,14 +1,3 @@
-export const ASSET_CATEGORIES = [
-  "Computer Set",
-  "Laboratory",
-  "Network",
-  "Cables & Accessories",
-  "Peripheral",
-  "Storage Device",
-  "Furniture",
-  "Safety Equipment",
-];
-
 export const ASSET_STATUS = [
   "Working",
   "Missing",

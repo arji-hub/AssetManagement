@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import PropTypes from "prop-types";
 import NavButton from "../ui/button/NavButton";
 import "./Navbar.css";
@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ROLES } from "../../data/roles";
 import LogoutModal from "../modal/LogoutModal";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "../../hooks/settings/theme/useTheme";
 
 const allRoles = [ROLES.ADMIN, ROLES.PARTTIME, ROLES.FULLTIME];
 
@@ -56,17 +57,7 @@ function Navbar({
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(defaultSidebarOpen);
 
-  const [theme, setTheme] = useState(
-    () => localStorage.getItem("cict-ams-theme") || "light",
-  );
-
-  useEffect(() => {
-    localStorage.setItem("cict-ams-theme", theme);
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === "light" ? "dark" : "light"));
-  };
+  const { theme, toggleTheme } = useTheme();
 
   const filteredNavItems = navItems.filter((item) =>
     item.roles ? item.roles.includes(userRole) : true,

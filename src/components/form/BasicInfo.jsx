@@ -1,7 +1,75 @@
 // src/components/form/BasicInfo.jsx
+import { useEffect, useRef, useState } from "react";
 import "./Form.css";
 import "./BasicInfo.css";
-import { ASSET_CATEGORIES } from "../../data/assets";
+import useCategoryOptions from "../../hooks/shared/useCategoryOptions";
+
+/* ─── Category dropdown ──────────────────────────────────────────────────
+   Native <select> popups are rendered by the browser/OS and can't be
+   height-capped or made scrollable via CSS, so once the category list
+   grows this becomes its own small scrollable panel instead. Selecting
+   an option calls onSelect with the plain category name — the parent
+   wires that into the same onChange({ target: { name, value } }) shape
+   already used for tracking_mode above. */
+function CategoryDropdown({ value, options, loading, error, onSelect }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  function handleSelect(name) {
+    onSelect(name);
+    setIsOpen(false);
+  }
+
+  return (
+    <div className="reg-category-dropdown" ref={containerRef}>
+      <button
+        type="button"
+        className={`reg-category-trigger ${error ? "reg-input--error" : ""}`}
+        onClick={() => setIsOpen((prev) => !prev)}
+        disabled={loading}
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+      >
+        <span className={value ? "" : "reg-category-placeholder"}>
+          {loading ? "Loading categories..." : value || "--Select Category--"}
+        </span>
+        <span className="reg-category-caret" aria-hidden="true" />
+      </button>
+
+      {isOpen && !loading && (
+        <ul className="reg-category-panel" role="listbox">
+          {options.length === 0 ? (
+            <li className="reg-category-empty">No categories yet.</li>
+          ) : (
+            options.map((name) => (
+              <li
+                key={name}
+                role="option"
+                aria-selected={value === name}
+                className={`reg-category-option ${
+                  value === name ? "reg-category-option--active" : ""
+                }`}
+                onClick={() => handleSelect(name)}
+              >
+                {name}
+              </li>
+            ))
+          )}
+        </ul>
+      )}
+    </div>
+  );
+}
 
 // Now scoped to ONE line item. acquisition_type, date_acquired and
 // donated_by moved up to AcquisitionInfo (filled once per batch).
@@ -15,6 +83,8 @@ function BasicInfo({
   qty,
   isIndividual,
 }) {
+  const { categories, loading: categoriesLoading } = useCategoryOptions();
+
   return (
     <div className="reg-card">
       <p className="reg-card-title">Basic Asset Information</p>
@@ -47,19 +117,15 @@ function BasicInfo({
           <label className="reg-label">
             Category <span className="reg-required">*</span>
           </label>
-          <select
-            className={`reg-select ${error.category_id ? "reg-input--error" : ""}`}
-            name="category_id"
+          <CategoryDropdown
             value={item.category_id}
-            onChange={onChange}
-          >
-            <option value="">--Select Category--</option>
-            {ASSET_CATEGORIES.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
+            options={categories}
+            loading={categoriesLoading}
+            error={!!error.category_id}
+            onSelect={(name) =>
+              onChange({ target: { name: "category_id", value: name } })
+            }
+          />
           {error.category_id && (
             <p className="reg-error">{error.category_id}</p>
           )}

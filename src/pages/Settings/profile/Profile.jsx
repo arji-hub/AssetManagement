@@ -3,7 +3,7 @@ import MainLayout from "../../../components/layout/MainLayout";
 import Settings from "../Settings";
 import { useAuth } from "../../../context/AuthContext";
 import { getRole } from "../../../utils/role";
-import useProfileEdit from "../../../hooks/profile/userProfileEdit";
+import useProfileEdit from "../../../hooks/settings/profile/userProfileEdit";
 import "./Profile.css";
 
 function ProfileSettings() {
@@ -55,6 +55,29 @@ function ProfileSettings() {
               <span className="settings-role-badge">{getRole(user?.role)}</span>
             </div>
           </div>
+
+          {/* Account information (read-only) */}
+          <section className="settings-section settings-section--readonly">
+            <div className="settings-section-header">
+              <div>
+                <h3>Account information</h3>
+                <p>Read-only details tied to your account.</p>
+              </div>
+            </div>
+
+            <div className="settings-rows">
+              <div className="settings-row">
+                <span className="settings-row-label">Email</span>
+                <span className="settings-row-value">{user?.email || "—"}</span>
+              </div>
+              <div className="settings-row">
+                <span className="settings-row-label">Classification</span>
+                <span className="settings-row-value">
+                  {getRole(user?.role)}
+                </span>
+              </div>
+            </div>
+          </section>
 
           {/* Personal details */}
           <section className="settings-section">
@@ -202,29 +225,6 @@ function ProfileSettings() {
                 </div>
               )}
             </form>
-          </section>
-
-          {/* Account information (read-only) */}
-          <section className="settings-section">
-            <div className="settings-section-header">
-              <div>
-                <h3>Account information</h3>
-                <p>Read-only details tied to your account.</p>
-              </div>
-            </div>
-
-            <div className="settings-rows">
-              <div className="settings-row">
-                <span className="settings-row-label">Email</span>
-                <span className="settings-row-value">{user?.email || "—"}</span>
-              </div>
-              <div className="settings-row">
-                <span className="settings-row-label">Classification</span>
-                <span className="settings-row-value">
-                  {getRole(user?.role)}
-                </span>
-              </div>
-            </div>
           </section>
         </div>
       </Settings>

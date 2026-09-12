@@ -1,6 +1,7 @@
 import "./Form.css";
 import "./Assignment.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import SearchableSelect from "./SearchableSelect";
 
 function Assignment({
   form,
@@ -10,6 +11,16 @@ function Assignment({
   rooms,
   loadingOptions,
 }) {
+  const custodianOptions = fulltimeCustodians.map((c) => ({
+    id: c.id,
+    label: c.fullname,
+  }));
+
+  const roomOptions = rooms.map((r) => ({
+    id: r.id,
+    label: r.name,
+  }));
+
   return (
     <div className="reg-card">
       <p className="reg-card-title">Custody &amp; Location</p>
@@ -27,44 +38,34 @@ function Assignment({
       )}
 
       <div className="reg-grid">
-        <div className="reg-field reg-field--full">
-          <div className="reg-field">
-            <label className="reg-label">Primary Custodian</label>
-            <select
-              className="reg-select"
-              name="primary_custodian"
-              value={form.primary_custodian}
-              onChange={onChange}
-              disabled={loadingOptions}
-            >
-              <option value="">
-                {loadingOptions ? "Loading…" : "Select Custodian"}
-              </option>
-              {fulltimeCustodians.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.fullname}
-                </option>
-              ))}
-            </select>
-          </div>
+        <div className="reg-field">
+          <label className="reg-label">Primary Custodian</label>
+          <SearchableSelect
+            options={custodianOptions}
+            value={form.primary_custodian}
+            loading={loadingOptions}
+            placeholder="Select Custodian"
+            searchPlaceholder="Search custodians…"
+            emptyMessage="No custodians found."
+            onSelect={(id) =>
+              onChange({ target: { name: "primary_custodian", value: id } })
+            }
+          />
+        </div>
 
+        <div className="reg-field">
           <label className="reg-label">Location</label>
-          <select
-            className="reg-select"
-            name="room_id"
+          <SearchableSelect
+            options={roomOptions}
             value={form.room_id}
-            onChange={onChange}
-            disabled={loadingOptions}
-          >
-            <option value="">
-              {loadingOptions ? "Loading…" : "Select Location"}
-            </option>
-            {rooms.map((r) => (
-              <option key={r.id} value={r.id}>
-                {r.name}
-              </option>
-            ))}
-          </select>
+            loading={loadingOptions}
+            placeholder="Select Location"
+            searchPlaceholder="Search locations…"
+            emptyMessage="No locations found."
+            onSelect={(id) =>
+              onChange({ target: { name: "room_id", value: id } })
+            }
+          />
         </div>
       </div>
     </div>

@@ -4,7 +4,7 @@ import {
   linkGoogleAccount,
   linkMicrosoftAccount,
   unlinkProvider,
-} from "../../services/authService";
+} from "../../../services/authService";
 
 const OAUTH_ERROR_MESSAGES = {
   "auth/popup-closed-by-user": null,
@@ -26,7 +26,7 @@ function getErrorMessage(err) {
   return err.message || "Something went wrong. Please try again.";
 }
 
-export function useProfile() {
+export function useLinkedAccounts() {
   const [linkedProviders, setLinkedProviders] = useState([]);
   const [pending, setPending] = useState(null); // "google" | "microsoft" | null
   const [error, setError] = useState("");
