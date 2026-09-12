@@ -1,0 +1,276 @@
+/* =========================================================
+   SYSTEM CONFIG — category management
+   Reuses .settings-section / .settings-section-header /
+   .settings-edit-btn / .field-error from Settings.css
+========================================================= */
+
+/* ---------------------------------------------------------
+   Add-category row
+--------------------------------------------------------- */
+.category-add-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--surface-subtle);
+}
+
+.category-add-row input {
+  flex: 1;
+  min-height: 40px;
+  padding: 9px 11px;
+
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+
+  background: var(--surface);
+  color: var(--text-strong);
+
+  font: inherit;
+  font-size: 14px;
+
+  outline: none;
+
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.category-add-row input:focus {
+  border-color: var(--maroon-600);
+  box-shadow: 0 0 0 3px var(--maroon-tint);
+}
+
+.category-add-row input.input-error {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px var(--danger-bg);
+}
+
+.category-add-field {
+  flex: 1;
+  min-width: 0;
+}
+
+.category-add-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.category-add-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 36px;
+  height: 36px;
+
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+
+  background: var(--card-bg);
+  color: var(--text-muted);
+
+  cursor: pointer;
+
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+.category-add-confirm {
+  border-color: var(--maroon-700) !important;
+  background: var(--maroon-gradient) !important;
+  color: #ffffff !important;
+}
+
+.category-add-confirm:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.category-add-cancel:hover {
+  border-color: var(--danger);
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+/* ---------------------------------------------------------
+   List
+--------------------------------------------------------- */
+.category-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.category-list-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(90px, 0.5fr) 88px;
+  align-items: center;
+  gap: 16px;
+
+  padding: 10px 24px;
+
+  color: var(--text-faint);
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.category-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(90px, 0.5fr) 88px;
+  align-items: center;
+  gap: 16px;
+
+  min-height: 56px;
+  padding: 10px 24px;
+
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.category-row:last-child {
+  border-bottom: 0;
+}
+
+.category-name {
+  min-width: 0;
+  color: var(--text-strong);
+  font-size: 14px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.category-name-input {
+  width: 100%;
+  min-height: 36px;
+  padding: 7px 10px;
+
+  border: 1px solid var(--maroon-600);
+  border-radius: var(--radius-sm);
+
+  background: var(--surface);
+  color: var(--text-strong);
+
+  font: inherit;
+  font-size: 14px;
+
+  outline: none;
+  box-shadow: 0 0 0 3px var(--maroon-tint);
+}
+
+.category-name-input.input-error {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px var(--danger-bg);
+}
+
+.category-count {
+  color: var(--text-muted);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.category-row-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.category-row-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 32px;
+  height: 32px;
+
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+
+  background: transparent;
+  color: var(--text-muted);
+
+  cursor: pointer;
+
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+.category-row-actions button:hover:not(:disabled) {
+  border-color: var(--maroon-600);
+  background: var(--maroon-tint);
+  color: var(--maroon-700);
+}
+
+.category-row-actions .category-delete-btn:hover:not(:disabled) {
+  border-color: var(--danger);
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+.category-row-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
+
+.category-row-error {
+  grid-column: 1 / -1;
+  margin-top: -2px;
+}
+
+/* ---------------------------------------------------------
+   Empty / loading states
+--------------------------------------------------------- */
+.category-list-empty {
+  padding: 32px 24px;
+  text-align: center;
+
+  color: var(--text-faint);
+  font-size: 13px;
+}
+
+/* ---------------------------------------------------------
+   Responsive
+--------------------------------------------------------- */
+@media (max-width: 680px) {
+  .category-add-row {
+    padding: 14px 18px;
+  }
+
+  .category-list-header {
+    display: none;
+  }
+
+  .category-row {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "name actions"
+      "count actions";
+    row-gap: 4px;
+    padding: 12px 18px;
+  }
+
+  .category-name,
+  .category-name-input {
+    grid-area: name;
+  }
+
+  .category-count {
+    grid-area: count;
+  }
+
+  .category-row-actions {
+    grid-area: actions;
+    align-self: center;
+  }
+}

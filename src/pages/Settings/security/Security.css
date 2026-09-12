@@ -1,0 +1,70 @@
+/* ---------------------------------------------------------
+   Linked account provider rows
+--------------------------------------------------------- */
+.settings-provider-value {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.settings-provider-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.settings-provider-icon {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--surface-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.settings-provider-email {
+  font-size: 13px;
+  color: var(--success);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.settings-provider-status {
+  font-size: 13px;
+  color: var(--text-faint);
+}
+
+.settings-linked-error {
+  margin: 0 24px 4px;
+}
+
+/* ---------------------------------------------------------
+   Password reset action
+--------------------------------------------------------- */
+.settings-reset-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.settings-reset-success {
+  font-size: 13px;
+  color: var(--success);
+}
+
+/* ---------------------------------------------------------
+   Responsive
+--------------------------------------------------------- */
+@media (max-width: 480px) {
+  .settings-provider-value {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
