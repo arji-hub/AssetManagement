@@ -1,61 +1,45 @@
+// src/components/form/BasicInfo.jsx
 import "./Form.css";
 import "./BasicInfo.css";
 import { ASSET_CATEGORIES } from "../../data/assets";
-import { todayISO } from "../../utils/date";
 
-function BasicInfo({ form, onChange, categories, loadingOptions, error }) {
-  const isDonated = form.acquisition_type === "donated";
-  const qty = parseInt(form.qty, 10) || 1;
-  const showTrackingMode = qty > 1;
-
-  const donatedByMissing = isDonated && !form.donated_by.trim();
-  const trackingModeMissing = showTrackingMode && !form.tracking_mode;
-
-  const setField = (name, value) => onChange({ target: { name, value } });
-
+// Now scoped to ONE line item. acquisition_type, date_acquired and
+// donated_by moved up to AcquisitionInfo (filled once per batch).
+function BasicInfo({
+  item,
+  isDonated,
+  onChange,
+  setSerialAt,
+  autoNumberSerials,
+  error,
+  qty,
+  isIndividual,
+}) {
   return (
     <div className="reg-card">
       <p className="reg-card-title">Basic Asset Information</p>
 
       <div className="reg-grid">
-        {/* ── Acquisition type ── */}
-        <div className="reg-field reg-field--full">
-          <label className="reg-label">
-            Acquisition Type <span className="reg-required">*</span>
-          </label>
-          <div className="reg-toggle-group">
-            <button
-              type="button"
-              className={`reg-toggle-option ${
-                !isDonated ? "reg-toggle-option--active" : ""
-              }`}
-              onClick={() => setField("acquisition_type", "purchased")}
-            >
-              Purchased
-            </button>
-            <button
-              type="button"
-              className={`reg-toggle-option ${
-                isDonated ? "reg-toggle-option--active" : ""
-              }`}
-              onClick={() => setField("acquisition_type", "donated")}
-            >
-              Donated
-            </button>
-          </div>
-        </div>
-
         <div className="reg-field">
           <label className="reg-label">Serial Number</label>
           <input
             className={`reg-input ${error.serial_number ? "reg-input--error" : ""}`}
             name="serial_number"
-            placeholder="e.g. SN-99823-X"
-            value={form.serial_number}
+            placeholder={
+              isIndividual
+                ? "Base for auto-numbering, e.g. SN-99823-X"
+                : "e.g. SN-99823-X"
+            }
+            value={item.serial_number}
             onChange={onChange}
           />
           {error.serial_number && (
             <p className="reg-error">{error.serial_number}</p>
+          )}
+          {!isIndividual && (
+            <p className="reg-hint">
+              Leave blank if this batch has no printed serial.
+            </p>
           )}
         </div>
 
@@ -66,7 +50,7 @@ function BasicInfo({ form, onChange, categories, loadingOptions, error }) {
           <select
             className={`reg-select ${error.category_id ? "reg-input--error" : ""}`}
             name="category_id"
-            value={form.category_id}
+            value={item.category_id}
             onChange={onChange}
           >
             <option value="">--Select Category--</option>
@@ -90,7 +74,7 @@ function BasicInfo({ form, onChange, categories, loadingOptions, error }) {
             name="description"
             placeholder="Full asset description and technical specifications..."
             rows={4}
-            value={form.description}
+            value={item.description}
             onChange={onChange}
           />
           {error.description && (
@@ -98,47 +82,10 @@ function BasicInfo({ form, onChange, categories, loadingOptions, error }) {
           )}
         </div>
 
-        <div className="reg-field">
-          <label className="reg-label">
-            Date Acquired <span className="reg-required">*</span>
-          </label>
-          <input
-            className={`reg-input ${error.date_acquired ? "reg-input--error" : ""}`}
-            type="date"
-            name="date_acquired"
-            max={todayISO}
-            value={form.date_acquired}
-            onChange={onChange}
-          />
-          {error.date_acquired && (
-            <p className="reg-error">{error.date_acquired}</p>
-          )}
-        </div>
-
-        {/* ── Conditional: cost (purchased) vs donor (donated) ── */}
-        {isDonated ? (
-          <div className="reg-field">
-            <label className="reg-label">
-              Donated By <span className="reg-required">*</span>
-            </label>
-            <input
-              className={`reg-input ${
-                error.donated_by || donatedByMissing ? "reg-input--error" : ""
-              }`}
-              name="donated_by"
-              placeholder="Donor name or organization"
-              value={form.donated_by}
-              onChange={onChange}
-            />
-            {error.donated_by ? (
-              <p className="reg-error">{error.donated_by}</p>
-            ) : (
-              donatedByMissing && (
-                <p className="reg-error">Donor name is required.</p>
-              )
-            )}
-          </div>
-        ) : (
+        {/* Unit value only applies to purchased items — donated items have
+            no per-unit cost. isDonated now comes from the batch-level
+            Acquisition Info step instead of a per-item toggle. */}
+        {!isDonated && (
           <div className="reg-field">
             <label className="reg-label">
               Unit Value <span className="reg-required">*</span>
@@ -152,7 +99,7 @@ function BasicInfo({ form, onChange, categories, loadingOptions, error }) {
                 min="0.01"
                 step="0.01"
                 placeholder="0.00"
-                value={form.unit_value}
+                value={item.unit_value}
                 onChange={onChange}
               />
             </div>
@@ -172,14 +119,13 @@ function BasicInfo({ form, onChange, categories, loadingOptions, error }) {
             name="qty"
             min="1"
             placeholder="1"
-            value={form.qty}
+            value={item.qty}
             onChange={onChange}
           />
           {error.qty && <p className="reg-error">{error.qty}</p>}
         </div>
 
-        {/* ── Conditional: tracking mode, only shown when qty > 1 ── */}
-        {showTrackingMode && (
+        {qty > 1 && (
           <div className="reg-field reg-field--full">
             <label className="reg-label">
               Tracking Mode <span className="reg-required">*</span>
@@ -187,11 +133,15 @@ function BasicInfo({ form, onChange, categories, loadingOptions, error }) {
             <div className="reg-tracking-options">
               <div
                 className={`reg-tracking-card ${
-                  form.tracking_mode === "single_bulk"
+                  item.tracking_mode === "single_bulk"
                     ? "reg-tracking-card--active"
                     : ""
                 }`}
-                onClick={() => setField("tracking_mode", "single_bulk")}
+                onClick={() =>
+                  onChange({
+                    target: { name: "tracking_mode", value: "single_bulk" },
+                  })
+                }
               >
                 <p className="reg-tracking-card-title">Single record</p>
                 <p className="reg-tracking-card-desc">
@@ -201,11 +151,15 @@ function BasicInfo({ form, onChange, categories, loadingOptions, error }) {
               </div>
               <div
                 className={`reg-tracking-card ${
-                  form.tracking_mode === "individual"
+                  item.tracking_mode === "individual"
                     ? "reg-tracking-card--active"
                     : ""
                 }`}
-                onClick={() => setField("tracking_mode", "individual")}
+                onClick={() =>
+                  onChange({
+                    target: { name: "tracking_mode", value: "individual" },
+                  })
+                }
               >
                 <p className="reg-tracking-card-title">Individual records</p>
                 <p className="reg-tracking-card-desc">
@@ -214,11 +168,35 @@ function BasicInfo({ form, onChange, categories, loadingOptions, error }) {
                 </p>
               </div>
             </div>
-            {trackingModeMissing && (
-              <p className="reg-error">
-                Choose a tracking mode before continuing.
-              </p>
+            {error.tracking_mode && (
+              <p className="reg-error">{error.tracking_mode}</p>
             )}
+          </div>
+        )}
+
+        {isIndividual && (
+          <div className="reg-field reg-field--full">
+            <div className="reg-serial-list-header">
+              <label className="reg-label">Unit Serial Numbers</label>
+              <button
+                type="button"
+                className="reg-serial-autonumber"
+                onClick={autoNumberSerials}
+              >
+                Auto-number from base
+              </button>
+            </div>
+            <div className="reg-serial-list">
+              {item.serial_numbers.map((serial, i) => (
+                <input
+                  key={i}
+                  className="reg-input"
+                  placeholder={`Unit ${i + 1} serial`}
+                  value={serial}
+                  onChange={(e) => setSerialAt(i, e.target.value)}
+                />
+              ))}
+            </div>
           </div>
         )}
 
@@ -229,7 +207,7 @@ function BasicInfo({ form, onChange, categories, loadingOptions, error }) {
             name="remarks"
             placeholder="Additional notes, maintenance history..."
             rows={3}
-            value={form.remarks}
+            value={item.remarks}
             onChange={onChange}
           />
         </div>

@@ -3,9 +3,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./StepIndicator.css";
 
 const STEPS = [
-  { number: 1, label: "Basic Info" },
-  { number: 2, label: "Media" },
-  { number: 3, label: "Assignment" },
+  { number: 1, label: "Acquisition Info" },
+  { number: 2, label: "Items" },
+  { number: 3, label: "Review & Submit" },
 ];
 
 function StepIndicator({ currentStep }) {
@@ -17,7 +17,6 @@ function StepIndicator({ currentStep }) {
 
         return (
           <React.Fragment key={step.number}>
-            {/* connector line before every step except the first */}
             {i > 0 && (
               <div
                 className={`reg-step-line ${isDone ? "reg-step-line--done" : ""}`}

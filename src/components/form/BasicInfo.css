@@ -22,38 +22,6 @@
   font-style: italic;
 }
 
-/* ─── Acquisition type toggle ───────────────────────────────────────────── */
-.reg-toggle-group {
-  display: flex;
-  width: fit-content;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.reg-toggle-option {
-  padding: 0.55rem 1.5rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #666;
-  background: #fafafa;
-  border: none;
-  cursor: pointer;
-  transition:
-    background 0.2s,
-    color 0.2s;
-  font-family: inherit;
-}
-
-.reg-toggle-option:not(:last-child) {
-  border-right: 1px solid #ddd;
-}
-
-.reg-toggle-option--active {
-  background: #860100;
-  color: #fff;
-}
-
 /* ─── Tracking mode cards (shown when qty > 1) ──────────────────────────── */
 .reg-tracking-options {
   display: flex;
@@ -89,9 +57,35 @@
   margin-top: 0.2rem;
 }
 
-/* ─── Responsive: stack tracking cards on small screens ─────────────────── */
 @media (max-width: 640px) {
   .reg-tracking-options {
     flex-direction: column;
   }
+}
+
+/* ─── Per-unit serial number list (individual tracking) ─────────────────── */
+.reg-serial-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
+}
+
+.reg-serial-autonumber {
+  background: none;
+  border: none;
+  color: #860100;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.reg-serial-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.6rem;
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: 0.25rem;
 }
