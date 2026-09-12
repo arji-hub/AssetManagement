@@ -80,7 +80,7 @@ export function subscribeToAssets(role, currentUserUid, callback, onError) {
           property_custodian_fullname:
             fullname[asset.property_custodian] || "---",
           local_mr_name: userMap[asset.local_mr] || "---",
-          local_mr_fullname: fullname[asset.property_custodian] || "---",
+          local_mr_fullname: fullname[asset.local_mr] || "---",
         }));
 
         assets.sort((a, b) => {
