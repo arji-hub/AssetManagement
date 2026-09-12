@@ -10,10 +10,12 @@ import {
   where,
   limit,
   serverTimestamp,
+  or,
 } from "firebase/firestore";
 import { getFunctions, httpsCallable } from "firebase/functions";
 import { toLowerCase } from "../utils/TextCasing";
 import ROLES from "../data/roles";
+import { fetchRoomName } from "./room";
 
 const functions = getFunctions();
 
@@ -150,82 +152,66 @@ export async function updateProfile(uid, profileData) {
   return { uid, user_name: normalized_user_name };
 }
 
-export function subscribeToAssetsByCustodian(uid, callback, onError) {
-  if (!uid) {
+export function subscribeToAssetsByCustodian(custodianID, callback, onError) {
+  if (!custodianID) {
     callback([]);
     return () => {};
   }
 
   const assetRef = collection(db, "asset");
+  const assetQuery = query(
+    assetRef,
+    or(
+      where("property_custodian", "==", custodianID),
+      where("local_mr", "==", custodianID),
+    ),
+  );
 
-  // keep latest results from both queries, merge whenever either changes
-  let propertyCustodianDocs = [];
-  let localMrDocs = [];
+  const unsubscribe = onSnapshot(
+    assetQuery,
+    async (snapshot) => {
+      try {
+        const assetData = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
 
-  const mergeAndEmit = async () => {
-    try {
-      const seen = new Map();
-      [...propertyCustodianDocs, ...localMrDocs].forEach((doc) => {
-        if (!seen.has(doc.id)) {
-          seen.set(doc.id, { id: doc.id, ...doc.data() });
-        }
-      });
+        const roomIds = [
+          ...new Set(assetData.map((a) => a.room_id).filter(Boolean)),
+        ];
 
-      const assetData = Array.from(seen.values());
+        const roomNameMap = {};
+        await Promise.all(
+          roomIds.map(async (roomId) => {
+            try {
+              roomNameMap[roomId] = await fetchRoomName(roomId);
+            } catch {
+              roomNameMap[roomId] = "---";
+            }
+          }),
+        );
 
-      const userIds = [
-        ...new Set(
-          assetData.flatMap((a) =>
-            [a.property_custodian, a.local_mr].filter(Boolean),
-          ),
-        ),
-      ];
+        const assets = assetData.map((asset) => ({
+          id: asset.id,
+          category: asset.category_id,
+          description: asset.description,
+          qty: asset.qty,
+          status: asset.status,
+          date: asset.date_acquired,
+          room_name: roomNameMap[asset.room_id] ?? "---",
+        }));
 
-      const userDocs = await Promise.all(
-        userIds.map((id) => getDoc(doc(db, "user", id))),
-      );
-
-      const userMap = {};
-      userDocs.forEach((d) => {
-        if (d.exists()) {
-          userMap[d.id] = d.data().user_name;
-        }
-      });
-
-      const assets = assetData.map((asset) => ({
-        ...asset,
-        property_custodian_name: userMap[asset.property_custodian] || "Unknown",
-        local_mr_name: userMap[asset.local_mr] || "Unknown",
-      }));
-
-      callback(assets);
-    } catch (err) {
+        callback(assets);
+      } catch (err) {
+        onError?.(err);
+      }
+    },
+    (err) => {
       onError?.(err);
-    }
-  };
-
-  const unsubPropertyCustodian = onSnapshot(
-    query(assetRef, where("property_custodian", "==", uid)),
-    (snap) => {
-      propertyCustodianDocs = snap.docs;
-      mergeAndEmit();
     },
-    (err) => onError?.(err),
   );
 
-  const unsubLocalMr = onSnapshot(
-    query(assetRef, where("local_mr", "==", uid)),
-    (snap) => {
-      localMrDocs = snap.docs;
-      mergeAndEmit();
-    },
-    (err) => onError?.(err),
-  );
-
-  return () => {
-    unsubPropertyCustodian();
-    unsubLocalMr();
-  };
+  return unsubscribe;
 }
 
 export async function fetchUsersByRole(role) {

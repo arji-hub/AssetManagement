@@ -59,6 +59,17 @@ function ItemFormModal({
           />
 
           <div className="reg-modal-section">
+            <Assignment
+              form={item}
+              onChange={handleChange}
+              skippedWarning={false}
+              fulltimeCustodians={fulltimeCustodians}
+              rooms={rooms}
+              loadingOptions={loadingOptions}
+            />
+          </div>
+
+          <div className="reg-modal-section">
             <ImagePanel
               title="Asset Image"
               image={assetImage}
@@ -68,17 +79,6 @@ function ItemFormModal({
             {error.assetImage && (
               <p className="reg-error">{error.assetImage}</p>
             )}
-          </div>
-
-          <div className="reg-modal-section">
-            <Assignment
-              form={item}
-              onChange={handleChange}
-              skippedWarning={false}
-              fulltimeCustodians={fulltimeCustodians}
-              rooms={rooms}
-              loadingOptions={loadingOptions}
-            />
           </div>
         </div>
 

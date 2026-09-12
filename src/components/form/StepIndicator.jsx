@@ -3,11 +3,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./StepIndicator.css";
 
 const STEPS = [
-  { number: 1, label: "Acquisition Info" },
-  { number: 2, label: "Items" },
-  { number: 3, label: "Review & Submit" },
+  { number: 1, label: "Acquisition Info", icon: "fa-solid fa-file-lines" },
+  { number: 2, label: "Items", icon: "fa-solid fa-boxes-stacked" },
+  { number: 3, label: "Review & Submit", icon: "fa-solid fa-clipboard-check" },
 ];
-
 function StepIndicator({ currentStep }) {
   return (
     <div className="reg-steps">
@@ -33,7 +32,7 @@ function StepIndicator({ currentStep }) {
                 {isDone ? (
                   <FontAwesomeIcon icon="fa-solid fa-check" />
                 ) : (
-                  step.number
+                  <FontAwesomeIcon icon={step.icon} />
                 )}
               </div>
               <span
