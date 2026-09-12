@@ -28,10 +28,12 @@ import Room from "./pages/Room/Room";
 import { ROLES } from "./data/roles";
 import CustodianAssets from "./pages/Custodian/CustodianAssets";
 import RoomAssets from "./pages/Room/RoomAssets";
-import Profile from "./pages/Profile/Profile";
 import ReportInfo from "./pages/Report/ReportInfo";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import About from "./pages/LandingPage/About";
+import ProfileSettings from "./pages/Settings/profile/Profile";
+import Security from "./pages/Settings/security/Security";
+import Config from "./pages/Settings/config/Config";
 
 function App() {
   const { user, loading } = useAuth();
@@ -60,8 +62,11 @@ function App() {
 
         {/* LOGGED IN USER PAGES */}
         <Route element={<ProtectedRoute />}>
+          {/* SETTINGS PAGE */}
           {/* PROFILE PAGE */}
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/settings/profile" element={<ProfileSettings />} />
+          {/* SECURITY PAGE */}
+          <Route path="/settings/security" element={<Security />} />
 
           {/* DASHBOARD PAGE */}
           <Route path="/dashboard" element={<Dashboard />} />
@@ -93,6 +98,9 @@ function App() {
 
           {/* ADMIN ONLY PAGES */}
           <Route element={<RoleRoute allowed={[ROLES.ADMIN]} />}>
+            {/* CONFIG PAGE */}
+            <Route path="/settings/system-config" element={<Config />} />
+
             {/* AUDIT PAGE */}
             <Route path="/audit">
               <Route index element={<Audit />} />
