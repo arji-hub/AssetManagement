@@ -6,7 +6,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 999;
+  z-index: 9999;
   animation: overlay-in 0.15s ease;
 }
 
@@ -245,6 +245,61 @@
   font-size: 12px;
   color: var(--maroon-700);
   line-height: 1.6;
+}
+
+.transfer-room-autocomplete-wrapper {
+  position: relative;
+}
+
+.transfer-room-autocomplete-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 42px; /* clears the find button width */
+  background: var(--card-bg);
+  border: 1.5px solid var(--card-border);
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  max-height: 220px;
+  overflow-y: auto;
+  list-style: none;
+  margin: 0;
+  padding: 4px;
+  z-index: 10;
+}
+
+.transfer-room-autocomplete-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.transfer-room-autocomplete-list li:hover {
+  background: var(--maroon-tint);
+}
+
+.transfer-room-autocomplete-list li.is-empty {
+  color: var(--text-faint);
+  cursor: default;
+}
+
+.transfer-room-autocomplete-list li.is-empty:hover {
+  background: none;
+}
+
+.transfer-room-autocomplete-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
+.transfer-room-autocomplete-sub {
+  font-size: 12px;
+  color: var(--text-muted);
 }
 
 /* Footer */

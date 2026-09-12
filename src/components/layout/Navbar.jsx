@@ -182,7 +182,7 @@ function Navbar({
           {/* user info */}
           <div
             className="navbar-right navbar-right-tooltip"
-            onClick={() => navigate("/profile")}
+            onClick={() => navigate("/settings/profile")}
             aria-label="Go to profile"
           >
             <div className="user-info">
