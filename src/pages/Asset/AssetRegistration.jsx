@@ -4,39 +4,46 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MainLayout from "../../components/layout/MainLayout";
 import "./AssetRegistration.css";
 import StepIndicator from "../../components/form/StepIndicator";
-import BasicInfo from "../../components/form/BasicInfo";
-import Media from "../../components/form/Media";
-import Assignment from "../../components/form/Assignment";
-import { useAssetRegistrationForm } from "../../hooks/asset/useAssetRegistration";
+import AcquisitionInfo from "../../components/form/AcquisitionInfo";
+import ItemList from "../../components/form/ItemList";
+import ItemFormModal from "../../components/modal/ItemFormModal";
+import ReviewSubmit from "../../components/form/ReviewSubmit";
+import { useAcquisitionRegistration } from "../../hooks/asset/useAcquisitionRegistration";
 import AddingStatusModal from "../../components/ui/status/AddingStatusModal";
 
 function AssetRegistration() {
   const navigate = useNavigate();
   const {
     step,
-    form,
-    error,
-    assetImage,
-    setAssetImage,
+    acquisitionInfo,
     docImage,
     setDocImage,
+    isDonated,
+    handleAcquisitionChange,
+    setAcquisitionField,
+    canProceedStep1,
+    goToItems,
+    goBackToAcquisition,
+    goToReview,
+    goBackToItems,
+    items,
+    itemModalOpen,
+    editingItem,
+    openAddItem,
+    openEditItem,
+    closeItemModal,
+    saveItem,
+    removeItem,
+    duplicateItem,
     saving,
-    saveError,
     saveStatus,
     setSaveStatus,
-    showSkipWarning,
-    isAssigned,
-    categories,
+    saveError,
     rooms,
     fulltimeCustodians,
     loadingOptions,
-    handleChange,
-    canProceed,
-    handleNext,
-    handleBack,
-    handleSkip,
-    handleSave,
-  } = useAssetRegistrationForm();
+    handleSubmit,
+  } = useAcquisitionRegistration();
 
   return (
     <MainLayout>
@@ -48,7 +55,7 @@ function AssetRegistration() {
               <FontAwesomeIcon icon="fa-solid fa-layer-group" />
               Asset Registration
             </div>
-            <h1 className="reg-header-title">Register New Asset</h1>
+            <h1 className="reg-header-title">Register New Assets</h1>
           </div>
         </div>
 
@@ -58,31 +65,30 @@ function AssetRegistration() {
         {/* ── step content ── */}
         <div className="reg-content">
           {step === 1 && (
-            <BasicInfo
-              form={form}
-              onChange={handleChange}
-              categories={categories}
-              loadingOptions={loadingOptions}
-              error={error}
-            />
-          )}
-          {step === 2 && (
-            <Media
-              assetImage={assetImage}
-              setAssetImage={setAssetImage}
+            <AcquisitionInfo
+              acquisitionInfo={acquisitionInfo}
+              onChange={handleAcquisitionChange}
+              setField={setAcquisitionField}
               docImage={docImage}
               setDocImage={setDocImage}
-              acquisitionType={form.acquisition_type}
             />
           )}
+
+          {step === 2 && (
+            <ItemList
+              items={items}
+              onAdd={openAddItem}
+              onEdit={openEditItem}
+              onRemove={removeItem}
+              onDuplicate={duplicateItem}
+            />
+          )}
+
           {step === 3 && (
-            <Assignment
-              form={form}
-              onChange={handleChange}
-              skippedWarning={showSkipWarning}
-              fulltimeCustodians={fulltimeCustodians}
-              rooms={rooms}
-              loadingOptions={loadingOptions}
+            <ReviewSubmit
+              acquisitionInfo={acquisitionInfo}
+              docImage={docImage}
+              items={items}
             />
           )}
         </div>
@@ -94,7 +100,7 @@ function AssetRegistration() {
               <button
                 type="button"
                 className="reg-btn reg-btn--ghost"
-                onClick={handleBack}
+                onClick={step === 2 ? goBackToAcquisition : goBackToItems}
                 disabled={saving}
               >
                 <FontAwesomeIcon icon="fa-solid fa-arrow-left" />
@@ -113,47 +119,60 @@ function AssetRegistration() {
               Cancel
             </button>
 
-            {step === 3 && (
-              <>
-                {isAssigned ? (
-                  <button
-                    type="button"
-                    className="reg-btn reg-btn--primary"
-                    onClick={() => handleSave(false)}
-                    disabled={saving}
-                  >
-                    {saving ? "Saving…" : "Save"}
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className={`reg-btn ${showSkipWarning ? "reg-btn--warn" : "reg-btn--ghost"}`}
-                    onClick={handleSkip}
-                    disabled={saving}
-                  >
-                    {showSkipWarning ? "Confirm Skip" : "Skip for now"}
-                  </button>
-                )}
-              </>
-            )}
-
-            {step < 3 && (
+            {step === 1 && (
               <button
                 type="button"
                 className="reg-btn reg-btn--primary"
-                onClick={handleNext}
-                disabled={!canProceed()}
+                onClick={goToItems}
+                disabled={!canProceedStep1()}
               >
                 Next
                 <FontAwesomeIcon icon="fa-solid fa-arrow-right" />
               </button>
             )}
+
+            {step === 2 && (
+              <button
+                type="button"
+                className="reg-btn reg-btn--primary"
+                onClick={goToReview}
+                disabled={items.length === 0}
+              >
+                Review
+                <FontAwesomeIcon icon="fa-solid fa-arrow-right" />
+              </button>
+            )}
+
+            {step === 3 && (
+              <button
+                type="button"
+                className="reg-btn reg-btn--primary"
+                onClick={handleSubmit}
+                disabled={saving}
+              >
+                {saving
+                  ? "Saving…"
+                  : `Save ${items.length} Asset${items.length === 1 ? "" : "s"}`}
+              </button>
+            )}
           </div>
         </div>
 
+        {itemModalOpen && (
+          <ItemFormModal
+            initialItem={editingItem}
+            isDonated={isDonated}
+            fulltimeCustodians={fulltimeCustodians}
+            rooms={rooms}
+            loadingOptions={loadingOptions}
+            onSave={saveItem}
+            onClose={closeItemModal}
+          />
+        )}
+
         {saveStatus && (
           <AddingStatusModal
-            title="Asset"
+            title="Assets"
             status={saveStatus}
             errorMessage={saveError}
             onClose={() => {

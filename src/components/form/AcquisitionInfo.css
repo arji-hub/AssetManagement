@@ -1,0 +1,33 @@
+/* AcquisitionInfo.css */
+
+/* ─── Acquisition type toggle ───────────────────────────────────────────── */
+.reg-toggle-group {
+  display: flex;
+  width: fit-content;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.reg-toggle-option {
+  padding: 0.55rem 1.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #666;
+  background: #fafafa;
+  border: none;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s;
+  font-family: inherit;
+}
+
+.reg-toggle-option:not(:last-child) {
+  border-right: 1px solid #ddd;
+}
+
+.reg-toggle-option--active {
+  background: #860100;
+  color: #fff;
+}
