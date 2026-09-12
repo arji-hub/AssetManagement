@@ -26,6 +26,7 @@ import {
   logInitialCustodianAssignment,
   logInitialRoomAssignment,
 } from "./transfer";
+import { fetchRoomName } from "./room";
 
 export function subscribeToAssets(role, currentUserUid, callback, onError) {
   const assetsRef = collection(db, "asset");
@@ -134,6 +135,10 @@ export async function fetchAssetByID(assetId) {
     }
   });
 
+  const room_name = assetData.room_id
+    ? await fetchRoomName(assetData.room_id)
+    : "---";
+
   return {
     ...assetData,
     category: assetData.category_id,
@@ -143,6 +148,7 @@ export async function fetchAssetByID(assetId) {
       usernameMap[assetData.property_custodian] || "---",
     local_mr_name: userMap[assetData.local_mr] || "---",
     local_mr_username: usernameMap[assetData.local_mr] || "---",
+    room_name,
   };
 }
 

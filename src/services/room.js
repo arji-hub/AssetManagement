@@ -111,6 +111,14 @@ export async function fetchRoom(id) {
   };
 }
 
+export async function fetchRoomName(id) {
+  const roomID = toLowerCase(id);
+  const snap = await getDoc(doc(db, "room", roomID));
+  if (!snap.exists()) throw new Error("Room not found.");
+
+  return snap.data().name;
+}
+
 export async function resolveRoomName(roomID) {
   if (!roomID) return null;
   if (roomNameCache.has(roomID)) return roomNameCache.get(roomID);
@@ -213,11 +221,11 @@ export function subscribeToAssetsInRoom(room_id, callback, onError) {
         const assets = assetData.map((asset) => ({
           id: asset.id,
           description: asset.description,
-          serial_number: asset.serial_number,
           category: asset.category_id,
           name: fullnameMap[asset.property_custodian] ?? "---",
           status: asset.status,
           date: asset.date_acquired,
+          qty: asset.qty,
         }));
 
         callback(assets);

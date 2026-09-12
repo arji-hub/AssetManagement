@@ -1,6 +1,6 @@
 // components/modal/TransferRoomModal.jsx
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useTransferRoomRequest from "../../hooks/transfer/useTransferRoomRequest";
 import "./TransferRoomModal.css";
@@ -28,6 +28,23 @@ function TransferRoomModal({ onClose, assetID = "" }) {
     submitStatus,
     handleStatusClose,
   } = useTransferRoomRequest({ onClose, assetID });
+
+  const [roomQuery, setRoomQuery] = useState("");
+  const [showRoomDropdown, setShowRoomDropdown] = useState(false);
+
+  // keep the visible search text in sync with the selected room
+  useEffect(() => {
+    if (!moveTo) {
+      setRoomQuery("");
+      return;
+    }
+    const selected = rooms.find((room) => (room.id || room) === moveTo);
+    if (selected) setRoomQuery(selected.name || selected);
+  }, [moveTo, rooms]);
+
+  const filteredRooms = rooms.filter((room) =>
+    (room.name || room).toLowerCase().includes(roomQuery.toLowerCase()),
+  );
 
   return (
     <>
@@ -120,22 +137,58 @@ function TransferRoomModal({ onClose, assetID = "" }) {
             <div
               className={`transfer-room-modal-field ${roomsError ? "has-error" : ""}`}
             >
-              <label htmlFor="transfer-room-destination-select">Move To</label>
-              <select
-                id="transfer-room-destination-select"
-                value={moveTo}
-                onChange={(e) => setMoveTo(e.target.value)}
-                disabled={isSubmitting || roomsLoading || !asset}
-              >
-                <option value="" disabled>
-                  {roomsLoading ? "Loading rooms..." : "Select a room"}
-                </option>
-                {rooms.map((room) => (
-                  <option key={room.id || room} value={room.id || room}>
-                    {room.name || room}
-                  </option>
-                ))}
-              </select>
+              <label htmlFor="transfer-room-destination-input">Move To</label>
+              <div className="transfer-room-modal-lookup transfer-room-autocomplete-wrapper">
+                <input
+                  id="transfer-room-destination-input"
+                  type="text"
+                  autoComplete="off"
+                  placeholder={
+                    roomsLoading ? "Loading rooms..." : "Search for a room"
+                  }
+                  value={roomQuery}
+                  onChange={(e) => {
+                    setRoomQuery(e.target.value);
+                    setMoveTo("");
+                    setShowRoomDropdown(true);
+                  }}
+                  onFocus={() => setShowRoomDropdown(true)}
+                  onBlur={() =>
+                    setTimeout(() => setShowRoomDropdown(false), 120)
+                  }
+                  disabled={isSubmitting || roomsLoading || !asset}
+                />
+                {showRoomDropdown && (
+                  <ul className="transfer-room-autocomplete-list">
+                    {filteredRooms.length > 0 ? (
+                      filteredRooms.map((room) => (
+                        <li
+                          key={room.id || room}
+                          onMouseDown={() => {
+                            setMoveTo(room.id || room);
+                            setRoomQuery(room.name || room);
+                            setShowRoomDropdown(false);
+                          }}
+                        >
+                          <span className="transfer-room-autocomplete-name">
+                            {room.name || room}
+                          </span>
+                        </li>
+                      ))
+                    ) : (
+                      <li className="is-empty">No matching rooms</li>
+                    )}
+                  </ul>
+                )}
+                <button
+                  type="button"
+                  className="transfer-room-modal-find-btn"
+                  onClick={() => setShowRoomDropdown((prev) => !prev)}
+                  disabled={isSubmitting || roomsLoading || !asset}
+                >
+                  <FontAwesomeIcon icon="fa-solid fa-magnifying-glass" />
+                </button>
+              </div>
               {roomsError && (
                 <span className="transfer-room-modal-error" role="alert">
                   {roomsError}
