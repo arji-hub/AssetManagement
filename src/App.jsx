@@ -33,7 +33,7 @@ import LoginPage from "./pages/LoginPage/LoginPage";
 import About from "./pages/LandingPage/About";
 import ProfileSettings from "./pages/Settings/profile/Profile";
 import Security from "./pages/Settings/security/Security";
-import Notification from "./pages/Settings/Notification/Notification";
+import Notification from "./pages/Settings/notification/Notification";
 import Config from "./pages/Settings/config/Config";
 
 function App() {
