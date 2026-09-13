@@ -49,7 +49,10 @@ function AssetInfo() {
             <span className="breadcrumb-parent">Asset Information</span>
           </div>
           <div className="asset-info-actions">
-            <ViewAssetDocument doc_image_url={asset.doc_image_url} />
+            <ViewAssetDocument
+              doc_image_url={asset.par_ics_doc_url ?? asset.donation_form_url}
+            />
+
             <ViewAssetQR qr_code_url={asset.qr_code_url} assetID={assetId} />
             <ManageAsset asset={asset} />
           </div>

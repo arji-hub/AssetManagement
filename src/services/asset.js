@@ -16,11 +16,8 @@ import {
 } from "firebase/firestore";
 import { ROLES } from "../data/roles";
 import { useAuth } from "../context/AuthContext";
-import QRCode from "qrcode";
 import { categoryCount } from "./category";
 import { roomCount } from "./room";
-import QRCodeStyling from "qr-code-styling";
-import CICTLogo from "../assets/logo/CICTLOGO.png";
 import { toLowerCase, toTitleCase } from "../utils/TextCasing";
 import {
   logInitialCustodianAssignment,
@@ -197,52 +194,6 @@ async function reserveAssetIds(count) {
   );
 }
 
-const generateQR = async (assetId) => {
-  const url = `https://ams-cict.web.app/asset/${assetId}`;
-
-  const qrCode = new QRCodeStyling({
-    width: 300,
-    height: 300,
-    type: "canvas",
-    data: url,
-
-    dotsOptions: {
-      type: "rounded",
-      color: "#860100",
-    },
-
-    cornersSquareOptions: {
-      type: "extra-rounded",
-      color: "#860100",
-    },
-
-    cornersDotOptions: {
-      type: "dot",
-      color: "#f5aa2c",
-    },
-
-    backgroundOptions: {
-      color: "#ffffff",
-    },
-
-    imageOptions: {
-      crossOrigin: "anonymous",
-      margin: 1,
-      imageSize: 0.6,
-    },
-
-    image: CICTLogo,
-  });
-
-  const tempDiv = document.createElement("div");
-  qrCode.append(tempDiv);
-
-  await new Promise((r) => setTimeout(r, 100));
-
-  const canvas = tempDiv.querySelector("canvas");
-  return canvas.toDataURL("image/png");
-};
-
 /**
  * Registers every line item belonging to one acquisition event (a single
  * donation or a single purchase/PO) as separate asset docs, all sharing
@@ -257,6 +208,7 @@ const generateQR = async (assetId) => {
  * single transaction via `reserveAssetIds`, then handed out to each item.
  * This is what keeps the whole batch save down to one write against the
  * `counters/asset` doc instead of one per asset.
+ *
  *
  * @param {object} acquisitionInfo  { acquisition_type, date_acquired, donated_by, supplier}
  * @param {File} docImageFile       Deed of Donation / PAR-ICS file, uploaded once
@@ -336,7 +288,8 @@ export async function addAcquisitionBatch(
 
 // One line item → its own asset image upload, using the asset IDs already
 // reserved for it by addAcquisitionBatch, sharing acquisitionFields across
-// every record it produces.
+// every record it produces. QR codes are generated asynchronously by the
+// onAssetCreatedGenerateQR Firestore trigger after each doc is created.
 async function addAssetItem(
   item,
   acquisitionFields,
@@ -352,15 +305,12 @@ async function addAssetItem(
     `assets/${acquisitionFields.acquisition_id}/${item.category_id}-${Date.now()}`,
   );
 
-  const records = await Promise.all(
-    assetIds.map(async (assetId, i) => {
-      const qrCodeUrl = await generateQR(assetId);
-      const serial = isIndividual
-        ? item.serial_numbers?.[i] || null
-        : item.serial_number || null;
-      return { assetId, qrCodeUrl, serial };
-    }),
-  );
+  const records = assetIds.map((assetId, i) => {
+    const serial = isIndividual
+      ? item.serial_numbers?.[i] || null
+      : item.serial_number || null;
+    return { assetId, serial };
+  });
 
   const itemPayload = {
     ...acquisitionFields,
@@ -378,13 +328,14 @@ async function addAssetItem(
   };
 
   // ── create the asset docs first ──
+  // qr_code_url is intentionally omitted here: onAssetCreatedGenerateQR
+  // picks up the doc-create event and fills it in server-side.
   await Promise.all(
-    records.map(({ assetId, qrCodeUrl, serial }) =>
+    records.map(({ assetId, serial }) =>
       setDoc(doc(db, "asset", assetId), {
         ...itemPayload,
         serial_number: serial,
         asset_id: assetId,
-        qr_code_url: qrCodeUrl || null,
         created_at: serverTimestamp(),
         updated_at: serverTimestamp(),
       }),
