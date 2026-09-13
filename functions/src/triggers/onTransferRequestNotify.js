@@ -6,9 +6,12 @@ const {
 const { defineSecret } = require("firebase-functions/params");
 const { getFirestore } = require("firebase-admin/firestore");
 const { sendEmail } = require("../utils/sendEmail");
+const { isNotificationEnabled } = require("../utils/NotificationPrefs");
 
 const GMAIL_USER = defineSecret("GMAIL_USER");
 const GMAIL_PASS = defineSecret("GMAIL_PASS");
+
+const NOTIFICATION_CATEGORY = "transfer_request";
 
 const SLOT_LABELS = {
   admin: "Admin",
@@ -54,6 +57,7 @@ async function getUserData(uid) {
   return {
     email: d.email || null,
     firstName: d.first_name || "",
+    notification_prefs: d.notification_prefs || null,
   };
 }
 
@@ -147,6 +151,7 @@ async function notifyRecipients(
     recipients.map(async (r) => {
       const userData = await getUserData(r.uid);
       if (!userData?.email) return; // no email on file — skip silently, don't fail the whole batch
+      if (!isNotificationEnabled(userData, NOTIFICATION_CATEGORY)) return; // opted out in Settings > Notifications
       try {
         await sendEmail({
           gmailUser,
