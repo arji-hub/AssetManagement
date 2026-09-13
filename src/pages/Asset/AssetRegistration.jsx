@@ -165,6 +165,7 @@ function AssetRegistration() {
             fulltimeCustodians={fulltimeCustodians}
             rooms={rooms}
             loadingOptions={loadingOptions}
+            existingItems={items}
             onSave={saveItem}
             onClose={closeItemModal}
           />

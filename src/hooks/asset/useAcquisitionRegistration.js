@@ -12,7 +12,6 @@ const INITIAL_ACQUISITION = {
   date_acquired: todayISO,
   donated_by: "", // donated only
   supplier: "", // purchased only
-  po_reference: "", // purchased only, optional
 };
 
 export function useAcquisitionRegistration() {
