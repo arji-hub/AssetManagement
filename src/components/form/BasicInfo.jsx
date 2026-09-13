@@ -92,7 +92,9 @@ function BasicInfo({
 
       <div className="reg-grid">
         <div className="reg-field">
-          <label className="reg-label">Serial Number</label>
+          <label className="reg-label">
+            Serial Number <span className="reg-required">*</span>
+          </label>
           <input
             className={`reg-input ${error.serial_number ? "reg-input--error" : ""}`}
             name="serial_number"
@@ -106,11 +108,6 @@ function BasicInfo({
           />
           {error.serial_number && (
             <p className="reg-error">{error.serial_number}</p>
-          )}
-          {!isIndividual && !error.serial_number && (
-            <p className="reg-hint">
-              Leave blank if this batch has no printed serial.
-            </p>
           )}
         </div>
 
@@ -245,7 +242,8 @@ function BasicInfo({
           <div className="reg-field reg-field--full">
             <div className="reg-serial-list-header">
               <label className="reg-label">
-                Unit Serial Numbers {serialsChecking && "(checking…)"}
+                Unit Serial Numbers <span className="reg-required">*</span>{" "}
+                {serialsChecking && "(checking…)"}
               </label>
               <button
                 type="button"
