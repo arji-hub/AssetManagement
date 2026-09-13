@@ -82,6 +82,7 @@ function BasicInfo({
   error,
   qty,
   isIndividual,
+  serialsChecking,
 }) {
   const { categories, loading: categoriesLoading } = useCategoryOptions();
 
@@ -91,7 +92,9 @@ function BasicInfo({
 
       <div className="reg-grid">
         <div className="reg-field">
-          <label className="reg-label">Serial Number</label>
+          <label className="reg-label">
+            Serial Number <span className="reg-required">*</span>
+          </label>
           <input
             className={`reg-input ${error.serial_number ? "reg-input--error" : ""}`}
             name="serial_number"
@@ -105,11 +108,6 @@ function BasicInfo({
           />
           {error.serial_number && (
             <p className="reg-error">{error.serial_number}</p>
-          )}
-          {!isIndividual && (
-            <p className="reg-hint">
-              Leave blank if this batch has no printed serial.
-            </p>
           )}
         </div>
 
@@ -243,7 +241,10 @@ function BasicInfo({
         {isIndividual && (
           <div className="reg-field reg-field--full">
             <div className="reg-serial-list-header">
-              <label className="reg-label">Unit Serial Numbers</label>
+              <label className="reg-label">
+                Unit Serial Numbers <span className="reg-required">*</span>{" "}
+                {serialsChecking && "(checking…)"}
+              </label>
               <button
                 type="button"
                 className="reg-serial-autonumber"
@@ -254,13 +255,19 @@ function BasicInfo({
             </div>
             <div className="reg-serial-list">
               {item.serial_numbers.map((serial, i) => (
-                <input
-                  key={i}
-                  className="reg-input"
-                  placeholder={`Unit ${i + 1} serial`}
-                  value={serial}
-                  onChange={(e) => setSerialAt(i, e.target.value)}
-                />
+                <div key={i}>
+                  <input
+                    className={`reg-input ${
+                      error.serial_numbers?.[i] ? "reg-input--error" : ""
+                    }`}
+                    placeholder={`Unit ${i + 1} serial`}
+                    value={serial}
+                    onChange={(e) => setSerialAt(i, e.target.value)}
+                  />
+                  {error.serial_numbers?.[i] && (
+                    <p className="reg-error">{error.serial_numbers[i]}</p>
+                  )}
+                </div>
               ))}
             </div>
           </div>

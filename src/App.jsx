@@ -33,6 +33,7 @@ import LoginPage from "./pages/LoginPage/LoginPage";
 import About from "./pages/LandingPage/About";
 import ProfileSettings from "./pages/Settings/profile/Profile";
 import Security from "./pages/Settings/security/Security";
+import Notification from "./pages/Settings/notification/Notification";
 import Config from "./pages/Settings/config/Config";
 
 function App() {
@@ -67,6 +68,8 @@ function App() {
           <Route path="/settings/profile" element={<ProfileSettings />} />
           {/* SECURITY PAGE */}
           <Route path="/settings/security" element={<Security />} />
+          {/* NOTIFICATION PAGE */}
+          <Route path="/settings/notifications" element={<Notification />} />
 
           {/* DASHBOARD PAGE */}
           <Route path="/dashboard" element={<Dashboard />} />

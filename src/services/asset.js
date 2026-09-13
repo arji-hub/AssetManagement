@@ -258,7 +258,7 @@ const generateQR = async (assetId) => {
  * This is what keeps the whole batch save down to one write against the
  * `counters/asset` doc instead of one per asset.
  *
- * @param {object} acquisitionInfo  { acquisition_type, date_acquired, donated_by, supplier, po_reference }
+ * @param {object} acquisitionInfo  { acquisition_type, date_acquired, donated_by, supplier}
  * @param {File} docImageFile       Deed of Donation / PAR-ICS file, uploaded once
  * @param {Array} items             line items, each shaped like the old per-registration `data`
  *                                  plus `assetImage: {file, preview}`
@@ -298,7 +298,6 @@ export async function addAcquisitionBatch(
     date_acquired: acquisitionInfo.date_acquired,
     donated_by: isDonated ? acquisitionInfo.donated_by || null : null,
     supplier: !isDonated ? acquisitionInfo.supplier || null : null,
-    po_reference: !isDonated ? acquisitionInfo.po_reference || null : null,
     ...docUrlFields,
   };
 
@@ -448,4 +447,42 @@ export async function updateAssetRoom(assetId, room) {
   await updateDoc(docRef, {
     room_id: room,
   });
+}
+
+/**
+ * Given a list of serial numbers, returns the subset that already exist
+ * on some asset doc in Firestore. Used to block duplicate serials during
+ * registration. Firestore 'in' queries are capped at 30 values, so the
+ * list is chunked defensively even though a single item form won't
+ * realistically hit that.
+ *
+ * @param {string[]} serials
+ * @returns {Promise<Set<string>>} normalized serials that already exist
+ */
+export async function findExistingSerialNumbers(serials) {
+  const normalized = [
+    ...new Set(serials.map((s) => s?.trim()).filter(Boolean)),
+  ];
+  if (!normalized.length) return new Set();
+
+  const assetsRef = collection(db, "asset");
+  const chunks = [];
+  for (let i = 0; i < normalized.length; i += 30) {
+    chunks.push(normalized.slice(i, i + 30));
+  }
+
+  const snaps = await Promise.all(
+    chunks.map((chunk) =>
+      getDocs(query(assetsRef, where("serial_number", "in", chunk))),
+    ),
+  );
+
+  const found = new Set();
+  snaps.forEach((snap) =>
+    snap.forEach((d) => {
+      const sn = d.data().serial_number;
+      if (sn) found.add(sn.trim());
+    }),
+  );
+  return found;
 }

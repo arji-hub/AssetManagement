@@ -1,42 +1,98 @@
 // src/hooks/asset/useItemForm.js
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { findExistingSerialNumbers } from "../../services/asset";
 
 const EMPTY_ITEM = {
   serial_number: "",
   serial_numbers: [],
   category_id: "",
   description: "",
-  unit_value: "1.00", // only used when the acquisition is "purchased"
+  unit_value: "1.00",
   remarks: "",
   qty: "1",
-  tracking_mode: "single_bulk", // "single_bulk" | "individual"
+  tracking_mode: "single_bulk",
   primary_custodian: "",
   room_id: "",
 };
 
-/**
- * Owns the state for a single line item inside the "Add/Edit asset" modal.
- * initialItem is null when adding a new item, or an existing item object
- * (as stored in useAcquisitionRegistration's `items` array) when editing.
- */
-export function useItemForm(initialItem, isDonated) {
+function getItemSerials(item) {
+  const qty = parseInt(item?.qty, 10) || 1;
+  const isIndividual = item?.tracking_mode === "individual" && qty > 1;
+  if (isIndividual) {
+    return (item.serial_numbers || []).map((s) => s?.trim()).filter(Boolean);
+  }
+  const single = item?.serial_number?.trim();
+  return single ? [single] : [];
+}
+
+// Single source of truth for serial-number errors — used by BOTH the live
+// (typing) effect and validate() on save, so they can never disagree and
+// stomp on each other's result.
+function computeSerialErrors(
+  item,
+  isIndividual,
+  otherItemsSerials,
+  dbDuplicateSerials,
+) {
+  if (isIndividual) {
+    const counts = {};
+    (item.serial_numbers || []).forEach((s) => {
+      const v = s?.trim();
+      if (v) counts[v] = (counts[v] || 0) + 1;
+    });
+    const serial_numbers = (item.serial_numbers || []).map((s) => {
+      const v = s?.trim();
+      if (!v) return "Serial number is required.";
+      if (counts[v] > 1) return "Duplicate within this item.";
+      if (otherItemsSerials.has(v))
+        return "Already used by another item in this batch.";
+      if (dbDuplicateSerials.has(v))
+        return "Serial number already exists in the system.";
+      return "";
+    });
+    return { serial_number: "", serial_numbers };
+  }
+
+  const v = item.serial_number?.trim();
+  let serial_number = "";
+  if (!v) {
+    serial_number = "Serial number is required.";
+  } else if (otherItemsSerials.has(v)) {
+    serial_number = "Already used by another item in this batch.";
+  } else if (dbDuplicateSerials.has(v)) {
+    serial_number = "Serial number already exists in the system.";
+  }
+  return { serial_number, serial_numbers: [] };
+}
+
+export function useItemForm(initialItem, isDonated, existingItems = []) {
   const [item, setItem] = useState(() =>
     initialItem ? { ...EMPTY_ITEM, ...initialItem } : EMPTY_ITEM,
   );
   const [assetImage, setAssetImage] = useState(initialItem?.assetImage || null);
   const [error, setError] = useState({});
+  const [serialsChecking, setSerialsChecking] = useState(false);
+  const [dbDuplicateSerials, setDbDuplicateSerials] = useState(new Set());
+  const debounceRef = useRef(null);
 
-  // re-sync if a different item is opened for editing
   useEffect(() => {
     setItem(initialItem ? { ...EMPTY_ITEM, ...initialItem } : EMPTY_ITEM);
     setAssetImage(initialItem?.assetImage || null);
     setError({});
+    setDbDuplicateSerials(new Set());
   }, [initialItem]);
 
   const qty = parseInt(item.qty, 10) || 1;
   const isIndividual = item.tracking_mode === "individual" && qty > 1;
 
-  // keep serial_numbers array length in sync with qty while in individual mode
+  const otherItemsSerials = useMemo(() => {
+    const set = new Set();
+    existingItems
+      .filter((it) => it.id !== initialItem?.id)
+      .forEach((it) => getItemSerials(it).forEach((s) => set.add(s)));
+    return set;
+  }, [existingItems, initialItem]);
+
   useEffect(() => {
     if (!isIndividual) return;
     setItem((prev) => {
@@ -47,12 +103,56 @@ export function useItemForm(initialItem, isDonated) {
     });
   }, [isIndividual, qty]);
 
-  // drop back to single_bulk if qty is edited down to 1
   useEffect(() => {
     if (qty <= 1 && item.tracking_mode !== "single_bulk") {
       setItem((prev) => ({ ...prev, tracking_mode: "single_bulk" }));
     }
   }, [qty, item.tracking_mode]);
+
+  // live, debounced DB existence check as the user types
+  useEffect(() => {
+    const serials = getItemSerials(item);
+    if (!serials.length) {
+      setDbDuplicateSerials(new Set());
+      setSerialsChecking(false);
+      return;
+    }
+    setSerialsChecking(true);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(async () => {
+      try {
+        const found = await findExistingSerialNumbers(serials);
+        setDbDuplicateSerials(found);
+      } finally {
+        setSerialsChecking(false);
+      }
+    }, 500);
+    return () => clearTimeout(debounceRef.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    item.serial_number,
+    JSON.stringify(item.serial_numbers),
+    item.tracking_mode,
+  ]);
+
+  // live error recompute — uses the SAME function validate() uses below,
+  // so a dbDuplicateSerials update (e.g. from validate()'s own check)
+  // can never wipe out a required-field error like it used to.
+  useEffect(() => {
+    const { serial_number, serial_numbers } = computeSerialErrors(
+      item,
+      isIndividual,
+      otherItemsSerials,
+      dbDuplicateSerials,
+    );
+    setError((prev) => ({ ...prev, serial_number, serial_numbers }));
+  }, [
+    item.serial_number,
+    item.serial_numbers,
+    isIndividual,
+    otherItemsSerials,
+    dbDuplicateSerials,
+  ]);
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
@@ -79,7 +179,7 @@ export function useItemForm(initialItem, isDonated) {
     });
   }, [qty]);
 
-  const validate = useCallback(() => {
+  const validate = useCallback(async () => {
     const nextError = {};
 
     if (!item.category_id) nextError.category_id = "Category is required.";
@@ -98,15 +198,45 @@ export function useItemForm(initialItem, isDonated) {
 
     if (!assetImage) nextError.assetImage = "Asset image is required.";
 
-    // TODO: port over the per-serial uniqueness check from the original
-    // useBasicInfo.js (not available when this hook was generated) — it
-    // should validate item.serial_number in bulk mode and every entry of
-    // item.serial_numbers in individual mode against existing Firestore
-    // asset docs.
+    // ── authoritative, non-debounced DB check right before save ──
+    const serials = getItemSerials(item);
+    let freshDbDuplicates = dbDuplicateSerials;
+    if (serials.length) {
+      freshDbDuplicates = await findExistingSerialNumbers(serials);
+      setDbDuplicateSerials(freshDbDuplicates);
+    }
 
-    setError(nextError);
-    return Object.keys(nextError).length === 0;
-  }, [item, isDonated, qty, isIndividual, assetImage]);
+    const { serial_number, serial_numbers } = computeSerialErrors(
+      item,
+      isIndividual,
+      otherItemsSerials,
+      freshDbDuplicates,
+    );
+
+    const merged = { ...nextError, serial_number, serial_numbers };
+    setError(merged);
+
+    const scalarOk = [
+      "category_id",
+      "description",
+      "unit_value",
+      "qty",
+      "tracking_mode",
+      "assetImage",
+      "serial_number",
+    ].every((k) => !merged[k]);
+    const arrOk = !merged.serial_numbers?.some(Boolean);
+
+    return scalarOk && arrOk;
+  }, [
+    item,
+    isDonated,
+    qty,
+    isIndividual,
+    assetImage,
+    otherItemsSerials,
+    dbDuplicateSerials,
+  ]);
 
   const toPayload = useCallback(
     () => ({ ...item, assetImage }),
@@ -120,6 +250,7 @@ export function useItemForm(initialItem, isDonated) {
     setAssetImage,
     qty,
     isIndividual,
+    serialsChecking,
     handleChange,
     setSerialAt,
     autoNumberSerials,
