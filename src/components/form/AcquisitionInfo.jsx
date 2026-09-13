@@ -88,16 +88,6 @@ function AcquisitionInfo({
                 onChange={onChange}
               />
             </div>
-            <div className="reg-field">
-              <label className="reg-label">PO / Invoice Reference</label>
-              <input
-                className="reg-input"
-                name="po_reference"
-                placeholder="Optional"
-                value={acquisitionInfo.po_reference}
-                onChange={onChange}
-              />
-            </div>
           </>
         )}
 

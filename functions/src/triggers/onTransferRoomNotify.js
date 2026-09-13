@@ -3,9 +3,12 @@ const { defineSecret } = require("firebase-functions/params");
 const { getFirestore } = require("firebase-admin/firestore");
 const { sendEmail } = require("../utils/sendEmail");
 const { emailShell } = require("../utils/emailShell");
+const { isNotificationEnabled } = require("../utils/NotificationPrefs");
 
 const GMAIL_USER = defineSecret("GMAIL_USER");
 const GMAIL_PASS = defineSecret("GMAIL_PASS");
+
+const NOTIFICATION_CATEGORY = "transfer_room";
 
 async function getUserData(uid) {
   if (!uid) return null;
@@ -13,7 +16,12 @@ async function getUserData(uid) {
   if (!snap.exists) return null;
   const d = snap.data();
   if (!d.email) return null;
-  return { uid, email: d.email, firstName: d.first_name || "" };
+  return {
+    uid,
+    email: d.email,
+    firstName: d.first_name || "",
+    notification_prefs: d.notification_prefs || null,
+  };
 }
 
 async function getRoomName(roomId) {
@@ -99,9 +107,9 @@ exports.onTransferRoomCreated = onDocumentCreated(
     const recipients = dedupeRecipients([
       ...(custodian ? [{ user: custodian, role: "Custodian" }] : []),
       ...(localMr ? [{ user: localMr, role: "Local MR" }] : []),
-    ]);
+    ]).filter((r) => isNotificationEnabled(r, NOTIFICATION_CATEGORY)); // opted out in Settings > Notifications
 
-    if (recipients.length === 0) return; // asset has no custodian/local MR on file
+    if (recipients.length === 0) return; // asset has no custodian/local MR on file, or all opted out
 
     const moverName = mover?.firstName || "Admin";
 

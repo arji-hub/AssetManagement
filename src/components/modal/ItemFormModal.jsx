@@ -1,5 +1,6 @@
 // src/components/form/ItemFormModal.jsx
 import "./ItemFormModal.css";
+import { useState } from "react";
 import { createPortal } from "react-dom";
 import BasicInfo from "../form/BasicInfo";
 import ImagePanel from "../form/ImagePanel";
@@ -12,6 +13,7 @@ function ItemFormModal({
   fulltimeCustodians,
   rooms,
   loadingOptions,
+  existingItems, // ← new prop: the full items array from the parent
   onSave,
   onClose,
 }) {
@@ -22,15 +24,21 @@ function ItemFormModal({
     setAssetImage,
     qty,
     isIndividual,
+    serialsChecking,
     handleChange,
     setSerialAt,
     autoNumberSerials,
     validate,
     toPayload,
-  } = useItemForm(initialItem, isDonated);
+  } = useItemForm(initialItem, isDonated, existingItems);
 
-  const handleSave = () => {
-    if (!validate()) return;
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = async () => {
+    setSaving(true);
+    const ok = await validate();
+    setSaving(false);
+    if (!ok) return;
     onSave(toPayload());
   };
 
@@ -56,6 +64,7 @@ function ItemFormModal({
             error={error}
             qty={qty}
             isIndividual={isIndividual}
+            serialsChecking={serialsChecking}
           />
 
           <div className="reg-modal-section">
@@ -94,8 +103,9 @@ function ItemFormModal({
             type="button"
             className="reg-btn reg-btn--primary"
             onClick={handleSave}
+            disabled={saving || serialsChecking}
           >
-            Save Item
+            {saving ? "Checking…" : "Save Item"}
           </button>
         </div>
       </div>

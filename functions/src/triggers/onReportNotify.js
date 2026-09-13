@@ -7,9 +7,12 @@ const { getFirestore } = require("firebase-admin/firestore");
 const { sendEmail } = require("../utils/sendEmail");
 const { emailShell } = require("../utils/emailShell");
 const { humanizeStatus } = require("../data/reportStatus");
+const { isNotificationEnabled } = require("../utils/NotificationPrefs");
 
 const GMAIL_USER = defineSecret("GMAIL_USER");
 const GMAIL_PASS = defineSecret("GMAIL_PASS");
+
+const NOTIFICATION_CATEGORY = "report";
 
 async function getUserData(uid) {
   if (!uid) return null;
@@ -17,7 +20,12 @@ async function getUserData(uid) {
   if (!snap.exists) return null;
   const d = snap.data();
   if (!d.email) return null;
-  return { uid, email: d.email, firstName: d.first_name || "" };
+  return {
+    uid,
+    email: d.email,
+    firstName: d.first_name || "",
+    notification_prefs: d.notification_prefs || null,
+  };
 }
 
 async function getAdmins() {
@@ -30,7 +38,12 @@ async function getAdmins() {
     .map((d) => {
       const data = d.data();
       if (!data.email) return null;
-      return { uid: d.id, email: data.email, firstName: data.first_name || "" };
+      return {
+        uid: d.id,
+        email: data.email,
+        firstName: data.first_name || "",
+        notification_prefs: data.notification_prefs || null,
+      };
     })
     .filter(Boolean);
 }
@@ -133,8 +146,15 @@ async function sendToRecipients(
   gmailUser,
   gmailPass,
 ) {
+  // Recipients who've turned "report" emails off in Settings > Notifications
+  // are filtered out here, before any send attempt — same spot dedupe
+  // already runs, so this stays a single pass over the list.
+  const notifiable = recipients.filter((r) =>
+    isNotificationEnabled(r, NOTIFICATION_CATEGORY),
+  );
+
   await Promise.all(
-    recipients.map(async (recipient) => {
+    notifiable.map(async (recipient) => {
       try {
         await sendEmail({
           gmailUser,
