@@ -31,7 +31,6 @@ export function useAssetSummary(
     setError(null);
 
     const onData = (data) => {
-      console.log("onSnapshot data:", data);
       setAssets(data);
       setLoading(false);
     };

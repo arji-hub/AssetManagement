@@ -24,6 +24,7 @@ import {
   logInitialRoomAssignment,
 } from "./transfer";
 import { fetchRoomName } from "./room";
+import { fetchCategoryName } from "./category";
 
 export function subscribeToAssets(role, currentUserUid, callback, onError) {
   const assetsRef = collection(db, "asset");
@@ -47,6 +48,21 @@ export function subscribeToAssets(role, currentUserUid, callback, onError) {
           id: doc.id,
           ...doc.data(),
         }));
+
+        const categoryIds = [
+          ...new Set(assetData.map((a) => a.category_id).filter(Boolean)),
+        ];
+
+        const categoryNameMap = {};
+        await Promise.all(
+          categoryIds.map(async (categoryId) => {
+            try {
+              categoryNameMap[categoryId] = await fetchCategoryName(categoryId);
+            } catch {
+              categoryNameMap[categoryId] = "---";
+            }
+          }),
+        );
 
         const userIds = [
           ...new Set(
@@ -79,6 +95,7 @@ export function subscribeToAssets(role, currentUserUid, callback, onError) {
             fullname[asset.property_custodian] || "---",
           local_mr_name: userMap[asset.local_mr] || "---",
           local_mr_fullname: fullname[asset.local_mr] || "---",
+          category_name: categoryNameMap[asset.category_id],
         }));
 
         assets.sort((a, b) => {
@@ -136,9 +153,10 @@ export async function fetchAssetByID(assetId) {
     ? await fetchRoomName(assetData.room_id)
     : "---";
 
+  const category_name = await fetchCategoryName(assetData.category_id);
+
   return {
     ...assetData,
-    category: assetData.category_id,
     name: userMap[assetData.property_custodian],
     property_custodian_name: userMap[assetData.property_custodian] || "---",
     property_custodian_username:
@@ -146,6 +164,7 @@ export async function fetchAssetByID(assetId) {
     local_mr_name: userMap[assetData.local_mr] || "---",
     local_mr_username: usernameMap[assetData.local_mr] || "---",
     room_name,
+    category_name,
   };
 }
 

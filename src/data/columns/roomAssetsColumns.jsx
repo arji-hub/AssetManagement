@@ -13,7 +13,7 @@ export const roomAssetsColumns = [
     label: "Category",
     width: "1fr",
     priority: "medium",
-    render: (a) => a.category,
+    render: (a) => a.category_name,
     card: { icon: "fa-solid fa-tag" },
   },
   {
@@ -21,7 +21,7 @@ export const roomAssetsColumns = [
     label: "Custodian",
     width: "1.5fr",
     priority: "high",
-    render: (a) => a.name,
+    render: (a) => a.property_custodian_fullname,
     card: { icon: "fa-solid fa-user" },
   },
   {

@@ -22,7 +22,7 @@ export const assetColumns = [
     label: "Category",
     width: "1fr",
     priority: "medium",
-    render: (a) => a.category_id || "—",
+    render: (a) => a.category_name || "—",
     card: { icon: "fa-solid fa-tag" },
   },
   {

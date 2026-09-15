@@ -16,6 +16,7 @@ import { getFunctions, httpsCallable } from "firebase/functions";
 import { toLowerCase } from "../utils/TextCasing";
 import ROLES from "../data/roles";
 import { fetchRoomName } from "./room";
+import { fetchCategoryName } from "./category";
 
 const functions = getFunctions();
 
@@ -191,13 +192,30 @@ export function subscribeToAssetsByCustodian(custodianID, callback, onError) {
           }),
         );
 
+        const categoryIds = [
+          ...new Set(assetData.map((a) => a.category_id).filter(Boolean)),
+        ];
+
+        const categoryNameMap = {};
+        await Promise.all(
+          categoryIds.map(async (categoryId) => {
+            try {
+              categoryNameMap[categoryId] = await fetchCategoryName(categoryId);
+            } catch {
+              categoryNameMap[categoryId] = "---";
+            }
+          }),
+        );
+
         const assets = assetData.map((asset) => ({
           id: asset.id,
-          category: asset.category_id,
+          category_id: asset.category_id,
+          category_name: categoryNameMap[asset.category_id],
           description: asset.description,
           qty: asset.qty,
           status: asset.status,
           date: asset.date_acquired,
+          room_id: asset.room_id ?? "---",
           room_name: roomNameMap[asset.room_id] ?? "---",
         }));
 
