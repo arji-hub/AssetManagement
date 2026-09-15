@@ -1,4 +1,5 @@
 :root {
+  /* ── marketing / non-navbar pages ── */
   --text: #6b6375;
   --text-h: #08060d;
   --bg: #fff;
@@ -19,6 +20,151 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* ── app shell (hoisted from .layout-wrapper so portaled
+       elements like AddingStatusModal can see them too) ── */
+  --maroon-900: #5c0000;
+  --maroon-800: #6b0000;
+  --maroon-700: #860100;
+  --maroon-600: #9c0201;
+  --gold-500: #f5aa2c;
+  --gold-400: #ffc857;
+
+  --maroon-gradient: linear-gradient(135deg, #9c0201 0%, #6b0000 100%);
+
+  --shell-shadow-sm: 0 2px 8px rgba(16, 16, 20, 0.08);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --card-elevated-container-elevation:
+    0px 1px 2px 0px rgba(60, 64, 67, 0.3),
+    0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+
+  /* legacy aliases kept so nothing referencing these breaks */
+  --ink-100: #e2e2e2;
+  --off-white: #fafaf8;
+
+  /* semantic — redefined in [data-theme="dark"] below */
+  --ink-900: #1c1d21;
+  --ink-600: #52565c;
+  --surface: #fafaf8;
+  --surface-muted: #fafaf8;
+  --surface-card: #fafaf8;
+  --shell-border: rgba(
+    0,
+    0,
+    0,
+    0.08
+  ); /* renamed from --border to avoid clashing with the marketing --border above */
+  --overlay: rgba(0, 0, 0, 0.4);
+  --hover-tint: rgba(0, 0, 0, 0.04);
+  --app-bg: #f7f7f7;
+
+  /* content-card tokens */
+  --card-bg: #ffffff;
+  --card-border: #ddc3c3;
+  --surface-subtle: #fffaf8;
+  --border-subtle: #f0ddd8;
+  --track-bg: #f4e2de;
+  --text-strong: #261816;
+  --text-muted: #5a413c;
+  --text-faint: #8a6f63;
+  --danger: #ba1a1a;
+  --danger-bg: rgba(186, 26, 26, 0.08);
+  --maroon-tint: rgba(134, 1, 1, 0.08);
+  --scrollbar-thumb: rgba(0, 0, 0, 0.2);
+  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.35);
+  --card-border-hover: #f0c9c9;
+
+  /* semantic aliases for roles (used in CustodianCard) */
+  --info: #1e3a8a;
+  --info-bg: rgba(29, 78, 216, 0.12);
+  --success: #166534;
+  --success-bg: rgba(34, 197, 94, 0.12);
+
+  /* semantic aliases for report types (used in ReportCard) */
+  --damaged: #860100;
+  --damaged-bg: rgba(134, 1, 0, 0.12);
+  --missing: #8a5c00;
+  --missing-bg: rgba(245, 170, 44, 0.18);
+
+  /* status colors — from data/asset.js STATUS_COLORS */
+  --status-neutral: #333333;
+  --status-neutral-bg: rgba(200, 200, 200, 0.7);
+  --status-success-2: #003d1f;
+  --status-success-2-bg: rgba(0, 255, 128, 0.7);
+  --status-condemned: #0d0d2e;
+  --status-condemned-bg: rgba(160, 160, 255, 0.7);
+  --status-warning: #2e1500;
+  --status-warning-bg: rgba(255, 120, 0, 0.7);
+  --status-pending-2: #3d2e00;
+  --status-pending-2-bg: rgba(255, 200, 0, 0.7);
+  --status-danger-2: #1a0008;
+  --status-danger-2-bg: rgba(255, 50, 80, 0.7);
+  --status-info-2: #10103d;
+  --status-info-2-bg: rgba(120, 130, 255, 0.7);
+}
+
+:root[data-theme="dark"] {
+  --maroon-900: #860100;
+  --maroon-800: #b10a0a;
+  --maroon-700: #e21b2f;
+  --maroon-600: #f50909;
+  --gold-500: #ffb100;
+  --gold-400: #ffcc33;
+
+  --maroon-gradient: linear-gradient(135deg, #c40303 0%, #b10a0a 100%);
+
+  --ink-900: #e8eaed;
+  --ink-600: rgba(255, 255, 255, 0.6);
+  --surface: #202124;
+  --surface-muted: #292a2d;
+  --surface-card: #35363a;
+  --shell-border: rgba(255, 255, 255, 0.12);
+  --overlay: rgba(0, 0, 0, 0.5);
+  --hover-tint: rgba(255, 255, 255, 0.08);
+  --app-bg: #202124;
+
+  --off-white: #35363a;
+
+  --card-bg: #2c2d31;
+  --card-border: rgba(255, 255, 255, 0.14);
+  --surface-subtle: #333438;
+  --border-subtle: rgba(255, 255, 255, 0.1);
+  --track-bg: rgba(255, 255, 255, 0.08);
+  --text-strong: #f1ece9;
+  --text-muted: #c9b8ae;
+  --text-faint: #a3968d;
+  --danger: #ff6b6b;
+  --danger-bg: rgba(255, 107, 107, 0.14);
+  --maroon-tint: rgba(209, 43, 43, 0.16);
+  --scrollbar-thumb: rgba(255, 255, 255, 0.16);
+  --scrollbar-thumb-hover: rgba(255, 255, 255, 0.24);
+  --card-border-hover: rgba(255, 255, 255, 0.22);
+
+  --info: #93c5fd;
+  --info-bg: rgba(59, 130, 246, 0.16);
+  --success: #6ee7b7;
+  --success-bg: rgba(34, 197, 94, 0.16);
+
+  --damaged: #ff8080;
+  --damaged-bg: rgba(255, 107, 107, 0.16);
+  --missing: #ffcc66;
+  --missing-bg: rgba(245, 170, 44, 0.2);
+
+  --status-neutral: #e2e2e2;
+  --status-neutral-bg: rgba(200, 200, 200, 0.28);
+  --status-success-2: #7dffbf;
+  --status-success-2-bg: rgba(0, 255, 128, 0.22);
+  --status-condemned: #d6d6ff;
+  --status-condemned-bg: rgba(160, 160, 255, 0.24);
+  --status-warning: #ffb366;
+  --status-warning-bg: rgba(255, 120, 0, 0.24);
+  --status-pending-2: #ffe066;
+  --status-pending-2-bg: rgba(255, 200, 0, 0.24);
+  --status-danger-2: #ff8fa3;
+  --status-danger-2-bg: rgba(255, 50, 80, 0.24);
+  --status-info-2: #b3b8ff;
+  --status-info-2-bg: rgba(120, 130, 255, 0.26);
 }
 
 body {

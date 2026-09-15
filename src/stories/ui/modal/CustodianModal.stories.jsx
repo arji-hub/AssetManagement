@@ -1,4 +1,4 @@
-import CustodianModal from "../../../components/ui/modal/CustodianModal";
+import CustodianModal from "../../../components/modal/CustodianModal";
 
 export default {
   title: "Modal/CustodianModal",

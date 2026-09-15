@@ -2,8 +2,8 @@
 
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
-import TransferRoomCard from "../../../components/ui/card/TransferRoomCard";
-import { MOCK_ROOM_LOGS } from "../../../data/transfer";
+import TransferRoomCard from "../../../components/ui/card/transfer/TransferRoomCard";
+import { MOCK_ROOM_LOGS } from "../../../data/mock_data";
 
 export default {
   title: "Cards/TransferRoomCard",

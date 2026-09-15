@@ -1,7 +1,7 @@
 // TransferLogEntry.stories.jsx
 
 import React from "react";
-import TransferLogEntry from "../../../components/ui/card/TransferLogEntry";
+import TransferLogEntry from "../../../components/ui/card/transfer/TransferLogEntry";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import LoginModal from "../../../components/ui/modal/LoginModal";
+import LoginModal from "../../../components/modal/LoginModal";
 
 export default {
   title: "Modal/LoginModal",

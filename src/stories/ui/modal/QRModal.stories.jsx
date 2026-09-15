@@ -1,5 +1,5 @@
 import { useState } from "react";
-import QRModal from "../../../components/ui/modal/QRModal";
+import QRModal from "../../../components/modal/QRModal";
 
 export default {
   title: "Modal/QRModal",

@@ -459,6 +459,25 @@ export async function addTransferRoom(
   { asset_id, asset_name, room_from, move_to },
   moveByUid,
 ) {
+  // --- Input validation ---
+  if (!asset_id) {
+    throw new Error("TransferRoom: asset_id is required");
+  }
+  if (!asset_name) {
+    throw new Error("TransferRoom: asset_name is required");
+  }
+  if (!move_to) {
+    throw new Error("TransferRoom: move_to is required");
+  }
+  if (!moveByUid) {
+    throw new Error("TransferRoom: moveByUid is required");
+  }
+  if (room_from && room_from === move_to) {
+    throw new Error(
+      "addTransferRoom: room_from and move_to cannot be the same room",
+    );
+  }
+
   const col = collection(db, "transfer_room");
 
   const docData = {
@@ -470,15 +489,47 @@ export async function addTransferRoom(
     created_at: serverTimestamp(),
   };
 
-  const docRef = await addDoc(col, docData);
-  await updateAssetRoom(asset_id, move_to);
-
-  const countUpdates = [];
-  if (room_from) {
-    countUpdates.push(roomCount(room_from, "decrement"));
+  // --- Step 1: create the transfer log record ---
+  let docRef;
+  try {
+    docRef = await addDoc(col, docData);
+  } catch (err) {
+    console.error("addTransferRoom: failed to create transfer_room doc", err);
+    throw new Error(`Failed to log room transfer: ${err.message}`);
   }
-  countUpdates.push(roomCount(move_to, "increment"));
-  await Promise.all(countUpdates);
+
+  // --- Step 2: update the asset's current room ---
+  try {
+    await updateAssetRoom(asset_id, move_to);
+  } catch (err) {
+    console.error(
+      `addTransferRoom: transfer_room/${docRef.id} was created but updateAssetRoom failed for asset ${asset_id}`,
+      err,
+    );
+    throw new Error(
+      `Transfer was logged but updating the asset's room failed: ${err.message}. ` +
+        `Asset ${asset_id} may be out of sync — manual review needed (log id: ${docRef.id}).`,
+    );
+  }
+
+  // --- Step 3: update room counts ---
+  try {
+    const countUpdates = [];
+    if (room_from) {
+      countUpdates.push(roomCount(room_from, "decrement"));
+    }
+    countUpdates.push(roomCount(move_to, "increment"));
+    await Promise.all(countUpdates);
+  } catch (err) {
+    console.error(
+      `addTransferRoom: transfer_room/${docRef.id} and asset room were updated but roomCount failed`,
+      err,
+    );
+    throw new Error(
+      `Transfer succeeded but room counts may be out of sync: ${err.message}. ` +
+        `(log id: ${docRef.id}, room_from: ${room_from ?? "none"}, move_to: ${move_to})`,
+    );
+  }
 
   return { id: docRef.id, ...docData };
 }
@@ -625,4 +676,332 @@ export async function logInitialRoomAssignment(
 
   const docRef = await addDoc(col, docData);
   return { id: docRef.id, ...docData };
+}
+
+// ──────────────────────────────────────────────────────────────────
+// Dashboard summary support (TransferDashboardPanel)
+// ──────────────────────────────────────────────────────────────────
+
+// ── pure helpers (no Firestore calls — safe to import into hooks/stories) ──
+
+function getRangeBounds(range) {
+  const now = new Date();
+  if (range === "year") {
+    return {
+      currentStart: new Date(now.getFullYear(), 0, 1),
+      previousStart: new Date(now.getFullYear() - 1, 0, 1),
+    };
+  }
+  return {
+    currentStart: new Date(now.getFullYear(), now.getMonth(), 1),
+    previousStart: new Date(now.getFullYear(), now.getMonth() - 1, 1),
+  };
+}
+
+function bucketKey(date, range) {
+  return range === "year"
+    ? `${date.getFullYear()}-${date.getMonth()}`
+    : `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+}
+
+function bucketLabel(date, range) {
+  return range === "year"
+    ? date.toLocaleString("en-US", { month: "short" })
+    : String(date.getDate());
+}
+
+function buildEmptyBuckets(range) {
+  const now = new Date();
+  const buckets = [];
+
+  if (range === "year") {
+    for (let month = 0; month <= now.getMonth(); month++) {
+      const d = new Date(now.getFullYear(), month, 1);
+      buckets.push({
+        key: bucketKey(d, range),
+        label: bucketLabel(d, range),
+        pending: 0,
+        forApproval: 0,
+      });
+    }
+  } else {
+    const daysElapsed = now.getDate();
+    for (let day = 1; day <= daysElapsed; day++) {
+      const d = new Date(now.getFullYear(), now.getMonth(), day);
+      buckets.push({
+        key: bucketKey(d, range),
+        label: bucketLabel(d, range),
+        pending: 0,
+        forApproval: 0,
+      });
+    }
+  }
+
+  return buckets;
+}
+
+function toDate(value) {
+  const ms = getMillis(value);
+  return ms ? new Date(ms) : null;
+}
+
+/**
+ * Pure transform: raw transfer_request-shaped items -> the
+ * { series, totals, trend } shape TransferDashboardPanel expects.
+ * No Firestore calls — used both by the live subscription below AND
+ * directly by useTransferSummary in mock/Storybook mode.
+ *
+ * Buckets by created_at; for each bucket, counts how many of the items
+ * created in that bucket are CURRENTLY "pending" vs "for_approval".
+ * Items already completed/denied are excluded from the chart (they're
+ * no longer part of the backlog) — note this means past bucket counts
+ * will shrink over time as requests resolve; it's a live backlog
+ * composition view, not an immutable historical log.
+ */
+export function summarizeTransferItems(items, range) {
+  const { currentStart, previousStart } = getRangeBounds(range);
+  const bucketMap = new Map(
+    buildEmptyBuckets(range).map((bucket) => [bucket.key, bucket]),
+  );
+
+  let currentTotal = 0;
+  let previousTotal = 0;
+
+  items.forEach((item) => {
+    if (!["pending", "for_approval"].includes(item.status)) return;
+
+    const created = toDate(item.created_at);
+    if (!created) return;
+
+    if (created >= currentStart) {
+      const bucket = bucketMap.get(bucketKey(created, range));
+      if (bucket) {
+        if (item.status === "pending") bucket.pending += 1;
+        else bucket.forApproval += 1;
+      }
+      currentTotal += 1;
+    } else if (created >= previousStart) {
+      previousTotal += 1;
+    }
+  });
+
+  const direction =
+    currentTotal === previousTotal
+      ? "flat"
+      : currentTotal > previousTotal
+        ? "up"
+        : "down";
+
+  const deltaPercent =
+    previousTotal === 0
+      ? currentTotal === 0
+        ? 0
+        : 100
+      : Math.round(((currentTotal - previousTotal) / previousTotal) * 100);
+
+  return {
+    series: Array.from(bucketMap.values()),
+    totals: { all: currentTotal },
+    trend: { direction, deltaPercent },
+  };
+}
+
+// ── Firestore-backed subscriptions (only these touch the network) ──
+
+/**
+ * Scopes a live collection of transfer_request docs created since
+ * `sinceDate`: admins get everything, everyone else gets only requests
+ * they're party to (requester, from, or to), merged the same way
+ * subscribeMergedByFields() does elsewhere in this file.
+ */
+function subscribeScopedSince(user, sinceDate, callback, onError) {
+  const col = collection(db, COLLECTION);
+
+  if (user.role === "admin") {
+    return onSnapshot(
+      query(col, where("created_at", ">=", sinceDate)),
+      (snap) => callback(snapshotToItems(snap)),
+      (err) => onError?.(err),
+    );
+  }
+
+  const fields = [
+    "requested_by",
+    "acknowledgments.from.uid",
+    "acknowledgments.to.uid",
+  ];
+  const uid = user.uid;
+  const latestByField = fields.map(() => []);
+
+  const mergeAndEmit = () => {
+    try {
+      const merged = new Map();
+      latestByField.forEach((docs) => {
+        docs.forEach((doc) =>
+          merged.set(doc.id, { id: doc.id, ...doc.data() }),
+        );
+      });
+      callback(Array.from(merged.values()));
+    } catch (err) {
+      onError?.(err);
+    }
+  };
+
+  const unsubscribers = fields.map((field, i) =>
+    onSnapshot(
+      query(col, where("created_at", ">=", sinceDate), where(field, "==", uid)),
+      (snap) => {
+        latestByField[i] = snap.docs;
+        mergeAndEmit();
+      },
+      (err) => onError?.(err),
+    ),
+  );
+
+  return () => unsubscribers.forEach((unsub) => unsub());
+}
+
+/** Month/Year trend feed for TransferDashboardPanel's chart. */
+export function subscribeToTransferTrend(user, range, callback, onError) {
+  if (!user?.uid) {
+    callback({
+      series: [],
+      totals: { all: 0 },
+      trend: { direction: "flat", deltaPercent: 0 },
+    });
+    return () => {};
+  }
+
+  const { previousStart } = getRangeBounds(range);
+  return subscribeScopedSince(
+    user,
+    previousStart,
+    (items) => callback(summarizeTransferItems(items, range)),
+    onError,
+  );
+}
+
+/**
+ * Live "currently open" backlog count (Pending + For Approval),
+ * independent of the Month/Year range. This is the same query the old
+ * useTransferSummary hook ran inline — moved here so the hook never
+ * imports firebase/firestore directly.
+ */
+export function subscribeToPendingSummary(user, callback, onError) {
+  if (!user?.uid) {
+    callback(0);
+    return () => {};
+  }
+
+  if (user.role === "admin") {
+    const col = collection(db, COLLECTION);
+    return onSnapshot(
+      query(col, where("status", "in", ["pending", "for_approval"])),
+      (snap) => callback(snap.size),
+      (err) => onError?.(err),
+    );
+  }
+
+  return subscribeToAction(user, (items) => callback(items.length), onError);
+}
+
+/**
+ * Pure transform: raw transfer_request-shaped items -> { series, totals,
+ * trend } for a non-admin custodian's view of AssetDashboardPanel: tracks
+ * when assets were assigned TO them vs removed FROM them, for completed
+ * transfers only. Bucketed by completed_at (when it actually took effect),
+ * not created_at. Works uniformly across ASSIGN/REMOVE/TRANSFER/ASSIGNMR/
+ * REMOVEMR — every type encodes a from/to pair, so no type-specific
+ * branching is needed here.
+ */
+export function summarizeCustodianAssignmentEvents(items, range, uid) {
+  const { currentStart, previousStart } = getRangeBounds(range);
+  const bucketMap = new Map(
+    buildEmptyBuckets(range).map((bucket) => [
+      bucket.key,
+      { key: bucket.key, label: bucket.label, assigned: 0, removed: 0 },
+    ]),
+  );
+
+  let currentAssigned = 0;
+  let currentRemoved = 0;
+  let previousAssigned = 0;
+  let previousRemoved = 0;
+
+  items.forEach((item) => {
+    if (item.status !== "completed") return;
+
+    const completedAt = toDate(item.completed_at);
+    if (!completedAt) return;
+
+    const wasAssignedToUid = item.acknowledgments?.to?.uid === uid;
+    const wasRemovedFromUid = item.acknowledgments?.from?.uid === uid;
+    if (!wasAssignedToUid && !wasRemovedFromUid) return;
+
+    if (completedAt >= currentStart) {
+      const bucket = bucketMap.get(bucketKey(completedAt, range));
+      if (bucket) {
+        if (wasAssignedToUid) bucket.assigned += 1;
+        if (wasRemovedFromUid) bucket.removed += 1;
+      }
+      if (wasAssignedToUid) currentAssigned += 1;
+      if (wasRemovedFromUid) currentRemoved += 1;
+    } else if (completedAt >= previousStart) {
+      if (wasAssignedToUid) previousAssigned += 1;
+      if (wasRemovedFromUid) previousRemoved += 1;
+    }
+  });
+
+  const currentTotal = currentAssigned + currentRemoved;
+  const previousTotal = previousAssigned + previousRemoved;
+
+  const direction =
+    currentTotal === previousTotal
+      ? "flat"
+      : currentTotal > previousTotal
+        ? "up"
+        : "down";
+
+  const deltaPercent =
+    previousTotal === 0
+      ? currentTotal === 0
+        ? 0
+        : 100
+      : Math.round(((currentTotal - previousTotal) / previousTotal) * 100);
+
+  return {
+    series: Array.from(bucketMap.values()),
+    totals: {
+      all: currentTotal,
+      assigned: currentAssigned,
+      removed: currentRemoved,
+    },
+    trend: { direction, deltaPercent },
+  };
+}
+
+/** Month/Year assigned-vs-removed trend feed for AssetDashboardPanel (custodian view). */
+export function subscribeToCustodianAssignmentTrend(
+  user,
+  range,
+  callback,
+  onError,
+) {
+  if (!user?.uid) {
+    callback({
+      series: [],
+      totals: { all: 0, assigned: 0, removed: 0 },
+      trend: { direction: "flat", deltaPercent: 0 },
+    });
+    return () => {};
+  }
+
+  const { previousStart } = getRangeBounds(range);
+  return subscribeScopedSince(
+    user,
+    previousStart,
+    (items) =>
+      callback(summarizeCustodianAssignmentEvents(items, range, user.uid)),
+    onError,
+  );
 }

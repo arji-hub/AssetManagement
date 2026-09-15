@@ -1,4 +1,4 @@
-// src/components/ui/modal/PDFPreviewModal.jsx
+// src/components/modal/PDFPreviewModal.jsx
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { PDFDownloadLink, pdf } from "@react-pdf/renderer";

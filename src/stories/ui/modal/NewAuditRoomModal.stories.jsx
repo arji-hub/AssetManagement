@@ -1,6 +1,6 @@
 import { MemoryRouter } from "react-router-dom";
 import { within, userEvent, waitFor, sb } from "storybook/test";
-import NewAuditRoomModal from "../../../components/ui/modal/NewAuditRoomModal";
+import NewAuditRoomModal from "../../../components/modal/NewAuditRoomModal";
 
 sb.mock(import("../../../services/room"), () => {
   const mockAllRooms = [

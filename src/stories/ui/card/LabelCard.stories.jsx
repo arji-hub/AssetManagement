@@ -1,5 +1,5 @@
 // LabelCard.stories.jsx
-import LabelCard from "../../../components/ui/card/LabelCard";
+import LabelCard from "../../../components/ui/card/asset/LabelCard";
 
 export default {
   title: "  Cards/LabelCard",
