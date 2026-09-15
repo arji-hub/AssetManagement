@@ -13,7 +13,7 @@ export const custodianAssetsColumns = [
     label: "Category",
     width: "1fr",
     priority: "medium",
-    render: (a) => a.category,
+    render: (a) => a.category_name,
     card: { icon: "fa-solid fa-tag" },
   },
   {

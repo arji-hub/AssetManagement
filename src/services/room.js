@@ -15,6 +15,7 @@ import {
 } from "firebase/firestore";
 import { toLowerCase, toSlug } from "../utils/TextCasing";
 import { getName } from "./user";
+import { fetchCategoryName } from "./category";
 
 async function computeTopCustodian(assets) {
   if (!assets || assets.length === 0) return "No Assets";
@@ -218,11 +219,29 @@ export function subscribeToAssetsInRoom(room_id, callback, onError) {
           }),
         );
 
+        const categoryIds = [
+          ...new Set(assetData.map((a) => a.category_id).filter(Boolean)),
+        ];
+
+        const categoryNameMap = {};
+        await Promise.all(
+          categoryIds.map(async (categoryId) => {
+            try {
+              categoryNameMap[categoryId] = await fetchCategoryName(categoryId);
+            } catch {
+              categoryNameMap[categoryId] = "---";
+            }
+          }),
+        );
+
         const assets = assetData.map((asset) => ({
           id: asset.id,
           description: asset.description,
-          category: asset.category_id,
-          name: fullnameMap[asset.property_custodian] ?? "---",
+          category_id: asset.category_id,
+          category_name: categoryNameMap[asset.category_id],
+          property_custodian_fullname:
+            fullnameMap[asset.property_custodian] ?? "---",
+          property_custodian: asset.property_custodian ?? "---",
           status: asset.status,
           date: asset.date_acquired,
           qty: asset.qty,

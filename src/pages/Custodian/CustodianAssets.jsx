@@ -49,9 +49,6 @@ function CustodianAssets() {
     loadingOptions,
   } = useAssetFilters(assets);
 
-  const handleEdit = () => {};
-  const handleArchive = () => {};
-
   return (
     <MainLayout>
       <div className="assets-page">

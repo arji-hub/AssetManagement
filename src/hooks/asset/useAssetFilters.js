@@ -42,7 +42,11 @@ export function useAssetFilters(assets = []) {
           ),
         );
         setCategories(
-          fetchedCategories.map((c) => (typeof c === "string" ? c : c.name)),
+          fetchedCategories.map((r) =>
+            typeof r === "string"
+              ? { id: r, name: r }
+              : { id: r.id, name: r.name },
+          ),
         );
         setCustodians(
           fetchedCustodians.map((c) =>
@@ -66,11 +70,14 @@ export function useAssetFilters(assets = []) {
       if (value === UNALLOCATED_ROOM) return "Unallocated";
       return rooms.find((r) => r.id === value)?.name ?? value;
     }
+    if (key === "category") {
+      return categories.find((c) => c.id === value)?.name ?? value;
+    }
     if (key === "custodian") {
       if (value === UNASSIGNED_CUSTODIAN) return "Unassigned";
-      return value; // already stored as a fullname string
+      return value;
     }
-    return value; // status, category (until category is also switched to {id,name})
+    return value;
   };
 
   // NEW: ready-to-render list of active filters, id resolved to name

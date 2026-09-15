@@ -54,7 +54,9 @@ function useCategories() {
       setAddError("Category name is required.");
       return;
     }
-    if (categories.some((c) => c.name.toLowerCase() === trimmed.toLowerCase())) {
+    if (
+      categories.some((c) => c.name.toLowerCase() === trimmed.toLowerCase())
+    ) {
       setAddError("A category with this name already exists.");
       return;
     }
@@ -99,8 +101,10 @@ function useCategories() {
       return;
     }
     if (
-      trimmed !== editingId &&
-      categories.some((c) => c.name.toLowerCase() === trimmed.toLowerCase())
+      categories.some(
+        (c) =>
+          c.id !== editingId && c.name.toLowerCase() === trimmed.toLowerCase(),
+      )
     ) {
       setEditError("A category with this name already exists.");
       return;
