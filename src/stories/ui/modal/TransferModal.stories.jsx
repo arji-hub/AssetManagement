@@ -1,5 +1,5 @@
 import { useState } from "react";
-import TransferModal from "../../../components/ui/modal/TransferModal";
+import TransferModal from "../../../components/modal/TransferModal";
 import { AuthContext } from "../../../context/AuthContext";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
@@ -50,9 +50,6 @@ export const Default = {
 // ── Pre-filled: asset ID passed in (skips manual asset lookup) ──
 export const WithAssetID = {
   render: () => (
-    <TransferModal
-      onClose={() => console.log("closed")}
-      assetID="cict-1002"
-    />
+    <TransferModal onClose={() => console.log("closed")} assetID="cict-1002" />
   ),
 };

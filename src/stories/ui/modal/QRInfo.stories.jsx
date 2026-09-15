@@ -1,5 +1,5 @@
 import { MemoryRouter } from "react-router-dom";
-import QRInfo from "../../../components/ui/modal/QRInfo";
+import QRInfo from "../../../components/modal/QRInfo";
 
 export default {
   title: "Modal/QRInfo",

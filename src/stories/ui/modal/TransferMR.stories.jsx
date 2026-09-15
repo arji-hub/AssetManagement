@@ -1,5 +1,5 @@
 import { useState } from "react";
-import TransferMR from "../../../components/ui/modal/TransferMR";
+import TransferMR from "../../../components/modal/TransferMR";
 import { AuthContext } from "../../../context/AuthContext";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";

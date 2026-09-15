@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ReportModal from "../../../components/ui/modal/ReportModal";
+import ReportModal from "../../../components/modal/ReportModal";
 import { AuthContext } from "../../../context/AuthContext";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";

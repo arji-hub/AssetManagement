@@ -1,6 +1,6 @@
-// src/components/ui/modal/AuditConfirmRoomModal.stories.jsx
+// src/components/modal/AuditConfirmRoomModal.stories.jsx
 import React from "react";
-import AuditConfirmRoomModal from "../../../components/ui/modal/AuditConfirmRoomModal";
+import AuditConfirmRoomModal from "../../../components/modal/AuditConfirmRoomModal";
 
 export default {
   title: "Modal/AuditConfirmRoomModal",

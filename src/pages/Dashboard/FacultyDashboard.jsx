@@ -1,115 +1,81 @@
 import React from "react";
 import { useAuth } from "../../context/AuthContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBoxesStacked,
+  faClockRotateLeft,
+  faEllipsis,
+} from "@fortawesome/free-solid-svg-icons";
 import MainLayout from "../../components/layout/MainLayout";
 import {
-  useAssetSummary,
-  useRoomsAndCategories,
-  useReportSummary,
-  useTransferSummary,
-  usePARICSSummary,
-} from "../../hooks/dashboard";
-import {
-  StatCard,
-  DonutChart,
-  CategoryBarList,
-  PARICSTreemap,
-  DashboardHeader,
+  AssetDashboardPanel,
+  AssetStatusDashboardPanel,
+  ReportDashboardPanel,
+  TransferDashboardPanel,
 } from "../../components/dashboard";
+
 import "./FacultyDashboard.css";
 import "./Dashboard.css";
 
 function FacultyDashboard() {
   const { user } = useAuth();
 
-  const assetSummary = useAssetSummary(user);
-  const roomsAndCategories = useRoomsAndCategories(user, assetSummary.assets);
-  const reportSummary = useReportSummary(user);
-  const transferSummary = useTransferSummary(user);
-  const parIcsSummary = usePARICSSummary(
-    user,
-    assetSummary.assets,
-    assetSummary.loading,
-    assetSummary.error,
-  );
-
-  const visibleCategories = roomsAndCategories.categories.filter(
-    (cat) => cat.assetCount > 0,
-  );
-
-  const headerLoading = reportSummary.loading || transferSummary.loading;
-
   return (
     <MainLayout>
-      <div className="dashboard">
-        <DashboardHeader
-          user={user}
-          openReportsCount={reportSummary.openReportsCount}
-          pendingTransfersCount={transferSummary.pendingCount}
-          ongoingAuditsCount={0}
-          loading={headerLoading}
-        />
-
-        <div className="dashboard__grid">
-          {/* Stat cards row */}
-          <div className="item" style={{ gridArea: "box-1" }}>
-            <StatCard
-              title="My assets"
-              value={assetSummary.totalAssets}
-              loading={assetSummary.loading}
-              error={assetSummary.error}
-            />
-          </div>
-
-          <div className="dashboard__pair">
-            <div className="item" style={{ gridArea: "box-2" }}>
-              <StatCard
-                title="Open reports"
-                value={reportSummary.openReportsCount}
-                loading={reportSummary.loading}
-                error={reportSummary.error}
-                variant="alert"
+      <div className="dashboard faculty-dashboard">
+        <section
+          className="dashboard-section"
+          aria-labelledby="assets-section-title"
+        >
+          <div className="dashboard-section-header">
+            <div className="dashboard-section-title" id="assets-section-title">
+              <FontAwesomeIcon
+                icon={faBoxesStacked}
+                className="dashboard-section-icon"
               />
+              <span>Assets</span>
             </div>
-            <div className="item" style={{ gridArea: "box-3" }}>
-              <StatCard
-                title="Pending acknowledgments"
-                value={transferSummary.pendingCount}
-                loading={transferSummary.loading}
-                error={transferSummary.error}
+            <button
+              type="button"
+              className="dashboard-section-menu"
+              aria-label="Assets section options"
+            >
+              <FontAwesomeIcon icon={faEllipsis} />
+            </button>
+          </div>
+
+          <div className="dashboard-section-grid">
+            <AssetDashboardPanel user={user} />
+            <AssetStatusDashboardPanel user={user} />
+          </div>
+        </section>
+
+        <section
+          className="dashboard-section"
+          aria-labelledby="events-section-title"
+        >
+          <div className="dashboard-section-header">
+            <div className="dashboard-section-title" id="events-section-title">
+              <FontAwesomeIcon
+                icon={faClockRotateLeft}
+                className="dashboard-section-icon"
               />
+              <span>Events</span>
             </div>
+            <button
+              type="button"
+              className="dashboard-section-menu"
+              aria-label="Events section options"
+            >
+              <FontAwesomeIcon icon={faEllipsis} />
+            </button>
           </div>
 
-          {/* Charts row - swapped order */}
-          <div className="item" style={{ gridArea: "box-4" }}>
-            <CategoryBarList
-              title="My categories"
-              categories={visibleCategories}
-              loading={roomsAndCategories.loading}
-              error={roomsAndCategories.error}
-            />
+          <div className="dashboard-section-grid">
+            <ReportDashboardPanel user={user} />
+            <TransferDashboardPanel user={user} />
           </div>
-
-          <div className="item" style={{ gridArea: "box-5" }}>
-            <DonutChart
-              title="My asset status"
-              statusBreakdown={assetSummary.statusBreakdown}
-              loading={assetSummary.loading}
-              error={assetSummary.error}
-            />
-          </div>
-
-          <div className="item" style={{ gridArea: "box-6" }}>
-            <PARICSTreemap
-              par={parIcsSummary.par}
-              ics={parIcsSummary.ics}
-              totalCount={parIcsSummary.totalCount}
-              totalValue={parIcsSummary.totalValue}
-              loading={parIcsSummary.loading}
-              error={parIcsSummary.error}
-            />
-          </div>
-        </div>
+        </section>
       </div>
     </MainLayout>
   );

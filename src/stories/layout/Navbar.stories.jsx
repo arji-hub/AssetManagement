@@ -1,5 +1,6 @@
 import { MemoryRouter } from "react-router-dom";
 import Navbar from "../../components/layout/Navbar";
+import "../../components/layout/Navbar.css";
 
 export default {
   title: "Layout/Navbar",

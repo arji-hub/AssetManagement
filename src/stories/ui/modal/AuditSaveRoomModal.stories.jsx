@@ -1,6 +1,6 @@
-// src/components/ui/modal/AuditSaveRoomModal.stories.jsx
+// src/components/modal/AuditSaveRoomModal.stories.jsx
 import React, { useState } from "react";
-import AuditSaveRoomModal from "../../../components/ui/modal/AuditSaveRoomModal";
+import AuditSaveRoomModal from "../../../components/modal/AuditSaveRoomModal";
 
 export default {
   title: "Modal/AuditSaveRoomModal",

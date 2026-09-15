@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import LogoutModal from "../../../components/ui/modal/LogoutModal";
+import LogoutModal from "../../../components/modal/LogoutModal";
 
 export default {
   title: "Modal/LogoutModal",

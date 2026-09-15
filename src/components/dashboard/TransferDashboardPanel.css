@@ -1,0 +1,305 @@
+.transfer-panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 720px;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  padding: 16px;
+  box-sizing: border-box;
+  background: var(--card-bg);
+  border: 2px solid var(--card-border);
+  border-radius: var(--radius-md);
+  box-shadow: none;
+  container-type: inline-size;
+  container-name: transfer-panel;
+}
+
+.transfer-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.transfer-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
+.transfer-panel-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: var(--maroon-gradient);
+  color: #fff;
+  font-size: 12px;
+}
+
+.transfer-panel-range-toggle {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: var(--radius-sm);
+  background: var(--track-bg);
+}
+
+.transfer-panel-range-toggle button {
+  border: none;
+  background: transparent;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  border-radius: calc(var(--radius-sm) - 2px);
+  cursor: pointer;
+}
+
+.transfer-panel-range-toggle button.is-active {
+  background: var(--card-bg);
+  color: var(--maroon-700);
+  box-shadow: var(--shadow-sm);
+}
+
+.transfer-panel-subtitle {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+.transfer-panel-stat-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.transfer-panel-total {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-strong);
+  line-height: 1;
+}
+
+.transfer-panel-trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 999px;
+}
+
+.transfer-panel-trend.is-up {
+  color: var(--success);
+  background: var(--success-bg);
+}
+
+.transfer-panel-trend.is-down {
+  color: var(--danger);
+  background: var(--danger-bg);
+}
+
+.transfer-panel-chart {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  min-height: 60px;
+  margin-top: 12px;
+  display: flex;
+}
+
+.transfer-panel-gridlines {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 12px 0;
+  font-size: 10px;
+  color: var(--text-faint);
+  margin-right: 6px;
+}
+
+.transfer-panel-svg {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+}
+
+.transfer-panel-guide {
+  stroke: var(--border-subtle);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+}
+
+.transfer-panel-line {
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+.transfer-panel-line-pending {
+  stroke: var(--transfer-pending, var(--maroon-700));
+}
+
+.transfer-panel-line-approval {
+  stroke: var(--transfer-approval, var(--gold-500));
+  stroke-dasharray: 6 4;
+}
+
+.transfer-panel-x-labels {
+  position: absolute;
+  bottom: -18px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--text-faint);
+}
+
+.transfer-panel-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  color: var(--text-faint);
+  font-size: 12px;
+}
+
+.transfer-panel-legend {
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.transfer-panel-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.transfer-panel-legend-count {
+  margin-left: 2px;
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+.transfer-panel-legend-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.transfer-panel-legend-swatch-pending {
+  background: var(--transfer-pending, var(--maroon-700));
+}
+
+.transfer-panel-legend-swatch-approval {
+  background: var(--transfer-approval, var(--gold-500));
+}
+
+.transfer-panel-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  font-size: 12px;
+}
+
+.transfer-panel-footer-meta {
+  color: var(--text-faint);
+}
+
+.transfer-panel-footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--gold-500);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.transfer-panel-footer-link:hover {
+  text-decoration: underline;
+}
+
+/* ---------------------------------------------------------------- */
+/* Responsive behavior — driven by the panel's own rendered width,   */
+/* not the viewport, so it adapts correctly no matter where the     */
+/* dashboard grid places it (main column, sidebar slot, modal, etc). */
+/* ---------------------------------------------------------------- */
+
+@container transfer-panel (max-width: 420px) {
+  .transfer-panel {
+    padding: 14px;
+  }
+
+  .transfer-panel-header {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  .transfer-panel-total {
+    font-size: 24px;
+  }
+}
+
+@container transfer-panel (max-width: 320px) {
+  .transfer-panel-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .transfer-panel-range-toggle {
+    align-self: stretch;
+    justify-content: space-between;
+  }
+
+  .transfer-panel-range-toggle button {
+    flex: 1;
+    text-align: center;
+  }
+
+  .transfer-panel-legend {
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 16px;
+    padding-top: 10px;
+  }
+
+  .transfer-panel-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+}
+
+@container transfer-panel (max-width: 240px) {
+  .transfer-panel {
+    padding: 12px;
+  }
+
+  .transfer-panel-total {
+    font-size: 20px;
+  }
+
+  .transfer-panel-gridlines {
+    display: none;
+  }
+
+  .transfer-panel-subtitle,
+  .transfer-panel-x-labels {
+    display: none;
+  }
+}

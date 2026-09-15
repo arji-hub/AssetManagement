@@ -2,8 +2,8 @@
 
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
-import TransferCard from "../../../components/ui/card/TransferCard";
-import { MOCK_TRANSFERS } from "../../../data/transfer";
+import TransferCard from "../../../components/ui/card/transfer/TransferCard";
+import { MOCK_TRANSFERS } from "../../../data/mock_data";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 

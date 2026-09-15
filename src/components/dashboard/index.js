@@ -1,6 +1,4 @@
-export { default as StatCard } from "./StatCard";
-export { default as DonutChart } from "./DonutChart";
-export { default as CategoryBarList } from "./CategoryBarList";
-export { default as AuditProgressCard } from "./AuditProgressCard";
-export { default as PARICSTreemap } from "./PARICSTreemap";
-export { default as DashboardHeader } from "./DashboardHeader";
+export { default as AssetDashboardPanel } from "./AssetDashboardPanel";
+export { default as AssetStatusDashboardPanel } from "./AssetStatusDashboardPanel";
+export { default as ReportDashboardPanel } from "./ReportDashboardPanel";
+export { default as TransferDashboardPanel } from "./TransferDashboardPanel";

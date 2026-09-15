@@ -1,5 +1,5 @@
 import { MemoryRouter } from "react-router-dom";
-import CustodianCard from "../../../components/ui/card/CustodianCard";
+import CustodianCard from "../../../components/ui/card/custodian/CustodianCard";
 
 export default {
   title: "Cards/CustodianCard",

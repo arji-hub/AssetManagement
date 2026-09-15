@@ -1,0 +1,234 @@
+.asset-panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  box-sizing: border-box;
+  background: var(--card-bg);
+  border: 2px solid var(--card-border);
+  border-radius: var(--radius-md);
+  box-shadow: none;
+}
+
+.asset-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.asset-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
+.asset-panel-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: var(--maroon-gradient);
+  color: #fff;
+  font-size: 12px;
+}
+
+.asset-panel-range-toggle {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: var(--radius-sm);
+  background: var(--track-bg);
+}
+
+.asset-panel-range-toggle button {
+  border: none;
+  background: transparent;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  border-radius: calc(var(--radius-sm) - 2px);
+  cursor: pointer;
+}
+
+.asset-panel-range-toggle button.is-active {
+  background: var(--card-bg);
+  color: var(--maroon-700);
+  box-shadow: var(--shadow-sm);
+}
+
+.asset-panel-subtitle {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+.asset-panel-stat-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.asset-panel-total {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-strong);
+  line-height: 1;
+}
+
+.asset-panel-trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 999px;
+}
+
+.asset-panel-trend.is-up {
+  color: var(--success);
+  background: var(--success-bg);
+}
+
+.asset-panel-trend.is-down {
+  color: var(--danger);
+  background: var(--danger-bg);
+}
+
+.asset-panel-chart {
+  position: relative;
+  flex: 1;
+  min-height: 60px;
+  margin-top: 12px;
+  display: flex;
+}
+
+.asset-panel-gridlines {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 12px 0;
+  font-size: 10px;
+  color: var(--text-faint);
+  margin-right: 6px;
+}
+
+.asset-panel-svg {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+}
+
+.asset-panel-guide {
+  stroke: var(--border-subtle);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+}
+
+.asset-panel-line {
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+.asset-panel-line-primary {
+  stroke: var(--success);
+}
+
+.asset-panel-line-secondary {
+  stroke: var(--danger);
+  stroke-dasharray: 6 4;
+}
+
+.asset-panel-x-labels {
+  position: absolute;
+  bottom: -18px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--text-faint);
+}
+
+.asset-panel-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  color: var(--text-faint);
+  font-size: 12px;
+}
+
+.asset-panel-legend {
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.asset-panel-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.asset-panel-legend-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.asset-panel-legend-swatch-primary {
+  background: var(--success);
+}
+
+.asset-panel-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.asset-panel-legend-count {
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
+.asset-panel-legend-swatch-secondary {
+  background: var(--danger);
+}
+
+.asset-panel-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  font-size: 12px;
+}
+
+.asset-panel-footer-meta {
+  color: var(--text-faint);
+}
+
+.asset-panel-footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--gold-500);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.asset-panel-footer-link:hover {
+  text-decoration: underline;
+}
