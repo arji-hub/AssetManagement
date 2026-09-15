@@ -41,7 +41,7 @@ function FilterModal({
   );
 
   const safeCategories = categories.filter(
-    (category) => typeof category === "string" && category.trim() !== "",
+    (category) => category && typeof category.name === "string",
   );
 
   const handleSelect = (key, value) => {
@@ -97,8 +97,8 @@ function FilterModal({
               >
                 <option value="">All Categories</option>
                 {safeCategories.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
+                  <option key={cat.id} value={cat.id}>
+                    {cat.name}
                   </option>
                 ))}
               </select>

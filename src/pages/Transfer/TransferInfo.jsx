@@ -187,9 +187,12 @@ function TransferInfo() {
         <div className="transfer-log-card">
           <span className="transfer-info-section-label">STATUS HISTORY</span>
           <div className="transfer-info-log">
-            {request.status_log?.map((log, index) => (
-              <TransferLogEntry key={index} log={log} />
-            ))}
+            {request.status_log
+              ?.slice()
+              .reverse()
+              .map((log, index) => (
+                <TransferLogEntry key={index} log={log} />
+              ))}
           </div>
         </div>
       </div>

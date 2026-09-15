@@ -50,7 +50,7 @@ function InfoCard({ asset }) {
       {/* ── Header band ── */}
       <div className="info-card-header">
         <span className="info-card-category-label">
-          {asset.category_id || "Uncategorized"}
+          {asset.category_name || "Uncategorized"}
         </span>
 
         <span className="info-card-date-label">

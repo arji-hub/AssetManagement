@@ -10,6 +10,8 @@ import {
   increment,
   onSnapshot,
   runTransaction,
+  query,
+  where,
 } from "firebase/firestore";
 
 export function subscribeToCategories(callback, onError) {
@@ -19,7 +21,7 @@ export function subscribeToCategories(callback, onError) {
       try {
         const categories = snapshot.docs.map((doc) => ({
           id: doc.id,
-          name: doc.id,
+          name: doc.data().name ?? "---",
           assetCount: doc.data().assetCount ?? 0,
         }));
         callback(categories);
@@ -39,7 +41,7 @@ export async function fetchCategories() {
   const snapshot = await getDocs(collection(db, "category"));
   return snapshot.docs.map((doc) => ({
     id: doc.id,
-    name: doc.id,
+    name: doc.data().name ?? "---",
     assetCount: doc.data().assetCount ?? 0,
   }));
 }
@@ -49,6 +51,14 @@ export async function categoryCount(category_id) {
   await updateDoc(categoryRef, {
     assetCount: increment(1),
   });
+}
+
+export async function fetchCategoryName(id) {
+  const categoryID = id;
+  const snap = await getDoc(doc(db, "category", categoryID));
+  if (!snap.exists()) throw new Error("Category not found.");
+
+  return snap.data().name;
 }
 
 /* ---------------------------------------------------------
@@ -91,46 +101,49 @@ export async function addCategory(name) {
     throw new Error("A category with this name already exists.");
   }
 
-  await setDoc(categoryRef, { assetCount: 0 });
+  await setDoc(categoryRef, { name: trimmed, assetCount: 0 });
   return { id: trimmed, name: trimmed, assetCount: 0 };
 }
 
-export async function renameCategory(oldName, newName) {
+export async function renameCategory(uid, newName) {
   await assertAdmin();
 
   const trimmed = newName.trim();
   if (!trimmed) {
     throw new Error("Category name is required.");
   }
-  if (trimmed === oldName) {
-    return { id: oldName, name: oldName };
+
+  const categoryRef = doc(db, "category", uid);
+
+  // Check no other category already uses this name.
+  const duplicateQuery = query(
+    collection(db, "category"),
+    where("name", "==", trimmed),
+  );
+  const duplicateSnap = await getDocs(duplicateQuery);
+  const isDuplicate = duplicateSnap.docs.some((d) => d.id !== uid);
+  if (isDuplicate) {
+    throw new Error("A category with this name already exists.");
   }
 
-  const oldRef = doc(db, "category", oldName);
-  const newRef = doc(db, "category", trimmed);
-
   await runTransaction(db, async (transaction) => {
-    const [oldSnap, newSnap] = await Promise.all([
-      transaction.get(oldRef),
-      transaction.get(newRef),
-    ]);
-
-    if (!oldSnap.exists()) {
+    const snap = await transaction.get(categoryRef);
+    if (!snap.exists()) {
       throw new Error("This category no longer exists.");
     }
-    if (newSnap.exists()) {
-      throw new Error("A category with this name already exists.");
+    if (snap.data().name === trimmed) {
+      return;
     }
 
-    transaction.set(newRef, { assetCount: oldSnap.data().assetCount ?? 0 });
-    transaction.delete(oldRef);
+    transaction.update(categoryRef, { name: trimmed });
   });
 
-  return { id: trimmed, name: trimmed };
+  return { id: uid, name: trimmed };
 }
 
 export async function deleteCategory(name) {
   await assertAdmin();
+  backfillCategoryNames();
 
   const categoryRef = doc(db, "category", name);
 
