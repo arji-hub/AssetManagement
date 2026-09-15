@@ -2,9 +2,8 @@
 
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
-import ReportCard from "../../../components/ui/card/ReportCard";
-import "../../../components/panel/ReportPanel.css";
-import "../../../components/ui/card/ReportCard.css";
+import ReportCard from "../../../components/ui/card/report/ReportCard";
+import "../../../components/ui/card/report/ReportCard.css";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { far } from "@fortawesome/free-regular-svg-icons";

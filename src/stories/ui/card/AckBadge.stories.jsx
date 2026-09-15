@@ -1,7 +1,7 @@
 // AckBadge.stories.jsx
 
 import React from "react";
-import AckBadge from "../../../components/ui/card/AckBadge";
+import AckBadge from "../../../components/ui/card/transfer/AckBadge";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 

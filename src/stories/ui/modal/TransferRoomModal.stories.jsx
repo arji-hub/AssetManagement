@@ -1,5 +1,5 @@
 import { useState } from "react";
-import TransferRoomModal from "../../../components/ui/modal/TransferRoomModal";
+import TransferRoomModal from "../../../components/modal/TransferRoomModal";
 import { AuthContext } from "../../../context/AuthContext";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";

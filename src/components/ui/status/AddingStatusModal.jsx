@@ -1,9 +1,11 @@
 import PropTypes from "prop-types";
 import "./AddingStatusModal.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import "../../layout/Navbar.css";
+import { createPortal } from "react-dom";
 
 function AddingStatusModal({ title, status, errorMessage, onClose }) {
-  return (
+  return createPortal(
     <div className="status-overlay">
       <div className="status-container">
         {/* ── Loading ── */}
@@ -53,7 +55,8 @@ function AddingStatusModal({ title, status, errorMessage, onClose }) {
           </>
         )}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

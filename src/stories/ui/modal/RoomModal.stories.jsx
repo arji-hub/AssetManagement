@@ -1,5 +1,5 @@
 import { useState } from "react";
-import RoomModal from "../../../components/ui/modal/RoomModal";
+import RoomModal from "../../../components/modal/RoomModal";
 
 // ── Decorator ────────────────────────────────────────────────────────────────
 // RoomModal is now a controlled component — it needs value/onChange from

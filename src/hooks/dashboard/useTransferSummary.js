@@ -1,54 +1,71 @@
 import { useEffect, useState } from "react";
-import { collection, query, where, onSnapshot } from "firebase/firestore";
-import { db } from "../../services/firebase-config";
-import { subscribeToAction } from "../../services/transfer";
-import { ROLES } from "../../data/roles";
+import {
+  subscribeToPendingSummary,
+  subscribeToTransferTrend,
+  summarizeTransferItems,
+} from "../../services/transfer";
 
-export function useTransferSummary(user) {
-  const [count, setCount] = useState(0);
-  const [loading, setLoading] = useState(true);
+export function useTransferSummary(user, range, mockTransfers) {
+  const isMocked = mockTransfers !== undefined;
+
+  const [series, setSeries] = useState([]);
+  const [totals, setTotals] = useState({ all: 0, unresolved: 0 });
+  const [trend, setTrend] = useState({ direction: "flat", deltaPercent: 0 });
+  const [loading, setLoading] = useState(!isMocked);
   const [error, setError] = useState(null);
 
+  // Live backlog count (Pending + For Approval) — independent of range,
+  // same figure the original simple hook exposed as `pendingCount`.
   useEffect(() => {
+    if (isMocked) return;
+    if (!user?.uid) return;
+
+    const unsubscribe = subscribeToPendingSummary(
+      user,
+      (count) => setTotals((prev) => ({ ...prev, unresolved: count })),
+      (err) => setError(err),
+    );
+
+    return () => unsubscribe?.();
+  }, [user?.uid, user?.role, isMocked]);
+
+  // Month/Year bucketed trend for the chart.
+  useEffect(() => {
+    if (isMocked) {
+      const summary = summarizeTransferItems(mockTransfers ?? [], range);
+      setSeries(summary.series);
+      setTotals((prev) => ({
+        ...prev,
+        all: summary.totals.all,
+        unresolved: summary.totals.all,
+      }));
+      setTrend(summary.trend);
+      setLoading(false);
+      return;
+    }
+
     if (!user?.uid) return;
 
     setLoading(true);
     setError(null);
 
-    let unsubscribe;
-
-    if (user.role === ROLES.ADMIN) {
-      const q = query(
-        collection(db, "transfer_request"),
-        where("status", "in", ["pending", "for_approval"]),
-      );
-      unsubscribe = onSnapshot(
-        q,
-        (snap) => {
-          setCount(snap.size);
-          setLoading(false);
-        },
-        (err) => {
-          setError(err);
-          setLoading(false);
-        },
-      );
-    } else {
-      unsubscribe = subscribeToAction(
-        user,
-        (items) => {
-          setCount(items.length);
-          setLoading(false);
-        },
-        (err) => {
-          setError(err);
-          setLoading(false);
-        },
-      );
-    }
+    const unsubscribe = subscribeToTransferTrend(
+      user,
+      range,
+      (summary) => {
+        setSeries(summary.series);
+        setTotals((prev) => ({ ...prev, all: summary.totals.all }));
+        setTrend(summary.trend);
+        setLoading(false);
+      },
+      (err) => {
+        setError(err);
+        setLoading(false);
+      },
+    );
 
     return () => unsubscribe?.();
-  }, [user?.uid, user?.role]);
+  }, [user?.uid, user?.role, range, isMocked, mockTransfers]);
 
-  return { pendingCount: count, loading, error };
+  return { series, totals, trend, loading, error };
 }

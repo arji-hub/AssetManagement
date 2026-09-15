@@ -4,7 +4,7 @@ exports.addCustodian = require("./https/addCustodian").addCustodian;
 
 //------------GENERATE QR------------
 exports.onAssetCreatedGenerateQR =
-  require("./src/triggers/onAssetCreatedGenerateQR").onAssetCreatedGenerateQR;
+  require("./triggers/onAssetCreatedGenerateQR").onAssetCreatedGenerateQR;
 
 //------------UPDATE CUSTODIAN / LOCAL MR------------
 exports.onTransferRequestCompleted =
@@ -22,9 +22,3 @@ exports.onReportCreated = require("./triggers/onReportNotify").onReportCreated;
 exports.onReportUpdated = require("./triggers/onReportNotify").onReportUpdated;
 exports.onTransferRoomCreated =
   require("./triggers/onTransferRoomNotify").onTransferRoomCreated;
-
-//------------SCRIPTS------------
-exports.migrateRoomIdsStep1_CreateNewRooms =
-  require("./script/migrate").migrateRoomIdsStep1_CreateNewRooms;
-exports.migrateRoomIdsStep2_RepointAssetsAndCleanup =
-  require("./script/migrate").migrateRoomIdsStep2_RepointAssetsAndCleanup;

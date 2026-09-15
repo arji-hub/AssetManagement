@@ -1,4 +1,4 @@
-import AuditCard from "../../../components/ui/card/AuditCard";
+import AuditCard from "../../../components/ui/card/audit/AuditCard";
 
 export default {
   title: "Cards/AuditCard",

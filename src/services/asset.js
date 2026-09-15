@@ -437,3 +437,147 @@ export async function findExistingSerialNumbers(serials) {
   );
   return found;
 }
+
+// ──────────────────────────────────────────────────────────────────
+// Dashboard summary support (AssetDashboardPanel — admin view)
+// ──────────────────────────────────────────────────────────────────
+
+function getAssetRangeBounds(range) {
+  const now = new Date();
+  if (range === "year") {
+    return {
+      currentStart: new Date(now.getFullYear(), 0, 1),
+      previousStart: new Date(now.getFullYear() - 1, 0, 1),
+    };
+  }
+  return {
+    currentStart: new Date(now.getFullYear(), now.getMonth(), 1),
+    previousStart: new Date(now.getFullYear(), now.getMonth() - 1, 1),
+  };
+}
+
+function assetBucketKey(date, range) {
+  return range === "year"
+    ? `${date.getFullYear()}-${date.getMonth()}`
+    : `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+}
+
+function assetBucketLabel(date, range) {
+  return range === "year"
+    ? date.toLocaleString("en-US", { month: "short" })
+    : String(date.getDate());
+}
+
+function buildEmptyAssetBuckets(range) {
+  const now = new Date();
+  const buckets = [];
+
+  if (range === "year") {
+    for (let month = 0; month <= now.getMonth(); month++) {
+      const d = new Date(now.getFullYear(), month, 1);
+      buckets.push({
+        key: assetBucketKey(d, range),
+        label: assetBucketLabel(d, range),
+        acquired: 0,
+        condemned: 0,
+      });
+    }
+  } else {
+    const daysElapsed = now.getDate();
+    for (let day = 1; day <= daysElapsed; day++) {
+      const d = new Date(now.getFullYear(), now.getMonth(), day);
+      buckets.push({
+        key: assetBucketKey(d, range),
+        label: assetBucketLabel(d, range),
+        acquired: 0,
+        condemned: 0,
+      });
+    }
+  }
+
+  return buckets;
+}
+
+function toDateLoose(value) {
+  if (!value) return null;
+  if (typeof value.toDate === "function") return value.toDate(); // Firestore Timestamp
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+/**
+ * Pure transform: raw asset docs -> { series, totals, trend } for the
+ * admin view of AssetDashboardPanel. No Firestore calls — reuses whatever
+ * asset list is already loaded (no separate subscription needed).
+ *
+ * "Acquired" buckets by date_acquired. "Condemned" buckets by updated_at
+ * for assets currently in Condemned status — this is a best-effort proxy,
+ * since asset docs don't store a dedicated condemned_at timestamp; any
+ * other field update made after condemning would also bump updated_at.
+ * If exact condemn dates matter later, have condemnAsset() write a
+ * condemned_at field alongside the status change.
+ */
+export function summarizeAssetEvents(assets, range) {
+  const { currentStart, previousStart } = getAssetRangeBounds(range);
+  const bucketMap = new Map(
+    buildEmptyAssetBuckets(range).map((bucket) => [bucket.key, bucket]),
+  );
+
+  let currentAcquired = 0;
+  let currentCondemned = 0;
+  let previousAcquired = 0;
+  let previousCondemned = 0;
+
+  assets.forEach((asset) => {
+    const acquiredAt = toDateLoose(asset.created_at);
+    if (acquiredAt) {
+      if (acquiredAt >= currentStart) {
+        const bucket = bucketMap.get(assetBucketKey(acquiredAt, range));
+        if (bucket) bucket.acquired += 1;
+        currentAcquired += 1;
+      } else if (acquiredAt >= previousStart) {
+        previousAcquired += 1;
+      }
+    }
+
+    if (asset.status === "Condemned") {
+      const condemnedAt = toDateLoose(asset.updated_at);
+      if (condemnedAt) {
+        if (condemnedAt >= currentStart) {
+          const bucket = bucketMap.get(assetBucketKey(condemnedAt, range));
+          if (bucket) bucket.condemned += 1;
+          currentCondemned += 1;
+        } else if (condemnedAt >= previousStart) {
+          previousCondemned += 1;
+        }
+      }
+    }
+  });
+
+  const currentTotal = currentAcquired + currentCondemned;
+  const previousTotal = previousAcquired + previousCondemned;
+
+  const direction =
+    currentTotal === previousTotal
+      ? "flat"
+      : currentTotal > previousTotal
+        ? "up"
+        : "down";
+
+  const deltaPercent =
+    previousTotal === 0
+      ? currentTotal === 0
+        ? 0
+        : 100
+      : Math.round(((currentTotal - previousTotal) / previousTotal) * 100);
+
+  return {
+    series: Array.from(bucketMap.values()),
+    totals: {
+      all: currentTotal,
+      acquired: currentAcquired,
+      condemned: currentCondemned,
+    },
+    trend: { direction, deltaPercent },
+  };
+}

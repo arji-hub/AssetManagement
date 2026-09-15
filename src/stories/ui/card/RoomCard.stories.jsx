@@ -1,5 +1,5 @@
 import { MemoryRouter } from "react-router-dom";
-import RoomCard from "../../../components/ui/card/RoomCard";
+import RoomCard from "../../../components/ui/card/room/RoomCard";
 
 export default {
   title: "Cards/RoomCard",

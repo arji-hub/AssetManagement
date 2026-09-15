@@ -32,9 +32,17 @@ function FilterModal({
   const [custodianSearch, setCustodianSearch] = useState("");
 
   // Sanitize list props — strips undefined, null, and empty strings
-  const safeRooms = rooms.filter(Boolean);
-  const safeCustodians = custodians.filter(Boolean);
-  const safeCategories = categories.filter(Boolean);
+  const safeRooms = rooms.filter(
+    (room) => room && typeof room.name === "string",
+  );
+
+  const safeCustodians = custodians.filter(
+    (name) => typeof name === "string" && name.trim() !== "",
+  );
+
+  const safeCategories = categories.filter(
+    (category) => typeof category === "string" && category.trim() !== "",
+  );
 
   const handleSelect = (key, value) => {
     setLocal((prev) => ({
