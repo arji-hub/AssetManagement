@@ -25,10 +25,13 @@ function CategoryDropdown({ value, options, loading, error, onSelect }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  function handleSelect(name) {
-    onSelect(name);
+  function handleSelect(id) {
+    onSelect(id);
     setIsOpen(false);
   }
+
+  // Find the selected option so we can show its name, not its id.
+  const selected = options.find((opt) => opt.id === value);
 
   return (
     <div className="reg-category-dropdown" ref={containerRef}>
@@ -40,8 +43,10 @@ function CategoryDropdown({ value, options, loading, error, onSelect }) {
         aria-haspopup="listbox"
         aria-expanded={isOpen}
       >
-        <span className={value ? "" : "reg-category-placeholder"}>
-          {loading ? "Loading categories..." : value || "--Select Category--"}
+        <span className={selected ? "" : "reg-category-placeholder"}>
+          {loading
+            ? "Loading categories..."
+            : selected?.name || "--Select Category--"}
         </span>
         <span className="reg-category-caret" aria-hidden="true" />
       </button>
@@ -51,17 +56,17 @@ function CategoryDropdown({ value, options, loading, error, onSelect }) {
           {options.length === 0 ? (
             <li className="reg-category-empty">No categories yet.</li>
           ) : (
-            options.map((name) => (
+            options.map((opt) => (
               <li
-                key={name}
+                key={opt.id}
                 role="option"
-                aria-selected={value === name}
+                aria-selected={value === opt.id}
                 className={`reg-category-option ${
-                  value === name ? "reg-category-option--active" : ""
+                  value === opt.id ? "reg-category-option--active" : ""
                 }`}
-                onClick={() => handleSelect(name)}
+                onClick={() => handleSelect(opt.id)}
               >
-                {name}
+                {opt.name}
               </li>
             ))
           )}
@@ -120,8 +125,8 @@ function BasicInfo({
             options={categories}
             loading={categoriesLoading}
             error={!!error.category_id}
-            onSelect={(name) =>
-              onChange({ target: { name: "category_id", value: name } })
+            onSelect={(id) =>
+              onChange({ target: { name: "category_id", value: id } })
             }
           />
           {error.category_id && (
