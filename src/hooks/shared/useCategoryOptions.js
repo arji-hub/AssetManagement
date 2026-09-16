@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { subscribeToCategories } from "../../services/category"; // adjust path to wherever category.js lives
+import { subscribeToCategories } from "../../services/category";
 
 /**
  * Lightweight, read-only hook for populating category <select> inputs
@@ -15,10 +15,10 @@ function useCategoryOptions() {
   useEffect(() => {
     const unsubscribe = subscribeToCategories(
       (data) => {
-        const names = data
-          .map((c) => c.name)
-          .sort((a, b) => a.localeCompare(b));
-        setCategories(names);
+        const options = data
+          .map((c) => ({ id: c.id, name: c.name }))
+          .sort((a, b) => a.name.localeCompare(b.name));
+        setCategories(options);
         setLoading(false);
       },
       (err) => {
