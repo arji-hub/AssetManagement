@@ -1,39 +1,32 @@
 /**
- * backfill-qr-codes.cjs
+ * backfill-missing-qr-codes.cjs
  *
- * ONE-TIME SCRIPT — regenerates the QR code for every asset doc and
- * overwrites `qr_code_url` with a real Firebase Storage URL.
+ * ONE-TIME SCRIPT — generates a QR code ONLY for asset docs that currently
+ * have no `qr_code_url` at all (field missing, null, or empty string).
+ * Docs that already have a real Storage URL — or even a broken
+ * `data:image/...` one — are left untouched.
  *
- * Why: the old client-side `generateQR()` had a race under batch loads
- * and ended up writing a blank `data:image/png;base64,...` image into
- * `qr_code_url` on a lot of docs. `onAssetCreatedGenerateQR` fixes this
- * going forward for NEW assets, but it's a Firestore *create* trigger —
- * it won't fire for docs that already exist. This script does the same
- * render/upload work as that trigger, once, for every existing asset.
+ * If you also want to fix the old broken base64 `data:image` URLs at the
+ * same time, pass --include-broken (see flags below). Otherwise this is a
+ * narrower, safer version of backfill-qr-codes.cjs that only ever writes
+ * to docs that never got a QR at all — e.g. rows inserted before
+ * `onAssetCreatedGenerateQR` existed, or ones where that trigger crashed
+ * (see the CICTLOGO.png path bug) before it could write `qr_code_url`.
  *
- * NOTE the .cjs extension — this forces Node to parse the file as
- * CommonJS regardless of any "type": "module" set in a package.json
- * above it. If you rename this file back to .js and hit
- * "require is not defined in ES module scope" again, that's why.
+ * NOTE the .cjs extension — forces Node to parse this as CommonJS even if
+ * a package.json above it sets "type": "module".
  *
  * Usage (run from functions/src/script/):
- *   node backfill-qr-codes.cjs                # only fixes docs whose
- *                                              # qr_code_url is a data:
- *                                              # URL (the broken ones)
- *   node backfill-qr-codes.cjs --all           # regenerate for every
- *                                              # asset doc, regardless
- *                                              # of current qr_code_url
- *   node backfill-qr-codes.cjs --dry-run       # log what would change,
- *                                              # write nothing
+ *   node backfill-qr-codes.cjs                # only docs with NO qr_code_url
+ *   node backfill-qr-codes.cjs --include-broken # also fixes old data: URLs
+ *   node backfill-qr-codes.cjs --dry-run        # log only, write nothing
  *
  * Requires (already in functions/package.json):
  *   firebase-admin, qr-code-styling, jsdom, canvas
  *
  * Auth: place serviceAccountKey.json at functions/serviceAccountKey.json
- * (same location your migration script in src/migrations/ expects it).
  * Get it from Firebase Console → Project Settings → Service Accounts →
- * Generate new private key. Do NOT commit this file — add it to
- * .gitignore if it isn't already.
+ * Generate new private key. Do NOT commit this file.
  */
 const admin = require("firebase-admin");
 const serviceAccount = require("../../serviceAccountKey.json");
@@ -47,17 +40,19 @@ const path = require("path");
 const crypto = require("crypto");
 
 // ── config ──
-// Verify this against Firebase Console → Storage → your bucket name.
-// It is NOT your hosting URL (*.web.app) — it's usually
-// "<project-id>.appspot.com" or, for newer projects,
-// "<project-id>.firebasestorage.app".
+// Verify against Firebase Console → Storage → your bucket name.
 const STORAGE_BUCKET = "ams-cict.firebasestorage.app"; // <-- confirm/replace this
-const LOGO_PATH = path.join(__dirname, "../../../src/assets/logo/CICTLOGO.png"); // functions/assets/logo/CICTLOGO.png — same file the trigger bundles
+
+// Same file the trigger bundles: functions/src/assets/CICTLOGO.png
+// This script lives in functions/src/script/, a sibling of functions/src/assets/,
+// so it's one level up then into assets/ — same relative depth as the trigger fix.
+const LOGO_PATH = path.join(__dirname, "../assets/CICTLOGO.png");
+
 const CONCURRENCY = 10; // how many assets to process at once
 const APP_BASE_URL = "https://ams-cict.web.app/asset/";
 
 const args = process.argv.slice(2);
-const ONLY_BROKEN = !args.includes("--all");
+const INCLUDE_BROKEN = args.includes("--include-broken");
 const DRY_RUN = args.includes("--dry-run");
 
 admin.initializeApp({
@@ -76,6 +71,15 @@ const CICT_LOGO_BUFFER = fs.existsSync(LOGO_PATH)
       );
       return undefined;
     })();
+
+// A doc "needs" a QR if qr_code_url is missing/null/empty, OR (when
+// --include-broken is passed) it's one of the old placeholder base64 URLs.
+function needsQr(data) {
+  const current = data.qr_code_url;
+  if (!current || current.trim() === "") return true;
+  if (INCLUDE_BROKEN && current.startsWith("data:image")) return true;
+  return false;
+}
 
 async function generateQrBuffer(assetId) {
   const url = `${APP_BASE_URL}${assetId}`;
@@ -102,15 +106,12 @@ async function processAsset(doc) {
   const assetId = doc.id;
   const data = doc.data();
 
-  if (ONLY_BROKEN) {
-    const current = data.qr_code_url || "";
-    if (!current.startsWith("data:image")) {
-      return { assetId, skipped: true };
-    }
+  if (!needsQr(data)) {
+    return { assetId, skipped: true };
   }
 
   if (DRY_RUN) {
-    console.log(`[dry-run] would regenerate QR for ${assetId}`);
+    console.log(`[dry-run] would generate QR for ${assetId}`);
     return { assetId, dryRun: true };
   }
 
@@ -164,7 +165,7 @@ async function runWithConcurrency(items, limit, worker) {
 
 async function main() {
   console.log(
-    `Starting QR backfill (${ONLY_BROKEN ? "broken docs only" : "ALL docs"}${DRY_RUN ? ", DRY RUN" : ""})...`,
+    `Starting QR backfill for assets missing a QR${INCLUDE_BROKEN ? " (also fixing broken data: URLs)" : ""}${DRY_RUN ? ", DRY RUN" : ""}...`,
   );
 
   const snapshot = await db.collection("asset").get();
@@ -183,7 +184,7 @@ async function main() {
 
   console.log("\n── Summary ──");
   console.log(`Updated: ${updated}`);
-  console.log(`Skipped (already had a real URL): ${skipped}`);
+  console.log(`Skipped (already had a qr_code_url): ${skipped}`);
   if (DRY_RUN) console.log(`Would update (dry run): ${dryRun}`);
   console.log(`Errors: ${errors.length}`);
 
