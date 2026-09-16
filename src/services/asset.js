@@ -1,5 +1,6 @@
 import { db, storage } from "./firebase-config";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { generateAssetQR } from "./qr";
 import {
   collection,
   doc,
@@ -359,6 +360,18 @@ async function addAssetItem(
         updated_at: serverTimestamp(),
       }),
     ),
+  );
+
+  // ── generate and upload QR codes ──
+  await Promise.all(
+    records.map(async ({ assetId }) => {
+      const qrCodeUrl = await generateAssetQR(assetId);
+
+      await updateDoc(doc(db, "asset", assetId), {
+        qr_code_url: qrCodeUrl,
+        updated_at: serverTimestamp(),
+      });
+    }),
   );
 
   // ── then log the initial assignment history, now that the assets exist ──

@@ -13,7 +13,7 @@ function ItemFormModal({
   fulltimeCustodians,
   rooms,
   loadingOptions,
-  existingItems, // ← new prop: the full items array from the parent
+  existingItems,
   onSave,
   onClose,
 }) {
