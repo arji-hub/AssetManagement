@@ -90,7 +90,6 @@ function BasicInfo({
   serialsChecking,
 }) {
   const { categories, loading: categoriesLoading } = useCategoryOptions();
-  console.log(categories);
 
   return (
     <div className="reg-card">
