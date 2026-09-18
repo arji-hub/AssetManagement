@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Status } from "../../components/ui/status/assetStatus";
 import { formatDate } from "../../utils/date";
 import { TRANSFER_TYPE_LABELS } from "../transfer";
@@ -6,27 +7,24 @@ export const TRANSFER_COLUMNS = {
   action: [
     {
       key: "asset_id",
-      label: "Asset ID",
+      label: "Asset Count",
       width: "0.7fr",
       priority: "high",
-      render: (r) => r.asset_id || "—",
+      render: (r) => (
+        <span className="asset-count-cell">
+          <FontAwesomeIcon icon="fa-solid fa-boxes-stacked" />
+          <span className="asset-count-text">{r.asset_count || "#"}</span>
+        </span>
+      ),
       card: { role: "title" },
-    },
-    {
-      key: "desc",
-      label: "Description",
-      width: "2.3fr",
-      priority: "high",
-      render: (r) => r.asset_description || "—",
-      card: { role: "desc" },
     },
     {
       key: "type",
       label: "Type",
       width: "1.5fr",
-      priority: "medium",
+      priority: "high",
       render: (r) => TRANSFER_TYPE_LABELS[r.type] ?? r.type,
-      card: { role: "meta" },
+      card: { role: "type" },
     },
     {
       key: "requested_by",
@@ -56,26 +54,23 @@ export const TRANSFER_COLUMNS = {
 
   room: [
     {
-      key: "asset_id",
-      label: "Asset ID",
+      key: "asset_count",
+      label: "Asset Count",
       width: "0.5fr",
       priority: "high",
-      render: (r) => r.asset_id || "—",
+      render: (r) => (
+        <span className="asset-count-cell">
+          <FontAwesomeIcon icon="fa-solid fa-boxes-stacked" />
+          <span className="asset-count-text">{r.asset_count || "#"}</span>
+        </span>
+      ),
       card: { role: "title" },
-    },
-    {
-      key: "desc",
-      label: "Description",
-      width: "3fr",
-      priority: "high",
-      render: (r) => r.asset_name || "—",
-      card: { role: "desc" },
     },
     {
       key: "from",
       label: "From",
       width: "1fr",
-      priority: "medium",
+      priority: "high",
       render: (r) => r.room_from || "—",
       card: { role: "from" },
     },
@@ -83,7 +78,7 @@ export const TRANSFER_COLUMNS = {
       key: "to",
       label: "To",
       width: "1fr",
-      priority: "medium",
+      priority: "high",
       render: (r) => r.move_to || "—",
       card: { role: "to" },
     },
@@ -91,7 +86,7 @@ export const TRANSFER_COLUMNS = {
       key: "date",
       label: "Date",
       width: "1fr",
-      priority: "low",
+      priority: "medium",
       render: (r) => formatDate(r.created_at),
       card: { role: "date" },
     },

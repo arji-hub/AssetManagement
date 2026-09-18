@@ -9,6 +9,7 @@ function resolveTransferCardRoles(columns) {
 
   return {
     titleCol: roled.find((c) => c._role === "title"),
+    typeCol: roled.find((c) => c._role === "type"),
     badgeCol: roled.find((c) => c._role === "badge"),
     dateCol: roled.find((c) => c._role === "date"),
     descCol: roled.find((c) => c._role === "desc"),
@@ -17,7 +18,7 @@ function resolveTransferCardRoles(columns) {
 }
 
 function TransferCard({ request, columns, onClick }) {
-  const { titleCol, badgeCol, dateCol, descCol, metaCols } =
+  const { titleCol, typeCol, badgeCol, dateCol, descCol, metaCols } =
     resolveTransferCardRoles(columns);
 
   const handleClick = () => onClick?.(request);
@@ -52,24 +53,36 @@ function TransferCard({ request, columns, onClick }) {
           )}
         </div>
 
-        {titleCol && (
-          <p className="transfer-card-mobile-title">
-            {titleCol.render(request)}
-          </p>
+        {(titleCol || metaCols.length > 0) && (
+          <div className="transfer-card-mobile-title-row">
+            {titleCol && (
+              <p className="transfer-card-mobile-title">
+                {titleCol.render(request)}
+              </p>
+            )}
+            {metaCols.length > 0 && (
+              <div className="transfer-card-mobile-meta">
+                {metaCols.map((col) => (
+                  <span
+                    className="transfer-card-mobile-meta-item"
+                    key={col.key}
+                  >
+                    {col.render(request)}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {typeCol && (
+          <span className="transfer-card-mobile-type">
+            {typeCol.render(request)}
+          </span>
         )}
 
         {descCol && (
           <p className="transfer-card-mobile-desc">{descCol.render(request)}</p>
-        )}
-
-        {metaCols.length > 0 && (
-          <div className="transfer-card-mobile-meta">
-            {metaCols.map((col) => (
-              <span className="transfer-card-mobile-meta-item" key={col.key}>
-                {col.render(request)}
-              </span>
-            ))}
-          </div>
         )}
       </div>
     </>

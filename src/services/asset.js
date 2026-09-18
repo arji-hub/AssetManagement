@@ -49,21 +49,6 @@ export function subscribeToAssets(role, currentUserUid, callback, onError) {
           ...doc.data(),
         }));
 
-        const categoryIds = [
-          ...new Set(assetData.map((a) => a.category_id).filter(Boolean)),
-        ];
-
-        const categoryNameMap = {};
-        await Promise.all(
-          categoryIds.map(async (categoryId) => {
-            try {
-              categoryNameMap[categoryId] = await fetchCategoryName(categoryId);
-            } catch {
-              categoryNameMap[categoryId] = "---";
-            }
-          }),
-        );
-
         const userIds = [
           ...new Set(
             assetData.flatMap((a) =>
@@ -88,6 +73,36 @@ export function subscribeToAssets(role, currentUserUid, callback, onError) {
           }
         });
 
+        const roomIds = [
+          ...new Set(assetData.map((a) => a.room_id).filter(Boolean)),
+        ];
+
+        const roomNameMap = {};
+        await Promise.all(
+          roomIds.map(async (roomId) => {
+            try {
+              roomNameMap[roomId] = await fetchRoomName(roomId);
+            } catch {
+              roomNameMap[roomId] = "---";
+            }
+          }),
+        );
+
+        const categoryIds = [
+          ...new Set(assetData.map((a) => a.category_id).filter(Boolean)),
+        ];
+
+        const categoryNameMap = {};
+        await Promise.all(
+          categoryIds.map(async (categoryId) => {
+            try {
+              categoryNameMap[categoryId] = await fetchCategoryName(categoryId);
+            } catch {
+              categoryNameMap[categoryId] = "---";
+            }
+          }),
+        );
+
         const assets = assetData.map((asset) => ({
           ...asset,
           property_custodian_name: userMap[asset.property_custodian] || "---",
@@ -96,6 +111,7 @@ export function subscribeToAssets(role, currentUserUid, callback, onError) {
           local_mr_name: userMap[asset.local_mr] || "---",
           local_mr_fullname: fullname[asset.local_mr] || "---",
           category_name: categoryNameMap[asset.category_id],
+          room_name: roomNameMap[asset.room_id],
         }));
 
         assets.sort((a, b) => {

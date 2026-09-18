@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import MainLayout from "../../components/layout/MainLayout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { displayDate } from "../../utils/date";
@@ -6,18 +7,15 @@ import { TOP_TABS, ROOM_SUB_TABS } from "../../data/transfer";
 import { useTransfers } from "../../hooks/transfer/useTransfers";
 import Table from "../../components/panel/Table";
 import TransferRoomCard from "../../components/ui/card/transfer/TransferRoomCard";
-import TransferRoomModal from "../../components/modal/TransferRoomModal";
 import { TRANSFER_COLUMNS } from "../../data/columns";
 import "./Transfer.css";
 
 function TransferRoom() {
+  const navigate = useNavigate();
   const {
     handleTopTabClick,
     activeRoomSub,
     handleSubTabChange,
-    showTransferRoomModal,
-    handleTransferRoom,
-    handleTransferRoomModalClose,
     items,
     loading,
     error,
@@ -36,7 +34,7 @@ function TransferRoom() {
           <div className="transfer-header-right">
             <button
               className="transfer-action-btn"
-              onClick={handleTransferRoom}
+              onClick={() => navigate("/transfer/new/room")}
             >
               <FontAwesomeIcon icon="fa-solid fa-right-left" />
               Move Asset
@@ -91,10 +89,6 @@ function TransferRoom() {
             )}
           />
         </div>
-
-        {showTransferRoomModal && (
-          <TransferRoomModal onClose={handleTransferRoomModalClose} />
-        )}
       </div>
     </MainLayout>
   );

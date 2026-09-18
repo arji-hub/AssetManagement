@@ -13,6 +13,7 @@ import AssetPreview from "./pages/QR/AssetPreview";
 import Custodian from "./pages/Custodian/Custodian";
 import Report from "./pages/Report/Report";
 import Transfer from "./pages/Transfer/Transfer";
+import TransferOverview from "./pages/Transfer/TransferOverview";
 import TransferInfo from "./pages/Transfer/TransferInfo";
 import TransferRoom from "./pages/Transfer/TransferRoom";
 import QR from "./pages/QR/QR";
@@ -95,6 +96,26 @@ function App() {
             <Route index element={<Transfer />} />
             <Route element={<RoleRoute allowed={[ROLES.ADMIN]} />}>
               <Route path="room" element={<TransferRoom />} />
+            </Route>
+            {/* Setup stage before confirming — replaces the old
+                TransferModal/TransferMR/TransferRoomModal popups.
+                Static "new" segment outranks the dynamic ":id" route
+                below, so this never gets swallowed by TransferInfo. */}
+            <Route path="new">
+              <Route
+                path="asset"
+                element={<TransferOverview variant="custodian" />}
+              />
+              <Route
+                path="local-mr"
+                element={<TransferOverview variant="localMR" />}
+              />
+              <Route element={<RoleRoute allowed={[ROLES.ADMIN]} />}>
+                <Route
+                  path="room"
+                  element={<TransferOverview variant="room" />}
+                />
+              </Route>
             </Route>
             <Route path=":id" element={<TransferInfo />} />
           </Route>

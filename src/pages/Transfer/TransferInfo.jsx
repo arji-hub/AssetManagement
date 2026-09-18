@@ -7,6 +7,7 @@ import { formatDate } from "../../utils/date";
 import AckBadge from "../../components/ui/card/transfer/AckBadge";
 import TransferLogEntry from "../../components/ui/card/transfer/TransferLogEntry";
 import { useTransferInfo } from "../../hooks/transfer/useTransferInfo";
+import { getRequestItems } from "../../services/transfer";
 import TransferActionModal from "../../components/modal/TransferActionModal";
 import AddingStatusModal from "../../components/ui/status/AddingStatusModal";
 import { TRANSFER_TYPES } from "../../data/transfer";
@@ -30,6 +31,7 @@ function TransferInfo() {
     submitError,
     handleSubmitAction,
     closeActionFlow,
+    handleAssetClick,
   } = useTransferInfo();
 
   if (loading) return <MainLayout></MainLayout>;
@@ -42,23 +44,26 @@ function TransferInfo() {
     );
 
   const actionTitle = actionModal === "approve" ? "Approval" : "Decline";
+  const items = getRequestItems(request);
+  const isSingleAsset = items.length === 1;
   const isLocalMRType =
     request?.type === TRANSFER_TYPES.ASSIGNMR ||
     request?.type === TRANSFER_TYPES.REMOVEMR;
-  const fromLabel = isLocalMRType ? "CUSTODIAN" : "TRANSFER FROM";
-  const toLabel = isLocalMRType ? "LOCAL MR" : "TRANSFER TO";
+  const fromLabel = isLocalMRType ? "Custodian" : "Transfer from";
+  const toLabel = isLocalMRType ? "Local MR" : "Transfer to";
   const ackFromLabel = isLocalMRType ? "Custodian" : "From";
   const ackToLabel = isLocalMRType ? "Local MR" : "To";
+
   return (
     <MainLayout>
       <div className="transfer-info-page">
-        {/* ── Header ── */}
-        <div className="asset-info-header">
-          <div className="asset-info-breadcrumb">
+        {/* ── Top bar ── */}
+        <div className="transfer-info-topbar">
+          <div className="transfer-info-breadcrumb">
             <BackButton />
-            <span className="breadcrumb-parent">Transfer Request</span>
+            <span>Transfer Request</span>
           </div>
-          {/* ── Actions ── */}
+
           {showActions && (
             <div className="transfer-info-actions">
               <button
@@ -98,17 +103,25 @@ function TransferInfo() {
           />
         )}
 
-        {/* ── Main Card ── */}
+        {/* ── Main card ── */}
         <div className="transfer-info-card">
-          <div className="transfer-info-card-header">
-            <div className="transfer-info-card-header-left">
-              <span className="transfer-info-type-label">{typeLabel}</span>
-              <h2 className="transfer-info-asset-name">
-                {request.asset_description}
-              </h2>
-              <p className="transfer-info-asset-id">{request.asset_id}</p>
+          {/* Hero */}
+          <div className="transfer-info-hero">
+            <div className="transfer-info-hero-main">
+              <span className="transfer-info-type-pill">{typeLabel}</span>
+              <h1 className="transfer-info-asset-name">
+                {isSingleAsset
+                  ? items[0]?.asset_description
+                  : `${items.length} assets`}
+              </h1>
+              <p className="transfer-info-asset-id">
+                {isSingleAsset
+                  ? items[0]?.asset_id
+                  : `${items.length} items in this request`}
+              </p>
             </div>
-            <div className="transfer-info-card-header-right">
+
+            <div className="transfer-info-hero-meta">
               <Status status={request.status} />
               <span className="transfer-info-date">
                 {formatDate(request.created_at)}
@@ -116,53 +129,73 @@ function TransferInfo() {
             </div>
           </div>
 
-          {/* Details Grid */}
-          <div className="transfer-info-details">
-            <div className="transfer-info-detail-box">
-              <span className="transfer-info-field-label">REQUESTED BY</span>
-              <p className="transfer-info-field-value transfer-info-field-value--upper">
+          {/* Meta strip */}
+          <div className="transfer-info-meta-strip">
+            <div className="transfer-info-meta-item">
+              <span className="transfer-info-meta-label">Requested by</span>
+              <span className="transfer-info-meta-value">
                 {request.requested_by_name || "—"}
-              </p>
+              </span>
             </div>
 
-            <div className="transfer-info-detail-box">
-              <span className="transfer-info-field-label">TYPE</span>
-              <p className="transfer-info-field-value">{typeLabel || "—"}</p>
-            </div>
-
-            <div className="transfer-info-detail-box">
-              <span className="transfer-info-field-label">{fromLabel}</span>
-              <p className="transfer-info-field-value">
+            <div className="transfer-info-meta-item">
+              <span className="transfer-info-meta-label">{fromLabel}</span>
+              <span className="transfer-info-meta-value">
                 {ackFrom?.name || (
                   <em className="transfer-info-unassigned">Unallocated</em>
                 )}
-              </p>
+              </span>
             </div>
 
-            <div className="transfer-info-detail-box">
-              <span className="transfer-info-field-label">{toLabel}</span>
-              <p className="transfer-info-field-value">
+            <div className="transfer-info-meta-item">
+              <span className="transfer-info-meta-label">{toLabel}</span>
+              <span className="transfer-info-meta-value">
                 {ackTo?.name || (
                   <em className="transfer-info-unassigned">Unallocated</em>
                 )}
-              </p>
+              </span>
             </div>
 
             {request.completed_at && (
-              <div className="transfer-info-detail-box">
-                <span className="transfer-info-field-label">COMPLETED AT</span>
-                <p className="transfer-info-field-value">
+              <div className="transfer-info-meta-item">
+                <span className="transfer-info-meta-label">Completed at</span>
+                <span className="transfer-info-meta-value">
                   {formatDate(request.completed_at)}
-                </p>
+                </span>
               </div>
             )}
           </div>
+
+          {/* Assets in this request */}
+          {items.length > 0 && (
+            <div className="transfer-info-section">
+              <span className="transfer-info-section-label">
+                Assets · {items.length}
+              </span>
+              <div className="transfer-info-items-list">
+                {items.map((item) => (
+                  <div
+                    className="transfer-info-item-row"
+                    key={item.asset_id}
+                    onClick={() => handleAssetClick(item.asset_id)}
+                  >
+                    <span className="transfer-info-item-desc">
+                      {item.asset_description}
+                    </span>
+                    <span className="transfer-info-item-id">
+                      {item.asset_id}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Notes */}
           {request.notes && (
             <div className="transfer-info-section">
               <span className="transfer-info-section-label">
-                REASON/S FOR TRANSFER
+                Reason for transfer
               </span>
               <p className="transfer-info-notes">{request.notes}</p>
             </div>
@@ -172,7 +205,7 @@ function TransferInfo() {
           {request.acknowledgments && (
             <div className="transfer-info-section">
               <span className="transfer-info-section-label">
-                ACKNOWLEDGMENTS
+                Acknowledgments
               </span>
               <div className="transfer-info-ack-row">
                 {ackAdmin && <AckBadge label="Admin" ack={ackAdmin} />}
@@ -183,9 +216,9 @@ function TransferInfo() {
           )}
         </div>
 
-        {/* ── Status Log ── */}
+        {/* ── Status log ── */}
         <div className="transfer-log-card">
-          <span className="transfer-info-section-label">STATUS HISTORY</span>
+          <span className="transfer-info-section-label">Status history</span>
           <div className="transfer-info-log">
             {request.status_log
               ?.slice()
