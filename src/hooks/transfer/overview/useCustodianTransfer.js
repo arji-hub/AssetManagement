@@ -31,8 +31,8 @@ export function useCustodianTransfer() {
 
   // Custodian === null is "Unassigned"
   // Custodian === undefined means "nothing picked yet"
-  const [fromCustodian, setFromCustodian] = useState(undefined);
-  const [toCustodian, setToCustodian] = useState(undefined);
+  const [fromCustodian, setFromCustodian] = useState(null);
+  const [toCustodian, setToCustodian] = useState(null);
 
   //if user not admin set the fromCustodian to user
   useEffect(() => {

@@ -478,7 +478,7 @@ function TransferOverview({ variant = "custodian" }) {
 
                   <label className="transfer-overview-label">To</label>
 
-                  {(variant === "localMR" && isParttime) || ownerFilter ? (
+                  {variant === "localMR" && (isParttime || ownerFilter) ? (
                     // To Custodians
                     <div className="transfer-overview-static-field">
                       -Remove Local MR-
@@ -486,13 +486,9 @@ function TransferOverview({ variant = "custodian" }) {
                   ) : (
                     <SearchableSelect
                       options={[
-                        ...(variant === "localMR" && isParttime
-                          ? fromCustodian
-                            ? [{ id: "unassigned", label: "Unassigned" }]
-                            : []
-                          : ownerFilter
-                            ? [{ id: "unassigned", label: "Unassigned" }]
-                            : []),
+                        ...(fromCustodian
+                          ? [{ id: "unassigned", label: "Unassigned" }]
+                          : []),
                         ...custodians
                           .filter((c) => c.id !== fromCustodian?.id)
                           .map((c) => ({
