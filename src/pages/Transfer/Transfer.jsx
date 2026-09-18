@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import MainLayout from "../../components/layout/MainLayout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { displayDate } from "../../utils/date";
@@ -6,34 +7,24 @@ import { TOP_TABS } from "../../data/transfer";
 import { useTransfers } from "../../hooks/transfer/useTransfers";
 import Table from "../../components/panel/Table";
 import TransferCard from "../../components/ui/card/transfer/TransferCard";
-import TransferModal from "../../components/modal/TransferModal";
-import TransferMR from "../../components/modal/TransferMR";
 import ROLES from "../../data/roles";
 import { TRANSFER_COLUMNS } from "../../data/columns";
 import "./Transfer.css";
 
 function Transfer() {
+  const navigate = useNavigate();
   const {
     isRole,
     activeTransferSub,
     visibleSubTabs,
     handleSubTabChange,
     handleTopTabClick,
-    showTransferModal,
-    handleTransferRequest,
-    handleTransferModalClose,
-    showTransferMR,
-    handleTransferMR,
-    handleTransferMRClose,
     items,
     loading,
     error,
     handleRowClick,
     emptyState,
-    showHeader,
   } = useTransfers({ currentTop: "transfers" });
-
-  const columns = showHeader ? TRANSFER_COLUMNS.action : undefined;
 
   return (
     <MainLayout>
@@ -47,7 +38,7 @@ function Transfer() {
             {isRole != ROLES.ADMIN && (
               <button
                 className="transfer-action-btn"
-                onClick={handleTransferMR}
+                onClick={() => navigate("/transfer/new/local-mr")}
               >
                 <FontAwesomeIcon icon="fa-solid fa-user-group" />
                 Local MR
@@ -56,10 +47,10 @@ function Transfer() {
             {isRole != ROLES.PARTTIME && (
               <button
                 className="transfer-action-btn"
-                onClick={handleTransferRequest}
+                onClick={() => navigate("/transfer/new/asset")}
               >
                 <FontAwesomeIcon icon="fa-solid fa-user-tag" />
-                Transfer Custodian
+                Transfer Asset
               </button>
             )}
           </div>
@@ -93,7 +84,7 @@ function Transfer() {
 
         <div className="transfer-table-wrap">
           <Table
-            columns={columns}
+            columns={TRANSFER_COLUMNS.action}
             items={items}
             loading={loading}
             error={error}
@@ -105,17 +96,12 @@ function Transfer() {
               <TransferCard
                 key={item.id}
                 request={item}
-                columns={columns}
+                columns={TRANSFER_COLUMNS.action}
                 onClick={handleRowClick}
               />
             )}
           />
         </div>
-
-        {showTransferModal && (
-          <TransferModal onClose={handleTransferModalClose} />
-        )}
-        {showTransferMR && <TransferMR onClose={handleTransferMRClose} />}
       </div>
     </MainLayout>
   );

@@ -40,16 +40,16 @@ exports.onTransferRequestCompleted = onDocumentUpdated(
         return;
       }
 
-      if (!after.asset_id) {
+      const assetIds = after.asset_ids;
+      if (!Array.isArray(assetIds) || assetIds.length === 0) {
         logger.warn(
-          `transfer_request/${requestId} completed but missing asset_id — skipping asset update.`,
+          `transfer_request/${requestId} completed but missing asset_ids — skipping asset update.`,
           { requestId, type: after.type },
         );
         return;
       }
 
       const db = getFirestore();
-      const assetRef = db.collection("asset").doc(after.asset_id);
 
       const toUid = after.acknowledgments?.to?.uid;
       const isLocalMr = ["assign_localmr", "remove_localmr"].includes(
@@ -61,22 +61,30 @@ exports.onTransferRequestCompleted = onDocumentUpdated(
       const fieldName = isLocalMr ? "local_mr" : "property_custodian";
 
       if (isRemoval) {
-        await assetRef.update({
-          [fieldName]: null,
-          updated_at: FieldValue.serverTimestamp(),
+        const batch = db.batch();
+        assetIds.forEach((assetId) => {
+          batch.update(db.collection("asset").doc(assetId), {
+            [fieldName]: null,
+            updated_at: FieldValue.serverTimestamp(),
+          });
         });
+        await batch.commit();
         logger.info(
-          `transfer_request/${requestId}: cleared ${fieldName} on asset/${after.asset_id}.`,
-          { requestId, assetId: after.asset_id, type: after.type },
+          `transfer_request/${requestId}: cleared ${fieldName} on ${assetIds.length} asset(s).`,
+          { requestId, assetIds, type: after.type },
         );
       } else if (toUid) {
-        await assetRef.update({
-          [fieldName]: toUid,
-          updated_at: FieldValue.serverTimestamp(),
+        const batch = db.batch();
+        assetIds.forEach((assetId) => {
+          batch.update(db.collection("asset").doc(assetId), {
+            [fieldName]: toUid,
+            updated_at: FieldValue.serverTimestamp(),
+          });
         });
+        await batch.commit();
         logger.info(
-          `transfer_request/${requestId}: set ${fieldName} to ${toUid} on asset/${after.asset_id}.`,
-          { requestId, assetId: after.asset_id, type: after.type, toUid },
+          `transfer_request/${requestId}: set ${fieldName} to ${toUid} on ${assetIds.length} asset(s).`,
+          { requestId, assetIds, type: after.type, toUid },
         );
       } else {
         logger.warn(
@@ -91,7 +99,7 @@ exports.onTransferRequestCompleted = onDocumentUpdated(
           requestId,
           error: err.stack,
           type: after?.type,
-          assetId: after?.asset_id,
+          assetIds: after?.asset_ids,
         },
       );
       // Re-throw so Cloud Functions marks this invocation as failed,

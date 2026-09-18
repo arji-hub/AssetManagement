@@ -2,10 +2,7 @@
 
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import TransferModal from "../../modal/TransferModal";
 import ReportModal from "../../modal/ReportModal";
-import TransferMR from "../../modal/TransferMR";
-import TransferRoomModal from "../../modal/TransferRoomModal";
 import useManageAsset from "../../../hooks/asset/useManageAsset";
 import "./ManageAsset.css";
 
@@ -100,19 +97,13 @@ function ManageAsset({ asset }) {
         </ul>
       )}
 
-      {activeModal === "transfer" && canTransfer && (
-        <TransferModal assetID={assetID} onClose={closeModal} />
-      )}
-      {activeModal === "mr" && canLocalMR && (
-        <TransferMR assetID={assetID} onClose={closeModal} />
-      )}
+      {activeModal === "transfer" && canTransfer && <div />}
+      {activeModal === "mr" && canLocalMR && <div />}
       {activeModal === "report" && canReport && (
         <ReportModal assetID={assetID} onClose={closeModal} />
       )}
 
-      {activeModal === "room" && canReport && (
-        <TransferRoomModal assetID={assetID} onClose={closeModal} />
-      )}
+      {activeModal === "room" && canReport && <div />}
     </div>
   );
 }
