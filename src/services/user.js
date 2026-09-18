@@ -53,6 +53,7 @@ export async function fetchCustodians() {
       role: d.role,
       email: d.email,
       status: d.status,
+      uid: doc.id,
     };
   });
 
@@ -106,6 +107,7 @@ export async function findCustodian(identifier) {
     role: d.role,
     status: d.status ?? "active",
     asset_count,
+    uid:docSnap.id,
   };
 }
 
@@ -154,19 +156,23 @@ export async function updateProfile(uid, profileData) {
 }
 
 export function subscribeToAssetsByCustodian(custodianID, callback, onError) {
-  if (!custodianID) {
-    callback([]);
-    return () => {};
-  }
-
   const assetRef = collection(db, "asset");
-  const assetQuery = query(
-    assetRef,
-    or(
-      where("property_custodian", "==", custodianID),
-      where("local_mr", "==", custodianID),
-    ),
-  );
+  let assetQuery;
+  if (custodianID === null) {
+    assetQuery = query(
+      assetRef,
+      where("property_custodian", "==", null),
+      where("local_mr", "==", null),
+    );
+  } else {
+    assetQuery = query(
+      assetRef,
+      or(
+        where("property_custodian", "==", custodianID),
+        where("local_mr", "==", custodianID),
+      ),
+    );
+  }
 
   const unsubscribe = onSnapshot(
     assetQuery,
@@ -209,6 +215,7 @@ export function subscribeToAssetsByCustodian(custodianID, callback, onError) {
 
         const assets = assetData.map((asset) => ({
           id: asset.id,
+          serial_no: asset.serial_number,
           category_id: asset.category_id,
           category_name: categoryNameMap[asset.category_id],
           description: asset.description,
@@ -217,6 +224,8 @@ export function subscribeToAssetsByCustodian(custodianID, callback, onError) {
           date: asset.date_acquired,
           room_id: asset.room_id ?? "---",
           room_name: roomNameMap[asset.room_id] ?? "---",
+          property_custodian: asset.property_custodian ?? null,
+          local_mr: asset.local_mr ?? null,
         }));
 
         callback(assets);

@@ -19,10 +19,7 @@ export function useTransfers({ currentTop = "transfers" } = {}) {
   const [activeTransferSub, setActiveTransferSub] = React.useState("action");
   const [activeRoomSub, setActiveRoomSub] = React.useState("logs");
 
-  const [showTransferModal, setShowTransferModal] = React.useState(false);
-  const [showTransferMR, setShowTransferMR] = React.useState(false);
-  const [showTransferRoomModal, setShowTransferRoomModal] =
-    React.useState(false);
+  React.useState(false);
 
   const activeSub =
     activeTop === "transfers" ? activeTransferSub : activeRoomSub;
@@ -34,15 +31,6 @@ export function useTransfers({ currentTop = "transfers" } = {}) {
 
   const handleTopTabChange = (key) => setActiveTop(key);
   const handleSubTabChange = (key) => setActiveSub(key);
-
-  const handleTransferRequest = () => setShowTransferModal(true);
-  const handleTransferModalClose = () => setShowTransferModal(false);
-
-  const handleTransferMR = () => setShowTransferMR(true);
-  const handleTransferMRClose = () => setShowTransferMR(false);
-
-  const handleTransferRoom = () => setShowTransferRoomModal(true);
-  const handleTransferRoomModalClose = () => setShowTransferRoomModal(false);
 
   const handleTopTabClick = (tabKey) => {
     if (tabKey === currentTop) return; // already on this page, no-op
@@ -97,7 +85,6 @@ export function useTransfers({ currentTop = "transfers" } = {}) {
   }, [group, uid, role]);
 
   const emptyState = EMPTY_STATE_CONFIG[group] || EMPTY_STATE_CONFIG.action;
-  const showHeader = !loading && !error && rawItems.length !== 0;
 
   return {
     // role / permissions
@@ -113,25 +100,11 @@ export function useTransfers({ currentTop = "transfers" } = {}) {
     handleSubTabChange,
     handleTopTabClick,
 
-    // transfer modal
-    showTransferModal,
-    handleTransferRequest,
-    handleTransferModalClose,
-    showTransferMR,
-    handleTransferMR,
-    handleTransferMRClose,
-
-    // transfer room modal
-    showTransferRoomModal,
-    handleTransferRoom,
-    handleTransferRoomModalClose,
-
     // data
     items: rawItems,
     loading,
     error,
     handleRowClick,
     emptyState,
-    showHeader,
   };
 }

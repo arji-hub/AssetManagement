@@ -104,6 +104,10 @@ export function useTransferInfo() {
     setSubmitError(null);
   };
 
+  const handleAssetClick = (id) => {
+    navigate(`/asset/info/${id}`);
+  };
+
   return {
     request,
     loading,
@@ -119,5 +123,6 @@ export function useTransferInfo() {
     submitError,
     handleSubmitAction,
     closeActionFlow,
+    handleAssetClick,
   };
 }
