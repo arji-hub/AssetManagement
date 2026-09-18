@@ -34,11 +34,8 @@ export function useTransferSubmit({
   const canSubmit =
     selectedAssets.length > 0 &&
     !submitting &&
-    (variant === "room"
-      ? !!targetRoom
-      : fromCustodian !== undefined && toCustodian !== undefined) &&
+    (variant === "room" ? !!targetRoom : fromCustodian || toCustodian) &&
     (variant === "localMR" ? !!(fromCustodian && toCustodian) : true);
-
   const handleConfirm = useCallback(async () => {
     if (!canSubmit) return;
     setSubmitting(true);
