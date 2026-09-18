@@ -1,4 +1,7 @@
 /* SearchableSelect.css */
+/* Recolored to use the app-shell design tokens from index.css
+   (:root[data-theme] / .layout-wrapper scope) instead of hardcoded
+   hex values, so it matches the rest of the app and follows dark mode. */
 
 .reg-searchable {
   position: relative;
@@ -13,10 +16,10 @@
 
   padding: 0.6rem 0.75rem;
 
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background: #fff;
-  color: #333;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  background: var(--card-bg);
+  color: var(--text-strong);
 
   font: inherit;
   font-size: 0.85rem;
@@ -27,13 +30,13 @@
 }
 
 .reg-searchable-trigger:hover {
-  border-color: #b8b8b8;
+  border-color: var(--card-border-hover);
 }
 
 .reg-searchable-trigger:focus-visible {
   outline: none;
-  border-color: #860100;
-  box-shadow: 0 0 0 2px rgba(134, 1, 0, 0.15);
+  border-color: var(--maroon-700);
+  box-shadow: 0 0 0 2px var(--maroon-tint);
 }
 
 .reg-searchable-trigger:disabled {
@@ -42,19 +45,19 @@
 }
 
 .reg-searchable-trigger.reg-input--error {
-  border-color: #860100;
+  border-color: var(--danger);
 }
 
 .reg-searchable-placeholder {
-  color: #9a9a9a;
+  color: var(--text-faint);
 }
 
 .reg-searchable-caret {
   flex-shrink: 0;
   width: 7px;
   height: 7px;
-  border-right: 2px solid #808080;
-  border-bottom: 2px solid #808080;
+  border-right: 2px solid var(--text-faint);
+  border-bottom: 2px solid var(--text-faint);
   transform: rotate(45deg);
   margin-top: -4px;
 }
@@ -69,10 +72,10 @@
   display: flex;
   flex-direction: column;
 
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--card-elevated-container-elevation);
   overflow: hidden;
 }
 
@@ -81,21 +84,22 @@
   padding: 0.55rem 0.75rem;
 
   border: none;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--card-bg);
 
   font: inherit;
   font-size: 0.84rem;
-  color: #333;
+  color: var(--text-strong);
 
   outline: none;
 }
 
 .reg-searchable-search:focus {
-  border-bottom-color: #860100;
+  border-bottom-color: var(--maroon-700);
 }
 
 .reg-searchable-search::placeholder {
-  color: #aaa;
+  color: var(--text-faint);
 }
 
 .reg-searchable-list {
@@ -107,30 +111,43 @@
   overflow-y: auto;
 }
 
+.reg-searchable-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.reg-searchable-list::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 4px;
+}
+
+.reg-searchable-list::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
 .reg-searchable-option {
   padding: 0.5rem 0.65rem;
   border-radius: 6px;
 
   font-size: 0.85rem;
-  color: #333;
+  color: var(--text-strong);
 
   cursor: pointer;
 }
 
 .reg-searchable-option:hover {
-  background: #fff8f7;
-  color: #860100;
+  background: var(--maroon-tint);
+  color: var(--maroon-700);
 }
 
 .reg-searchable-option--active {
-  background: #fff8f7;
-  color: #860100;
+  background: var(--maroon-tint);
+  color: var(--maroon-700);
   font-weight: 600;
 }
 
 .reg-searchable-empty {
   padding: 0.6rem 0.65rem;
-  color: #9a9a9a;
+  color: var(--text-faint);
   font-size: 0.8rem;
   font-style: italic;
 }

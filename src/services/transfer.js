@@ -318,25 +318,75 @@ function buildAck(acknowledged, uid, name) {
   };
 }
 
-async function assetNoOpenTransferForAsset(assetId) {
+function chunk(arr, size) {
+  const out = [];
+  for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
+  return out;
+}
+
+/**
+ * Blocks filing a request if ANY asset in the batch already has an open
+ * (non-completed) transfer request. `array-contains-any` maxes out at 10
+ * values per query, so asset IDs are checked in chunks of 10 and merged.
+ * Relies on the doc-level `asset_ids` flat array (kept in sync with
+ * `items`) — Firestore can't query a field nested inside an array of maps.
+ */
+async function assertNoOpenTransferForAssets(assetIds) {
   const col = collection(db, COLLECTION);
-  const snap = await getDocs(
-    query(
-      col,
-      where("asset_id", "==", assetId),
-      where("completed_at", "==", null),
+  const chunks = chunk(assetIds, 10);
+
+  const snapshots = await Promise.all(
+    chunks.map((ids) =>
+      getDocs(
+        query(
+          col,
+          where("asset_ids", "array-contains-any", ids),
+          where("completed_at", "==", null),
+        ),
+      ),
     ),
   );
 
-  if (!snap.empty) {
+  const conflicting = new Set();
+  snapshots.forEach((snap) =>
+    snap.docs.forEach((doc) => {
+      (doc.data().asset_ids || []).forEach((id) => {
+        if (assetIds.includes(id)) conflicting.add(id);
+      });
+    }),
+  );
+
+  if (conflicting.size > 0) {
     throw new Error(
-      "This asset already has an ongoing transfer request. Please resolve it before filing a new one.",
+      `The following asset(s) already have an ongoing transfer request: ${[...conflicting].join(", ")}. Please resolve them before filing a new one.`,
     );
   }
 }
 
+/**
+ * Normalizes a transfer_request doc's assets into a uniform item list,
+ * regardless of whether it was written before or after the multi-asset
+ * restructure. Lets old completed/denied docs (single top-level asset_id/
+ * asset_description, no `items`) keep rendering correctly without a data
+ * migration.
+ */
+export function getRequestItems(request) {
+  if (Array.isArray(request?.items) && request.items.length > 0) {
+    return request.items;
+  }
+  if (request?.asset_id) {
+    return [
+      {
+        asset_id: request.asset_id,
+        asset_description: request.asset_description,
+      },
+    ];
+  }
+  return [];
+}
+
 export async function addTransferRequest(
-  { asset_id, asset_description, from, to, notes },
+  { items, from, to, notes },
   requestedByUid,
   requestedByName,
   requestedByRole,
@@ -348,17 +398,55 @@ export async function addTransferRequest(
     );
   }
 
+  if (!Array.isArray(items) || items.length === 0) {
+    throw new Error(
+      "Invalid transfer request: at least one asset is required.",
+    );
+  }
+
+  // de-dupe by asset_id in case the picker UI allows double-adding
+  const seen = new Set();
+  const cleanItems = items.filter((item) => {
+    if (!item?.asset_id || seen.has(item.asset_id)) return false;
+    seen.add(item.asset_id);
+    return true;
+  });
+
+  if (cleanItems.length === 0) {
+    throw new Error("Invalid transfer request: no valid assets provided.");
+  }
+
   if (from?.uid && to?.uid && from.uid === to.uid) {
     throw new Error(
       "Invalid transfer request: 'from' and 'to' cannot be the same person.",
     );
   }
 
-  // == Step 0: block duplicate open transfer request =======
-  await assetNoOpenTransferForAsset(asset_id);
+  const assetIds = cleanItems.map((item) => item.asset_id);
+
+  // == Step 0: block filing if ANY asset in the batch has an open request ==
+  await assertNoOpenTransferForAssets(assetIds);
 
   const isAdmin = requestedByRole === ROLES.ADMIN;
   const type = resolveTransferType(from, to);
+
+  if (type == TRANSFER_TYPES.ASSIGNMR) {
+    try {
+      for (const item of items) {
+        const asset = await fetchAssetByID(item.asset_id);
+        if (asset.local_mr != null) {
+          setSubmitError(
+            `Asset ${item.asset_id} already has a local MR assigned`,
+          );
+          return;
+        }
+      }
+      // all clear — proceed with assignment
+    } catch (err) {
+      setSubmitError(err.message);
+    }
+  }
+
   const status =
     (type === TRANSFER_TYPES.ASSIGN || type === TRANSFER_TYPES.REMOVE) &&
     !isAdmin
@@ -376,8 +464,9 @@ export async function addTransferRequest(
   const toName = toInfo?.fullname || null;
 
   const docData = {
-    asset_id,
-    asset_description,
+    items: cleanItems,
+    asset_ids: assetIds,
+    asset_count: assetIds.length,
     requested_by: requestedByUid,
     requested_by_name: requestedByName,
     requested_by_role: requestedByRole,
@@ -601,7 +690,6 @@ export async function condemnAsset(assetID) {
       await roomCount(currentRoomId, "decrement");
     }
   } catch (err) {
-    console.error("❌ Failed to condemn asset:", err);
     throw new Error(`Failed to condemn asset: ${err.message}`);
   }
 }
@@ -753,6 +841,9 @@ function toDate(value) {
  *
  * Buckets by created_at; for each bucket, counts how many of the items
  * created in that bucket are CURRENTLY "pending" vs "for_approval".
+ * Deliberately counts REQUESTS (tickets), not assets — this is a workflow
+ * backlog view. Contrast with summarizeCustodianAssignmentEvents below,
+ * which counts assets, since a single request can now carry several.
  * Items already completed/denied are excluded from the chart (they're
  * no longer part of the backlog) — note this means past bucket counts
  * will shrink over time as requests resolve; it's a live backlog
@@ -938,17 +1029,21 @@ export function summarizeCustodianAssignmentEvents(items, range, uid) {
     const wasRemovedFromUid = item.acknowledgments?.from?.uid === uid;
     if (!wasAssignedToUid && !wasRemovedFromUid) return;
 
+    // A single request can now move several assets at once — count assets,
+    // not requests, so the KPI reflects actual custody changes.
+    const assetCount = getRequestItems(item).length || 1;
+
     if (completedAt >= currentStart) {
       const bucket = bucketMap.get(bucketKey(completedAt, range));
       if (bucket) {
-        if (wasAssignedToUid) bucket.assigned += 1;
-        if (wasRemovedFromUid) bucket.removed += 1;
+        if (wasAssignedToUid) bucket.assigned += assetCount;
+        if (wasRemovedFromUid) bucket.removed += assetCount;
       }
-      if (wasAssignedToUid) currentAssigned += 1;
-      if (wasRemovedFromUid) currentRemoved += 1;
+      if (wasAssignedToUid) currentAssigned += assetCount;
+      if (wasRemovedFromUid) currentRemoved += assetCount;
     } else if (completedAt >= previousStart) {
-      if (wasAssignedToUid) previousAssigned += 1;
-      if (wasRemovedFromUid) previousRemoved += 1;
+      if (wasAssignedToUid) previousAssigned += assetCount;
+      if (wasRemovedFromUid) previousRemoved += assetCount;
     }
   });
 
