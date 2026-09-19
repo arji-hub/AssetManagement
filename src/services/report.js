@@ -19,17 +19,40 @@ import { getName } from "./user";
 import { updateAssetStatus } from "./asset";
 import { ASSET_CLEARING_STATUSES, REPORT_STATUS } from "../data/reports";
 import { condemnAsset } from "./transfer";
+import { fetchRoomName } from "./room";
+
+const roomNameCache = new Map();
+
+function getRoomName(roomId) {
+  if (!roomId) return Promise.resolve(null);
+
+  if (!roomNameCache.has(roomId)) {
+    roomNameCache.set(
+      roomId,
+      fetchRoomName(roomId).catch((err) => {
+        roomNameCache.delete(roomId); // allow retry on failure
+        console.error(`Failed to fetch room name for ${roomId}:`, err);
+        return null;
+      }),
+    );
+  }
+  return roomNameCache.get(roomId);
+}
 
 export function subscribeToReports(uid, callback, onError) {
   const q = query(collection(db, "report"), orderBy("updated_at", "desc"));
+  let latestRun = 0; // guards against out-of-order async results
 
   const unsubscribe = onSnapshot(
     q,
-    (snapshot) => {
+    async (snapshot) => {
+      const run = ++latestRun;
+
       try {
         const reports = snapshot.docs.map((doc) => {
           const report = { id: doc.id, ...doc.data() };
           const latestLog = report.status_log?.[report.status_log.length - 1];
+
           return {
             id: report.id,
             asset_id: report.asset_id,
@@ -63,7 +86,18 @@ export function subscribeToReports(uid, callback, onError) {
                   report.reported_by === uid,
               );
 
-        callback(filtered);
+        // Resolve room names only for the reports we're actually returning
+        const withRoomNames = await Promise.all(
+          filtered.map(async (report) => ({
+            ...report,
+            room_name: await getRoomName(report.location),
+          })),
+        );
+
+        // A newer snapshot arrived while we were fetching; drop this stale result
+        if (run !== latestRun) return;
+
+        callback(withRoomNames);
       } catch (err) {
         onError?.(err);
       }
