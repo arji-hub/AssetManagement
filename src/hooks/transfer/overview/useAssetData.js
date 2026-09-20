@@ -15,6 +15,15 @@ import ROLES from "../../../data/roles";
  * Nothing here is variant-specific beyond which asset subscription to use
  * and which custodian role the picker lists get filtered down to.
  */
+
+export const UNALLOCATED_ROOM_ID = "unallocated";
+
+export const matchesRoomFilter = (asset, roomFilter) => {
+  if (roomFilter === "all") return true;
+  if (roomFilter === UNALLOCATED_ROOM_ID) return !asset.room_id;
+  return asset.room_id === roomFilter;
+};
+
 export function useAssetData({ user, variant, isRoom = false }) {
   const [assets, setAssets] = useState([]);
   const [assetsLoading, setAssetsLoading] = useState(true);
@@ -60,19 +69,32 @@ export function useAssetData({ user, variant, isRoom = false }) {
   //    i.e. some asset in the current pool references that room_id /
   //    category_id. Keeps the filter dropdowns from listing rooms or
   //    categories with nothing to filter to. ──
+
   const usedRoomIds = useMemo(
     () => new Set(assets.map((a) => a.room_id).filter(Boolean)),
     [assets],
   );
+
+  const hasUnallocated = useMemo(
+    () => assets.some((a) => !a.room_id),
+    [assets],
+  );
+  console.log(assets);
+
   const usedCategoryIds = useMemo(
     () => new Set(assets.map((a) => a.category_id).filter(Boolean)),
     [assets],
   );
 
-  const rooms = useMemo(
-    () => allRooms.filter((r) => usedRoomIds.has(r.id)),
-    [allRooms, usedRoomIds],
-  );
+  const rooms = useMemo(() => {
+    const used = allRooms.filter((r) => usedRoomIds.has(r.id));
+    return hasUnallocated
+      ? [{ id: UNALLOCATED_ROOM_ID, name: "Unallocated" }, ...used]
+      : used;
+  }, [allRooms, usedRoomIds, hasUnallocated]);
+  console.log(hasUnallocated);
+  console.log(rooms);
+
   const categories = useMemo(
     () => allCategories.filter((c) => usedCategoryIds.has(c.id)),
     [allCategories, usedCategoryIds],
