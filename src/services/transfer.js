@@ -678,12 +678,8 @@ export function subscribeToTransfersByAsset(assetId, callback, onError) {
   };
 
   const queries = [
-    query(
-      col,
-      where("asset_ids", "array-contains", assetId),
-      orderBy("updated_at", "desc"),
-    ),
-    query(col, where("asset_id", "==", assetId), orderBy("updated_at", "desc")), // legacy docs
+    query(col, where("asset_ids", "array-contains", assetId)),
+    query(col, where("asset_id", "==", assetId)),
   ];
 
   const unsubs = queries.map((q, i) =>
@@ -716,12 +712,8 @@ export function subscribeToRoomTransfersByAsset(assetId, callback, onError) {
   };
 
   const queries = [
-    query(
-      col,
-      where("asset_ids", "array-contains", assetId),
-      orderBy("created_at", "desc"),
-    ),
-    query(col, where("asset_id", "==", assetId), orderBy("created_at", "desc")), // legacy docs
+    query(col, where("asset_ids", "array-contains", assetId)),
+    query(col, where("asset_id", "==", assetId)),
   ];
 
   const unsubs = queries.map((q, i) =>
