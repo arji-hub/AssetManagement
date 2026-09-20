@@ -444,7 +444,7 @@ export async function updateAssetStatus(assetId, status) {
 export async function updateAssetRoom(assetId, room) {
   const docRef = doc(db, "asset", assetId);
   await updateDoc(docRef, {
-    room_id: room,
+    room_id: room ?? null,
   });
 }
 

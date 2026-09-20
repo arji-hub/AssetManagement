@@ -16,6 +16,7 @@ import Transfer from "./pages/Transfer/Transfer";
 import TransferOverview from "./pages/Transfer/TransferOverview";
 import TransferInfo from "./pages/Transfer/TransferInfo";
 import TransferRoom from "./pages/Transfer/TransferRoom";
+import TransferRoomInfo from "./pages/Transfer/TransferRoomInfo";
 import QR from "./pages/QR/QR";
 import Audit from "./pages/Audit/Audit";
 import AuditRoom from "./pages/Audit/room/AuditRoom";
@@ -95,7 +96,10 @@ function App() {
           <Route path="/transfer">
             <Route index element={<Transfer />} />
             <Route element={<RoleRoute allowed={[ROLES.ADMIN]} />}>
-              <Route path="room" element={<TransferRoom />} />
+              <Route path="room">
+                <Route index element={<TransferRoom />} />
+                <Route path=":id" element={<TransferRoomInfo />} />
+              </Route>
             </Route>
             {/* Setup stage before confirming — replaces the old
                 TransferModal/TransferMR/TransferRoomModal popups.

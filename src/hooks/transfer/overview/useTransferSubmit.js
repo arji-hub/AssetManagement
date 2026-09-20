@@ -34,8 +34,11 @@ export function useTransferSubmit({
   const canSubmit =
     selectedAssets.length > 0 &&
     !submitting &&
-    (variant === "room" ? !!targetRoom : fromCustodian || toCustodian) &&
+    (variant === "room"
+      ? targetRoom !== undefined
+      : fromCustodian || toCustodian) &&
     (variant === "localMR" ? !!(fromCustodian && toCustodian) : true);
+
   const handleConfirm = useCallback(async () => {
     if (!canSubmit) return;
     setSubmitting(true);
@@ -44,24 +47,38 @@ export function useTransferSubmit({
 
     try {
       if (variant === "room") {
-        // No approval flow for room moves — fire one transfer_room doc
-        // per asset (keeps each asset's own room-audit history intact).
-        // Navigation to the room log now happens from handleDone, once
-        // the user acknowledges the success modal.
-        await Promise.all(
-          selectedAssets.map((asset) =>
-            addTransferRoom(
-              {
-                asset_id: asset.id,
-                asset_name: asset.description,
-                room_from: asset.room_id || null,
-                move_to: targetRoom.id,
-              },
-              user.uid,
-            ),
-          ),
-        );
-        setSubmitSuccess(true);
+        const roomPayloads = selectedAssets.map((asset) => ({
+          asset_id: asset.id,
+          asset_name: asset.description,
+          room_from: asset.room_id || null,
+          move_to: targetRoom?.id ?? null,
+        }));
+
+        console.log("Room Transfer Payload:", roomPayloads);
+
+        try {
+          await addTransferRoom(
+            {
+              items: selectedAssets.map((a) => ({
+                asset_id: a.id,
+                asset_name: a.description,
+                room_from: a.room_id || null,
+              })),
+              move_to: targetRoom?.id ?? null,
+            },
+            user.uid,
+          );
+          setSubmitSuccess(true);
+        } catch (err) {
+          console.error("Room transfer failed:", err);
+          console.error("Code:", err?.code, "| Message:", err?.message);
+          console.error("Payloads:", roomPayloads);
+          setSubmitError(
+            err?.code ? `${err.code}: ${err.message}` : err.message,
+          );
+        } finally {
+          setSubmitting(false);
+        }
         return;
       }
 
@@ -93,7 +110,7 @@ export function useTransferSubmit({
         }
       }
 
-      /* console.log("addTransferRequest payload:", {
+      console.log("addTransferRequest payload:", {
         items,
         from: fromCustodian && {
           ...fromCustodian,
@@ -110,7 +127,8 @@ export function useTransferSubmit({
         requestedByName: user.firstname,
         requestedByRole: user.role,
         user,
-      });  */
+      });
+
       const created = await addTransferRequest(
         {
           items,

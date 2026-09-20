@@ -1,0 +1,47 @@
+/* Additions for TransferRoomInfo — everything else comes from TransferInfo.css */
+
+.transfer-room-item-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.transfer-room-item-from {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.transfer-room-item-from-label {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-faint);
+}
+
+.transfer-info-item-row:focus-visible {
+  outline: 2px solid var(--maroon-700);
+  outline-offset: -2px;
+}
+
+.transfer-info-items-list.transfer-room-items-list {
+  max-height: min(360px, 50vh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+@media (max-width: 650px) {
+  .transfer-info-item-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .transfer-room-item-from {
+    text-align: left;
+  }
+}
