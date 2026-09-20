@@ -132,6 +132,8 @@ export function useCustodianTransfer() {
     navigate,
   });
 
+  const NO_ROOMS = [];
+
   return {
     isAdmin,
     isFulltime,
@@ -144,6 +146,7 @@ export function useCustodianTransfer() {
     setOwnerFilter: () => {},
     assets: filteredAssets,
     assetsLoading,
+    allRooms: NO_ROOMS,
     rooms,
     categories,
     custodians,

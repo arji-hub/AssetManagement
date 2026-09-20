@@ -14,7 +14,7 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { db, storage } from "./firebase-config";
-import { updateAssetRoom } from "./asset";
+import { updateAssetRoom, fetchAssetByID } from "./asset";
 import { getName, getAdmin } from "./user";
 import ROLES from "../data/roles";
 import { TRANSFER_TYPES, STATUS } from "../data/transfer";
@@ -267,7 +267,10 @@ export function subscribeToRoomLogs(callback, onError) {
       const uniqueIDs = [
         ...new Set(
           items.flatMap((item) =>
-            [item.move_to, item.room_from].filter(Boolean),
+            [
+              item.move_to,
+              ...getRoomTransferItems(item).map((i) => i.room_from),
+            ].filter(Boolean),
           ),
         ),
       ];
@@ -276,10 +279,15 @@ export function subscribeToRoomLogs(callback, onError) {
       const enriched = await Promise.all(
         items.map(async (item) => ({
           ...item,
-          move_to: await resolveRoomName(item.move_to),
-          room_from: item.room_from
-            ? await resolveRoomName(item.room_from)
-            : null,
+          move_to: item.move_to ? await resolveRoomName(item.move_to) : null,
+          items: await Promise.all(
+            getRoomTransferItems(item).map(async (i) => ({
+              ...i,
+              room_from: i.room_from
+                ? await resolveRoomName(i.room_from)
+                : null,
+            })),
+          ),
         })),
       );
 
@@ -430,23 +438,16 @@ export async function addTransferRequest(
   const isAdmin = requestedByRole === ROLES.ADMIN;
   const type = resolveTransferType(from, to);
 
-  if (type == TRANSFER_TYPES.ASSIGNMR) {
-    try {
-      for (const item of items) {
-        const asset = await fetchAssetByID(item.asset_id);
-        if (asset.local_mr != null) {
-          setSubmitError(
-            `Asset ${item.asset_id} already has a local MR assigned`,
-          );
-          return;
-        }
+  if (type === TRANSFER_TYPES.ASSIGNMR) {
+    for (const item of cleanItems) {
+      const asset = await fetchAssetByID(item.asset_id);
+      if (asset?.local_mr != null) {
+        throw new Error(
+          `Asset ${item.asset_id} already has a local MR assigned`,
+        );
       }
-      // all clear — proceed with assignment
-    } catch (err) {
-      setSubmitError(err.message);
     }
   }
-
   const status =
     (type === TRANSFER_TYPES.ASSIGN || type === TRANSFER_TYPES.REMOVE) &&
     !isAdmin
@@ -544,36 +545,56 @@ export async function updateTransferRequest(requestId, user, note, isApprove) {
   await updateDoc(docRef, updates);
 }
 
-export async function addTransferRoom(
-  { asset_id, asset_name, room_from, move_to },
-  moveByUid,
-) {
-  // --- Input validation ---
-  if (!asset_id) {
-    throw new Error("TransferRoom: asset_id is required");
-  }
-  if (!asset_name) {
-    throw new Error("TransferRoom: asset_name is required");
-  }
-  if (!move_to) {
-    throw new Error("TransferRoom: move_to is required");
-  }
+export async function addTransferRoom({ items, move_to = null }, moveByUid) {
   if (!moveByUid) {
     throw new Error("TransferRoom: moveByUid is required");
   }
-  if (room_from && room_from === move_to) {
-    throw new Error(
-      "addTransferRoom: room_from and move_to cannot be the same room",
-    );
+  if (!Array.isArray(items) || items.length === 0) {
+    throw new Error("TransferRoom: at least one asset is required");
   }
 
+  // move_to === null means "remove from room" (unassigned)
+  const target = move_to || null;
+
+  // --- Validate + de-dupe by asset_id ---
+  const seen = new Set();
+  const cleanItems = [];
+  for (const item of items) {
+    if (!item?.asset_id) {
+      throw new Error("TransferRoom: every item needs an asset_id");
+    }
+    if (!item.asset_name) {
+      throw new Error(
+        `TransferRoom: asset_name is required (${item.asset_id})`,
+      );
+    }
+    if (seen.has(item.asset_id)) continue;
+    seen.add(item.asset_id);
+
+    const roomFrom = item.room_from || null;
+    if (roomFrom === target) {
+      throw new Error(
+        target
+          ? `TransferRoom: asset ${item.asset_id} is already in that room`
+          : `TransferRoom: asset ${item.asset_id} has no room to remove it from`,
+      );
+    }
+
+    cleanItems.push({
+      asset_id: item.asset_id,
+      asset_name: item.asset_name,
+      room_from: roomFrom,
+    });
+  }
+
+  const assetIds = cleanItems.map((i) => i.asset_id);
   const col = collection(db, "transfer_room");
 
   const docData = {
-    asset_id,
-    asset_name,
-    room_from: room_from || null,
-    move_to,
+    items: cleanItems,
+    asset_ids: assetIds,
+    asset_count: assetIds.length,
+    move_to: target,
     move_by: moveByUid,
     created_at: serverTimestamp(),
   };
@@ -587,36 +608,44 @@ export async function addTransferRoom(
     throw new Error(`Failed to log room transfer: ${err.message}`);
   }
 
-  // --- Step 2: update the asset's current room ---
-  try {
-    await updateAssetRoom(asset_id, move_to);
-  } catch (err) {
-    console.error(
-      `addTransferRoom: transfer_room/${docRef.id} was created but updateAssetRoom failed for asset ${asset_id}`,
-      err,
-    );
-    throw new Error(
-      `Transfer was logged but updating the asset's room failed: ${err.message}. ` +
-        `Asset ${asset_id} may be out of sync — manual review needed (log id: ${docRef.id}).`,
-    );
+  // --- Step 2: update each asset's current room (null clears it) ---
+  const results = await Promise.allSettled(
+    cleanItems.map((item) => updateAssetRoom(item.asset_id, target)),
+  );
+  const succeeded = cleanItems.filter(
+    (_, i) => results[i].status === "fulfilled",
+  );
+  const failed = cleanItems.filter((_, i) => results[i].status === "rejected");
+
+  // --- Step 3: room counts, one atomic write per room ---
+  // Net the change per room first (e.g. 20 assets out of room A = A: -20).
+  // roomCount uses increment(), so the writes are atomic and safe in parallel.
+  const deltas = new Map();
+  const bump = (roomId, n) => {
+    if (roomId) deltas.set(roomId, (deltas.get(roomId) ?? 0) + n);
+  };
+  for (const item of succeeded) {
+    bump(item.room_from, -1);
+    bump(target, +1);
   }
 
-  // --- Step 3: update room counts ---
-  try {
-    const countUpdates = [];
-    if (room_from) {
-      countUpdates.push(roomCount(room_from, "decrement"));
-    }
-    countUpdates.push(roomCount(move_to, "increment"));
-    await Promise.all(countUpdates);
-  } catch (err) {
+  const countResults = await Promise.allSettled(
+    [...deltas]
+      .filter(([, delta]) => delta !== 0)
+      .map(([roomId, delta]) =>
+        roomCount(
+          roomId,
+          delta > 0 ? "increment" : "decrement",
+          Math.abs(delta),
+        ),
+      ),
+  );
+  const countError =
+    countResults.find((r) => r.status === "rejected")?.reason ?? null;
+  if (countError) {
     console.error(
-      `addTransferRoom: transfer_room/${docRef.id} and asset room were updated but roomCount failed`,
-      err,
-    );
-    throw new Error(
-      `Transfer succeeded but room counts may be out of sync: ${err.message}. ` +
-        `(log id: ${docRef.id}, room_from: ${room_from ?? "none"}, move_to: ${move_to})`,
+      `addTransferRoom: transfer_room/${docRef.id} room counts failed`,
+      countError,
     );
   }
 
@@ -636,19 +665,39 @@ export function subscribeToTransfersByAsset(assetId, callback, onError) {
   }
 
   const col = collection(db, COLLECTION);
-  const q = query(
-    col,
-    where("asset_id", "==", assetId),
-    orderBy("updated_at", "desc"),
+  const latest = [[], []];
+
+  const emit = () => {
+    const merged = new Map();
+    latest.flat().forEach((d) => merged.set(d.id, { id: d.id, ...d.data() }));
+    callback(
+      Array.from(merged.values()).sort(
+        (a, b) => getMillis(b.updated_at) - getMillis(a.updated_at),
+      ),
+    );
+  };
+
+  const queries = [
+    query(
+      col,
+      where("asset_ids", "array-contains", assetId),
+      orderBy("updated_at", "desc"),
+    ),
+    query(col, where("asset_id", "==", assetId), orderBy("updated_at", "desc")), // legacy docs
+  ];
+
+  const unsubs = queries.map((q, i) =>
+    onSnapshot(
+      q,
+      (snap) => {
+        latest[i] = snap.docs;
+        emit();
+      },
+      (err) => onError?.(err),
+    ),
   );
 
-  const unsubscribe = onSnapshot(
-    q,
-    (snap) => callback(snapshotToItems(snap)),
-    (err) => onError?.(err),
-  );
-
-  return unsubscribe;
+  return () => unsubs.forEach((u) => u());
 }
 
 export function subscribeToRoomTransfersByAsset(assetId, callback, onError) {
@@ -658,19 +707,63 @@ export function subscribeToRoomTransfersByAsset(assetId, callback, onError) {
   }
 
   const col = collection(db, "transfer_room");
-  const q = query(
-    col,
-    where("asset_id", "==", assetId),
-    orderBy("created_at", "desc"),
+  const latest = [[], []];
+
+  const emit = () => {
+    const merged = new Map();
+    latest.flat().forEach((d) => merged.set(d.id, { id: d.id, ...d.data() }));
+    callback(sortByCreatedAtDesc(Array.from(merged.values())));
+  };
+
+  const queries = [
+    query(
+      col,
+      where("asset_ids", "array-contains", assetId),
+      orderBy("created_at", "desc"),
+    ),
+    query(col, where("asset_id", "==", assetId), orderBy("created_at", "desc")), // legacy docs
+  ];
+
+  const unsubs = queries.map((q, i) =>
+    onSnapshot(
+      q,
+      (snap) => {
+        latest[i] = snap.docs;
+        emit();
+      },
+      (err) => onError?.(err),
+    ),
   );
 
-  const unsubscribe = onSnapshot(
-    q,
-    (snap) => callback(snapshotToItems(snap)),
-    (err) => onError?.(err),
-  );
+  return () => unsubs.forEach((u) => u());
+}
 
-  return unsubscribe;
+export async function fetchRoomTransferByID(id) {
+  const snap = await getDoc(doc(db, "transfer_room", id));
+  if (!snap.exists()) throw new Error("Room transfer not found.");
+
+  const log = { id: snap.id, ...snap.data() };
+  const items = getRoomTransferItems(log);
+
+  const roomIds = [
+    ...new Set([log.move_to, ...items.map((i) => i.room_from)].filter(Boolean)),
+  ];
+
+  const [byInfo, roomNames] = await Promise.all([
+    log.move_by ? getName(log.move_by).catch(() => null) : null,
+    Promise.all(roomIds.map(async (rid) => [rid, await resolveRoomName(rid)])),
+  ]);
+  const nameOf = Object.fromEntries(roomNames);
+
+  return {
+    ...log,
+    move_by_name: byInfo?.fullname || null,
+    move_to_name: log.move_to ? nameOf[log.move_to] : null,
+    items: items.map((i) => ({
+      ...i,
+      room_from_name: i.room_from ? nameOf[i.room_from] : null,
+    })),
+  };
 }
 
 export async function condemnAsset(assetID) {
@@ -746,6 +839,20 @@ export async function logInitialCustodianAssignment(
   return { id: docRef.id, ...docData };
 }
 
+export function getRoomTransferItems(log) {
+  if (Array.isArray(log?.items) && log.items.length > 0) return log.items;
+  if (log?.asset_id) {
+    return [
+      {
+        asset_id: log.asset_id,
+        asset_name: log.asset_name,
+        room_from: log.room_from ?? null,
+      },
+    ];
+  }
+  return [];
+}
+
 export async function logInitialRoomAssignment(
   { asset_id, asset_name, room_id },
   moveByUid,
@@ -754,9 +861,9 @@ export async function logInitialRoomAssignment(
 
   const col = collection(db, "transfer_room");
   const docData = {
-    asset_id,
-    asset_name,
-    room_from: null,
+    items: [{ asset_id, asset_name, room_from: null }],
+    asset_ids: [asset_id],
+    asset_count: 1,
     move_to: room_id,
     move_by: moveByUid,
     created_at: serverTimestamp(),

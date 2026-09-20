@@ -46,9 +46,11 @@ export function useTransfers({ currentTop = "transfers" } = {}) {
   const [error, setError] = React.useState(null);
 
   const handleRowClick = (item) => {
-    if (group !== "room_logs") {
-      navigate(`/transfer/${item.id}`);
-    }
+    navigate(
+      group === "room_logs"
+        ? `/transfer/room/${item.id}`
+        : `/transfer/${item.id}`,
+    );
   };
 
   React.useEffect(() => {

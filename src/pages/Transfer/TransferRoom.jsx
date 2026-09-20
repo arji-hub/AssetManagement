@@ -20,6 +20,7 @@ function TransferRoom() {
     loading,
     error,
     emptyState,
+    handleRowClick,
   } = useTransfers({ currentTop: "rooms" });
 
   return (
@@ -85,6 +86,7 @@ function TransferRoom() {
                 key={item.id}
                 request={item}
                 columns={TRANSFER_COLUMNS.room}
+                onClick={handleRowClick}
               />
             )}
           />

@@ -42,6 +42,7 @@ function TransferOverview({ variant = "custodian" }) {
     setOwnerFilter,
     assets,
     assetsLoading,
+    allRooms,
     rooms,
     categories,
     custodians,
@@ -443,11 +444,23 @@ function TransferOverview({ variant = "custodian" }) {
                   </label>
 
                   <SearchableSelect
-                    options={rooms.map((r) => ({ id: r.id, label: r.name }))}
-                    value={targetRoom?.id ?? ""}
-                    onSelect={(id) =>
-                      setTargetRoom(rooms.find((r) => r.id === id) || null)
+                    options={[
+                      { id: null, label: "Unallocated" },
+                      ...allRooms.map((r) => ({ id: r.id, label: r.name })),
+                    ]}
+                    value={
+                      targetRoom === undefined
+                        ? undefined
+                        : (targetRoom?.id ?? null)
                     }
+                    onSelect={(id) => {
+                      if (id === null) {
+                        setTargetRoom(null);
+                        return;
+                      }
+                      const room = allRooms.find((r) => r.id === id);
+                      if (room) setTargetRoom(room);
+                    }}
                     placeholder="Select a room"
                     searchPlaceholder="Search rooms…"
                   />
@@ -539,7 +552,11 @@ function TransferOverview({ variant = "custodian" }) {
                   <small>Select assets from the list to continue.</small>
                 </div>
               ) : (
-                <ul className="transfer-overview-selected-list">
+                <ul
+                  className={`transfer-overview-selected-list ${
+                    variant === "room" && "room"
+                  }`}
+                >
                   {selectedAssets.map((asset) => (
                     <li key={asset.id}>
                       <div className="transfer-overview-selected-info">
