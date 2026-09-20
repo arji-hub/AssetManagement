@@ -12,7 +12,7 @@
   position: relative;
   overflow: hidden;
 
-  background-color: rgba(0, 0, 0, 0);
+  background-color: transparent;
   color: var(--ink-600);
 
   transition:
@@ -29,15 +29,15 @@
 
 /* ── Hover: soft tint, no full gradient yet — restraint is the premium signal ── */
 .nav-button:hover {
-  background: rgba(134, 1, 0, 0.08);
-  color: #860100;
+  background: var(--maroon-tint);
+  color: var(--maroon-700);
 }
 
 /* ── Active: deep tonal gradient, glow instead of hard color blocks ── */
 .nav-button-active {
-  background: linear-gradient(135deg, #9c0201 0%, #6b0000 100%);
+  background: var(--maroon-gradient);
   color: #ffffff;
-  border-color: rgba(245, 170, 44, 0.25);
+  border-color: color-mix(in srgb, var(--gold-500) 25%, transparent);
 }
 
 /* subtle glow bleeding outward — the "premium" tell, not a hard accent bar */
@@ -46,7 +46,7 @@
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  box-shadow: 0 0 24px rgba(245, 170, 44, 0.15);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--gold-500) 15%, transparent);
   pointer-events: none;
 }
 
@@ -59,16 +59,20 @@
   bottom: 6px;
   height: 2px;
   border-radius: 2px;
-  background: linear-gradient(90deg, #f5aa2c, transparent);
+  background: linear-gradient(90deg, var(--gold-500), transparent);
   opacity: 0.6;
 }
 
 .nav-button-active:hover {
-  background: linear-gradient(135deg, #ac0201 0%, #7a0000 100%);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--maroon-600) 92%, white) 0%,
+    color-mix(in srgb, var(--maroon-800) 92%, white) 100%
+  );
   color: #ffffff;
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.1),
-    0 10px 24px -6px rgba(134, 1, 0, 0.55),
+    0 10px 24px -6px color-mix(in srgb, var(--maroon-700) 55%, transparent),
     inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 

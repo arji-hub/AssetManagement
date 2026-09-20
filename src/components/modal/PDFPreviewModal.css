@@ -179,6 +179,40 @@
   max-width: 100%;
 }
 
+/* ── Viewer ── */
+.pdf-modal-viewer {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px 24px;
+  min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+/* Fallback for browsers without scrollbar-color support */
+@supports not (scrollbar-color: auto) {
+  .pdf-modal-viewer::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .pdf-modal-viewer::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .pdf-modal-viewer::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 4px;
+  }
+
+  .pdf-modal-viewer::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+  }
+}
+
 .pdf-loading-text {
   color: var(--text-muted);
   font-size: 13px;
@@ -208,6 +242,112 @@
 .pdf-page-nav button:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+/* ── Skeleton (theme-aware: uses card / track tokens) ── */
+.pdf-skeleton {
+  --pdf-shine: rgba(255, 255, 255, 0.6);
+
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  flex-shrink: 0;
+  box-sizing: border-box;
+  padding: 6%;
+  overflow: hidden;
+
+  background: var(--card-bg);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+}
+
+:root[data-theme="dark"] .pdf-skeleton {
+  --pdf-shine: rgba(255, 255, 255, 0.08);
+}
+
+.pdf-skeleton-block {
+  position: relative;
+  display: block;
+  overflow: hidden;
+
+  height: 10px;
+
+  background: var(--track-bg);
+  border-radius: 6px;
+}
+
+.pdf-skeleton-block::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--pdf-shine),
+    transparent
+  );
+  transform: translateX(-100%);
+
+  animation: pdf-skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes pdf-skeleton-shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.pdf-skeleton-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.pdf-skeleton-logo {
+  flex-shrink: 0;
+  width: 11%;
+  aspect-ratio: 1;
+  height: auto;
+  border-radius: 50%;
+}
+
+.pdf-skeleton-lines {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+}
+
+.pdf-skeleton-title {
+  align-self: center;
+  width: 30%;
+  height: 14px;
+  margin-top: 4%;
+}
+
+.pdf-skeleton-rows {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 2%;
+}
+
+.pdf-skeleton-row {
+  flex: 1;
+  max-height: 34px;
+  height: auto;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pdf-skeleton-block::after {
+    animation: none;
+  }
 }
 
 /* ── Trigger button ── */

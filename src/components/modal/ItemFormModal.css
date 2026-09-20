@@ -1,7 +1,7 @@
 .reg-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: var(--overlay);
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -11,7 +11,8 @@
 }
 
 .reg-modal {
-  background: #fff;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 12px;
   width: 100%;
   max-width: 760px;
@@ -25,13 +26,13 @@
   align-items: center;
   justify-content: space-between;
   padding: 1.1rem 1.5rem;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .reg-modal-title {
   font-size: 1rem;
   font-weight: 700;
-  color: #860100;
+  color: var(--maroon-700);
   margin: 0;
 }
 
@@ -40,17 +41,47 @@
   border: none;
   font-size: 1.4rem;
   line-height: 1;
-  color: #999;
+  color: var(--text-faint);
   cursor: pointer;
 }
 
 .reg-modal-close:hover {
-  color: #860100;
+  color: var(--maroon-700);
 }
 
 .reg-modal-body {
   padding: 1.5rem;
   overflow-y: auto;
+}
+
+.reg-modal-overlay,
+.reg-modal-body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+/* Fallback for browsers without scrollbar-color support */
+@supports not (scrollbar-color: auto) {
+  .reg-modal-overlay::-webkit-scrollbar,
+  .reg-modal-body::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .reg-modal-overlay::-webkit-scrollbar-track,
+  .reg-modal-body::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .reg-modal-overlay::-webkit-scrollbar-thumb,
+  .reg-modal-body::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 4px;
+  }
+
+  .reg-modal-overlay::-webkit-scrollbar-thumb:hover,
+  .reg-modal-body::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+  }
 }
 
 .reg-modal-section {
@@ -62,7 +93,7 @@
   justify-content: flex-end;
   gap: 0.75rem;
   padding: 1rem 1.5rem;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--border-subtle);
 }
 
 @media (max-width: 640px) {
@@ -75,5 +106,6 @@
     max-width: 100%;
     max-height: 100vh;
     border-radius: 0;
+    border: none;
   }
 }

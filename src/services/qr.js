@@ -1,6 +1,10 @@
 import QRCodeStyling from "qr-code-styling";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage } from "./firebase-config";
+import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
+import { db, storage } from "./firebase-config";
+import { ROLES } from "../data/roles";
+import { fetchRoomName } from "./room";
+import { fetchCategoryName } from "./category";
 
 import CICTLogo from "../assets/logo/CICTLOGO.png";
 
@@ -86,4 +90,103 @@ export async function generateAssetQR(assetId) {
   });
 
   return qrCodeUrl;
+}
+
+/**
+ * One-time fetch of every asset the current user is allowed to see, shaped
+ * for the QR "Generate & Print" page. Scoping mirrors subscribeToAssets():
+ *   admin      -> all assets
+ *   fulltime   -> assets where property_custodian == uid
+ *   parttime   -> assets where local_mr == uid
+ *
+ * `has_qr` is false while onAssetCreatedGenerateQR hasn't filled in
+ * qr_code_url yet, so the UI can block selecting those assets.
+ *
+ * @param {string} role
+ * @param {string} currentUserUid
+ * @returns {Promise<Array<{
+ *   id: string,
+ *   description: string,
+ *   serial_number: string|null,
+ *   status: string|null,
+ *   tracking_mode: string|null,
+ *   category_id: string|null,
+ *   category_name: string,
+ *   room_id: string|null,
+ *   room_name: string|null,
+ *   property_custodian: string|null,
+ *   local_mr: string|null,
+ *   qr_code_url: string|null,
+ *   has_qr: boolean,
+ *   created_at: any,
+ * }>>}
+ */
+export async function fetchAssetsQR(role, currentUserUid) {
+  const assetsRef = collection(db, "asset");
+
+  let q;
+  if (role === ROLES.ADMIN) {
+    q = query(assetsRef, orderBy("date_acquired", "desc"));
+  } else if (role === ROLES.PARTTIME) {
+    q = query(assetsRef, where("local_mr", "==", currentUserUid));
+  } else if (role === ROLES.FULLTIME) {
+    q = query(assetsRef, where("property_custodian", "==", currentUserUid));
+  } else {
+    throw new Error("Invalid user role: " + role);
+  }
+
+  const snapshot = await getDocs(q);
+  const assetData = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+
+  // ── resolve room + category names once per unique id ──
+  const roomIds = [...new Set(assetData.map((a) => a.room_id).filter(Boolean))];
+  const roomNameMap = {};
+  await Promise.all(
+    roomIds.map(async (roomId) => {
+      try {
+        roomNameMap[roomId] = await fetchRoomName(roomId);
+      } catch {
+        roomNameMap[roomId] = null;
+      }
+    }),
+  );
+
+  const categoryIds = [
+    ...new Set(assetData.map((a) => a.category_id).filter(Boolean)),
+  ];
+  const categoryNameMap = {};
+  await Promise.all(
+    categoryIds.map(async (categoryId) => {
+      try {
+        categoryNameMap[categoryId] = await fetchCategoryName(categoryId);
+      } catch {
+        categoryNameMap[categoryId] = "---";
+      }
+    }),
+  );
+
+  const assets = assetData.map((asset) => ({
+    id: asset.id,
+    description: asset.description ?? "",
+    serial_number: asset.serial_number ?? null,
+    status: asset.status ?? null,
+    tracking_mode: asset.tracking_mode ?? null,
+    category_id: asset.category_id ?? null,
+    category_name: categoryNameMap[asset.category_id] ?? "---",
+    room_id: asset.room_id ?? null,
+    room_name: roomNameMap[asset.room_id] ?? null,
+    property_custodian: asset.property_custodian ?? null,
+    local_mr: asset.local_mr ?? null,
+    qr_code_url: asset.qr_code_url ?? null,
+    has_qr: Boolean(asset.qr_code_url),
+    created_at: asset.created_at ?? null,
+  }));
+
+  assets.sort((a, b) => {
+    const aMillis = a.created_at?.toMillis?.() ?? 0;
+    const bMillis = b.created_at?.toMillis?.() ?? 0;
+    return bMillis - aMillis;
+  });
+
+  return assets;
 }

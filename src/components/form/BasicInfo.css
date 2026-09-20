@@ -1,22 +1,22 @@
 /* BasicInfo.css */
 
 .reg-input--error {
-  border-color: #860100;
+  border-color: var(--maroon-700);
   outline: none;
 }
 
 .reg-input--error:focus {
-  box-shadow: 0 0 0 2px rgba(134, 1, 0, 0.15);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--maroon-700) 15%, transparent);
 }
 
 .reg-error {
-  color: #860100;
+  color: var(--maroon-700);
   font-size: 0.8rem;
   margin-top: 4px;
 }
 
 .reg-hint {
-  color: #6b6b6b;
+  color: var(--text-muted);
   font-size: 0.8rem;
   margin-top: 4px;
   font-style: italic;
@@ -31,7 +31,7 @@
 
 .reg-tracking-card {
   flex: 1;
-  border: 1px solid #ddd;
+  border: 1px solid var(--card-border);
   border-radius: 8px;
   padding: 0.75rem 1rem;
   cursor: pointer;
@@ -41,19 +41,19 @@
 }
 
 .reg-tracking-card--active {
-  border-color: #860100;
-  background: #fff8f7;
+  border-color: var(--maroon-700);
+  background: var(--maroon-tint);
 }
 
 .reg-tracking-card-title {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #333;
+  color: var(--text-strong);
 }
 
 .reg-tracking-card-desc {
   font-size: 0.78rem;
-  color: #777;
+  color: var(--text-faint);
   margin-top: 0.2rem;
 }
 
@@ -74,7 +74,7 @@
 .reg-serial-autonumber {
   background: none;
   border: none;
-  color: #860100;
+  color: var(--maroon-700);
   font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
@@ -108,10 +108,10 @@
 
   padding: 0.6rem 0.75rem;
 
-  border: 1px solid #ddd;
+  border: 1px solid var(--card-border);
   border-radius: 8px;
-  background: #fff;
-  color: #333;
+  background: var(--card-bg);
+  color: var(--text-strong);
 
   font: inherit;
   font-size: 0.85rem;
@@ -122,13 +122,13 @@
 }
 
 .reg-category-trigger:hover {
-  border-color: #b8b8b8;
+  border-color: var(--text-faint);
 }
 
 .reg-category-trigger:focus-visible {
   outline: none;
-  border-color: #860100;
-  box-shadow: 0 0 0 2px rgba(134, 1, 0, 0.15);
+  border-color: var(--maroon-700);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--maroon-700) 15%, transparent);
 }
 
 .reg-category-trigger:disabled {
@@ -137,19 +137,19 @@
 }
 
 .reg-category-trigger.reg-input--error {
-  border-color: #860100;
+  border-color: var(--maroon-700);
 }
 
 .reg-category-placeholder {
-  color: #9a9a9a;
+  color: var(--text-faint);
 }
 
 .reg-category-caret {
   flex-shrink: 0;
   width: 7px;
   height: 7px;
-  border-right: 2px solid #808080;
-  border-bottom: 2px solid #808080;
+  border-right: 2px solid var(--text-faint);
+  border-bottom: 2px solid var(--text-faint);
   transform: rotate(45deg);
   margin-top: -4px;
 }
@@ -168,8 +168,8 @@
   max-height: 240px;
   overflow-y: auto;
 
-  background: #fff;
-  border: 1px solid #ddd;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 8px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
@@ -179,25 +179,25 @@
   border-radius: 6px;
 
   font-size: 0.85rem;
-  color: #333;
+  color: var(--text-strong);
 
   cursor: pointer;
 }
 
 .reg-category-option:hover {
-  background: #fff8f7;
-  color: #860100;
+  background: var(--maroon-tint);
+  color: var(--maroon-700);
 }
 
 .reg-category-option--active {
-  background: #fff8f7;
-  color: #860100;
+  background: var(--maroon-tint);
+  color: var(--maroon-700);
   font-weight: 600;
 }
 
 .reg-category-empty {
   padding: 0.6rem 0.65rem;
-  color: #9a9a9a;
+  color: var(--text-faint);
   font-size: 0.8rem;
   font-style: italic;
 }

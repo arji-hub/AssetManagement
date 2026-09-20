@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ref, getBlob } from "firebase/storage";
+import { storage } from "../../services/firebase-config";
 import "./ViewAssetQr.css";
 
 function ViewAssetQR({ qr_code_url, assetID }) {
@@ -7,10 +9,11 @@ function ViewAssetQR({ qr_code_url, assetID }) {
   const [isDownloading, setIsDownloading] = useState(false);
 
   const handleDownload = async () => {
+    if (!qr_code_url) return;
+
     try {
       setIsDownloading(true);
-      const response = await fetch(qr_code_url);
-      const blob = await response.blob();
+      const blob = await getBlob(ref(storage, qr_code_url));
 
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -48,7 +51,7 @@ function ViewAssetQR({ qr_code_url, assetID }) {
               <button
                 className="qr-modal-download"
                 onClick={handleDownload}
-                disabled={isDownloading}
+                disabled={isDownloading || !qr_code_url}
               >
                 <FontAwesomeIcon icon="fa-solid fa-download" />
                 <span>{isDownloading ? "Downloading..." : "Download"}</span>
