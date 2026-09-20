@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import ROLES from "../../../data/roles";
-import { useAssetData } from "./useAssetData";
+import { useAssetData, matchesRoomFilter } from "./useAssetData";
 import { useAssetSelectionState } from "./useAssetSelectionState";
 import { useTransferSubmit } from "./useTransferSubmit";
 import { fetchCustodians } from "../../../services/user";
@@ -74,7 +74,7 @@ export function useCustodianTransfer() {
         : !a.property_custodian;
       if (!ownedByChosenSource) return false;
 
-      if (roomFilter !== "all" && a.room_id !== roomFilter) return false;
+      if (!matchesRoomFilter(a, roomFilter)) return false;
       if (categoryFilter !== "all" && a.category_id !== categoryFilter)
         return false;
       if (

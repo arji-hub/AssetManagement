@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import ROLES from "../../../data/roles";
-import { useAssetData } from "./useAssetData";
+import { useAssetData, matchesRoomFilter } from "./useAssetData";
 import { useAssetSelectionState } from "./useAssetSelectionState";
 import { useTransferSubmit } from "./useTransferSubmit";
 import { subscribeToRooms } from "../../../services/room";
@@ -19,6 +19,8 @@ import { subscribeToRooms } from "../../../services/room";
  * asset.property_custodian) are best-guess based on the existing
  * hooks/services — verify against your actual Firestore schema.
  */
+const UNASSIGNED_CUSTODIAN_ID = "unassigned";
+
 export function useRoomTransfer() {
   const variant = "room";
   const { user } = useAuth();
@@ -34,10 +36,26 @@ export function useRoomTransfer() {
     assetsLoading,
     rooms,
     categories,
-    custodians,
+    custodians: baseCustodians,
     custodianList,
     error,
   } = useAssetData({ user, variant, isRoom: true });
+
+  const hasUnassigned = useMemo(
+    () => assets.some((a) => !a.property_custodian),
+    [assets],
+  );
+
+  const custodians = useMemo(
+    () =>
+      hasUnassigned
+        ? [
+            { id: UNASSIGNED_CUSTODIAN_ID, fullname: "Unassigned" },
+            ...baseCustodians,
+          ]
+        : baseCustodians,
+    [baseCustodians, hasUnassigned],
+  );
 
   const [search, setSearch] = useState("");
   const [roomFilter, setRoomFilter] = useState("all");
@@ -61,9 +79,15 @@ export function useRoomTransfer() {
 
   const filteredAssets = useMemo(() => {
     return assets.filter((a) => {
-      if (custodianFilter !== "all" && a.property_custodian !== custodianFilter)
+      if (custodianFilter === UNASSIGNED_CUSTODIAN_ID) {
+        if (a.property_custodian) return false;
+      } else if (
+        custodianFilter !== "all" &&
+        a.property_custodian !== custodianFilter
+      ) {
         return false;
-      if (roomFilter !== "all" && a.room_id !== roomFilter) return false;
+      }
+      if (!matchesRoomFilter(a, roomFilter)) return false;
       if (categoryFilter !== "all" && a.category_id !== categoryFilter)
         return false;
       if (
