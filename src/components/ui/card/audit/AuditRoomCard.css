@@ -75,14 +75,10 @@
   gap: 6px;
 }
 
-.room-audit-row-cell:nth-last-child(2) {
+.room-audit-row-cell:nth-last-child(1),
+.room-audit-row-cell:nth-last-child(2),
+.room-audit-row-cell:nth-last-child(3) {
   display: flex;
-  justify-content: center;
-}
-
-.room-audit-row .room-audit-row-cell:last-child {
-  display: flex;
-  align-items: center;
   justify-content: center;
 }
 

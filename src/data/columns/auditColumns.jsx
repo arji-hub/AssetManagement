@@ -18,7 +18,7 @@ export const auditRoomAssetColumns = [
     label: "Category",
     width: "1fr",
     priority: "medium",
-    render: (a) => a.category || "—",
+    render: (a) => a.category_name || "—",
     card: { icon: "fa-solid fa-tag" },
   },
   {
@@ -26,7 +26,7 @@ export const auditRoomAssetColumns = [
     label: "Custodian",
     width: "1.2fr",
     priority: "medium",
-    render: (a) => a.custodian_name || a.name || "—",
+    render: (a) => a.property_custodian_fullname || "—",
     card: { icon: "fa-solid fa-user-shield" },
   },
   {

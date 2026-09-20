@@ -25,7 +25,7 @@ export const REPORT_COLUMNS = {
       label: "Location",
       width: "1fr",
       priority: "medium",
-      render: (r) => r.location || "—",
+      render: (r) => r.room_name || "—",
       card: { role: "meta", icon: "fa-solid fa-location-dot" },
     },
     {

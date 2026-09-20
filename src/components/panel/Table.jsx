@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useTable from "../../hooks/shared/useTable";
 import Pagination from "../ui/pagination/Pagination";
+import TableSkeleton from "./TableSkeleton";
 import "./Table.css";
 
 function Table({
@@ -47,6 +48,16 @@ function Table({
       )}
 
       <div className="panel-grid">
+        {loading ? (
+          <TableSkeleton columns={columns} />
+        ) : emptyState ? (
+          <div className="panel-empty">
+            <FontAwesomeIcon icon={emptyState.icon} spin={emptyState.spin} />
+            <p>{emptyState.message}</p>
+          </div>
+        ) : (
+          pagedData.map(renderItem)
+        )}
         {emptyState ? (
           <div className="panel-empty">
             <FontAwesomeIcon icon={emptyState.icon} spin={emptyState.spin} />

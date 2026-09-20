@@ -93,7 +93,7 @@ export function useTransferSubmit({
         }
       }
 
-      console.log("addTransferRequest payload:", {
+      /* console.log("addTransferRequest payload:", {
         items,
         from: fromCustodian && {
           ...fromCustodian,
@@ -110,7 +110,7 @@ export function useTransferSubmit({
         requestedByName: user.firstname,
         requestedByRole: user.role,
         user,
-      }); /* 
+      });  */
       const created = await addTransferRequest(
         {
           items,
@@ -131,7 +131,7 @@ export function useTransferSubmit({
         user.role,
       );
 
-      setCreatedId(created.id); */
+      setCreatedId(created.id);
       setSubmitSuccess(true);
     } catch (err) {
       setSubmitError(err.message);
