@@ -660,17 +660,19 @@
 .transfer-overview-selected-list {
   display: flex;
   flex-direction: column;
-
   gap: 6px;
 
-  max-height: 220px;
+  max-height: 300px;
 
   margin: 0;
   padding: 0 3px 0 0;
 
   overflow-y: auto;
-
   list-style: none;
+}
+
+.transfer-overview-selected-list.room {
+  max-height: 460px;
 }
 
 .transfer-overview-selected-list::-webkit-scrollbar {

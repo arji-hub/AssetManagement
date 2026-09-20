@@ -79,6 +79,7 @@ export function subscribeToRooms(callback, onError) {
             id: doc.id,
             name: data.name,
             assetCount: data.assetCount ?? 0,
+            status: data.status ?? "active",
           };
         });
         callback(rooms);
@@ -178,9 +179,9 @@ export async function addRoom(data, role) {
   return roomID;
 }
 
-export async function roomCount(room_id, direction = "increment") {
+export async function roomCount(room_id, direction = "increment", amount = 1) {
   const roomRef = doc(db, "room", room_id);
-  const delta = direction === "decrement" ? -1 : 1;
+  const delta = (direction === "decrement" ? -1 : 1) * amount;
 
   await updateDoc(roomRef, {
     assetCount: increment(delta),

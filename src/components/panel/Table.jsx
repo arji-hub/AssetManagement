@@ -58,14 +58,6 @@ function Table({
         ) : (
           pagedData.map(renderItem)
         )}
-        {emptyState ? (
-          <div className="panel-empty">
-            <FontAwesomeIcon icon={emptyState.icon} spin={emptyState.spin} />
-            <p>{emptyState.message}</p>
-          </div>
-        ) : (
-          pagedData.map(renderItem)
-        )}
       </div>
 
       {showPagination && <Pagination {...pagination} itemLabel={itemLabel} />}

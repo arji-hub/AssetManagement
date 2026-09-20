@@ -1,10 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import ROLES from "../../../data/roles";
 import { useAssetData } from "./useAssetData";
 import { useAssetSelectionState } from "./useAssetSelectionState";
 import { useTransferSubmit } from "./useTransferSubmit";
+import { subscribeToRooms } from "../../../services/room";
 
 /**
  * Transfer flow for the "room" variant — the Move Asset button on
@@ -45,7 +46,18 @@ export function useRoomTransfer() {
   // header source picker instead, so this is the room variant's
   // equivalent asset-list filter.
   const [custodianFilter, setCustodianFilter] = useState("all");
-  const [targetRoom, setTargetRoom] = useState(null);
+  const [targetRoom, setTargetRoom] = useState(undefined);
+  const [allRooms, setAllRooms] = useState([]);
+  const [roomsError, setRoomsError] = useState(null);
+
+  useEffect(() => {
+    const unsubRooms = subscribeToRooms(
+      (list) =>
+        setAllRooms((list ?? []).filter((r) => r.status !== "inactive")),
+      (err) => setRoomsError(err.message),
+    );
+    return () => unsubRooms();
+  }, []);
 
   const filteredAssets = useMemo(() => {
     return assets.filter((a) => {
@@ -76,9 +88,12 @@ export function useRoomTransfer() {
   const {
     submitting,
     submitError,
+    submitSuccess,
+    status,
     dismissSubmitError,
     canSubmit,
     handleConfirm,
+    handleDone,
   } = useTransferSubmit({
     variant,
     selectedAssets,
@@ -101,6 +116,7 @@ export function useRoomTransfer() {
     setOwnerFilter: () => {},
     assets: filteredAssets,
     assetsLoading,
+    allRooms,
     rooms,
     categories,
     custodians,
@@ -130,10 +146,13 @@ export function useRoomTransfer() {
     notes: "",
     setNotes: () => {},
     submitting,
-    error,
+    error: error || roomsError,
     submitError,
+    submitSuccess,
+    status,
     dismissSubmitError,
     canSubmit,
     handleConfirm,
+    handleDone,
   };
 }

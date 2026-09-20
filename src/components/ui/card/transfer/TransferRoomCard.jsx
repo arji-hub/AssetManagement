@@ -1,7 +1,8 @@
 import React from "react";
 import "./TransferRoomCard.css";
 
-function TransferRoomCard({ request, columns }) {
+function TransferRoomCard({ request, columns, onClick }) {
+  const handleClick = () => onClick?.(request);
   const titleCol = columns.find((c) => c.card?.role === "title");
   const descCol = columns.find((c) => c.card?.role === "desc");
   const fromCol = columns.find((c) => c.card?.role === "from");
@@ -11,7 +12,7 @@ function TransferRoomCard({ request, columns }) {
   return (
     <>
       {/* Desktop / tablet grid row */}
-      <div className="transfer-card-row-room">
+      <div className="transfer-card-row-room" onClick={handleClick}>
         {columns.map((col) => (
           <div
             key={col.key}
@@ -26,7 +27,7 @@ function TransferRoomCard({ request, columns }) {
       </div>
 
       {/* Mobile card */}
-      <div className="transfer-card-room-mobile">
+      <div className="transfer-card-room-mobile" onClick={handleClick}>
         <div className="transfer-card-room-mobile-header">
           {titleCol && (
             <span className="transfer-card-room-mobile-id">
