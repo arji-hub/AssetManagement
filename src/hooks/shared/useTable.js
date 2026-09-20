@@ -44,20 +44,16 @@ export default function useTable({
   const showPagination = !loading && !error && items.length > 0;
 
   let emptyState = null;
-  if (loading) {
-    emptyState = {
-      icon: "fa-solid fa-spinner",
-      message: "Loading…",
-      spin: true,
-    };
-  } else if (error) {
-    emptyState = {
-      icon: "fa-solid fa-triangle-exclamation",
-      message: typeof error === "string" ? error : "Failed to load data.",
-      spin: false,
-    };
-  } else if (items.length === 0) {
-    emptyState = { icon: emptyIcon, message: emptyMessage, spin: false };
+  if (!loading) {
+    if (error) {
+      emptyState = {
+        icon: "fa-solid fa-triangle-exclamation",
+        message: typeof error === "string" ? error : "Failed to load data.",
+        spin: false,
+      };
+    } else if (items.length === 0) {
+      emptyState = { icon: emptyIcon, message: emptyMessage, spin: false };
+    }
   }
 
   return {

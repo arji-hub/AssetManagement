@@ -77,7 +77,7 @@ function useRoomOverview(roomId) {
 
     const counts = new Map();
     assets.forEach((asset) => {
-      const name = asset.custodian_name || asset.name || "Unassigned";
+      const name = asset.property_custodian_fullname || "Unassigned";
       counts.set(name, (counts.get(name) ?? 0) + 1);
     });
 

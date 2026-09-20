@@ -155,3 +155,7 @@
     z-index: 100;
   }
 }
+
+.asset-page .asset-card-row-cell:nth-child(2) {
+  text-align: left;
+}

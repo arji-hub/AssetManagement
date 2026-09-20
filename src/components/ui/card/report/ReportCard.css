@@ -150,3 +150,22 @@
     color: var(--text-faint);
   }
 }
+
+/* ── keep in sync with .panel-header in Table.css ── */
+@media (max-width: 1024px) {
+  .report-card-row {
+    grid-template-columns: var(--table-grid-columns-tablet);
+  }
+  .report-card-cell[data-priority="low"] {
+    display: none;
+  }
+}
+
+@media (max-width: 800px) {
+  .report-card-row {
+    grid-template-columns: var(--table-grid-columns-mobile);
+  }
+  .report-card-cell[data-priority="medium"] {
+    display: none;
+  }
+}

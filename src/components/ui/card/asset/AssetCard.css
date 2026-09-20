@@ -36,7 +36,7 @@
   text-transform: capitalize;
 }
 
-.asset-card-row-cell:nth-child(-n + 2) {
+.asset-card-row-cell:nth-child(1) {
   text-align: left;
 }
 
@@ -145,7 +145,7 @@
   font-size: 12px;
 }
 
-@media (min-width: 280px){
+@media (min-width: 280px) {
   .asset-card-meta {
     flex-direction: row;
     flex-wrap: wrap;

@@ -46,7 +46,7 @@ function ManageAsset({ asset }) {
           className={`manage-asset-menu${isOpen ? " is-open" : ""}`}
           role="menu"
         >
-          {canTransferRoom && (
+          {/* {canTransferRoom && (
             <li role="menuitem">
               <button
                 type="button"
@@ -81,7 +81,7 @@ function ManageAsset({ asset }) {
                 Local MR
               </button>
             </li>
-          )}
+          )} */}
           {canReport && (
             <li role="menuitem">
               <button
