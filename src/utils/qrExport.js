@@ -1,0 +1,96 @@
+import { ref, getBlob } from "firebase/storage";
+import { storage } from "../services/firebase-config";
+
+/* ─────────────────────────────────────────────────────────
+   Sticker sheet layouts (A4). Used by pdf/templates/QRSheetPDF
+   and by the size picker on the QR page.
+   qrPt / idPt are in PDF points (1mm ≈ 2.835pt).
+───────────────────────────────────────────────────────── */
+
+export const SHEET_LAYOUTS = {
+  small: {
+    label: "Small",
+    hint: "3×3 · 9 per page",
+    cols: 3,
+    rows: 3,
+    qrPt: 142, // ≈ 50mm
+    idPt: 11,
+  },
+  medium: {
+    label: "Medium",
+    hint: "2×3 · 6 per page",
+    cols: 2,
+    rows: 3,
+    qrPt: 176, // ≈ 62mm
+    idPt: 13,
+  },
+  large: {
+    label: "Large",
+    hint: "1 per page",
+    cols: 1,
+    rows: 1,
+    qrPt: 425, // ≈ 150mm
+    idPt: 26,
+  },
+};
+
+/* ─────────────────────────────────────────────────────────
+   ZIP — one PNG per asset (JSZip is lazy-loaded)
+   Reads the files from Storage, so it needs the bucket's CORS
+   config. Assets that fail are skipped and reported in `failed`.
+───────────────────────────────────────────────────────── */
+
+const FETCH_BATCH = 6;
+
+function chunk(list, size) {
+  const out = [];
+  for (let i = 0; i < list.length; i += size) out.push(list.slice(i, i + size));
+  return out;
+}
+
+export async function downloadQRZip(assets, onProgress) {
+  const loaded = [];
+  const failed = [];
+  let done = 0;
+
+  for (const group of chunk(assets, FETCH_BATCH)) {
+    const results = await Promise.all(
+      group.map(async (asset) => {
+        try {
+          const blob = await getBlob(ref(storage, asset.qr_code_url));
+          return { asset, blob };
+        } catch (err) {
+          console.error(`[QR export] Failed to load ${asset.id}:`, err);
+          return { asset, blob: null };
+        }
+      }),
+    );
+
+    results.forEach((r) => (r.blob ? loaded.push(r) : failed.push(r.asset.id)));
+    done += group.length;
+    onProgress?.({ done, total: assets.length });
+  }
+
+  if (loaded.length === 0) {
+    throw new Error(
+      "None of the QR images could be loaded. Check your Storage CORS settings.",
+    );
+  }
+
+  const { default: JSZip } = await import("jszip");
+  const zip = new JSZip();
+  loaded.forEach(({ asset, blob }) => zip.file(`${asset.id}.png`, blob));
+
+  const content = await zip.generateAsync({ type: "blob" });
+
+  const url = window.URL.createObjectURL(content);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `CICT-QR-Codes-${loaded.length}.zip`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.URL.revokeObjectURL(url);
+
+  return { failed };
+}

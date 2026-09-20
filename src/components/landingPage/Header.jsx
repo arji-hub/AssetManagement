@@ -4,11 +4,14 @@ import CICTLOGO from "../../assets/logo/CICTLOGO.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "../../hooks/settings/theme/useTheme";
 
 export default function Header({ onNavigate }) {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { theme, toggleTheme } = useTheme();
+  const nextTheme = theme === "light" ? "dark" : "light";
 
   useEffect(() => {
     // Threshold before the header switches into its "scrolled" look.
@@ -34,7 +37,15 @@ export default function Header({ onNavigate }) {
   return (
     <header className={`header ${isScrolled ? "header--scrolled" : ""}`}>
       <div className="header-logo">
-        <img src={CICTLOGO} alt="CICT Logo" />
+        <button
+          type="button"
+          className="header-logo-btn"
+          onClick={toggleTheme}
+          aria-label={`Switch to ${nextTheme} mode`}
+          title={`Switch to ${nextTheme} mode`}
+        >
+          <img src={CICTLOGO} alt="" />
+        </button>
         <span>CICT-AMS Project</span>
       </div>
 

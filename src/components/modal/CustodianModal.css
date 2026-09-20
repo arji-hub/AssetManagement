@@ -1,7 +1,7 @@
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: var(--overlay);
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -21,7 +21,8 @@
 }
 
 .modal-container {
-  background: #ffffff;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 12px;
   width: 100%;
   max-width: 420px;
@@ -51,7 +52,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 18px 24px;
-  background: #860100;
+  background: var(--maroon-700);
 }
 
 .modal-title {
@@ -102,7 +103,7 @@
 .modal-field label {
   font-size: 13px;
   font-weight: 600;
-  color: #374151;
+  color: var(--text-muted);
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
@@ -111,10 +112,10 @@
 .modal-field select {
   font-size: 15px;
   padding: 10px 14px;
-  border: 1.5px solid #d1d5db;
+  border: 1.5px solid var(--card-border);
   border-radius: 8px;
-  color: #111827;
-  background: #ffffff;
+  color: var(--text-strong);
+  background: var(--card-bg);
   outline: none;
   transition:
     border-color 0.2s ease,
@@ -124,14 +125,14 @@
 }
 
 .modal-field input::placeholder {
-  color: #9ca3af;
+  color: var(--text-faint);
 }
 
 .modal-field input:focus,
 .modal-field select:focus {
-  border-color: #860100;
-  box-shadow: 0 0 0 3px rgba(134, 1, 0, 0.1);
-  background: #ffffff;
+  border-color: var(--maroon-700);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--maroon-700) 10%, transparent);
+  background: var(--card-bg);
 }
 
 .modal-field select {
@@ -144,14 +145,14 @@
   display: flex;
   gap: 10px;
   align-items: flex-start;
-  background: rgba(245, 170, 44, 0.06);
-  border: 1px solid rgba(134, 1, 0, 0.2);
+  background: color-mix(in srgb, var(--gold-500) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--maroon-700) 20%, transparent);
   border-radius: 8px;
   padding: 12px 14px;
 }
 
 .info-icon {
-  color: #860100;
+  color: var(--maroon-700);
   font-size: 16px;
   flex-shrink: 0;
   margin-top: 2px;
@@ -200,23 +201,23 @@
 
 /* Cancel — outlined with 30% color */
 .modal-cancel {
-  background: #ffffff;
-  color: #860100;
-  border: 1.5px solid #860100;
+  background: var(--card-bg);
+  color: var(--maroon-700);
+  border: 1.5px solid var(--maroon-700);
 }
 
 .modal-cancel:hover {
-  background: rgba(134, 1, 0, 0.05);
+  background: var(--maroon-tint);
 }
 
-/* Submit — 10% accent (#F5AA2C) */
+/* Submit — 10% accent (gold) */
 .modal-submit {
-  background: #f5aa2c;
-  color: #860100;
+  background: var(--gold-500);
+  color: var(--maroon-900);
 }
 
 .modal-submit:hover:not(:disabled) {
-  background: #e09a1e;
+  background: color-mix(in srgb, var(--gold-500) 90%, black);
 }
 
 .modal-submit:disabled {
@@ -232,13 +233,13 @@
 .modal-field.has-error input,
 .modal-field.has-error select,
 .input-error {
-  border-color: #dc2626 !important;
-  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+  border-color: var(--danger) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 10%, transparent);
 }
 
 .field-error {
   font-size: 12px;
-  color: #dc2626;
+  color: var(--danger);
   font-weight: 500;
   margin-top: 2px;
 }

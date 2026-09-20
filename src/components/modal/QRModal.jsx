@@ -9,9 +9,23 @@ import {
 import "./QRModal.css";
 import Camera from "../camera/Camera";
 
-function QRModal({ onScan, onImageUpload }) {
+function QRModal({
+  onScan,
+  onImageUpload,
+  isCameraOpen: controlledOpen,
+  onCameraOpenChange,
+}) {
   const fileInputRef = useRef(null);
-  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+
+  // Controlled when the parent passes `isCameraOpen`, self-managed otherwise.
+  const isControlled = controlledOpen !== undefined;
+  const isCameraOpen = isControlled ? controlledOpen : internalOpen;
+
+  const setIsCameraOpen = (next) => {
+    if (!isControlled) setInternalOpen(next);
+    onCameraOpenChange?.(next);
+  };
 
   const handleUploadClick = () => {
     fileInputRef.current?.click();

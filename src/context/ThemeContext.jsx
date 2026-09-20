@@ -11,6 +11,7 @@ export function ThemeProvider({ children }) {
   );
 
   useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem(STORAGE_KEY, theme);
   }, [theme]);
 

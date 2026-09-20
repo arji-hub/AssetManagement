@@ -11,6 +11,8 @@
 
 /* =============================================================
    HERO SECTION
+   (intentionally theme-independent: it sits on a photo with a
+   fixed dark overlay, so it looks the same in light and dark)
 ============================================================= */
 
 .hero-section {
@@ -162,10 +164,12 @@
 ============================================================= */
 
 .qr-section {
+  --dust: var(--gold-500); /* colour of the drifting blobs below */
+
   position: relative;
   overflow: hidden;
   padding: 6rem 8%;
-  background: #fff;
+  background: var(--card-bg);
 }
 
 /* Dust cloud layer — multiple soft blobs, each drifting independently */
@@ -179,27 +183,27 @@
   background:
     radial-gradient(
       circle 180px at 20% 30%,
-      rgba(254, 178, 52, 0.35),
+      color-mix(in srgb, var(--dust) 35%, transparent),
       transparent 70%
     ),
     radial-gradient(
       circle 140px at 70% 20%,
-      rgba(254, 178, 52, 0.28),
+      color-mix(in srgb, var(--dust) 28%, transparent),
       transparent 70%
     ),
     radial-gradient(
       circle 200px at 85% 65%,
-      rgba(254, 178, 52, 0.22),
+      color-mix(in srgb, var(--dust) 22%, transparent),
       transparent 70%
     ),
     radial-gradient(
       circle 120px at 40% 80%,
-      rgba(254, 178, 52, 0.3),
+      color-mix(in srgb, var(--dust) 30%, transparent),
       transparent 70%
     ),
     radial-gradient(
       circle 160px at 10% 60%,
-      rgba(254, 178, 52, 0.2),
+      color-mix(in srgb, var(--dust) 20%, transparent),
       transparent 70%
     );
 
@@ -218,17 +222,17 @@
   background:
     radial-gradient(
       circle 100px at 60% 40%,
-      rgba(254, 178, 52, 0.18),
+      color-mix(in srgb, var(--dust) 18%, transparent),
       transparent 70%
     ),
     radial-gradient(
       circle 150px at 30% 70%,
-      rgba(254, 178, 52, 0.15),
+      color-mix(in srgb, var(--dust) 15%, transparent),
       transparent 70%
     ),
     radial-gradient(
       circle 90px at 80% 15%,
-      rgba(254, 178, 52, 0.2),
+      color-mix(in srgb, var(--dust) 20%, transparent),
       transparent 70%
     );
 
@@ -283,7 +287,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #860100;
+  color: var(--maroon-700);
 }
 
 .qr-section__heading {
@@ -293,17 +297,17 @@
   gap: 0.65rem;
   font-size: clamp(1.75rem, 3vw, 2.25rem);
   margin: 0 0 0.5rem;
-  color: #1a1a1a;
+  color: var(--text-strong);
 }
 
 .qr-section__heading-icon {
   font-size: 0.85em;
-  color: #860100;
+  color: var(--maroon-700);
 }
 
 .qr-section__body {
   text-align: left;
-  color: #555;
+  color: var(--text-muted);
   margin-bottom: 1.5rem;
 }
 
@@ -336,23 +340,23 @@
   height: 2rem;
   border-radius: 50%;
 
-  background: #860100;
+  background: var(--maroon-700);
   color: #fff;
   font-weight: 700;
   font-size: 0.9rem;
 
-  box-shadow: 0 6px 14px rgba(134, 1, 0, 0.3);
+  box-shadow: 0 6px 14px color-mix(in srgb, var(--maroon-700) 30%, transparent);
 }
 
 .qr-guide-step__text h3 {
   font-size: 1.05rem;
   margin: 0 0 0.25rem;
-  color: #1a1a1a;
+  color: var(--text-strong);
 }
 
 .qr-guide-step__text p {
   font-size: 0.9rem;
-  color: #666;
+  color: var(--text-muted);
   margin: 0;
 }
 
@@ -369,11 +373,11 @@
 .section-title h2 {
   text-transform: uppercase;
   font-size: 2.5rem;
-  color: #f5aa2c;
+  color: var(--gold-500);
   text-shadow:
     0 0 1px rgba(255, 255, 255, 0.4),
-    0 0 18px rgba(254, 178, 52, 0.55),
-    0 0 34px rgba(254, 178, 52, 0.25);
+    0 0 18px color-mix(in srgb, var(--gold-500) 55%, transparent),
+    0 0 34px color-mix(in srgb, var(--gold-500) 25%, transparent);
 }
 
 .section-title p {
@@ -393,7 +397,7 @@
   width: 96px;
   height: 96px;
   border-radius: 50%;
-  border: 3px solid #feb234;
+  border: 3px solid var(--gold-500);
   object-fit: cover;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }

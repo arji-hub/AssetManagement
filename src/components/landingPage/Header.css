@@ -1,6 +1,9 @@
 /* ================= HEADER ================= */
 
 .header {
+  /* base tint for the glass effect; mixed with transparent per state below */
+  --header-bg: var(--surface-subtle);
+
   position: sticky;
   top: 0;
   z-index: 99;
@@ -14,13 +17,14 @@
 
   padding: 0 0.5rem;
 
-  background: rgba(253, 245, 245, 0.96);
+  background: color-mix(in srgb, var(--header-bg) 96%, transparent);
 
-  border-bottom: 3px solid rgba(134, 1, 0, 0.12);
+  border-bottom: 3px solid
+    color-mix(in srgb, var(--maroon-700) 12%, transparent);
 
   box-shadow:
     0 4px 12px rgba(0, 0, 0, 0.05),
-    0 1px 0 rgba(134, 1, 0, 0.08);
+    0 1px 0 color-mix(in srgb, var(--maroon-700) 8%, transparent);
 
   backdrop-filter: blur(12px);
 
@@ -35,15 +39,29 @@
 /* Glassmorphism + subtle shrink once the page has scrolled past the threshold */
 .header--scrolled {
   height: 58px;
-  background: rgba(253, 245, 245, 0.55);
+  background: color-mix(in srgb, var(--header-bg) 55%, transparent);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-bottom-color: rgba(134, 1, 0, 0.18);
+  border-bottom-color: color-mix(in srgb, var(--maroon-700) 18%, transparent);
   box-shadow:
     0 8px 24px rgba(0, 0, 0, 0.08),
-    0 1px 0 rgba(134, 1, 0, 0.1);
+    0 1px 0 color-mix(in srgb, var(--maroon-700) 10%, transparent);
 }
 
+.header-logo-btn {
+  display: flex;
+  padding: 0;
+  border: none;
+  background: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.header-logo-btn:focus-visible {
+  outline: 2px solid var(--maroon-700);
+  outline-offset: 2px;
+}
+  
 .header-logo {
   display: flex;
   align-items: center;
@@ -78,7 +96,7 @@
   text-align: left;
   font-size: clamp(12px, 5vw, 32px);
   font-weight: 700;
-  color: #860100;
+  color: var(--maroon-700);
   white-space: normal;
   line-height: 1.2;
 }
@@ -113,7 +131,7 @@
   align-items: center;
 
   font-size: 1rem;
-  color: #666;
+  color: var(--text-muted);
 
   transition:
     color 0.25s,
@@ -125,13 +143,13 @@
 }
 
 .nav-link:hover {
-  color: #860100;
+  color: var(--maroon-700);
 }
 
 .nav-link.active {
-  color: #860100;
+  color: var(--maroon-700);
   font-weight: 600;
-  border-bottom: 3px solid #860100;
+  border-bottom: 3px solid var(--maroon-700);
 }
 
 /* Scan Button */
@@ -143,11 +161,11 @@
 
   padding: 10px 18px;
 
-  border: 1px solid #860100;
+  border: 1px solid var(--maroon-700);
   border-radius: 8px;
 
-  background: white;
-  color: #860100;
+  background: var(--card-bg);
+  color: var(--maroon-700);
 
   cursor: pointer;
 
@@ -155,7 +173,7 @@
 }
 
 .scan-btn:hover {
-  background: #f8f3f3;
+  background: var(--maroon-tint);
 }
 
 /* Login Button */
@@ -173,7 +191,7 @@
   border: none;
   border-radius: clamp(6px, 0.6vw, 10px);
 
-  background: #860100;
+  background: var(--maroon-700);
   color: #fff;
 
   font-size: clamp(0.8rem, 1vw, 1rem);
@@ -189,9 +207,9 @@
 }
 
 .login-btn:hover {
-  background: #9b0b09;
+  background: var(--maroon-600);
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(134, 1, 0, 0.25);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--maroon-700) 25%, transparent);
 }
 
 .login-btn:active {
@@ -220,7 +238,7 @@
   cursor: pointer;
 
   font-size: 1.4rem;
-  color: #860100;
+  color: var(--maroon-700);
 
   padding: 0.5rem;
 }
@@ -256,8 +274,9 @@
     align-items: stretch;
     gap: 0;
 
-    background: rgba(253, 245, 245, 0.98);
-    border-bottom: 3px solid rgba(134, 1, 0, 0.12);
+    background: color-mix(in srgb, var(--header-bg) 98%, transparent);
+    border-bottom: 3px solid
+      color-mix(in srgb, var(--maroon-700) 12%, transparent);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
 
     max-height: 0;
@@ -280,12 +299,14 @@
     height: auto;
     padding: 1rem 1.25rem;
     justify-content: flex-start;
-    border-bottom: 1px solid rgba(134, 1, 0, 0.08);
+    border-bottom: 1px solid
+      color-mix(in srgb, var(--maroon-700) 8%, transparent);
   }
 
   .nav-link.active {
-    border-bottom: 1px solid rgba(134, 1, 0, 0.08);
-    background: #f8f3f3;
+    border-bottom: 1px solid
+      color-mix(in srgb, var(--maroon-700) 8%, transparent);
+    background: var(--maroon-tint);
   }
 
   .login-btn {

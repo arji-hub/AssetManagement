@@ -1,5 +1,6 @@
 .qr-modal-box {
-  background: #fff;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 4px;
   padding: 40px 36px 32px;
   width: 100%;
@@ -17,7 +18,7 @@
   font-size: 22px;
   font-weight: 700;
   letter-spacing: 0.12em;
-  color: #111;
+  color: var(--text-strong);
   margin-bottom: 28px;
 }
 
@@ -26,7 +27,7 @@
   position: relative;
   width: 160px;
   height: 160px;
-  background: #f1f1f3;
+  background: var(--track-bg);
   border-radius: 4px;
   display: flex;
   align-items: center;
@@ -36,7 +37,8 @@
 
 .qr-modal-icon-qr {
   font-size: 4.5rem;
-  color: #c4c4c9;
+  color: var(--text-faint);
+  opacity: 0.6;
 }
 
 .qr-modal-icon-glass {
@@ -44,14 +46,14 @@
   bottom: 22%;
   right: 20%;
   font-size: 2rem;
-  color: #860100;
+  color: var(--maroon-700);
 }
 
 .qr-modal-corner {
   position: absolute;
   width: 22px;
   height: 22px;
-  border: 3px solid #860100;
+  border: 3px solid var(--maroon-700);
 }
 
 .qr-modal-corner-tl {
@@ -110,22 +112,22 @@
 }
 
 .qr-modal-btn-primary {
-  background: #860100;
+  background: var(--maroon-700);
   color: #fff;
 }
 
 .qr-modal-btn-primary:hover {
-  background: #5d0100;
+  background: var(--maroon-900);
 }
 
 .qr-modal-btn-secondary {
-  background: #fff;
-  color: #860100;
-  border: 1px solid #860100;
+  background: var(--card-bg);
+  color: var(--maroon-700);
+  border: 1px solid var(--maroon-700);
 }
 
 .qr-modal-btn-secondary:hover {
-  background: #fdf1f1;
+  background: var(--maroon-tint);
 }
 
 .qr-modal-file-input {
@@ -138,7 +140,7 @@
   text-align: center;
   font-size: 12px;
   line-height: 1.5;
-  color: #888;
+  color: var(--text-faint);
 }
 
 @keyframes qrSlideUp {

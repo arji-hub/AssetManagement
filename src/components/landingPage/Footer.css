@@ -4,7 +4,13 @@
 
   width: 100%;
   border-bottom: 4px solid transparent;
-  border-image: linear-gradient(to right, #8a5a08, #f5aa2c, #8a5a08) 1;
+  border-image: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--gold-500) 56%, black),
+      var(--gold-500),
+      color-mix(in srgb, var(--gold-500) 56%, black)
+    )
+    1;
 
   padding: 3rem 4rem;
 
@@ -20,6 +26,8 @@
 
   isolation: isolate;
 }
+
+/* Fixed dark overlay on top of the photo — same in light and dark themes */
 .footer::before {
   content: "";
   position: absolute;
@@ -61,7 +69,7 @@
 }
 
 .footer-socials a:hover {
-  color: #feb234;
+  color: var(--gold-500);
 }
 
 .footer-logo-link {
