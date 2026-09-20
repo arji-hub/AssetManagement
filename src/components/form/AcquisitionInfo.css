@@ -4,7 +4,7 @@
 .reg-toggle-group {
   display: flex;
   width: fit-content;
-  border: 1px solid #ddd;
+  border: 1px solid var(--card-border);
   border-radius: 8px;
   overflow: hidden;
 }
@@ -13,8 +13,8 @@
   padding: 0.55rem 1.5rem;
   font-size: 0.85rem;
   font-weight: 600;
-  color: #666;
-  background: #fafafa;
+  color: var(--text-muted);
+  background: var(--surface-subtle);
   border: none;
   cursor: pointer;
   transition:
@@ -24,10 +24,10 @@
 }
 
 .reg-toggle-option:not(:last-child) {
-  border-right: 1px solid #ddd;
+  border-right: 1px solid var(--card-border);
 }
 
 .reg-toggle-option--active {
-  background: #860100;
+  background: var(--maroon-700);
   color: #fff;
 }

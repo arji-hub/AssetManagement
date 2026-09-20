@@ -75,7 +75,7 @@
   object-fit: contain;
   border-radius: 10px;
   border: 1px solid var(--border-subtle);
-  background: var(--surface-subtle);
+  background: #ffffff;
   padding: 12px;
 }
 

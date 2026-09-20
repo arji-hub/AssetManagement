@@ -9,7 +9,7 @@
 
 .page-content {
   margin-bottom: auto;
-  background: #f2f0ef;
+  background: var(--app-bg);
 }
 
 /* padding + overflow */
@@ -27,8 +27,8 @@
 
 .system-section,
 .mission-section {
-  background: #f2f0ef;
-  color: #111;
+  background: var(--app-bg);
+  color: var(--text-strong);
 }
 
 .system-section .section-title,
@@ -44,7 +44,7 @@
 .system-section .section-title__icon,
 .mission-section .section-title__icon {
   font-size: 4rem;
-  color: #860100;
+  color: var(--maroon-700);
   flex-shrink: 0;
   opacity: 0;
   transform: scale(0.8);
@@ -58,7 +58,7 @@
 .about-page .system-section .section-title h2,
 .about-page .mission-section .section-title h2 {
   font-size: 2.5rem !important;
-  color: #860100;
+  color: var(--maroon-700);
   text-shadow: none;
   text-transform: none;
   font-weight: 700;
@@ -76,7 +76,7 @@
   left: 0;
   right: 0;
   height: 3px;
-  background-color: #feb234;
+  background-color: var(--gold-500);
   width: 0;
 }
 
@@ -102,8 +102,8 @@
   z-index: 1;
   padding: 2.5rem;
   border-radius: 12px;
-  border: 1px solid rgba(254, 178, 52, 0.3);
-  background: rgba(242, 240, 239, 0.7);
+  border: 1px solid color-mix(in srgb, var(--gold-500) 30%, transparent);
+  background: color-mix(in srgb, var(--app-bg) 70%, transparent);
   backdrop-filter: blur(8px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -118,7 +118,7 @@
   height: 400px;
   background: radial-gradient(
     circle,
-    rgba(254, 178, 52, 0.08) 0%,
+    color-mix(in srgb, var(--gold-500) 8%, transparent) 0%,
     transparent 70%
   );
   pointer-events: none;
@@ -131,7 +131,7 @@
   margin: 0;
   font-size: 1.5rem;
   line-height: 1.8;
-  color: #444;
+  color: var(--text-muted);
   text-align: justify;
   text-indent: 0;
   letter-spacing: 0.3px;
@@ -223,7 +223,9 @@
   }
 }
 
-/* "What the System Offers" section */
+/* "What the System Offers" section
+   (intentionally theme-independent: always a dark maroon band with light
+   text, so it stays the same in light and dark) */
 
 .features-section {
   background:
@@ -239,8 +241,8 @@
 /* "Meet the Team" section */
 
 .team-section {
-  background: #f8f5f2;
-  color: #111;
+  background: var(--surface-muted);
+  color: var(--text-strong);
 }
 
 .features-section::before,
@@ -261,7 +263,11 @@
 }
 
 .team-section::before {
-  background: radial-gradient(circle, rgba(134, 1, 0, 0.03), transparent 70%);
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--maroon-700) 3%, transparent),
+    transparent 70%
+  );
 }
 
 /* titles for the features + team sections */
@@ -275,21 +281,21 @@
 .features-section .section-title h2 {
   text-transform: uppercase;
   font-size: 2.5rem;
-  color: #f5aa2c;
+  color: var(--gold-500);
   text-shadow:
     0 0 1px rgba(255, 255, 255, 0.4),
-    0 0 18px rgba(254, 178, 52, 0.55),
-    0 0 34px rgba(254, 178, 52, 0.25);
+    0 0 18px color-mix(in srgb, var(--gold-500) 55%, transparent),
+    0 0 34px color-mix(in srgb, var(--gold-500) 25%, transparent);
 }
 
 .team-section .section-title h2 {
   text-transform: uppercase;
   font-size: 2.5rem;
-  color: #860100;
+  color: var(--maroon-700);
   text-shadow:
-    0 0 1px rgba(134, 1, 0, 0.3),
-    0 0 18px rgba(134, 1, 0, 0.25),
-    0 0 34px rgba(134, 1, 0, 0.12);
+    0 0 1px color-mix(in srgb, var(--maroon-700) 30%, transparent),
+    0 0 18px color-mix(in srgb, var(--maroon-700) 25%, transparent),
+    0 0 34px color-mix(in srgb, var(--maroon-700) 12%, transparent);
 }
 
 .features-section .section-title p {
@@ -299,7 +305,7 @@
 
 .team-section .section-title p {
   margin-top: 0.5rem;
-  color: #666;
+  color: var(--text-muted);
 }
 
 /* feature cards */
@@ -317,14 +323,14 @@
   overflow: hidden;
   padding: 2rem 1.75rem;
   border-radius: 16px;
-  border: 1px solid rgba(134, 1, 0, 0.08);
-  background: #fff;
+  border: 1px solid var(--border-subtle);
+  background: var(--card-bg);
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
   box-shadow:
-    0 2px 4px rgba(134, 1, 0, 0.04),
-    0 12px 24px rgba(134, 1, 0, 0.06);
+    0 2px 4px color-mix(in srgb, var(--maroon-700) 4%, transparent),
+    0 12px 24px color-mix(in srgb, var(--maroon-700) 6%, transparent);
   transition:
     transform 0.35s ease,
     box-shadow 0.35s ease,
@@ -338,7 +344,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #860100, #feb234);
+  background: linear-gradient(90deg, var(--maroon-700), var(--gold-500));
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.35s ease;
@@ -346,10 +352,10 @@
 
 .feature-card:hover {
   transform: translateY(-8px);
-  border-color: rgba(134, 1, 0, 0.18);
+  border-color: var(--card-border-hover);
   box-shadow:
-    0 4px 8px rgba(134, 1, 0, 0.08),
-    0 24px 48px rgba(134, 1, 0, 0.16);
+    0 4px 8px color-mix(in srgb, var(--maroon-700) 8%, transparent),
+    0 24px 48px color-mix(in srgb, var(--maroon-700) 16%, transparent);
 }
 
 .feature-card:hover::before {
@@ -364,23 +370,27 @@
   height: 3rem;
   margin-bottom: 0.5rem;
   border-radius: 12px;
-  background: radial-gradient(circle at center, #860100 70%, #c96e18 100%);
+  background: radial-gradient(
+    circle at center,
+    var(--maroon-700) 70%,
+    #c96e18 100%
+  );
   color: #fff;
   font-size: 1.25rem;
-  box-shadow: 0 8px 18px rgba(134, 1, 0, 0.35);
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--maroon-700) 35%, transparent);
 }
 
 .feature-card__title {
   font-size: 1.1rem;
   margin: 0;
-  color: #1a1a1a;
+  color: var(--text-strong);
 }
 
 .feature-card__description {
   font-size: 0.9rem;
   line-height: 1.5;
   margin: 0;
-  color: #666;
+  color: var(--text-muted);
 }
 
 /* team member cards */
@@ -405,13 +415,13 @@
   overflow: hidden;
   padding: 0;
   border-radius: 16px;
-  border: 1px solid rgba(134, 1, 0, 0.12);
-  background: #fff;
+  border: 1px solid var(--border-subtle);
+  background: var(--card-bg);
   display: flex;
   flex-direction: column;
   box-shadow:
-    0 2px 4px rgba(134, 1, 0, 0.04),
-    0 12px 24px rgba(134, 1, 0, 0.08);
+    0 2px 4px color-mix(in srgb, var(--maroon-700) 4%, transparent),
+    0 12px 24px color-mix(in srgb, var(--maroon-700) 8%, transparent);
   transition:
     transform 0.35s ease,
     box-shadow 0.35s ease,
@@ -420,10 +430,10 @@
 
 .team-card:hover {
   transform: translateY(-6px);
-  border-color: rgba(134, 1, 0, 0.22);
+  border-color: var(--card-border-hover);
   box-shadow:
-    0 4px 8px rgba(134, 1, 0, 0.08),
-    0 20px 40px rgba(134, 1, 0, 0.16);
+    0 4px 8px color-mix(in srgb, var(--maroon-700) 8%, transparent),
+    0 20px 40px color-mix(in srgb, var(--maroon-700) 16%, transparent);
 }
 
 .team-card::before {
@@ -433,7 +443,11 @@
   left: 0;
   bottom: 0;
   width: 5px;
-  background: linear-gradient(180deg, #860100 0%, #feb234 100%);
+  background: linear-gradient(
+    180deg,
+    var(--maroon-700) 0%,
+    var(--gold-500) 100%
+  );
   border-radius: 16px 0 0 16px;
 }
 
@@ -442,14 +456,14 @@
   flex-direction: column;
   gap: 0.25rem;
   padding: 1.6rem 1.75rem 1.25rem 2rem;
-  border-bottom: 1px solid rgba(134, 1, 0, 0.08);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .team-card__name {
   margin: 0;
   font-size: 1.3rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--text-strong);
   letter-spacing: -0.01em;
 }
 
@@ -458,7 +472,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: #860100;
+  color: var(--maroon-700);
 }
 
 .team-card__bio {
@@ -466,7 +480,7 @@
   padding: 1.25rem 1.75rem 1.6rem 2rem;
   font-size: 0.875rem;
   line-height: 1.7;
-  color: #555;
+  color: var(--text-muted);
   flex: 1;
 }
 

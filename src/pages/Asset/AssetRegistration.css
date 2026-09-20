@@ -29,19 +29,19 @@
   gap: 0.4rem;
   font-size: 0.72rem;
   font-weight: 600;
-  color: #000000;
+  color: var(--text-strong);
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
 
 .reg-header-sep {
   font-size: 0.6rem;
-  color: #ccc;
+  color: var(--text-faint);
 }
 
 .reg-header-title {
   font-size: 1.5rem !important;
-  color: #860100;
+  color: var(--maroon-700);
   margin: 0;
   line-height: 1.2;
 }
@@ -52,7 +52,7 @@
   align-items: center;
   justify-content: space-between;
   padding-top: 0.5rem;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--border-subtle);
 }
 
 .reg-footer-left,
@@ -88,50 +88,50 @@
 
 /* Primary: filled red */
 .reg-btn--primary {
-  background: #860100;
+  background: var(--maroon-700);
   color: #fff;
-  border: 2px solid #860100;
+  border: 2px solid var(--maroon-700);
 }
 
 .reg-btn--primary:not(:disabled):hover {
-  background: #6a0100;
-  border-color: #6a0100;
+  background: var(--maroon-800);
+  border-color: var(--maroon-800);
 }
 
 /* Ghost: outlined red */
 .reg-btn--ghost {
   background: transparent;
-  color: #860100;
-  border: 2px solid #860100;
+  color: var(--maroon-700);
+  border: 2px solid var(--maroon-700);
 }
 
 .reg-btn--ghost:not(:disabled):hover {
-  background: #860100;
+  background: var(--maroon-700);
   color: #fff;
 }
 
 /* Cancel: neutral */
 .reg-btn--cancel {
   background: transparent;
-  color: #666;
-  border: 2px solid #ddd;
+  color: var(--text-muted);
+  border: 2px solid var(--card-border);
 }
 
 .reg-btn--cancel:not(:disabled):hover {
-  border-color: #999;
-  color: #333;
+  border-color: var(--text-faint);
+  color: var(--text-strong);
 }
 
 /* Warn: amber — for "Confirm Skip" state */
 .reg-btn--warn {
-  background: #f5aa2c;
+  background: var(--gold-500);
   color: #fff;
-  border: 2px solid #f5aa2c;
+  border: 2px solid var(--gold-500);
 }
 
 .reg-btn--warn:not(:disabled):hover {
-  background: #d99520;
-  border-color: #d99520;
+  background: color-mix(in srgb, var(--gold-500) 85%, black);
+  border-color: color-mix(in srgb, var(--gold-500) 85%, black);
 }
 
 /* ─── Responsive ─────────────────────────────────────────────────────────────── */

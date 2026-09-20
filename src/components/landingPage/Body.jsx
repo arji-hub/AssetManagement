@@ -4,7 +4,7 @@ import elib from "../../assets/image/elib.png";
 import alabBulsu from "../../assets/image/alabBulsu.jpg";
 import CICTLOGO from "../../assets/logo/CICTLOGO.png";
 import BULSULOGO from "../../assets/logo/BULSULOGO.png";
-
+import { useState } from "react";
 import QRModal from "../../components/modal/QRModal";
 import QRInfo from "../../components/modal/QRInfo";
 import QRStatusModal from "../../components/ui/status/QRStatusModal";
@@ -20,11 +20,11 @@ function Body({ sectionRefs, previewAsset }) {
   const { status, errorMessage, handleImageUpload, handleScan, reset } =
     useQRScanner();
 
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+
   const isAssetPreview = previewAsset !== undefined;
 
-  const handleScanClick = () => {
-    qrRef?.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+  const handleScanClick = () => setIsCameraOpen(true);
 
   return (
     <main className="body">
@@ -57,7 +57,12 @@ function Body({ sectionRefs, previewAsset }) {
         <div className="qr-section__grid">
           {/* Left: scanner */}
           <div className="qr-section__scanner">
-            <QRModal onScan={handleScan} onImageUpload={handleImageUpload} />
+            <QRModal
+              onScan={handleScan}
+              onImageUpload={handleImageUpload}
+              isCameraOpen={isCameraOpen}
+              onCameraOpenChange={setIsCameraOpen}
+            />
           </div>
 
           {/* Right: guide */}

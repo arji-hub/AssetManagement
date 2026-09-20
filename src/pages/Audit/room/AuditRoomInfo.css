@@ -95,18 +95,18 @@
   padding: 10px 24px;
   border: none;
   border-radius: 8px;
-  background: #860100;
+  background: var(--maroon-700);
   color: #ffffff;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(134, 1, 0, 0.25);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--maroon-700) 25%, transparent);
   transition:
     filter 0.15s ease,
     transform 0.1s ease;
 }
 
 .audit-camera-scan:hover {
-  background: #5d0100;
+  background: var(--maroon-900);
   transform: translateY(-2px);
 }
 
@@ -115,7 +115,9 @@
 }
 
 .audit-camera-scan:disabled {
-  background: #ccc;
+  background: var(--track-bg);
+  color: var(--text-faint);
+  box-shadow: none;
   cursor: not-allowed;
   transform: none;
 }
@@ -126,10 +128,10 @@
   align-items: center;
   gap: 8px;
   padding: 10px 24px;
-  border: 1px solid #16a34a;
+  border: 1px solid var(--success);
   border-radius: 8px;
-  background: rgba(34, 197, 94, 0.08);
-  color: #16a34a;
+  background: var(--success-bg);
+  color: var(--success);
   font-weight: 700;
   cursor: pointer;
   transition:
@@ -138,8 +140,8 @@
 }
 
 .audit-session-save-btn:hover:not(:disabled) {
-  background: rgba(34, 197, 94, 0.15);
-  border-color: #15803d;
+  background: color-mix(in srgb, var(--success) 18%, transparent);
+  border-color: var(--success);
   transform: translateY(-2px);
 }
 
@@ -148,9 +150,9 @@
 }
 
 .audit-session-save-btn:disabled {
-  border-color: #ccc;
-  background: #f3e9e8;
-  color: #8e706b;
+  border-color: var(--card-border);
+  background: var(--track-bg);
+  color: var(--text-faint);
   cursor: not-allowed;
   transform: none;
 }
@@ -163,9 +165,9 @@
   gap: 8px;
   padding: 10px 16px;
   border-radius: 10px;
-  background: rgba(220, 38, 38, 0.08);
-  border: 1px solid rgba(220, 38, 38, 0.25);
-  color: #dc2626;
+  background: var(--danger-bg);
+  border: 1px solid color-mix(in srgb, var(--danger) 25%, transparent);
+  color: var(--danger);
   font-size: 14px;
   font-weight: 700;
 }
@@ -187,22 +189,22 @@
   width: 100%;
   height: 6px;
   border-radius: 999px;
-  background: #f3e9e8;
+  background: var(--track-bg);
   overflow: hidden;
 }
 
 .audit-card-progress-fill {
   height: 100%;
   border-radius: 999px;
-  background: #f5aa2c;
+  background: var(--gold-500);
   transition: width 0.3s ease;
 }
 
 /* == Section wrap ============================================================ */
 
 .audit-session-table-wrap {
-  background: #ffffff;
-  border: 1px solid #e2beb9;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 10px;
   padding: 16px;
   display: flex;
@@ -214,18 +216,18 @@
 .audit-session-section-title {
   font-size: 15px;
   font-weight: 700;
-  color: #860100;
+  color: var(--maroon-700);
   margin: 0;
 }
 
 /* Slight visual distinction for the discrepancy section title */
 .audit-session-section-title--discrepancy {
-  color: #dc2626;
+  color: var(--danger);
 }
 
 .audit-session-empty {
   font-size: 14px;
-  color: #8e706b;
+  color: var(--text-faint);
   text-align: center;
   padding: 24px 0;
   margin: 0;
@@ -244,9 +246,9 @@
   justify-content: space-between;
   align-items: center;
   padding: 8px 0;
-  border-bottom: 1px solid #f3e9e8;
+  border-bottom: 1px solid var(--border-subtle);
   font-size: 14px;
-  color: #121c2a;
+  color: var(--text-strong);
 }
 
 .audit-session-meta-row:last-child {
@@ -254,7 +256,7 @@
 }
 
 .audit-session-card-label {
-  color: #8e706b;
+  color: var(--text-faint);
   font-weight: 700;
   font-size: 12px;
   text-transform: uppercase;
@@ -276,28 +278,28 @@
 }
 
 .audit-status-badge--audited {
-  background: rgba(34, 197, 94, 0.12);
-  color: #16a34a;
+  background: var(--success-bg);
+  color: var(--success);
 }
 
 .audit-status-badge--not-audited {
-  background: #f3e9e8;
-  color: #8e706b;
+  background: var(--track-bg);
+  color: var(--text-faint);
 }
 
 .audit-status-badge--misplaced {
-  background: rgba(220, 38, 38, 0.12);
-  color: #dc2626;
+  background: var(--danger-bg);
+  color: var(--danger);
 }
 
 .audit-status-badge--unexpected {
-  background: rgba(220, 38, 38, 0.12);
-  color: #dc2626;
+  background: var(--danger-bg);
+  color: var(--danger);
 }
 
 .audit-status-badge--unknown {
-  background: #f3e9e8;
-  color: #8e706b;
+  background: var(--track-bg);
+  color: var(--text-faint);
 }
 
 /* == Verify button ============================================================ */
@@ -307,10 +309,10 @@
   align-items: center;
   gap: 6px;
   padding: 6px 12px;
-  border: 1px solid #22c55e;
+  border: 1px solid color-mix(in srgb, var(--success) 60%, transparent);
   border-radius: 6px;
-  background: rgba(34, 197, 94, 0.08);
-  color: #16a34a;
+  background: var(--success-bg);
+  color: var(--success);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -321,12 +323,12 @@
 }
 
 .audit-session-verify-btn:hover:not(:disabled) {
-  background: rgba(34, 197, 94, 0.15);
-  border-color: #16a34a;
+  background: color-mix(in srgb, var(--success) 18%, transparent);
+  border-color: var(--success);
 }
 
 .audit-session-verify-btn:active:not(:disabled) {
-  background: rgba(34, 197, 94, 0.2);
+  background: color-mix(in srgb, var(--success) 24%, transparent);
   transform: scale(0.98);
 }
 
@@ -380,7 +382,7 @@
   .audit-session-error {
     flex-basis: 100%;
   }
-} 
+}
 
 @media (max-width: 768px) {
   .audit-session-page {

@@ -10,6 +10,39 @@ import "./PDFPreviewModal.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
+// A4-shaped placeholder shown while the PDF is being generated / rendered.
+// Colors come from theme tokens, so it follows light/dark automatically.
+function PDFSkeleton({ width }) {
+  return (
+    <div
+      className="pdf-skeleton"
+      style={{ width, aspectRatio: "1 / 1.414" }}
+      role="status"
+      aria-label="Loading preview"
+    >
+      <div className="pdf-skeleton-header">
+        <span className="pdf-skeleton-block pdf-skeleton-logo" />
+
+        <div className="pdf-skeleton-lines">
+          <span className="pdf-skeleton-block" style={{ width: "55%" }} />
+          <span className="pdf-skeleton-block" style={{ width: "80%" }} />
+          <span className="pdf-skeleton-block" style={{ width: "40%" }} />
+        </div>
+
+        <span className="pdf-skeleton-block pdf-skeleton-logo" />
+      </div>
+
+      <span className="pdf-skeleton-block pdf-skeleton-title" />
+
+      <div className="pdf-skeleton-rows">
+        {Array.from({ length: 9 }).map((_, i) => (
+          <span key={i} className="pdf-skeleton-block pdf-skeleton-row" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function PDFPreviewModal({
   document: pdfDocument,
   fileName,
@@ -22,16 +55,23 @@ export function PDFPreviewModal({
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [containerWidth, setContainerWidth] = useState(600);
+  const [previewError, setPreviewError] = useState(false);
 
   useEffect(() => {
     if (!isOpen) return;
     let cancelled = false;
+    setPreviewError(false);
 
     pdf(pdfDocument)
       .toBlob()
       .then((blob) => {
         if (cancelled) return;
         setBlobUrl(URL.createObjectURL(blob));
+      })
+      .catch((err) => {
+        // e.g. an image that failed to load — don't leave the skeleton spinning forever
+        console.error("[PDFPreviewModal] Failed to render preview:", err);
+        if (!cancelled) setPreviewError(true);
       });
 
     return () => {
@@ -63,6 +103,8 @@ export function PDFPreviewModal({
       setPrinting(false);
     }
   };
+
+  const pageWidth = Math.min(containerWidth - 20, 700);
 
   const modal = isOpen ? (
     <div className="pdf-modal-overlay" onClick={() => setIsOpen(false)}>
@@ -102,20 +144,23 @@ export function PDFPreviewModal({
           className="pdf-modal-viewer"
           ref={(el) => el && setContainerWidth(el.clientWidth)}
         >
-          {blobUrl ? (
+          {previewError ? (
+            <p className="pdf-loading-text">Couldn't generate the preview.</p>
+          ) : blobUrl ? (
             <Document
               file={blobUrl}
               onLoadSuccess={({ numPages }) => setNumPages(numPages)}
-              loading={<p className="pdf-loading-text">Loading preview…</p>}
+              loading={<PDFSkeleton width={pageWidth} />}
               error={<p className="pdf-loading-text">Couldn't load preview.</p>}
             >
               <Page
                 pageNumber={pageNumber}
-                width={Math.min(containerWidth - 20, 700)}
+                width={pageWidth}
+                loading={<PDFSkeleton width={pageWidth} />}
               />
             </Document>
           ) : (
-            <p className="pdf-loading-text">Preparing preview…</p>
+            <PDFSkeleton width={pageWidth} />
           )}
 
           {numPages > 1 && (
@@ -147,7 +192,12 @@ export function PDFPreviewModal({
       <button className="pdf-trigger-btn" onClick={() => setIsOpen(true)}>
         {triggerLabel}
       </button>
-      {modal && createPortal(modal, document.body)}
+      {/* Render inside the app shell so the modal inherits its theme; fall back to body */}
+      {modal &&
+        createPortal(
+          modal,
+          document.querySelector(".layout-wrapper") ?? document.body,
+        )}
     </>
   );
 }
