@@ -1,10 +1,10 @@
 .login-modal-box {
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 7px;
   padding: clamp(16px, 4vw, 40px) clamp(12px, 3vw, 36px) clamp(12px, 3vw, 32px);
   width: 100%;
   max-width: 420px;
-  box-shadow: 0 8px 32px rgba(134, 1, 0, 0.5);
+  box-shadow: 0 8px 32px color-mix(in srgb, var(--maroon-700) 50%, transparent);
   animation: loginSlideUp 0.25s ease;
   position: relative;
   overflow: hidden;
@@ -16,7 +16,7 @@
   position: absolute;
   inset: 0 0 auto 0;
   height: 5px;
-  background: linear-gradient(90deg, #f5aa2c, #f5c877);
+  background: linear-gradient(90deg, var(--gold-500), var(--gold-400));
 }
 
 .login-modal-title {
@@ -24,12 +24,12 @@
   font-size: clamp(18px, 3vw, 22px);
   font-weight: 700;
   letter-spacing: 0.12em;
-  color: #860100;
+  color: var(--maroon-700);
   margin-bottom: clamp(18px, 3vw, 28px);
 }
 
 .login-modal-title .subtitle {
-  color: #b8791f;
+  color: var(--missing);
   font-weight: 500;
   font-size: clamp(11px, 2vw, 13px) !important;
   letter-spacing: 0.02em;
@@ -61,7 +61,7 @@
   font-weight: 600;
   font-size: 0.75rem;
   letter-spacing: 0.04em;
-  color: #333;
+  color: var(--text-strong);
   font-family: "Inter", sans-serif;
 }
 
@@ -69,7 +69,7 @@
   text-transform: none;
   float: right;
   font-size: 11px;
-  color: #860100;
+  color: var(--maroon-700);
   cursor: pointer;
   transition: opacity 0.2s ease;
 }
@@ -80,7 +80,7 @@
   position: relative;
   margin-bottom: 14px;
   padding: 5px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--card-border);
   border-radius: 4px;
 
   transition:
@@ -89,26 +89,26 @@
 }
 
 .login-modal-field:focus-within {
-  border-color: #860100;
-  box-shadow: 0 0 0 2px rgba(134, 1, 0, 0.15);
+  border-color: var(--maroon-700);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--maroon-700) 15%, transparent);
 }
 .login-modal-field:focus-within .login-modal-field-icon {
-  border-color: #860100;
-  color: #f5aa2c;
+  border-color: var(--maroon-700);
+  color: var(--gold-500);
 }
 
 .login-modal-field:focus-within .login-modal-field-icon2 {
-  color: #860100;
+  color: var(--maroon-700);
 }
 
 .login-modal-field:focus-within {
-  background: #fcfcfc;
+  background: var(--surface-subtle);
 }
 
 .login-modal-field input {
   width: 100%;
   font-size: 14px;
-  color: #333;
+  color: var(--text-strong);
   border: none;
   outline: none;
   transition: border-color 0.2s ease;
@@ -117,15 +117,15 @@
 }
 
 .login-modal-field input::placeholder {
-  color: #aaa;
+  color: var(--text-faint);
 }
 
 .login-modal-field-icon {
   padding-right: 3px;
   margin-right: 2px;
-  color: #860100;
+  color: var(--maroon-700);
   font-size: 14px;
-  border-right: 1px solid #ddd;
+  border-right: 1px solid var(--card-border);
   transition:
     border-color 0.5s ease,
     box-shadow 0.5s ease,
@@ -137,7 +137,7 @@
   right: 10px;
   top: 50%;
   transform: translateY(-50%);
-  color: #aaa;
+  color: var(--text-faint);
   font-size: 14px;
   transition:
     border-color 0.5s ease,
@@ -152,14 +152,14 @@
 }
 
 .login-modal-eye:hover {
-  color: #860100;
+  color: var(--maroon-700);
 }
 
 /* ── button ── */
 .login-modal-submit-btn {
   width: 100%;
   padding: clamp(5px, 2vw, 10px);
-  background: #860100;
+  background: var(--maroon-700);
   color: #fff;
   border: none;
   border-radius: clamp(4px, 0.5vw, 6px);
@@ -175,11 +175,12 @@
 }
 
 .login-modal-submit-btn:hover {
-  background: #5d0100;
+  background: var(--maroon-900);
 }
 
 .login-modal-submit-btn:disabled {
-  background: #ccc;
+  background: var(--track-bg);
+  color: var(--text-faint);
   cursor: not-allowed;
 }
 
@@ -188,7 +189,7 @@
   display: flex;
   align-items: center;
   margin: 20px 0 14px;
-  color: #999;
+  color: var(--text-faint);
   font-size: 11px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -199,7 +200,7 @@
   content: "";
   flex: 1;
   height: 1px;
-  background: #e5e5e5;
+  background: var(--shell-border);
 }
 
 .login-modal-divider span {
@@ -220,10 +221,10 @@
   justify-content: center;
   gap: 8px;
   padding: 9px 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--card-border);
   border-radius: 4px;
-  background: #fff;
-  color: #333;
+  background: var(--card-bg);
+  color: var(--text-strong);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -233,8 +234,8 @@
 }
 
 .login-modal-oauth-btn:hover {
-  background: #f7f7f7;
-  border-color: #ccc;
+  background: var(--hover-tint);
+  border-color: var(--text-faint);
 }
 
 .login-modal-oauth-btn:disabled {
@@ -251,7 +252,7 @@
 
 .login-modal-footer span {
   font-size: 12px;
-  color: #860100;
+  color: var(--maroon-700);
   cursor: pointer;
   transition: opacity 0.2s ease;
 }
@@ -264,7 +265,7 @@
 /* ── error ── */
 .login-modal-error {
   font-size: 12px;
-  color: #c0392b;
+  color: var(--danger);
   margin-bottom: 10px;
   text-align: center;
 }
@@ -292,9 +293,9 @@
 /* ── forgot password: success message ── */
 .login-modal-success {
   font-size: 13px;
-  color: #333;
-  background: #fdf4e3;
-  border: 1px solid #f5aa2c;
+  color: var(--text-strong);
+  background: color-mix(in srgb, var(--gold-500) 12%, transparent);
+  border: 1px solid var(--gold-500);
   border-radius: 4px;
   padding: 12px 14px;
   text-align: center;
@@ -303,7 +304,7 @@
 }
 
 .login-modal-success strong {
-  color: #860100;
+  color: var(--maroon-700);
 }
 
 /* ── forgot password: back to sign in ── */
@@ -312,7 +313,7 @@
   width: 100%;
   background: none;
   border: none;
-  color: #860100;
+  color: var(--maroon-700);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.02em;

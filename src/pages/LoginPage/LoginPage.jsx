@@ -5,21 +5,35 @@ import bulsuGate from "../../assets/image/bulsuGate.png";
 import pimentel from "../../assets/image/pimentel.png";
 import CICTLOGO from "../../assets/logo/CICTLOGO.png";
 import BulsuWordmark from "../../assets/logo/BulSU_wordmark.png";
-
+import { useTheme } from "../../hooks/settings/theme/useTheme";
 import "./LoginPage.css";
 
 function LoginPage() {
+  const { theme, toggleTheme } = useTheme();
+  const nextTheme = theme === "light" ? "dark" : "light";
   return (
     <div className="login-page">
       {/* ============ PANE A ============ */}
       <div className="login-page__pane login-page__pane--form">
-        <Link to="/" className="login-page__brand" aria-label="Back to home">
-          <img
-            src={BulsuWordmark}
-            alt="CICT Logo"
-            className="login-page__logo"
-          />
-        </Link>
+        <div className="login-page__header">
+          <Link to="/" className="login-page__brand" aria-label="Back to home">
+            <img
+              src={BulsuWordmark}
+              alt="CICT Logo"
+              className="login-page__logo"
+            />
+          </Link>
+
+          <button
+            type="button"
+            className="header-logo-btn"
+            onClick={toggleTheme}
+            aria-label={`Switch to ${nextTheme} mode`}
+            title={`Switch to ${nextTheme} mode`}
+          >
+            <img src={CICTLOGO} alt="" />
+          </button>
+        </div>
 
         <div className="login-page__pane-content">
           <LoginModal />
