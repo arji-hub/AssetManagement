@@ -53,7 +53,9 @@ function HistoryCard({ assetId }) {
         {loading ? (
           <div className="history-card-empty">Loading history…</div>
         ) : error ? (
-          <div className="history-card-empty">Failed to load history.</div>
+          <div className="history-card-empty">
+            Failed to load history.`error
+          </div>
         ) : filtered.length === 0 ? (
           <div className="history-card-empty">No events found.</div>
         ) : (
