@@ -288,8 +288,8 @@ function TransferOverview({ variant = "custodian" }) {
                         </div>
                       )}
 
-                      {/* hide for variant LocalMR */}
-                      {variant !== "localMR" && custodians.length > 0 && (
+                      {/* hide for variant LocalMR and Custodian */}
+                      {variant === "room" && custodians.length > 0 && (
                         <div className="transfer-overview-filter-field">
                           <label className="transfer-overview-filter-label">
                             Custodian
@@ -389,11 +389,11 @@ function TransferOverview({ variant = "custodian" }) {
                             <span className="transfer-overview-meta-separator">
                               •
                             </span>
-                            {asset.serial_number}
+                            {asset.serial_number || asset.serial_no}
                             <span className="transfer-overview-meta-separator">
                               •
                             </span>
-                            {asset.room_name || "Unassigned room"}
+                            {asset.room_name || "Unallocated"}
                           </span>
                         </div>
                       </label>

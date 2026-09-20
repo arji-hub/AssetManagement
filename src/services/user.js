@@ -107,7 +107,7 @@ export async function findCustodian(identifier) {
     role: d.role,
     status: d.status ?? "active",
     asset_count,
-    uid:docSnap.id,
+    uid: docSnap.id,
   };
 }
 
@@ -222,8 +222,8 @@ export function subscribeToAssetsByCustodian(custodianID, callback, onError) {
           qty: asset.qty,
           status: asset.status,
           date: asset.date_acquired,
-          room_id: asset.room_id ?? "---",
-          room_name: roomNameMap[asset.room_id] ?? "---",
+          room_id: asset.room_id ?? null,
+          room_name: roomNameMap[asset.room_id] ?? null,
           property_custodian: asset.property_custodian ?? null,
           local_mr: asset.local_mr ?? null,
         }));

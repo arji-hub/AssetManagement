@@ -84,7 +84,7 @@ export function subscribeToAssets(role, currentUserUid, callback, onError) {
             try {
               roomNameMap[roomId] = await fetchRoomName(roomId);
             } catch {
-              roomNameMap[roomId] = "---";
+              roomNameMap[roomId] = null;
             }
           }),
         );
@@ -112,7 +112,7 @@ export function subscribeToAssets(role, currentUserUid, callback, onError) {
           local_mr_name: userMap[asset.local_mr] || "---",
           local_mr_fullname: fullname[asset.local_mr] || "---",
           category_name: categoryNameMap[asset.category_id],
-          room_name: roomNameMap[asset.room_id],
+          room_name: roomNameMap[asset.room_id] ?? null,
         }));
 
         assets.sort((a, b) => {
@@ -168,7 +168,7 @@ export async function fetchAssetByID(assetId) {
 
   const room_name = assetData.room_id
     ? await fetchRoomName(assetData.room_id)
-    : "---";
+    : null;
 
   const category_name = await fetchCategoryName(assetData.category_id);
 

@@ -3,12 +3,15 @@ import { Status } from "../../components/ui/status/assetStatus";
 import { formatDate } from "../../utils/date";
 import { TRANSFER_TYPE_LABELS } from "../transfer";
 
+const renderRoomName = (value) =>
+  value || <em style={{ fontStyle: "italic" }}>Unallocated</em>;
+
 export const TRANSFER_COLUMNS = {
   action: [
     {
       key: "asset_id",
-      label: "Asset Count",
-      width: "0.7fr",
+      label: "Assets Transferred",
+      width: "0.9fr",
       priority: "high",
       render: (r) => (
         <span className="asset-count-cell">
@@ -55,7 +58,7 @@ export const TRANSFER_COLUMNS = {
   room: [
     {
       key: "asset_count",
-      label: "Asset Count",
+      label: "Assets Moved",
       width: "0.5fr",
       priority: "high",
       render: (r) => (
@@ -71,7 +74,7 @@ export const TRANSFER_COLUMNS = {
       label: "From",
       width: "1fr",
       priority: "high",
-      render: (r) => r.room_from || "—",
+      render: (r) => renderRoomName(r.room_from),
       card: { role: "from" },
     },
     {
@@ -79,7 +82,7 @@ export const TRANSFER_COLUMNS = {
       label: "To",
       width: "1fr",
       priority: "high",
-      render: (r) => r.move_to || "—",
+      render: (r) => renderRoomName(r.move_to),
       card: { role: "to" },
     },
     {
