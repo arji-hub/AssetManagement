@@ -66,8 +66,7 @@ function useRoomInfo(auditID) {
         setDiscrepancyItems(discrepancyItems);
         setLoading(false);
       },
-      (err) => {
-        console.error("Failed to fetch audit:", err);
+      () => {
         setError("Failed to load audit info.");
         setLoading(false);
       },
@@ -116,7 +115,6 @@ function useRoomInfo(auditID) {
 
         return { ok: true };
       } catch (err) {
-        console.error("Failed to verify item:", err);
         return { ok: false, reason: "write_failed", error: err };
       } finally {
         setVerifyingId(null);
@@ -233,7 +231,6 @@ function useRoomInfo(auditID) {
       await completeAuditSession(auditID);
       return { ok: true };
     } catch (err) {
-      console.error("Failed to complete audit:", err);
       setCompleteAuditError(
         "Failed to save and complete the audit. Please try again.",
       );
@@ -253,7 +250,6 @@ function useRoomInfo(auditID) {
       await addUnexpectedDiscrepancy(auditID, assetData, audit?.room_id);
       setScanModalStatus("discrepancy_added");
     } catch (err) {
-      console.error("Failed to add discrepancy:", err);
       setScanModalError(
         "Failed to record this asset as a discrepancy. Please try again.",
       );

@@ -238,6 +238,7 @@ export function subscribeToAssetsInRoom(room_id, callback, onError) {
         const assets = assetData.map((asset) => ({
           id: asset.id,
           description: asset.description,
+          serial_number: asset.serial_number ?? "none",
           category_id: asset.category_id,
           category_name: categoryNameMap[asset.category_id],
           property_custodian_fullname:

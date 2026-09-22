@@ -93,24 +93,9 @@
   -webkit-overflow-scrolling: touch;
 }
 
-/* Previous audits table — Assets Audited & Discrepancies columns centered */
-.audit-overview-audits-wrap .previous-audit-card-row-cell:nth-child(3),
-.audit-overview-audits-wrap .previous-audit-card-row-cell:nth-child(4) {
+.audit-overview-audits-wrap .panel-header-cell:nth-child(-n + 2) {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-
-.audit-overview-audits-wrap .previous-audit-card-row-cell:nth-child(5) {
-  display: flex;
-  align-items: center;
-  justify-content: right;
-  text-align: center;
-}
-
-.audit-overview-audits-wrap .panel-header-cell:nth-child(3),
-.audit-overview-audits-wrap .panel-header-cell:nth-child(4) {
+  justify-content: left;
   text-align: center;
 }
 
