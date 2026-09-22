@@ -91,9 +91,6 @@ export function useAssetFilters(assets = []) {
     loadOptions();
   }, [assets]);
 
-  console.log(custodians);
-  console.log(rooms);
-
   const activeFilterCount = Object.values(filters).filter(Boolean).length;
 
   //Resolve each active filter's stored value (often an id) to a display label

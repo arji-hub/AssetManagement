@@ -89,19 +89,24 @@ export function PDFPreviewModal({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
-  const handlePrint = async () => {
+  const handlePrint = () => {
+    if (!blobUrl) return;
+
     setPrinting(true);
-    try {
-      const blob = await pdf(pdfDocument).toBlob();
-      const url = URL.createObjectURL(blob);
-      const printWindow = window.open(url);
-      printWindow.onload = () => {
-        printWindow.focus();
-        printWindow.print();
-      };
-    } finally {
+
+    const printWindow = window.open(blobUrl, "_blank");
+
+    if (!printWindow) {
       setPrinting(false);
+      alert("Please allow pop-ups for this site to print the PDF.");
+      return;
     }
+
+    printWindow.onload = () => {
+      printWindow.focus();
+      printWindow.print();
+      setPrinting(false);
+    };
   };
 
   const pageWidth = Math.min(containerWidth - 20, 700);
@@ -133,10 +138,10 @@ export function PDFPreviewModal({
           <button
             className="pdf-print-btn"
             onClick={handlePrint}
-            disabled={printing}
+            disabled={printing || !blobUrl}
           >
             <FontAwesomeIcon icon="fa-solid fa-print" />
-            {printing ? "Preparing..." : "Print"}
+            {printing || !blobUrl ? "Preparing..." : "Print"}
           </button>
         </div>
 
