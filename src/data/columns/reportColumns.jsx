@@ -21,11 +21,12 @@ export const REPORT_COLUMNS = {
       card: { role: "desc" },
     },
     {
-      key: "location",
-      label: "Location",
+      key: "room",
+      label: "Room",
       width: "1fr",
       priority: "medium",
-      render: (r) => r.room_name || "—",
+      render: (r) =>
+        r.room_name || <span style={{ fontStyle: "italic" }}>Unallocated</span>,
       card: { role: "meta", icon: "fa-solid fa-location-dot" },
     },
     {
@@ -72,11 +73,12 @@ export const REPORT_COLUMNS = {
       card: { role: "desc" },
     },
     {
-      key: "location",
-      label: "Location",
+      key: "room",
+      label: "Room",
       width: "1fr",
       priority: "medium",
-      render: (r) => r.location || "—",
+      render: (r) =>
+        r.room_name || <span style={{ fontStyle: "italic" }}>Unallocated</span>,
       card: { role: "meta", icon: "fa-solid fa-location-dot" },
     },
     {
@@ -115,11 +117,12 @@ export const REPORT_COLUMNS = {
       card: { role: "desc" },
     },
     {
-      key: "location",
-      label: "Location",
+      key: "room",
+      label: "Room",
       width: "1fr",
       priority: "medium",
-      render: (r) => r.location || "—",
+      render: (r) =>
+        r.room_name || <span style={{ fontStyle: "italic" }}>Unallocated</span>,
       card: { role: "meta", icon: "fa-solid fa-location-dot" },
     },
     {
@@ -166,11 +169,12 @@ export const REPORT_COLUMNS = {
       card: { role: "desc" },
     },
     {
-      key: "location",
-      label: "Location",
+      key: "room",
+      label: "Room",
       width: "1fr",
       priority: "medium",
-      render: (r) => r.location || "—",
+      render: (r) =>
+        r.room_name || <span style={{ fontStyle: "italic" }}>Unallocated</span>,
       card: { role: "meta", icon: "fa-solid fa-location-dot" },
     },
     {

@@ -80,7 +80,7 @@ function RoomModal({
             />
             <p className="info-text">
               Enter a unique and descriptive room name to register a new
-              location for accurate asset assignment, inventory tracking, and
+              Room for accurate asset assignment, inventory tracking, and
               organized management of all institutional resources.
             </p>
           </div>

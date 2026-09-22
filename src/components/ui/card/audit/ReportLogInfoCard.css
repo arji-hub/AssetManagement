@@ -21,6 +21,10 @@
   white-space: nowrap;
 }
 
+.report-log-info-row-cell:nth-child(n + 3) {
+  text-align: center;
+}
+
 @media (max-width: 1024px) {
   .report-log-info-row {
     grid-template-columns: var(--table-grid-columns-tablet);

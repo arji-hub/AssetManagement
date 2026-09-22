@@ -23,7 +23,6 @@ function ReportLogInfo() {
     filteredReports,
     handleRowClick,
   } = useReportLogInfo();
-
   return (
     <MainLayout>
       <div className="report-log-info-page">
