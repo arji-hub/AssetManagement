@@ -170,11 +170,29 @@ export function useItemForm(initialItem, isDonated, existingItems = []) {
 
   const autoNumberSerials = useCallback(() => {
     setItem((prev) => {
-      const base = prev.serial_number?.trim() || "SN";
+      const raw = prev.serial_number?.trim() || "SN-01";
+
+      // Split into prefix + trailing digits, e.g. "UNIT-01" -> prefix "UNIT-", number "01"
+      const match = raw.match(/^(.*?)(\d+)$/);
+
+      let prefix, startNum, padLength;
+
+      if (match) {
+        prefix = match[1]; // "UNIT-"
+        startNum = parseInt(match[2], 10); // 1
+        padLength = match[2].length; // 2
+      } else {
+        // no trailing number found, fallback
+        prefix = `${raw}-`;
+        startNum = 1;
+        padLength = 2;
+      }
+
       const next = Array.from(
         { length: qty },
-        (_, i) => `${base}-${String(i + 1).padStart(2, "0")}`,
+        (_, i) => `${prefix}${String(startNum + i).padStart(padLength, "0")}`,
       );
+
       return { ...prev, serial_numbers: next };
     });
   }, [qty]);
