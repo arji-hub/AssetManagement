@@ -15,6 +15,7 @@ import {
 import { getFunctions, httpsCallable } from "firebase/functions";
 import { toLowerCase } from "../utils/TextCasing";
 import ROLES from "../data/roles";
+import { getMillis } from "../utils/date";
 import { fetchRoomName } from "./room";
 import { fetchCategoryName } from "./category";
 
@@ -155,6 +156,40 @@ export async function updateProfile(uid, profileData) {
   return { uid, user_name: normalized_user_name };
 }
 
+async function fetchAssignedDateMap(custodianID) {
+  if (!custodianID) return {};
+
+  const q = query(
+    collection(db, "transfer_request"),
+    where("status", "==", "completed"),
+    where("acknowledgments.to.uid", "==", custodianID),
+  );
+
+  const snap = await getDocs(q);
+  const dateMap = {};
+
+  snap.docs.forEach((docSnap) => {
+    const data = docSnap.data();
+    const completedAt = data.completed_at;
+    if (!completedAt) return;
+
+    const assetIds =
+      Array.isArray(data.asset_ids) && data.asset_ids.length > 0
+        ? data.asset_ids
+        : data.asset_id
+          ? [data.asset_id]
+          : [];
+
+    assetIds.forEach((assetId) => {
+      if (getMillis(completedAt) > getMillis(dateMap[assetId])) {
+        dateMap[assetId] = completedAt;
+      }
+    });
+  });
+
+  return dateMap;
+}
+
 export function subscribeToAssetsByCustodian(custodianID, callback, onError) {
   const assetRef = collection(db, "asset");
   let assetQuery;
@@ -213,6 +248,9 @@ export function subscribeToAssetsByCustodian(custodianID, callback, onError) {
           }),
         );
 
+        //one query for all completed transfers TO this custodian
+        const assignedDateMap = await fetchAssignedDateMap(custodianID);
+
         const assets = assetData.map((asset) => ({
           id: asset.id,
           serial_no: asset.serial_number,
@@ -226,6 +264,7 @@ export function subscribeToAssetsByCustodian(custodianID, callback, onError) {
           room_name: roomNameMap[asset.room_id] ?? null,
           property_custodian: asset.property_custodian ?? null,
           local_mr: asset.local_mr ?? null,
+          date_assigned: assignedDateMap[asset.id] ?? null,
         }));
 
         callback(assets);
