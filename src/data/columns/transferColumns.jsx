@@ -16,7 +16,7 @@ export const TRANSFER_COLUMNS = {
       render: (r) => (
         <span className="asset-count-cell">
           <FontAwesomeIcon icon="fa-solid fa-boxes-stacked" />
-          <span className="asset-count-text">{r.asset_count || "#"}</span>
+          <span className="asset-count-text">{r.asset_count || "1"}</span>
         </span>
       ),
       card: { role: "title" },
@@ -64,7 +64,7 @@ export const TRANSFER_COLUMNS = {
       render: (r) => (
         <span className="asset-count-cell">
           <FontAwesomeIcon icon="fa-solid fa-boxes-stacked" />
-          <span className="asset-count-text">{r.asset_count || "#"}</span>
+          <span className="asset-count-text">{r.asset_count || "1"}</span>
         </span>
       ),
       card: { role: "title" },

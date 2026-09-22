@@ -35,7 +35,6 @@ function AuditRoomOverview() {
     lastAuditedAt,
   } = useRoomOverview(roomID);
   const { handleCreateAudit } = useAuditRoomSession(roomID);
-  console.log("Room Overview Data:", assets);
 
   return (
     <MainLayout>

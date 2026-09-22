@@ -30,7 +30,7 @@ function ReportLog() {
           <div className="report-log-header-left">
             <BackButton nav="/audit" />
             <div>
-              <h2 className="report-log-title">Report Logs</h2>
+              <h2 className="report-log-title">Incident Logs</h2>
               <p className="report-log-subtitle">
                 View curated records of past damage and missing reports.
               </p>

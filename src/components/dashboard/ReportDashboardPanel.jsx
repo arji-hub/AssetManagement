@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAuth } from "../../context/AuthContext";
 import { useReportSummary } from "../../hooks/dashboard/useReportSummary";
+import ReportDashboardPanelSkeleton from "./loadingSkeleton/ReportDashboardPanelSkeleton";
 import "./ReportDashboardPanel.css";
 
 const CHART_WIDTH = 300;
@@ -75,6 +76,10 @@ function ReportDashboardPanel({
   const periodLabel = range === "month" ? "This month" : "This year";
   const firstLabel = series[0]?.label ?? "";
   const lastLabel = series[series.length - 1]?.label ?? "";
+
+  if (loading) {
+    return <ReportDashboardPanelSkeleton />;
+  }
 
   return (
     <div className="panel report-panel">

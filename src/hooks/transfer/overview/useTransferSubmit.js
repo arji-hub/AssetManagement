@@ -54,7 +54,7 @@ export function useTransferSubmit({
           move_to: targetRoom?.id ?? null,
         }));
 
-        console.log("Room Transfer Payload:", roomPayloads);
+        //console.log("Room Transfer Payload:", roomPayloads);
 
         try {
           await addTransferRoom(
@@ -110,7 +110,7 @@ export function useTransferSubmit({
         }
       }
 
-      console.log("addTransferRequest payload:", {
+      /* console.log("addTransferRequest payload:", {
         items,
         from: fromCustodian && {
           ...fromCustodian,
@@ -127,7 +127,7 @@ export function useTransferSubmit({
         requestedByName: user.firstname,
         requestedByRole: user.role,
         user,
-      });
+      }); */
 
       const created = await addTransferRequest(
         {

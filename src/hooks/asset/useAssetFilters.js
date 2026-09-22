@@ -34,24 +34,53 @@ export function useAssetFilters(assets = []) {
             fetchCategories(),
             fetchCustodians(),
           ]);
+
+        const usedRoomIds = new Set(
+          assets.map((a) => a.room_id).filter(Boolean),
+        );
+        const usedCategoryIds = new Set(
+          assets.map((a) => a.category_id).filter(Boolean),
+        );
+        const usedCustodianNames = new Set(
+          assets.map((a) => a.property_custodian_fullname).filter(Boolean),
+        );
+        const hasUnallocatedRoom = assets.some((a) => !a.room_id);
+        const hasUnassignedCustodian = assets.some(
+          (a) => !a.property_custodian,
+        );
+
+        const mappedRooms = fetchedRooms
+          .map((r) =>
+            typeof r === "string"
+              ? { id: r, name: r }
+              : { id: r.id, name: r.name },
+          )
+          .filter((r) => usedRoomIds.has(r.id));
+
         setRooms(
-          fetchedRooms.map((r) =>
-            typeof r === "string"
-              ? { id: r, name: r }
-              : { id: r.id, name: r.name },
-          ),
+          hasUnallocatedRoom
+            ? [{ id: UNALLOCATED_ROOM, name: "Unallocated" }, ...mappedRooms]
+            : mappedRooms,
         );
+
         setCategories(
-          fetchedCategories.map((r) =>
-            typeof r === "string"
-              ? { id: r, name: r }
-              : { id: r.id, name: r.name },
-          ),
+          fetchedCategories
+            .map((r) =>
+              typeof r === "string"
+                ? { id: r, name: r }
+                : { id: r.id, name: r.name },
+            )
+            .filter((c) => usedCategoryIds.has(c.id)),
         );
+
+        const mappedCustodians = fetchedCustodians
+          .map((c) => (typeof c === "string" ? c : c.fullname))
+          .filter((name) => usedCustodianNames.has(name));
+
         setCustodians(
-          fetchedCustodians.map((c) =>
-            typeof c === "string" ? c : c.fullname,
-          ),
+          hasUnassignedCustodian
+            ? [UNASSIGNED_CUSTODIAN, ...mappedCustodians]
+            : mappedCustodians,
         );
       } catch (err) {
         console.error("Failed to load filter options:", err);
@@ -60,11 +89,14 @@ export function useAssetFilters(assets = []) {
       }
     }
     loadOptions();
-  }, []);
+  }, [assets]);
+
+  console.log(custodians);
+  console.log(rooms);
 
   const activeFilterCount = Object.values(filters).filter(Boolean).length;
 
-  // NEW: resolve each active filter's stored value (often an id) to a display label
+  //Resolve each active filter's stored value (often an id) to a display label
   const getFilterLabel = (key, value) => {
     if (key === "room") {
       if (value === UNALLOCATED_ROOM) return "Unallocated";
@@ -80,7 +112,7 @@ export function useAssetFilters(assets = []) {
     return value;
   };
 
-  // NEW: ready-to-render list of active filters, id resolved to name
+  //Ready-to-render list of active filters, id resolved to name
   const activeFilters = useMemo(
     () =>
       Object.entries(filters)

@@ -3,11 +3,13 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAuth } from "../../context/AuthContext";
 import { useAssetSummary } from "../../hooks/dashboard/useAssetSummary";
+import AssetDashboardPanelSkeleton from "./loadingSkeleton/AssetDashboardPanelSkeleton";
 import "./AssetDashboardPanel.css";
 
 const CHART_WIDTH = 300;
 const CHART_HEIGHT = 120;
 const CHART_PADDING_Y = 12;
+const CANDLE_MIN_BODY_HEIGHT = 1.5;
 
 const MODE_CONFIG = {
   acquisition: {
@@ -28,38 +30,94 @@ const MODE_CONFIG = {
   },
 };
 
-function buildSmoothPath(points) {
-  if (points.length < 2) return "";
-  let d = `M ${points[0].x} ${points[0].y}`;
-
-  for (let i = 0; i < points.length - 1; i++) {
-    const p0 = points[i - 1] || points[i];
-    const p1 = points[i];
-    const p2 = points[i + 1];
-    const p3 = points[i + 2] || p2;
-
-    const cp1x = p1.x + (p2.x - p0.x) / 6;
-    const cp1y = p1.y + (p2.y - p0.y) / 6;
-    const cp2x = p2.x - (p3.x - p1.x) / 6;
-    const cp2y = p2.y - (p3.y - p1.y) / 6;
-
-    d += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`;
-  }
-
-  return d;
+function formatSigned(value) {
+  if (value > 0) return `+${value}`;
+  return String(value);
 }
 
-function toPoints(values, maxValue) {
-  const usableHeight = CHART_HEIGHT - CHART_PADDING_Y * 2;
-  const step = values.length > 1 ? CHART_WIDTH / (values.length - 1) : 0;
+/**
+ * Chains buckets into a running OHLC series, the way a real stock chart
+ * works: each candle's open is wherever the previous one closed, so the
+ * whole series drifts up and down over time instead of each bar judging
+ * itself against zero in isolation.
+ *   open  = running total carried in from the previous bucket
+ *   close = open + net (primary - secondary) for this bucket
+ *   high  = open + primary  (the peak if all gains landed before losses)
+ *   low   = open - secondary (the trough if all losses landed first)
+ * high/low naturally bound open and close since primary/secondary >= 0.
+ * The running total starts at 0 — this chart shows the *trend* of net
+ * change across the period, not an absolute inventory count.
+ */
+function buildOHLC(series, primaryKey, secondaryKey) {
+  let cumulative = 0;
 
-  return values.map((value, index) => ({
-    x: index * step,
-    y:
-      CHART_PADDING_Y +
-      usableHeight -
-      (maxValue === 0 ? 0 : (value / maxValue) * usableHeight),
-  }));
+  return series.map((point, index) => {
+    const primary = point[primaryKey] ?? 0;
+    const secondary = point[secondaryKey] ?? 0;
+    const open = cumulative;
+    const high = open + primary;
+    const low = open - secondary;
+    const close = open + primary - secondary;
+    cumulative = close;
+
+    return {
+      key: point.key ?? index,
+      open,
+      high,
+      low,
+      close,
+      primary,
+      secondary,
+      isUp: close >= open,
+    };
+  });
+}
+
+function valueToY(value, dataMin, dataMax) {
+  const usableHeight = CHART_HEIGHT - CHART_PADDING_Y * 2;
+  const range = dataMax - dataMin || 1;
+  return CHART_PADDING_Y + ((dataMax - value) / range) * usableHeight;
+}
+
+/** Lays out pixel positions for each OHLC candle against a shared scale. */
+function layoutCandles(ohlc, dataMin, dataMax) {
+  const n = ohlc.length;
+  if (n === 0) return [];
+
+  const colWidth = CHART_WIDTH / n;
+  const bodyWidth = Math.max(2, Math.min(14, colWidth * 0.55));
+
+  return ohlc.map((candle, index) => {
+    const x = (index + 0.5) * colWidth;
+
+    let bodyTopY = valueToY(
+      Math.max(candle.open, candle.close),
+      dataMin,
+      dataMax,
+    );
+    let bodyBottomY = valueToY(
+      Math.min(candle.open, candle.close),
+      dataMin,
+      dataMax,
+    );
+
+    if (bodyBottomY - bodyTopY < CANDLE_MIN_BODY_HEIGHT) {
+      const mid = (bodyTopY + bodyBottomY) / 2;
+      bodyTopY = mid - CANDLE_MIN_BODY_HEIGHT / 2;
+      bodyBottomY = mid + CANDLE_MIN_BODY_HEIGHT / 2;
+    }
+
+    return {
+      key: candle.key,
+      x,
+      bodyWidth,
+      wickTopY: valueToY(candle.high, dataMin, dataMax),
+      wickBottomY: valueToY(candle.low, dataMin, dataMax),
+      bodyTopY,
+      bodyBottomY,
+      isUp: candle.isUp,
+    };
+  });
 }
 
 function AssetDashboardPanel({
@@ -75,7 +133,7 @@ function AssetDashboardPanel({
 
   const config = MODE_CONFIG[mode] ?? MODE_CONFIG.acquisition;
 
-  const { primaryPath, secondaryPath, maxValue, primaryTotal, secondaryTotal } =
+  const { candles, dataMin, dataMax, zeroY, primaryTotal, secondaryTotal } =
     useMemo(() => {
       const primaryValues = series.map(
         (point) => point[config.primaryKey] ?? 0,
@@ -83,16 +141,32 @@ function AssetDashboardPanel({
       const secondaryValues = series.map(
         (point) => point[config.secondaryKey] ?? 0,
       );
-      const max = Math.max(4, ...primaryValues, ...secondaryValues);
+
+      const ohlc = buildOHLC(series, config.primaryKey, config.secondaryKey);
+
+      let min = Math.min(0, ...ohlc.map((c) => c.low));
+      let max = Math.max(0, ...ohlc.map((c) => c.high));
+      // Pad a near-flat series (e.g. all zeros) so it doesn't collapse to
+      // an unreadable sliver.
+      if (max - min < 4) {
+        const mid = (max + min) / 2;
+        min = mid - 2;
+        max = mid + 2;
+      }
 
       return {
-        primaryPath: buildSmoothPath(toPoints(primaryValues, max)),
-        secondaryPath: buildSmoothPath(toPoints(secondaryValues, max)),
-        maxValue: max,
+        candles: layoutCandles(ohlc, min, max),
+        dataMin: min,
+        dataMax: max,
+        zeroY: valueToY(0, min, max),
         primaryTotal: primaryValues.reduce((sum, value) => sum + value, 0),
         secondaryTotal: secondaryValues.reduce((sum, value) => sum + value, 0),
       };
     }, [series, config.primaryKey, config.secondaryKey]);
+
+  if (loading) {
+    return <AssetDashboardPanelSkeleton />;
+  }
 
   const periodLabel = range === "month" ? "this month" : "this year";
   const firstLabel = series[0]?.label ?? "";
@@ -157,8 +231,8 @@ function AssetDashboardPanel({
         ) : (
           <>
             <div className="asset-panel-gridlines">
-              <span>{maxValue}</span>
-              <span>0</span>
+              <span>{formatSigned(Math.round(dataMax))}</span>
+              <span>{formatSigned(Math.round(dataMin))}</span>
             </div>
             <svg
               className="asset-panel-svg"
@@ -167,26 +241,30 @@ function AssetDashboardPanel({
             >
               <line
                 x1="0"
-                y1={CHART_PADDING_Y}
+                y1={zeroY}
                 x2={CHART_WIDTH}
-                y2={CHART_PADDING_Y}
-                className="asset-panel-guide"
+                y2={zeroY}
+                className="asset-panel-guide asset-panel-guide-zero"
               />
-              <line
-                x1="0"
-                y1={CHART_HEIGHT - CHART_PADDING_Y}
-                x2={CHART_WIDTH}
-                y2={CHART_HEIGHT - CHART_PADDING_Y}
-                className="asset-panel-guide"
-              />
-              <path
-                d={secondaryPath}
-                className="asset-panel-line asset-panel-line-secondary"
-              />
-              <path
-                d={primaryPath}
-                className="asset-panel-line asset-panel-line-primary"
-              />
+              {candles.map((candle) => (
+                <g key={candle.key}>
+                  <line
+                    x1={candle.x}
+                    y1={candle.wickTopY}
+                    x2={candle.x}
+                    y2={candle.wickBottomY}
+                    className={`asset-candle-wick ${candle.isUp ? "is-up" : "is-down"}`}
+                  />
+                  <rect
+                    x={candle.x - candle.bodyWidth / 2}
+                    y={candle.bodyTopY}
+                    width={candle.bodyWidth}
+                    height={candle.bodyBottomY - candle.bodyTopY}
+                    rx="1"
+                    className={`asset-candle-body ${candle.isUp ? "is-up" : "is-down"}`}
+                  />
+                </g>
+              ))}
             </svg>
             <div className="asset-panel-x-labels">
               <span>{firstLabel}</span>

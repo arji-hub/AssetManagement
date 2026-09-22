@@ -28,7 +28,6 @@ function Report() {
     handleModalClose,
     filter,
   } = useReports();
-  console.log(reports);
 
   return (
     <MainLayout>
