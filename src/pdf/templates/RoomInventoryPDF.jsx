@@ -193,7 +193,7 @@ const REVISION = "0";
 
 export function RoomInventoryPDF({ roomName, assets = [] }) {
   const rows = assets.map((a) => ({
-    type: a.category || "",
+    type: a.category_name || "",
     brand: a.description || "",
     serial: a.serial_number || "",
     status: a.status || "",

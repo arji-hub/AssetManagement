@@ -7,7 +7,6 @@ import { useRoomAssets } from "../../hooks/room/useRoomAssets";
 
 function AuditFormCell({ audit }) {
   const { assets, roomName } = useRoomAssets(audit.id);
-
   return (
     <PDFPreviewModal
       title="Inventory Form"
