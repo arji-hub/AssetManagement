@@ -54,14 +54,14 @@ function Assignment({
         </div>
 
         <div className="reg-field">
-          <label className="reg-label">Location</label>
+          <label className="reg-label">Room</label>
           <SearchableSelect
             options={roomOptions}
             value={form.room_id}
             loading={loadingOptions}
-            placeholder="Select Location"
-            searchPlaceholder="Search locations…"
-            emptyMessage="No locations found."
+            placeholder="Select Room"
+            searchPlaceholder="Search Rooms…"
+            emptyMessage="No Room found."
             onSelect={(id) =>
               onChange({ target: { name: "room_id", value: id } })
             }

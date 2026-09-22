@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     borderColor: "#000",
     justifyContent: "center",
   },
-  colLocation: {
+  colRoom: {
     width: "20%",
     padding: 5,
     borderRightWidth: 1,
@@ -253,7 +253,7 @@ export function ReportLogPDF({ reportLog, reports, preparedByName }) {
     report_no: report.report_no || "—",
     description: report.description || "",
     type: report.type || "unknown",
-    location: report.location || "—",
+    room_id: report.room_id || "—",
     created_at: report.created_at,
   }));
 
@@ -328,8 +328,8 @@ export function ReportLogPDF({ reportLog, reports, preparedByName }) {
             <View style={styles.colType}>
               <Text style={styles.headerCellText}>TYPE</Text>
             </View>
-            <View style={styles.colLocation}>
-              <Text style={styles.headerCellText}>LOCATION</Text>
+            <View style={styles.colRoom}>
+              <Text style={styles.headerCellText}>ROOM</Text>
             </View>
             <View style={styles.colDate}>
               <Text style={styles.headerCellText}>DATE</Text>
@@ -354,8 +354,8 @@ export function ReportLogPDF({ reportLog, reports, preparedByName }) {
                   {REPORT_TYPE_LABELS[row.type] || ""}
                 </Text>
               </View>
-              <View style={styles.colLocation}>
-                <Text style={styles.cellText}>{row.location}</Text>
+              <View style={styles.colRoom}>
+                <Text style={styles.cellText}>{row.room_id}</Text>
               </View>
               <View style={styles.colDate}>
                 <Text style={styles.cellText}>

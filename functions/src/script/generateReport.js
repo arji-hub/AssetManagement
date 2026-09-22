@@ -22,7 +22,7 @@ const SAMPLE_REPORTS = [
   {
     asset_id: "cict-I001",
     asset_description: "Epson Printer L120",
-    location: "SDL1",
+    room_id: "SDL1",
     current_custodian: "uid_custodian_001",
     reported_by: "uid_reporter_001",
     reported_by_name: "Ralph Jasper Ortiz",
@@ -44,12 +44,12 @@ const SAMPLE_REPORTS = [
   {
     asset_id: "cict-I006",
     asset_description: "HP Laptop 14s",
-    location: "SDL2",
+    room_id: "SDL2",
     current_custodian: "uid_custodian_005",
     reported_by: "uid_reporter_002",
     reported_by_name: "Maria Santos",
     date_reported: "2026-06-20T13:00:00Z",
-    narrative: "Laptop not found in assigned location during inventory.",
+    narrative: "Laptop not found in assigned room_id during inventory.",
     status: "missing",
     date_resolved: null,
     status_log: [
@@ -66,7 +66,7 @@ const SAMPLE_REPORTS = [
   {
     asset_id: "cict-I011",
     asset_description: "Desktop PC Unit",
-    location: "SDL1",
+    room_id: "SDL1",
     current_custodian: "uid_custodian_001",
     reported_by: "uid_reporter_003",
     reported_by_name: "Lance Reyes",
@@ -94,7 +94,7 @@ const SAMPLE_REPORTS = [
   {
     asset_id: "cict-I012",
     asset_description: "Extension Power Cable 10m",
-    location: "SDL1",
+    room_id: "SDL1",
     current_custodian: "uid_custodian_001",
     reported_by: "uid_reporter_002",
     reported_by_name: "Maria Santos",
@@ -122,7 +122,7 @@ const SAMPLE_REPORTS = [
   {
     asset_id: "cict-I016",
     asset_description: "HP LaserJet Printer",
-    location: "Faculty Room",
+    room_id: "Faculty Room",
     current_custodian: "uid_custodian_004",
     reported_by: "uid_reporter_003",
     reported_by_name: "Lance Reyes",
@@ -156,7 +156,7 @@ const SAMPLE_REPORTS = [
   {
     asset_id: "cict-I013",
     asset_description: "CRT Monitor 17in",
-    location: "Room 205",
+    room_id: "Room 205",
     current_custodian: "uid_custodian_003",
     reported_by: "uid_admin_001",
     reported_by_name: "Admin",

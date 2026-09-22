@@ -40,12 +40,13 @@ export const reportLogInfoColumns = [
     render: (r) => (r.reported_by ? r.reported_by_name : "---"),
   },
   {
-    key: "location",
-    label: "Location",
+    key: "room",
+    label: "Room",
     width: "1fr",
     priority: "medium",
     card: { role: "meta", icon: "fa-solid fa-location-dot" },
-    render: (r) => r.location || "—",
+    render: (r) =>
+      r.room_name || <span style={{ fontStyle: "italic" }}>Unallocated</span>,
   },
   {
     key: "date",

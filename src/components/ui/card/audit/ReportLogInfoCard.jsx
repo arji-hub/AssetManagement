@@ -83,7 +83,7 @@ ReportLogInfoCard.propTypes = {
     type: PropTypes.string,
     reported_by: PropTypes.string,
     reported_by_name: PropTypes.string,
-    location: PropTypes.string,
+    room_id: PropTypes.string,
     created_at: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number,
