@@ -7,6 +7,8 @@ import { ROLES } from "../../data/roles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./Asset.css";
 import FilterModal from "../../components/ui/filter/FilterModal";
+import { PDFPreviewModal } from "../../components/modal/PDFPreviewModal";
+import { CustodianInventoryPDF } from "../../pdf/templates/CustodianInventoryPDF";
 import SearchBar from "../../components/ui/searchBar/SearchBar";
 import { useAssetFilters } from "../../hooks/asset/useAssetFilters";
 import { useAssets } from "../../hooks/asset/useAssets";
@@ -20,6 +22,8 @@ function Asset() {
   const navigate = useNavigate();
 
   const isAdmin = role === ROLES.ADMIN;
+
+  const fullname = currentUser?.fullname || currentUser?.displayName || "";
 
   const { assets, loading, error } = useAssets(role, currentUser);
 
@@ -52,6 +56,19 @@ function Asset() {
           </div>
 
           <div className="asset-header-right">
+            {!isAdmin && (
+              <PDFPreviewModal
+                title="Custodian Inventory Form"
+                fileName={`custodian-inventory-${fullname}.pdf`}
+                document={
+                  <CustodianInventoryPDF
+                    custodianName={fullname}
+                    assets={filteredAssets}
+                  />
+                }
+                triggerLabel="Custodian Inventory Form"
+              />
+            )}
             <SearchBar
               value={search}
               onChange={setSearch}

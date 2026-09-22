@@ -8,29 +8,29 @@ import { storage } from "../services/firebase-config";
 ───────────────────────────────────────────────────────── */
 
 export const SHEET_LAYOUTS = {
-  small: {
-    label: "Small",
-    hint: "3×3 · 9 per page",
+  large: {
+    label: "Large",
+    hint: "3×3",
     cols: 3,
     rows: 3,
-    qrPt: 142, // ≈ 50mm
-    idPt: 11,
+    qrPt: 150,
+    idPt: 16,
   },
   medium: {
     label: "Medium",
-    hint: "2×3 · 6 per page",
-    cols: 2,
-    rows: 3,
-    qrPt: 176, // ≈ 62mm
-    idPt: 13,
+    hint: "5×5",
+    cols: 5,
+    rows: 5,
+    qrPt: 90,
+    idPt: 10,
   },
-  large: {
-    label: "Large",
-    hint: "1 per page",
-    cols: 1,
-    rows: 1,
-    qrPt: 425, // ≈ 150mm
-    idPt: 26,
+  small: {
+    label: "Small",
+    hint: "7×7",
+    cols: 7,
+    rows: 7,
+    qrPt: 55,
+    idPt: 7,
   },
 };
 
