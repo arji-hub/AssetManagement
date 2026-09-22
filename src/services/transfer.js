@@ -933,65 +933,75 @@ function toDate(value) {
 }
 
 /**
- * Pure transform: raw transfer_request-shaped items -> the
- * { series, totals, trend } shape TransferDashboardPanel expects.
- * No Firestore calls — used both by the live subscription below AND
- * directly by useTransferSummary in mock/Storybook mode.
- *
- * Buckets by created_at; for each bucket, counts how many of the items
- * created in that bucket are CURRENTLY "pending" vs "for_approval".
- * Deliberately counts REQUESTS (tickets), not assets — this is a workflow
- * backlog view. Contrast with summarizeCustodianAssignmentEvents below,
- * which counts assets, since a single request can now carry several.
- * Items already completed/denied are excluded from the chart (they're
- * no longer part of the backlog) — note this means past bucket counts
- * will shrink over time as requests resolve; it's a live backlog
- * composition view, not an immutable historical log.
+ * Pure transform: raw transfer_request-shaped items -> { series, totals,
+ * trend } for the admin view of TransferDashboardPanel: circulation, not
+ * backlog. Bucketed by completed_at; only status === "completed" items
+ * count. For each bucket, tracks both the number of REQUESTS resolved and
+ * the number of ASSETS moved (a single request can carry several assets,
+ * via getRequestItems), since those tell different stories — request
+ * count is approval-workflow volume, asset count is actual circulation.
+ * Admin has no personal from/to stake, so unlike
+ * summarizeCustodianAssignmentEvents this doesn't filter by uid.
  */
-export function summarizeTransferItems(items, range) {
+export function summarizeTransferActivity(items, range) {
   const { currentStart, previousStart } = getRangeBounds(range);
   const bucketMap = new Map(
-    buildEmptyBuckets(range).map((bucket) => [bucket.key, bucket]),
+    buildEmptyBuckets(range).map((bucket) => [
+      bucket.key,
+      { key: bucket.key, label: bucket.label, requests: 0, assets: 0 },
+    ]),
   );
 
-  let currentTotal = 0;
-  let previousTotal = 0;
+  let currentRequests = 0;
+  let currentAssets = 0;
+  let previousRequests = 0;
+  let previousAssets = 0;
 
   items.forEach((item) => {
-    if (!["pending", "for_approval"].includes(item.status)) return;
+    if (item.status !== "completed") return;
 
-    const created = toDate(item.created_at);
-    if (!created) return;
+    const completedAt = toDate(item.completed_at);
+    if (!completedAt) return;
 
-    if (created >= currentStart) {
-      const bucket = bucketMap.get(bucketKey(created, range));
+    const assetCount = getRequestItems(item).length || 1;
+
+    if (completedAt >= currentStart) {
+      const bucket = bucketMap.get(bucketKey(completedAt, range));
       if (bucket) {
-        if (item.status === "pending") bucket.pending += 1;
-        else bucket.forApproval += 1;
+        bucket.requests += 1;
+        bucket.assets += assetCount;
       }
-      currentTotal += 1;
-    } else if (created >= previousStart) {
-      previousTotal += 1;
+      currentRequests += 1;
+      currentAssets += assetCount;
+    } else if (completedAt >= previousStart) {
+      previousRequests += 1;
+      previousAssets += assetCount;
     }
   });
 
+  // Trend reflects circulation (assets moved), which is the headline
+  // metric on the admin card; request count is shown as a secondary stat.
   const direction =
-    currentTotal === previousTotal
+    currentAssets === previousAssets
       ? "flat"
-      : currentTotal > previousTotal
+      : currentAssets > previousAssets
         ? "up"
         : "down";
 
   const deltaPercent =
-    previousTotal === 0
-      ? currentTotal === 0
+    previousAssets === 0
+      ? currentAssets === 0
         ? 0
         : 100
-      : Math.round(((currentTotal - previousTotal) / previousTotal) * 100);
+      : Math.round(((currentAssets - previousAssets) / previousAssets) * 100);
 
   return {
     series: Array.from(bucketMap.values()),
-    totals: { all: currentTotal },
+    totals: {
+      all: currentAssets,
+      requests: currentRequests,
+      assets: currentAssets,
+    },
     trend: { direction, deltaPercent },
   };
 }
@@ -1051,12 +1061,17 @@ function subscribeScopedSince(user, sinceDate, callback, onError) {
   return () => unsubscribers.forEach((unsub) => unsub());
 }
 
-/** Month/Year trend feed for TransferDashboardPanel's chart. */
-export function subscribeToTransferTrend(user, range, callback, onError) {
+/** Month/Year circulation feed (admin view) for TransferDashboardPanel's chart. */
+export function subscribeToTransferActivityTrend(
+  user,
+  range,
+  callback,
+  onError,
+) {
   if (!user?.uid) {
     callback({
       series: [],
-      totals: { all: 0 },
+      totals: { all: 0, requests: 0, assets: 0 },
       trend: { direction: "flat", deltaPercent: 0 },
     });
     return () => {};
@@ -1066,7 +1081,7 @@ export function subscribeToTransferTrend(user, range, callback, onError) {
   return subscribeScopedSince(
     user,
     previousStart,
-    (items) => callback(summarizeTransferItems(items, range)),
+    (items) => callback(summarizeTransferActivity(items, range)),
     onError,
   );
 }
@@ -1117,6 +1132,10 @@ export function summarizeCustodianAssignmentEvents(items, range, uid) {
   let currentRemoved = 0;
   let previousAssigned = 0;
   let previousRemoved = 0;
+  // net = assigned - removed. `net` isn't part of the pending-bucket
+  // records the AssetDashboardPanel reads today; it's computed on the
+  // buckets below, once assigned/removed totals per bucket are settled,
+  // for TransferDashboardPanel's net-custody view.
 
   items.forEach((item) => {
     if (item.status !== "completed") return;
@@ -1163,14 +1182,44 @@ export function summarizeCustodianAssignmentEvents(items, range, uid) {
         : 100
       : Math.round(((currentTotal - previousTotal) / previousTotal) * 100);
 
+  // Net-custody figures, additive to the assigned/removed totals above:
+  // AssetDashboardPanel keeps reading totals.all/assigned/removed and
+  // trend as before; TransferDashboardPanel's net-custody view reads
+  // netTotal/netTrend and each bucket's `net` instead.
+  const buckets = Array.from(bucketMap.values()).map((bucket) => ({
+    ...bucket,
+    net: bucket.assigned - bucket.removed,
+  }));
+
+  const netTotal = currentAssigned - currentRemoved;
+  const previousNetTotal = previousAssigned - previousRemoved;
+
+  const netDirection =
+    netTotal === previousNetTotal
+      ? "flat"
+      : netTotal > previousNetTotal
+        ? "up"
+        : "down";
+
+  const netDeltaPercent =
+    previousNetTotal === 0
+      ? netTotal === 0
+        ? 0
+        : 100
+      : Math.round(
+          ((netTotal - previousNetTotal) / Math.abs(previousNetTotal)) * 100,
+        );
+
   return {
-    series: Array.from(bucketMap.values()),
+    series: buckets,
     totals: {
       all: currentTotal,
       assigned: currentAssigned,
       removed: currentRemoved,
     },
     trend: { direction, deltaPercent },
+    netTotal,
+    netTrend: { direction: netDirection, deltaPercent: netDeltaPercent },
   };
 }
 

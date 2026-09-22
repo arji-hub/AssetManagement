@@ -139,12 +139,13 @@ function FilterModal({
                       size={4}
                     >
                       <option value="">All Rooms</option>
-                      <option value={UNALLOCATED_ROOM}>Unallocated</option>
                       {safeRooms
-                        .filter((room) =>
-                          room.name
-                            .toLowerCase()
-                            .includes(roomSearch.toLowerCase()),
+                        .filter(
+                          (room) =>
+                            room.id === UNALLOCATED_ROOM ||
+                            room.name
+                              .toLowerCase()
+                              .includes(roomSearch.toLowerCase()),
                         )
                         .map((room) => (
                           <option key={room.id} value={room.id}>
@@ -195,16 +196,19 @@ function FilterModal({
                       size={4}
                     >
                       <option value="">All Custodians</option>
-                      <option value={UNASSIGNED_CUSTODIAN}>Unassigned</option>
                       {safeCustodians
-                        .filter((name) =>
-                          name
-                            .toLowerCase()
-                            .includes(custodianSearch.toLowerCase()),
+                        .filter(
+                          (name) =>
+                            name === UNASSIGNED_CUSTODIAN ||
+                            name
+                              .toLowerCase()
+                              .includes(custodianSearch.toLowerCase()),
                         )
                         .map((name) => (
                           <option key={name} value={name}>
-                            {name}
+                            {name === UNASSIGNED_CUSTODIAN
+                              ? "Unassigned"
+                              : name}
                           </option>
                         ))}
                     </select>

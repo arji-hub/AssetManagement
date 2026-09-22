@@ -3,11 +3,13 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAuth } from "../../context/AuthContext";
 import { useTransferSummary } from "../../hooks/dashboard/useTransferSummary";
+import TransferDashboardPanelSkeleton from "./loadingSkeleton/TransferDashboardPanelSkeleton";
 import "./TransferDashboardPanel.css";
 
 const CHART_WIDTH = 300;
 const CHART_HEIGHT = 120;
 const CHART_PADDING_Y = 12;
+const CHART_CENTER_Y = CHART_HEIGHT / 2;
 
 function buildSmoothPath(points) {
   if (points.length < 2) return "";
@@ -30,6 +32,8 @@ function buildSmoothPath(points) {
   return d;
 }
 
+// Bottom-baseline mapping (0 at the floor) — used for the admin's
+// requests/assets circulation chart, where both series are non-negative.
 function toPoints(values, maxValue) {
   const usableHeight = CHART_HEIGHT - CHART_PADDING_Y * 2;
   const step = values.length > 1 ? CHART_WIDTH / (values.length - 1) : 0;
@@ -43,6 +47,25 @@ function toPoints(values, maxValue) {
   }));
 }
 
+// Zero-centered mapping — used for the custodian's net-custody chart,
+// where a bucket can be positive (net gain) or negative (net loss).
+function toZeroCenteredPoints(values, maxAbsValue) {
+  const usableHalfHeight = CHART_CENTER_Y - CHART_PADDING_Y;
+  const step = values.length > 1 ? CHART_WIDTH / (values.length - 1) : 0;
+
+  return values.map((value, index) => ({
+    x: index * step,
+    y:
+      CHART_CENTER_Y -
+      (maxAbsValue === 0 ? 0 : (value / maxAbsValue) * usableHalfHeight),
+  }));
+}
+
+function formatSigned(value) {
+  if (value > 0) return `+${value}`;
+  return String(value);
+}
+
 function TransferDashboardPanel({
   user: userProp,
   mockTransfers,
@@ -50,6 +73,7 @@ function TransferDashboardPanel({
 }) {
   const auth = useAuth();
   const user = userProp ?? auth?.user;
+  const isAdmin = user?.role === "admin";
   const [range, setRange] = useState(defaultRange);
   const { series, totals, trend, loading, error } = useTransferSummary(
     user,
@@ -57,32 +81,48 @@ function TransferDashboardPanel({
     mockTransfers,
   );
 
-  const {
-    pendingPath,
-    forApprovalPath,
-    maxValue,
-    pendingTotal,
-    forApprovalTotal,
-  } = useMemo(() => {
-    const pendingValues = series.map((point) => point.pending);
-    const forApprovalValues = series.map((point) => point.forApproval);
-    const max = Math.max(4, ...pendingValues, ...forApprovalValues);
+  const chart = useMemo(() => {
+    if (isAdmin) {
+      const requestValues = series.map((point) => point.requests ?? 0);
+      const assetValues = series.map((point) => point.assets ?? 0);
+      const max = Math.max(4, ...requestValues, ...assetValues);
+
+      return {
+        mode: "admin",
+        maxValue: max,
+        primaryPath: buildSmoothPath(toPoints(assetValues, max)),
+        secondaryPath: buildSmoothPath(toPoints(requestValues, max)),
+        requestsTotal: requestValues.reduce((sum, v) => sum + v, 0),
+        assetsTotal: assetValues.reduce((sum, v) => sum + v, 0),
+      };
+    }
+
+    const netValues = series.map((point) => point.net ?? 0);
+    const maxAbs = Math.max(1, ...netValues.map((v) => Math.abs(v)));
 
     return {
-      pendingPath: buildSmoothPath(toPoints(pendingValues, max)),
-      forApprovalPath: buildSmoothPath(toPoints(forApprovalValues, max)),
-      maxValue: max,
-      pendingTotal: pendingValues.reduce((sum, value) => sum + value, 0),
-      forApprovalTotal: forApprovalValues.reduce(
-        (sum, value) => sum + value,
-        0,
-      ),
+      mode: "custodian",
+      maxAbs,
+      netPath: buildSmoothPath(toZeroCenteredPoints(netValues, maxAbs)),
+      netTotal: netValues.reduce((sum, v) => sum + v, 0),
     };
-  }, [series]);
+  }, [series, isAdmin]);
 
   const periodLabel = range === "month" ? "This month" : "This year";
   const firstLabel = series[0]?.label ?? "";
   const lastLabel = series[series.length - 1]?.label ?? "";
+  const subtitle = isAdmin
+    ? "Requests resolved & assets moved"
+    : "Your net custody change";
+  const headlineValue = loading
+    ? "—"
+    : isAdmin
+      ? totals.all
+      : formatSigned(totals.all);
+
+  if (loading) {
+    return <TransferDashboardPanelSkeleton />;
+  }
 
   return (
     <div className="panel transfer-panel">
@@ -121,13 +161,11 @@ function TransferDashboardPanel({
       </div>
 
       <div className="transfer-panel-subtitle">
-        Pending &amp; for approval ({periodLabel.toLowerCase()})
+        {subtitle} ({periodLabel.toLowerCase()})
       </div>
 
       <div className="transfer-panel-stat-row">
-        <span className="transfer-panel-total">
-          {loading ? "—" : totals.all}
-        </span>
+        <span className="transfer-panel-total">{headlineValue}</span>
         {!loading && trend.direction !== "flat" && (
           <span className={`transfer-panel-trend is-${trend.direction}`}>
             <i
@@ -147,36 +185,64 @@ function TransferDashboardPanel({
         ) : (
           <>
             <div className="transfer-panel-gridlines">
-              <span>{maxValue}</span>
-              <span>0</span>
+              {chart.mode === "admin" ? (
+                <>
+                  <span>{chart.maxValue}</span>
+                  <span>0</span>
+                </>
+              ) : (
+                <>
+                  <span>{formatSigned(chart.maxAbs)}</span>
+                  <span>0</span>
+                  <span>{formatSigned(-chart.maxAbs)}</span>
+                </>
+              )}
             </div>
             <svg
               className="transfer-panel-svg"
               viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`}
               preserveAspectRatio="none"
             >
-              <line
-                x1="0"
-                y1={CHART_PADDING_Y}
-                x2={CHART_WIDTH}
-                y2={CHART_PADDING_Y}
-                className="transfer-panel-guide"
-              />
-              <line
-                x1="0"
-                y1={CHART_HEIGHT - CHART_PADDING_Y}
-                x2={CHART_WIDTH}
-                y2={CHART_HEIGHT - CHART_PADDING_Y}
-                className="transfer-panel-guide"
-              />
-              <path
-                d={forApprovalPath}
-                className="transfer-panel-line transfer-panel-line-approval"
-              />
-              <path
-                d={pendingPath}
-                className="transfer-panel-line transfer-panel-line-pending"
-              />
+              {chart.mode === "admin" ? (
+                <>
+                  <line
+                    x1="0"
+                    y1={CHART_PADDING_Y}
+                    x2={CHART_WIDTH}
+                    y2={CHART_PADDING_Y}
+                    className="transfer-panel-guide"
+                  />
+                  <line
+                    x1="0"
+                    y1={CHART_HEIGHT - CHART_PADDING_Y}
+                    x2={CHART_WIDTH}
+                    y2={CHART_HEIGHT - CHART_PADDING_Y}
+                    className="transfer-panel-guide"
+                  />
+                  <path
+                    d={chart.secondaryPath}
+                    className="transfer-panel-line transfer-panel-line-requests"
+                  />
+                  <path
+                    d={chart.primaryPath}
+                    className="transfer-panel-line transfer-panel-line-assets"
+                  />
+                </>
+              ) : (
+                <>
+                  <line
+                    x1="0"
+                    y1={CHART_CENTER_Y}
+                    x2={CHART_WIDTH}
+                    y2={CHART_CENTER_Y}
+                    className="transfer-panel-guide transfer-panel-guide-zero"
+                  />
+                  <path
+                    d={chart.netPath}
+                    className="transfer-panel-line transfer-panel-line-net"
+                  />
+                </>
+              )}
             </svg>
             <div className="transfer-panel-x-labels">
               <span>{firstLabel}</span>
@@ -187,20 +253,32 @@ function TransferDashboardPanel({
       </div>
 
       <div className="transfer-panel-legend">
-        <span className="transfer-panel-legend-item">
-          <span className="transfer-panel-legend-swatch transfer-panel-legend-swatch-pending" />
-          Pending
-          <span className="transfer-panel-legend-count">
-            {loading ? "—" : pendingTotal}
+        {chart.mode === "admin" ? (
+          <>
+            <span className="transfer-panel-legend-item">
+              <span className="transfer-panel-legend-swatch transfer-panel-legend-swatch-requests" />
+              Requests
+              <span className="transfer-panel-legend-count">
+                {loading ? "—" : chart.requestsTotal}
+              </span>
+            </span>
+            <span className="transfer-panel-legend-item">
+              <span className="transfer-panel-legend-swatch transfer-panel-legend-swatch-assets" />
+              Assets
+              <span className="transfer-panel-legend-count">
+                {loading ? "—" : chart.assetsTotal}
+              </span>
+            </span>
+          </>
+        ) : (
+          <span className="transfer-panel-legend-item">
+            <span className="transfer-panel-legend-swatch transfer-panel-legend-swatch-net" />
+            Net change
+            <span className="transfer-panel-legend-count">
+              {loading ? "—" : formatSigned(chart.netTotal)}
+            </span>
           </span>
-        </span>
-        <span className="transfer-panel-legend-item">
-          <span className="transfer-panel-legend-swatch transfer-panel-legend-swatch-approval" />
-          For Approval
-          <span className="transfer-panel-legend-count">
-            {loading ? "—" : forApprovalTotal}
-          </span>
-        </span>
+        )}
       </div>
 
       <div className="transfer-panel-footer">

@@ -1,0 +1,116 @@
+/* ------------------------------------------------------------------ */
+/* Shared skeleton primitives, reused across all dashboard panels.     */
+/* Import this alongside each panel's own CSS file so the skeleton     */
+/* inherits the real panel's layout (padding, borders, grid areas)     */
+/* and only needs to supply the placeholder blocks themselves.         */
+/* ------------------------------------------------------------------ */
+
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.skel {
+  display: inline-block;
+  background: var(--track-bg);
+  border-radius: 4px;
+  animation: skeleton-pulse 1.6s ease-in-out infinite;
+}
+
+.skel-circle {
+  border-radius: 50%;
+}
+
+.skel-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.skel-text {
+  height: 12px;
+  vertical-align: middle;
+}
+
+.skel-title {
+  height: 15px;
+  width: 52px;
+}
+
+.skel-total {
+  height: 28px;
+  width: 70px;
+  border-radius: 6px;
+}
+
+.skel-pill {
+  height: 20px;
+  width: 48px;
+  border-radius: 999px;
+}
+
+.skel-toggle {
+  height: 26px;
+  width: 96px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.skel-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* Bar-chart style placeholder (used for the candlestick asset chart) */
+.skel-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+}
+
+.skel-bars .skel {
+  flex: 1;
+  min-width: 2px;
+  border-radius: 3px 3px 1px 1px;
+}
+
+/* Line-chart style placeholder (used for report/transfer trend charts) */
+.skel-chart-block {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-sm);
+}
+
+/* Donut placeholder (used for the asset status breakdown) */
+.skel-donut {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.skel-donut::after {
+  content: "";
+  position: absolute;
+  inset: 22px;
+  border-radius: 50%;
+  background: var(--card-bg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skel {
+    animation: none;
+    opacity: 0.65;
+  }
+}

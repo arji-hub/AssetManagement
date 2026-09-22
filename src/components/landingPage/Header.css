@@ -61,7 +61,7 @@
   outline: 2px solid var(--maroon-700);
   outline-offset: 2px;
 }
-  
+
 .header-logo {
   display: flex;
   align-items: center;
@@ -266,7 +266,7 @@
 
   .header-right {
     position: absolute;
-    top: 70px;
+    top: 55px;
     left: 0;
     right: 0;
 
@@ -275,8 +275,6 @@
     gap: 0;
 
     background: color-mix(in srgb, var(--header-bg) 98%, transparent);
-    border-bottom: 3px solid
-      color-mix(in srgb, var(--maroon-700) 12%, transparent);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
 
     max-height: 0;
