@@ -134,11 +134,9 @@
   }
 }
 
-/* scope :last-child so it doesn't leak to other tables sharing Table.css */
-.custodian-audit .panel-header-cell:last-child {
-  text-align: center;
-}
-.custodian-audit .panel-header-cell:nth-last-child(2) {
+.custodian-audit .panel-header-cell:last-child,
+.custodian-audit .panel-header-cell:nth-last-child(2),
+.custodian-audit .panel-header-cell:nth-child(3) {
   text-align: center;
 }
 

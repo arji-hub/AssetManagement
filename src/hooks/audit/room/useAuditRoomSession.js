@@ -44,15 +44,18 @@ function useAuditRoomSession(roomID) {
 
     const fullname = `${user.firstname} ${user.lastname}`;
 
+    const payload = {
+      roomId: roomID,
+      roomCustodian: topCustodian,
+      assets,
+      auditedBy: user.uid,
+      auditedByName: fullname,
+    };
+    //console.log("addAuditRoom payload:", payload);
+
     try {
       setCreating(true);
-      const { id: auditID } = await addAuditRoom({
-        roomId: roomID,
-        roomCustodian: topCustodian,
-        assets,
-        auditedBy: user.uid,
-        auditedByName: fullname,
-      });
+      const { id: auditID } = await addAuditRoom(payload);
       navigate(`/audit/room/${roomID}/${auditID}`);
     } catch (err) {
       window.alert(`Failed to create audit: ${err.message}`);

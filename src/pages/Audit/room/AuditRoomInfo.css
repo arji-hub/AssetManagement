@@ -343,24 +343,13 @@
   margin-top: 8px;
 }
 
-/* Center the LAST cell in both tables (6th cell in Audit, 5th cell in Discrepancies) */
+/* Center every cell except the first two */
 .audit-session-table-wrap
   :is(
     .audit-item-card-row-cell,
     .discrepancy-item-card-row-cell,
     .panel-header-cell
-  ):last-child {
-  text-align: center;
-  justify-content: center;
-}
-
-/* Center the SECOND-TO-LAST cell in both tables (5th cell in Audit, 4th cell in Discrepancies) */
-.audit-session-table-wrap
-  :is(
-    .audit-item-card-row-cell,
-    .discrepancy-item-card-row-cell,
-    .panel-header-cell
-  ):nth-last-child(2) {
+  ):nth-child(n + 3) {
   text-align: center;
   justify-content: center;
 }
