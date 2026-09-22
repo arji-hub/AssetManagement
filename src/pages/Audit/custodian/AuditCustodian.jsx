@@ -30,7 +30,7 @@ function AuditCustodian() {
           <div className="audit-custodian-header-left">
             <BackButton nav="/audit" />
             <div>
-              <h2 className="audit-custodian-title">Audit Custodian Logs</h2>
+              <h2 className="audit-custodian-title">Custodian Logs</h2>
               <p className="audit-custodian-subtitle">
                 View asset custody records and accountability by custodian.
               </p>

@@ -79,7 +79,6 @@ export function useAssetData({ user, variant, isRoom = false }) {
     () => assets.some((a) => !a.room_id),
     [assets],
   );
-  console.log(assets);
 
   const usedCategoryIds = useMemo(
     () => new Set(assets.map((a) => a.category_id).filter(Boolean)),
@@ -92,8 +91,6 @@ export function useAssetData({ user, variant, isRoom = false }) {
       ? [{ id: UNALLOCATED_ROOM_ID, name: "Unallocated" }, ...used]
       : used;
   }, [allRooms, usedRoomIds, hasUnallocated]);
-  console.log(hasUnallocated);
-  console.log(rooms);
 
   const categories = useMemo(
     () => allCategories.filter((c) => usedCategoryIds.has(c.id)),

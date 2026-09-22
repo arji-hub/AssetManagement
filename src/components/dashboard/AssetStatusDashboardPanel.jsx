@@ -3,6 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAssetStatusSummary } from "../../hooks/dashboard/useAssetStatusSummary";
 import { STATUS_COLORS } from "../../data/assets";
+import AssetStatusDashboardPanelSkeleton from "./loadingSkeleton/AssetStatusDashboardPanelSkeleton";
 import "./AssetStatusDashboardPanel.css";
 
 const CHART_SIZE = 160;
@@ -42,6 +43,10 @@ function AssetStatusDashboardPanel({ user: userProp, mockAssets }) {
       return slice;
     });
   }, [breakdown, totalAssets]);
+
+  if (loading) {
+    return <AssetStatusDashboardPanelSkeleton />;
+  }
 
   return (
     <div className="panel asset-status-panel">
