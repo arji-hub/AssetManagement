@@ -10,7 +10,7 @@ import { storage } from "../services/firebase-config";
 export const SHEET_LAYOUTS = {
   large: {
     label: "Large",
-    hint: "3×3",
+    hint: "3×3 · 9 per Page",
     cols: 3,
     rows: 3,
     qrPt: 150,
@@ -18,7 +18,7 @@ export const SHEET_LAYOUTS = {
   },
   medium: {
     label: "Medium",
-    hint: "5×5",
+    hint: "5×5 · 25 per Page",
     cols: 5,
     rows: 5,
     qrPt: 90,
@@ -26,7 +26,7 @@ export const SHEET_LAYOUTS = {
   },
   small: {
     label: "Small",
-    hint: "7×7",
+    hint: "7×7 · 49 per Page",
     cols: 7,
     rows: 7,
     qrPt: 55,
