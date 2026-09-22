@@ -104,7 +104,7 @@ export function formatTime(value) {
     // Firestore Timestamp { seconds, nanoseconds }
     else if (value?.seconds !== undefined) {
       date = new Date(
-        value.seconds * 1000 + Math.floor((value.nanoseconds || 0) / 1_000_000)
+        value.seconds * 1000 + Math.floor((value.nanoseconds || 0) / 1_000_000),
       );
     }
     // Standard Date, ISO string, or numeric timestamp
@@ -122,4 +122,12 @@ export function formatTime(value) {
   } catch {
     return "—";
   }
+}
+
+export function getMillis(value) {
+  if (!value) return 0;
+  if (typeof value.toMillis === "function") return value.toMillis();
+  if (typeof value === "string") return new Date(value).getTime();
+  if (value instanceof Date) return value.getTime();
+  return 0;
 }

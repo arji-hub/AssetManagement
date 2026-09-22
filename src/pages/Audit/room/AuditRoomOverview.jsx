@@ -1,6 +1,9 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import MainLayout from "../../../components/layout/MainLayout";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { PDFPreviewModal } from "../../../components/modal/PDFPreviewModal";
+import { RoomInventoryPDF } from "../../../pdf/templates/RoomInventoryPDF";
 import useRoomOverview from "../../../hooks/audit/room/useRoomOverview";
 import AuditConfirmRoomModal from "../../../components/modal/AuditConfirmRoomModal";
 import AuditCard from "../../../components/ui/card/audit/AuditCard";
@@ -15,7 +18,23 @@ import {
 } from "../../../data/columns/auditColumns";
 import { formatDate } from "../../../utils/date";
 import "./AuditRoomOverview.css";
-
+/* 
+<PDFPreviewModal
+                  title="Inventory Form"
+                  fileName={`room-inventory-${roomName}.pdf`}
+                  document={
+                    <RoomInventoryPDF
+                      roomName={roomName}
+                      assets={filteredAssets}
+                    />
+                  }
+                  triggerLabel={
+                    <>
+                      <FontAwesomeIcon icon="fa-solid fa-file-pdf" />
+                      Room Inventory Form
+                    </>
+                  }
+                /> */
 function AuditRoomOverview() {
   const navigate = useNavigate();
   const { roomID } = useParams();
@@ -57,11 +76,29 @@ function AuditRoomOverview() {
             </div>
           </div>
 
-          <AuditConfirmRoomModal
-            roomName={room?.name}
-            onConfirm={handleCreateAudit}
-            isEmpty={!totalAssets || totalAssets === 0}
-          />
+          <div className="audit-overview-header-actions">
+            {!(!totalAssets || totalAssets === 0) && (
+              <PDFPreviewModal
+                title="Inventory Form"
+                fileName={`room-inventory-${room?.name ?? roomID}.pdf`}
+                document={
+                  <RoomInventoryPDF roomName={room?.name} assets={assets} />
+                }
+                triggerLabel={
+                  <>
+                    <FontAwesomeIcon icon="fa-solid fa-file-pdf" />
+                    Room Inventory Form
+                  </>
+                }
+              />
+            )}
+
+            <AuditConfirmRoomModal
+              roomName={room?.name}
+              onConfirm={handleCreateAudit}
+              isEmpty={!totalAssets || totalAssets === 0}
+            />
+          </div>
         </div>
 
         {/* Stats */}

@@ -19,6 +19,7 @@ import { getName, getAdmin } from "./user";
 import ROLES from "../data/roles";
 import { TRANSFER_TYPES, STATUS } from "../data/transfer";
 import { roomCount, resolveRoomName } from "./room.js";
+import { getMillis } from "../utils/date";
 
 const COLLECTION = "transfer_request";
 
@@ -210,14 +211,6 @@ export function subscribeToRequested(user, callback, onError) {
     },
     (err) => onError?.(err),
   );
-}
-
-function getMillis(value) {
-  if (!value) return 0; // still-pending serverTimestamp() — treat as "oldest" until it resolves
-  if (typeof value.toMillis === "function") return value.toMillis(); // Firestore Timestamp
-  if (typeof value === "string") return new Date(value).getTime(); // ISO string fallback
-  if (value instanceof Date) return value.getTime();
-  return 0;
 }
 
 function sortByCreatedAtDesc(items) {
