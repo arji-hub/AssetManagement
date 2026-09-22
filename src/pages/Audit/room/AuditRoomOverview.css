@@ -223,6 +223,13 @@
   gap: 12px;
 }
 
+.audit-overview-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
 .audit-overview-back-btn {
   flex-shrink: 0;
   margin-top: 2px;
@@ -248,6 +255,11 @@
 
   .audit-overview-error {
     flex-basis: 100%;
+  }
+
+  .audit-overview-header-actions {
+    width: 100%;
+    justify-content: flex-end;
   }
 }
 
