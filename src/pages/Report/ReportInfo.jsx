@@ -182,9 +182,11 @@ function ReportInfo() {
             {/* Details */}
             <div className="report-info-details">
               <div className="report-info-detail-box">
-                <span className="report-info-field-label">LOCATION</span>
+                <span className="report-info-field-label">ROOM</span>
                 <p className="report-info-field-value">
-                  {report.location || "—"}
+                  {report.room_name || (
+                    <span style={{ fontStyle: "italic" }}>Unallocated</span>
+                  )}
                 </p>
               </div>
               <div className="report-info-detail-box">

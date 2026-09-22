@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchReportLogById } from "../../../services/audit";
 import { getName } from "../../../services/user";
+import { fetchRoomName } from "../../../services/room";
 
 function useReportLogInfo() {
   const { logID } = useParams();
@@ -25,14 +26,19 @@ function useReportLogInfo() {
         const data = await fetchReportLogById(logID);
 
         if (!cancelled) {
-          const reports = data.reportInfo || [];
+          const reports = data?.reportInfo || [];
 
           const enrichedReports = await Promise.all(
             reports.map(async (report) => {
               const name = await getName(report.reported_by);
+              const roomName = report.room_id
+                ? await fetchRoomName(report.room_id)
+                : null;
+
               return {
                 ...report,
-                reported_by_name: name?.firstname ?? "Unknown",
+                reported_by_name: name?.firstname ?? null,
+                room_name: roomName ?? null,
               };
             }),
           );
@@ -45,6 +51,7 @@ function useReportLogInfo() {
         }
       } catch (err) {
         if (!cancelled) {
+          setError(err?.message ?? "Failed to load report log.");
         }
       } finally {
         if (!cancelled) {

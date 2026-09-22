@@ -87,7 +87,7 @@ function InfoCard({ asset }) {
               description="Number of physical units this record represents."
             />
             <DetailItem
-              label="Current Location"
+              label="Current Room"
               value={asset.room_name}
               description="Room or area where this asset is currently kept."
               onClick={

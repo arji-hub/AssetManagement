@@ -28,6 +28,10 @@
   white-space: nowrap;
 }
 
+.report-log-row-cell:nth-child(n + 2) {
+  text-align: center;
+}
+
 .report-log-row-cell[data-priority="high"]:first-child {
   font-weight: 700;
   color: #860100;

@@ -58,7 +58,7 @@ export function subscribeToReports(uid, callback, onError) {
             asset_id: report.asset_id,
             report_no: report.report_no,
             description: report.asset_description,
-            location: report.location,
+            room_id: report.room_id,
             custodian: report.current_custodian,
             local_mr: report.current_localmr,
             reported_by: report.reported_by,
@@ -90,7 +90,7 @@ export function subscribeToReports(uid, callback, onError) {
         const withRoomNames = await Promise.all(
           filtered.map(async (report) => ({
             ...report,
-            room_name: await getRoomName(report.location),
+            room_name: await getRoomName(report.room_id),
           })),
         );
 
@@ -127,7 +127,7 @@ export async function fetchReportByID(id) {
     asset_id: report.asset_id,
     report_no: report.report_no,
     description: report.asset_description,
-    location: report.location,
+    room_id: report.room_id,
     custodian: report.current_custodian,
     custodian_name: custodianName?.fullname ?? "---",
     reported_by: report.reported_by,
@@ -220,7 +220,7 @@ export async function addReport(
   const reportData = {
     asset_description: description,
     asset_id,
-    location: asset.room_id ?? null,
+    room_id: asset.room_id ?? null,
     current_custodian: asset.property_custodian ?? null,
     current_localmr: asset.local_mr ?? null,
     report_no,
@@ -438,7 +438,7 @@ export function subscribeToReportsByAsset(assetId, callback, onError) {
             asset_id: report.asset_id,
             report_no: report.report_no,
             description: report.asset_description,
-            location: report.location,
+            room_id: report.room_id,
             custodian: report.current_custodian,
             local_mr: report.current_localmr,
             reported_by: report.reported_by,
@@ -497,7 +497,7 @@ export async function fetchReportSummary(id) {
     created_at: report.created_at,
     type,
     reported_by: report.reported_by,
-    location: report.location,
+    room_id: report.room_id,
     custodian: report.current_custodian,
     custodian_name: custodianName?.fullname ?? "---",
   };
