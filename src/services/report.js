@@ -122,12 +122,15 @@ export async function fetchReportByID(id) {
     ? await getName(report.current_custodian)
     : null;
 
+  const roomName = await getRoomName(report.room_id);
+
   const filteredReport = {
     id: report.id,
     asset_id: report.asset_id,
     report_no: report.report_no,
     description: report.asset_description,
     room_id: report.room_id,
+    room_name: roomName,
     custodian: report.current_custodian,
     custodian_name: custodianName?.fullname ?? "---",
     reported_by: report.reported_by,
