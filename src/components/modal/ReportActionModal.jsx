@@ -63,7 +63,7 @@ function ReportActionModal({ report, newStatus, onClose, onSuccess }) {
                   {report.description}
                 </p>
                 <p className="report-modal-asset-preview-sub">
-                  {report.report_no} · {report.room_id || "—"}
+                  {report.report_no} · {report.room_name || "—"}
                 </p>
               </div>
             </div>

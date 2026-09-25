@@ -132,7 +132,7 @@ function ReportModal({ onClose, assetID = "" }) {
                     {asset.description || asset.id}
                   </p>
                   <p className="report-modal-asset-preview-sub">
-                    {asset.room_id || "—"} ·{" "}
+                    {asset.room_name || "—"} ·{" "}
                     {asset.property_custodian_name || "—"}
                   </p>
                 </div>
