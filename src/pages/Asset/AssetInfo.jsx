@@ -8,6 +8,10 @@ import HistoryCard from "../../components/ui/card/asset/HistoryCard";
 import ViewAssetQR from "../../components/modal/ViewAssetQr";
 import ViewAssetDocument from "../../components/modal/ViewAssetDocument";
 import ManageAsset from "../../components/ui/dropdown/ManageAsset";
+import {
+  InfoCardSkeleton,
+  HistoryCardSkeleton,
+} from "../../components/ui/skeleton/SkeletonAssetInfo";
 import "./AssetInfo.css";
 import BackButton from "../../components/ui/button/BackButton";
 
@@ -26,12 +30,6 @@ function AssetInfo() {
       .finally(() => setLoading(false));
   }, [assetId]);
 
-  if (loading)
-    return (
-      <MainLayout>
-        <div className="asset-info-loading">Loading asset...</div>
-      </MainLayout>
-    );
   if (error)
     return (
       <MainLayout>
@@ -42,27 +40,28 @@ function AssetInfo() {
   return (
     <MainLayout>
       <div className="asset-info-page">
-        {/* ── Header ── */}
-        <div className="asset-info-header">
-          <div className="asset-info-breadcrumb">
-            <BackButton />
-            <span className="breadcrumb-parent">Asset Information</span>
+        {/* ── Header (only show when loaded) ── */}
+        {!loading && (
+          <div className="asset-info-header">
+            <div className="asset-info-breadcrumb">
+              <BackButton />
+              <span className="breadcrumb-parent">Asset Information</span>
+            </div>
+            <div className="asset-info-actions">
+              <ViewAssetDocument
+                doc_image_url={asset.par_ics_doc_url ?? asset.donation_form_url}
+              />
+              <ViewAssetQR qr_code_url={asset.qr_code_url} assetID={assetId} />
+              <ManageAsset asset={asset} />
+            </div>
           </div>
-          <div className="asset-info-actions">
-            <ViewAssetDocument
-              doc_image_url={asset.par_ics_doc_url ?? asset.donation_form_url}
-            />
+        )}
 
-            <ViewAssetQR qr_code_url={asset.qr_code_url} assetID={assetId} />
-            <ManageAsset asset={asset} />
-          </div>
-        </div>
+        {/* ── Info Card with Skeleton ── */}
+        {loading ? <InfoCardSkeleton /> : <InfoCard asset={asset} />}
 
-        {/* ── Info Card ── */}
-        <InfoCard asset={asset} />
-
-        {/* ── History Card ── */}
-        <HistoryCard assetId={assetId} />
+        {/* ── History Card with Skeleton ── */}
+        {loading ? <HistoryCardSkeleton /> : <HistoryCard assetId={assetId} />}
       </div>
     </MainLayout>
   );
