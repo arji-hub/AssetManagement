@@ -45,7 +45,6 @@ function ReportInfo() {
   const isDamaged = report.status === "damaged";
   const isMissing = report.status === "missing";
   const isForRepair = report.status === "for_repair";
-  const isFound = report.status === "found";
   const isResolved =
     report.status === "working" || report.status === "condemned";
 
@@ -72,7 +71,7 @@ function ReportInfo() {
                     onClick={() => setActionModal("for_repair")}
                   >
                     <i className="ti ti-tool" aria-hidden="true" />
-                    Endorse for Repair
+                    Endorse for Repair/Replacement
                   </button>
                   <button
                     className="action-btn"
@@ -112,7 +111,7 @@ function ReportInfo() {
                     onClick={() => setActionModal("working")}
                   >
                     <i className="ti ti-circle-check" aria-hidden="true" />
-                    Mark as Working
+                    Mark as Resolved
                   </button>
                   <button
                     className="action-btn"

@@ -202,6 +202,9 @@ const styles = StyleSheet.create({
   cellText: {
     fontSize: 9,
   },
+  cellTextItalic: {
+    fontStyle: "italic",
+  },
   statusText: {
     fontSize: 9,
     fontWeight: "bold",
@@ -253,7 +256,7 @@ export function ReportLogPDF({ reportLog, reports, preparedByName }) {
     report_no: report.report_no || "—",
     description: report.description || "",
     type: report.type || "unknown",
-    room_id: report.room_id || "—",
+    room: report.room_name || "Unallocated",
     created_at: report.created_at,
   }));
 
@@ -355,7 +358,14 @@ export function ReportLogPDF({ reportLog, reports, preparedByName }) {
                 </Text>
               </View>
               <View style={styles.colRoom}>
-                <Text style={styles.cellText}>{row.room_id}</Text>
+                <Text
+                  style={[
+                    styles.cellText,
+                    row.room === "Unallocated" && styles.cellTextItalic,
+                  ]}
+                >
+                  {row.room}
+                </Text>
               </View>
               <View style={styles.colDate}>
                 <Text style={styles.cellText}>
