@@ -1,0 +1,70 @@
+/* ── Base Skeleton ── */
+.skeleton {
+  background: var(--surface-subtle);
+  border-radius: var(--radius-sm);
+  animation: skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.65;
+  }
+}
+
+/* ── Variants ── */
+.skeleton--text {
+  height: 16px;
+  border-radius: 4px;
+}
+
+.skeleton--image {
+  aspect-ratio: 1;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+}
+
+.skeleton--button {
+  border-radius: 8px;
+  height: 34px;
+  min-width: 80px;
+}
+
+.skeleton--circle {
+  border-radius: 50%;
+}
+
+/* ── InfoCard Skeleton ── */
+.info-card--skeleton {
+  background: var(--card-bg);
+}
+
+.info-card-body--skeleton {
+  opacity: 0.8;
+}
+
+.info-card-detail-item--skeleton {
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--gold-500);
+  cursor: not-allowed;
+}
+
+/* ── HistoryCard Skeleton ── */
+.history-card--skeleton {
+  background: var(--card-bg);
+}
+
+.history-card-item--skeleton {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  opacity: 0.85;
+  cursor: not-allowed;
+}
+
+.history-card-item--skeleton:hover {
+  background: transparent; /* prevent hover effect during loading */
+}

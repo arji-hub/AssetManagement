@@ -1,3 +1,4 @@
+//AssetManagement>src/services/qr.js
 import QRCodeStyling from "qr-code-styling";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
@@ -30,27 +31,27 @@ export async function generateAssetQR(assetId) {
 
     data: url,
 
-    // Use the logo bundled with the React application
+    // logo of cict used
     image: CICTLogo,
 
     imageOptions: {
       margin: 1,
-      imageSize: 0.6,
+      imageSize: 0.5,
     },
 
     dotsOptions: {
-      type: "rounded",
-      color: "#860100",
+      type: "dots",
+      color: "#8a0100",
     },
 
     cornersSquareOptions: {
       type: "extra-rounded",
-      color: "#860100",
+      color: "#8a0100",
     },
 
     cornersDotOptions: {
       type: "dot",
-      color: "#f5aa2c",
+      color: "#8a0100",
     },
 
     backgroundOptions: {
