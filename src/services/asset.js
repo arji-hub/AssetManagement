@@ -1,3 +1,4 @@
+//AssetManagement>src/services/asset.js
 import { db, storage } from "./firebase-config";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { generateAssetQR } from "./qr";
