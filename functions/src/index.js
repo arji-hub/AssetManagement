@@ -1,10 +1,7 @@
 require("./config/admin");
 
+//------------ADD CUSTODIAN-------------------------
 exports.addCustodian = require("./https/addCustodian").addCustodian;
-
-//------------GENERATE QR------------
-exports.onAssetCreatedGenerateQR =
-  require("./triggers/onAssetCreatedGenerateQR").onAssetCreatedGenerateQR;
 
 //------------UPDATE CUSTODIAN / LOCAL MR------------
 exports.onTransferRequestCompleted =
