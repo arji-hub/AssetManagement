@@ -7,7 +7,7 @@
   background: var(--card-bg);
   border: 1px solid var(--card-border);
   border-radius: 10px;
-  padding: 12px 16px;
+  padding: 12px 5px 12px 16px;
   cursor: pointer;
   transition:
     background 0.15s,
@@ -17,7 +17,7 @@
 
 .report-log-row:hover {
   background: var(--maroon-tint);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-sm, var(--shell-shadow-sm));
   transform: translateY(-1px);
 }
 
@@ -26,43 +26,58 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-size: 13px;
+  color: var(--text-muted);
 }
 
 .report-log-row-cell:nth-child(n + 2) {
   text-align: center;
 }
 
+/* first cell = the "name" cell, like .room-audit-row-name */
 .report-log-row-cell[data-priority="high"]:first-child {
   font-weight: 700;
-  color: #860100;
+  font-size: 15px;
+  color: var(--text-strong);
   text-transform: none;
 }
 
+/* count-style pill, same look as .room-audit-row-assets-count */
 .report-log-badge {
   display: inline-flex;
   align-items: center;
-  padding: 2px 10px;
-  border-radius: 999px;
+  justify-content: center;
+  gap: 5px;
+  background: var(--maroon-600);
+  color: #fff;
   font-size: 12px;
   font-weight: 700;
-  background: #e6eeff;
-  color: #5a413c;
+  font-variant-numeric: tabular-nums;
+  padding: 3px 12px;
+  border-radius: 999px;
+  min-width: 48px;
+  box-sizing: border-box;
 }
 
 .report-log-damaged {
-  color: #ba1a1a;
+  color: var(--damaged);
   font-weight: 700;
 }
 
 .report-log-missing {
-  color: #8a5c00;
+  color: var(--missing);
   font-weight: 700;
 }
 
 .report-log-muted {
-  color: #5a413c;
+  color: var(--text-muted);
 }
 
+.report-log-card {
+  display: none;
+}
+
+/* ── Tablet: drop "low" priority columns ── */
 @media (max-width: 1024px) {
   .report-log-row {
     grid-template-columns: var(--table-grid-columns-tablet);
@@ -72,6 +87,7 @@
   }
 }
 
+/* ── Mobile grid: drop "medium" priority columns too ── */
 @media (max-width: 800px) {
   .report-log-row {
     padding: 12px 16px;
@@ -80,10 +96,6 @@
   .report-log-row [data-priority="medium"] {
     display: none;
   }
-}
-
-.report-log-card {
-  display: none;
 }
 
 /* ══════════════ Mobile card ══════════════ */
@@ -99,10 +111,12 @@
     background: var(--card-bg);
     border: 1px solid var(--card-border);
     border-radius: 10px;
-    padding: 14px 16px;
+    padding: 18px;
+    width: auto;
+    flex: 1 1 240px;
     cursor: pointer;
     margin-right: 5px;
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-sm, var(--shell-shadow-sm));
     transition:
       transform 0.2s ease,
       box-shadow 0.2s ease;
@@ -113,19 +127,22 @@
     box-shadow: var(--card-elevated-container-elevation);
   }
 
+  /* header: title left, badge right (like .room-audit-card-header) */
   .report-log-card-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 10px;
+    color: var(--maroon-700);
   }
 
   .report-log-card-title {
     flex: 1;
     min-width: 0;
     margin: 0;
+    font-size: clamp(0.75rem, 4vw, 1.05rem);
     font-weight: 700;
-    color: #860100;
+    color: var(--text-strong);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -134,23 +151,30 @@
   .report-log-card-badge-wrap {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: 5px;
+    flex-shrink: 0;
     font-size: 12px;
     font-weight: 600;
     color: var(--text-muted);
     white-space: nowrap;
   }
 
+  /* tinted info block, like .room-audit-assets */
   .report-log-card-meta {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    background: var(--maroon-tint);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 12px 14px;
   }
 
   .report-log-card-meta-row {
     display: flex;
     align-items: center;
-    gap: 16px;
+    justify-content: space-between;
+    gap: 8px 16px;
     flex-wrap: wrap;
   }
 
@@ -160,6 +184,7 @@
     gap: 6px;
     font-size: 13px;
     font-weight: 600;
+    color: var(--text-strong);
   }
 
   .report-log-card-stat-label {
@@ -169,14 +194,17 @@
 
   .report-log-card-meta-icon {
     width: 14px;
-    color: #860100;
     display: flex;
     justify-content: center;
     font-size: 12px;
+    color: var(--maroon-700);
   }
 
+  /* dashed divider look, like .room-audit-card-meta */
   .report-log-card-date {
     font-size: 12px;
     color: var(--text-muted);
+    padding-top: 8px;
+    border-top: 1px dashed var(--border-subtle);
   }
 }

@@ -198,35 +198,24 @@
   transform: translateX(calc(100% + 0px));
 }
 
-/* asset lookup */
-.report-modal-asset-lookup {
-  display: flex;
-  gap: 8px;
+/* asset select (wraps the shared SearchableSelect) */
+.report-modal-select-wrap {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
 }
 
-.report-modal-asset-lookup input {
-  flex: 1;
-}
-
-.report-modal-find-btn {
-  flex-shrink: 0;
-  width: 42px;
-  border: 1.5px solid var(--maroon-700);
-  border-radius: 8px;
-  background: var(--maroon-700);
-  color: #ffffff;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background 0.15s ease;
-}
-
-.report-modal-find-btn:hover:not(:disabled) {
-  background: var(--maroon-900);
-}
-
-.report-modal-find-btn:disabled {
-  opacity: 0.55;
+.report-modal-select-wrap:disabled .reg-searchable-trigger {
+  opacity: 0.6;
   cursor: not-allowed;
+}
+
+/* the modal's generic "input" rules also hit the select's search box;
+   keep it from turning red when the field has an error */
+.report-modal-field.has-error .reg-searchable-search {
+  border-color: var(--border);
+  box-shadow: none;
 }
 
 /* asset preview */
