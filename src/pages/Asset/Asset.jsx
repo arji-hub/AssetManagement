@@ -44,6 +44,7 @@ function Asset() {
     custodians,
     loadingOptions,
   } = useAssetFilters(assets);
+  console.log("Filtered Assets:", filteredAssets);
 
   return (
     <MainLayout>

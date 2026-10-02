@@ -6,14 +6,15 @@ import useReportRegistration from "../../hooks/report/useReportRegistration";
 import "./ReportModal.css";
 import { REPORT_TYPES } from "../../data/reports";
 import AddingStatusModal from "../ui/status/AddingStatusModal";
+import SearchableSelect from "../form/SearchableSelect";
 
 function ReportModal({ onClose, assetID = "" }) {
   const {
-    assetInputRef,
     type,
-    assetId,
     asset,
-    assetLoading,
+    assetOptions,
+    selectedAssetId,
+    assetsLoading,
     assetError,
     description,
     narrative,
@@ -21,11 +22,9 @@ function ReportModal({ onClose, assetID = "" }) {
     submitError,
     isSubmitting,
     isFormValid,
-    setAssetId,
     setNarrative,
+    handleAssetSelect,
     handleTypeChange,
-    handleFindAsset,
-    handleAssetIdKeyDown,
     handlePhotoChange,
     handleRemovePhoto,
     handleSubmit,
@@ -85,37 +84,28 @@ function ReportModal({ onClose, assetID = "" }) {
               </div>
             </div>
 
-            {/* asset id lookup */}
+            {/* asset select */}
             <div
               className={`report-modal-field ${assetError ? "has-error" : ""}`}
             >
-              <label htmlFor="report-asset-id-input">Asset ID</label>
-              <div className="report-modal-asset-lookup">
-                <input
-                  id="report-asset-id-input"
-                  ref={assetInputRef}
-                  type="text"
-                  placeholder="e.g. cict-I001"
-                  value={assetId}
-                  onChange={(e) => setAssetId(e.target.value)}
-                  onKeyDown={handleAssetIdKeyDown}
-                  disabled={isSubmitting || assetLoading || !!assetID}
+              <label>Asset</label>
+              {/* fieldset[disabled] natively disables the select's trigger
+                  without needing a disabled prop on SearchableSelect */}
+              <fieldset
+                className="report-modal-select-wrap"
+                disabled={isSubmitting || !!assetID}
+              >
+                <SearchableSelect
+                  options={assetOptions}
+                  value={selectedAssetId}
+                  onSelect={handleAssetSelect}
+                  placeholder="Select an asset…"
+                  searchPlaceholder="Search by ID or description…"
+                  emptyMessage="No assets found."
+                  loading={assetsLoading}
+                  error={!!assetError}
                 />
-                <button
-                  type="button"
-                  className="report-modal-find-btn"
-                  onClick={handleFindAsset}
-                  disabled={
-                    isSubmitting || assetLoading || !assetId.trim() || !!assetID
-                  }
-                >
-                  {assetLoading ? (
-                    <FontAwesomeIcon icon="fa-solid fa-spinner" spin />
-                  ) : (
-                    <FontAwesomeIcon icon="fa-solid fa-magnifying-glass" />
-                  )}
-                </button>
-              </div>
+              </fieldset>
               {assetError && (
                 <span className="report-modal-error" role="alert">
                   {assetError}
@@ -133,7 +123,7 @@ function ReportModal({ onClose, assetID = "" }) {
                   </p>
                   <p className="report-modal-asset-preview-sub">
                     {asset.room_name || "—"} ·{" "}
-                    {asset.property_custodian_name || "—"}
+                    {asset.property_custodian_fullname || "—"}
                   </p>
                 </div>
               </div>
@@ -147,7 +137,7 @@ function ReportModal({ onClose, assetID = "" }) {
                 type="text"
                 value={description}
                 readOnly
-                placeholder="Auto-generated once asset is found"
+                placeholder="Auto-filled once an asset is selected"
                 disabled={!asset}
               />
             </div>
@@ -214,9 +204,9 @@ function ReportModal({ onClose, assetID = "" }) {
                 className="info-icon"
               />
               <p className="info-text">
-                Find the asset by its ID first — the description fills in
-                automatically. Damaged reports require a photo as evidence;
-                missing reports do not.
+                Select the asset — the description fills in automatically.
+                Damaged reports require a photo as evidence; missing reports do
+                not.
               </p>
             </div>
           </div>

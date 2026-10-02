@@ -5,6 +5,7 @@
   gap: 24px;
 }
 
+/* ── Header (same as report-log-header) ── */
 .report-log-info-header {
   display: flex;
   flex-direction: row;
@@ -23,7 +24,7 @@
 .report-log-info-title {
   font-size: 24px;
   font-weight: 600;
-  color: var(--maroon-900);
+  color: var(--text-strong);
   margin: 0 0 8px;
 }
 
@@ -33,26 +34,33 @@
   margin: 0;
 }
 
+.report-log-info-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .report-log-info-error {
   color: var(--danger);
   font-size: 14px;
 }
 
-/* Stat cards */
+/* ── Stat cards (same grid + spacing as report-log-stats) ── */
 .report-log-info-stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
 }
 
 .report-log-info-stat-card {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 16px 20px;
+  padding: 18px 20px;
   border: 1px solid var(--card-border);
-  border-radius: 8px;
+  border-radius: 10px;
   background: var(--card-bg);
+  box-shadow: var(--shadow-sm, var(--shell-shadow-sm));
 }
 
 .report-log-info-stat-icon {
@@ -68,7 +76,7 @@
 
 .report-log-info-stat-icon-total {
   background: var(--maroon-tint);
-  color: var(--maroon-900);
+  color: var(--maroon-700);
 }
 
 .report-log-info-stat-icon-damaged {
@@ -95,17 +103,18 @@
   margin: 0;
 }
 
-/* Filter row */
+/* ── Filter row (same spacing as report-log-filter) ── */
 .report-log-info-filter {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
 }
 
 .report-log-info-search {
   position: relative;
-  max-width: 420px;
+  max-width: 320px; /* matches .search-bar--constrained on the log page */
   flex: 1;
   min-width: 200px;
 }
@@ -211,6 +220,7 @@
   color: var(--missing);
 }
 
+/* ── Table (identical to report-log-table) ── */
 .report-log-info-table {
   flex: none;
   height: 500px;
@@ -220,6 +230,12 @@
   overflow: hidden;
 }
 
+/* center the last two header cells, like the log page */
+.report-log-info-table .panel-header-cell:nth-last-child(2),
+.report-log-info-table .panel-header-cell:nth-last-child(1) {
+  text-align: center;
+}
+
 @media (max-width: 768px) {
   .report-log-info-page {
     padding: 16px;
@@ -227,6 +243,10 @@
 
   .report-log-info-stats {
     grid-template-columns: 1fr;
+  }
+
+  .report-log-info-header-actions {
+    min-width: 160px;
   }
 
   .report-log-info-filter {
@@ -242,8 +262,19 @@
     width: 100%;
   }
 
+  .report-log-info-count {
+    margin-left: 0;
+  }
+
   .report-log-info-table {
     flex: none;
     min-height: 400px;
+  }
+}
+
+@media (max-width: 370px) {
+  .report-log-info-header-left {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
