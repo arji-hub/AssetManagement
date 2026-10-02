@@ -1,34 +1,35 @@
 import { Status } from "../../components/ui/status/assetStatus";
-import { formatDate } from "../../utils/date";
+
+const Empty = ({ text = "N/A" }) => <i>{text}</i>;
 
 export const assetColumns = [
   {
-    key: "id",
-    label: "Asset ID",
-    width: "0.9fr",
+    key: "sn",
+    label: "Serial Number",
+    width: "1.8fr",
     priority: "high",
-    render: (a) => a.id || "—",
+    render: (a) => a.serial_number || <Empty />,
     card: { role: "hidden" },
   },
   {
     key: "desc",
     label: "Description",
-    width: "2.5fr",
+    width: "3.5fr",
     priority: "high",
-    render: (a) => a.description || "—",
+    render: (a) => a.description || <Empty />,
   },
   {
     key: "category",
     label: "Category",
-    width: "1fr",
+    width: "0.9fr",
     priority: "medium",
-    render: (a) => a.category_name || "—",
+    render: (a) => a.category_name || <Empty />,
     card: { icon: "fa-solid fa-tag" },
   },
   {
     key: "qty",
     label: "Qty",
-    width: "0.6fr",
+    width: "0.5fr",
     priority: "low",
     render: (a) => a.qty ?? 1,
     card: { icon: "fa-solid fa-boxes-stacked" },
@@ -36,15 +37,16 @@ export const assetColumns = [
   {
     key: "status",
     label: "Status",
-    width: "1fr",
+    width: "0.8fr",
     priority: "high",
     render: (a) => <Status status={a.status} />,
   },
   {
-    key: "date",
-    label: "Date Acquired",
-    width: "1.2fr",
+    key: "room",
+    label: "Room",
+    width: "0.8fr",
     priority: "low",
-    render: (a) => formatDate(a.date_acquired),
+    render: (a) => a.room_name || <Empty text="Unallocated" />,
+    card: { icon: "fa-solid fa-door-open" },
   },
 ];

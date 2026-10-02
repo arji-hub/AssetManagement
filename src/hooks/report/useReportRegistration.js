@@ -1,22 +1,20 @@
-import { useState, useRef, useEffect } from "react";
-import { fetchAssetByID } from "../../services/asset";
+import { useState, useEffect, useMemo } from "react";
+import { subscribeToAssets } from "../../services/asset";
 import { addReport } from "../../services/report";
 import { useAuth } from "../../context/AuthContext";
 
 function useReportRegistration({ onClose, assetID = "" }) {
   const { user } = useAuth();
-  const assetInputRef = useRef(null);
 
   const [type, setType] = useState("damaged");
 
-  // asset lookup
-  const [assetId, setAssetId] = useState("");
-  const [asset, setAsset] = useState(null);
-  const [assetLoading, setAssetLoading] = useState(false);
+  // asset list + selection
+  const [assets, setAssets] = useState([]);
+  const [assetsLoading, setAssetsLoading] = useState(true);
   const [assetError, setAssetError] = useState(null);
+  const [selectedAssetId, setSelectedAssetId] = useState(assetID || "");
 
   // form fields
-  const [description, setDescription] = useState("");
   const [narrative, setNarrative] = useState("");
   const [photo, setPhoto] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
@@ -24,6 +22,7 @@ function useReportRegistration({ onClose, assetID = "" }) {
   const [submitError, setSubmitError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
+
   const handleStatusClose = () => {
     if (submitStatus === "success") {
       setSubmitStatus(null);
@@ -33,40 +32,47 @@ function useReportRegistration({ onClose, assetID = "" }) {
     }
   };
 
-  // --- asset lookup ---
-  const lookupAsset = async (id) => {
-    const trimmedId = id.trim();
-    if (!trimmedId) return;
-
-    setAssetLoading(true);
-    setAssetError(null);
-    setAsset(null);
-    setDescription("");
-
-    try {
-      const result = await fetchAssetByID(trimmedId);
-      if (result.status?.toLowerCase() === "condemned") {
-        setAssetError("This asset is archived and cannot be reported.");
-        return;
-      }
-      setAsset(result);
-      setDescription(result.description || "Asset");
-    } catch (err) {
-      setAssetError(err.message || "Failed to fetch asset.");
-    } finally {
-      setAssetLoading(false);
-    }
-  };
-
-  // focus input on mount, auto-fill + lookup if assetID was passed in
+  // --- live asset list (role-scoped inside subscribeToAssets) ---
   useEffect(() => {
-    if (assetID) {
-      setAssetId(assetID);
-      lookupAsset(assetID);
-    } else {
-      assetInputRef.current?.focus();
+    if (!user?.uid || !user?.role) {
+      setAssetsLoading(false);
+      return;
     }
-  }, []);
+
+    let unsubscribe;
+    try {
+      unsubscribe = subscribeToAssets(
+        user.role,
+        user.uid,
+        (list) => {
+          const reportable = list.filter(
+            (a) => a.status?.toLowerCase() !== "condemned",
+          );
+          setAssets(reportable);
+          setAssetsLoading(false);
+        },
+        (err) => {
+          setAssetError(err.message || "Failed to load assets.");
+          setAssetsLoading(false);
+        },
+      );
+    } catch (err) {
+      // subscribeToAssets throws synchronously on an invalid role
+      setAssetError(err.message || "Failed to load assets.");
+      setAssetsLoading(false);
+    }
+
+    return () => unsubscribe?.();
+  }, [user?.uid, user?.role]);
+
+  // validate a preselected asset once the list has loaded
+  useEffect(() => {
+    if (assetsLoading || !assetID) return;
+    if (!assets.some((a) => a.id === assetID)) {
+      setSelectedAssetId("");
+      setAssetError("This asset is archived or could not be found.");
+    }
+  }, [assetsLoading, assets, assetID]);
 
   // clean up object URL on unmount / photo change
   useEffect(() => {
@@ -75,31 +81,46 @@ function useReportRegistration({ onClose, assetID = "" }) {
     };
   }, [photoPreview]);
 
-  // close on Escape
+  // close on Escape — but not when Escape is meant for the searchable select
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === "Escape") onClose();
+      if (e.key !== "Escape") return;
+      if (e.target?.closest?.(".reg-searchable")) return;
+      onClose();
     };
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
+  // --- derived ---
+  const assetOptions = useMemo(
+    () =>
+      assets.map((a) => ({
+        id: a.id,
+        label: `${a.id} — ${a.description || "Asset"}`,
+      })),
+    [assets],
+  );
+
+  const asset = useMemo(
+    () => assets.find((a) => a.id === selectedAssetId) || null,
+    [assets, selectedAssetId],
+  );
+
+  const description = asset ? asset.description || "Asset" : "";
+
   // --- handlers ---
+  const handleAssetSelect = (id) => {
+    setSelectedAssetId(id);
+    setAssetError(null);
+  };
+
   const handleTypeChange = (nextType) => {
     setType(nextType);
     if (nextType === "missing") {
       if (photoPreview) URL.revokeObjectURL(photoPreview);
       setPhoto(null);
       setPhotoPreview(null);
-    }
-  };
-
-  const handleFindAsset = () => lookupAsset(assetId);
-
-  const handleAssetIdKeyDown = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      handleFindAsset();
     }
   };
 
@@ -122,7 +143,7 @@ function useReportRegistration({ onClose, assetID = "" }) {
 
     // validation
     if (!asset) {
-      setSubmitError("Please find a valid asset before submitting.");
+      setSubmitError("Please select a valid asset before submitting.");
       return;
     }
     if (!narrative.trim()) {
@@ -137,7 +158,7 @@ function useReportRegistration({ onClose, assetID = "" }) {
     setSubmitStatus("loading");
     setIsSubmitting(true);
     try {
-      const result = await addReport(
+      await addReport(
         {
           type,
           asset_id: asset.id,
@@ -162,13 +183,12 @@ function useReportRegistration({ onClose, assetID = "" }) {
     !!asset && narrative.trim().length > 0 && (type !== "damaged" || !!photo);
 
   return {
-    // refs
-    assetInputRef,
     // state
     type,
-    assetId,
     asset,
-    assetLoading,
+    assetOptions,
+    selectedAssetId,
+    assetsLoading,
     assetError,
     description,
     narrative,
@@ -180,12 +200,10 @@ function useReportRegistration({ onClose, assetID = "" }) {
     handleStatusClose,
     isFormValid,
     // setters
-    setAssetId,
     setNarrative,
     // handlers
+    handleAssetSelect,
     handleTypeChange,
-    handleFindAsset,
-    handleAssetIdKeyDown,
     handlePhotoChange,
     handleRemovePhoto,
     handleSubmit,
