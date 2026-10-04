@@ -162,6 +162,55 @@ function ScanStatusModal({
           </>
         )}
 
+        {/* ── Condemned (cannot be audited or flagged) ── */}
+        {status === "condemned" && (
+          <>
+            <div className="scan-modal-icon scan-modal-icon--error">
+              <FontAwesomeIcon icon="fa-solid fa-ban" />
+            </div>
+            <h2 className="scan-modal-title">Asset Condemned</h2>
+
+            <div className="scan-modal-item-info">
+              <div className="scan-modal-item-row">
+                <span className="scan-modal-item-label">Asset ID:</span>
+                <span className="scan-modal-item-value font-bold">
+                  {item.asset_id || item.id}
+                </span>
+              </div>
+              {item.description && (
+                <div className="scan-modal-item-row">
+                  <span className="scan-modal-item-label">Description:</span>
+                  <span className="scan-modal-item-value">
+                    {item.description}
+                  </span>
+                </div>
+              )}
+              {item.serial_number && (
+                <div className="scan-modal-item-row">
+                  <span className="scan-modal-item-label">Serial No.:</span>
+                  <span className="scan-modal-item-value">
+                    {item.serial_number}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            <p className="scan-modal-message scan-modal-message--error">
+              This asset is condemned. It cannot be audited or flagged as a
+              discrepancy.
+            </p>
+
+            {onClose && (
+              <button
+                className="scan-modal-btn scan-modal-btn--error"
+                onClick={onClose}
+              >
+                Continue Scanning
+              </button>
+            )}
+          </>
+        )}
+
         {/* ── Error (Failed) ── */}
         {status === "error" && (
           <>
@@ -264,6 +313,7 @@ ScanStatusModal.propTypes = {
     id: PropTypes.string,
     asset_id: PropTypes.string,
     description: PropTypes.string,
+    serial_number: PropTypes.string,
     category: PropTypes.string,
     custodian: PropTypes.string,
     audited_at: PropTypes.string,
@@ -273,12 +323,13 @@ ScanStatusModal.propTypes = {
     "loading",
     "success",
     "duplicate",
+    "condemned",
     "error",
-    "discrepancy_added", // NEW
+    "discrepancy_added",
   ]).isRequired,
   errorMessage: PropTypes.string,
-  onAddDiscrepancy: PropTypes.func, // NEW
-  addingDiscrepancy: PropTypes.bool, // NEW
+  onAddDiscrepancy: PropTypes.func,
+  addingDiscrepancy: PropTypes.bool,
   onClose: PropTypes.func,
 };
 

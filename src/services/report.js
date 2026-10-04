@@ -16,7 +16,7 @@ import {
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getName } from "./user";
-import { updateAssetStatus } from "./asset";
+import { updateAssetStatus, isAssetCondemned } from "./asset";
 import { ASSET_CLEARING_STATUSES, REPORT_STATUS } from "../data/reports";
 import { condemnAsset } from "./transfer";
 import { fetchRoomName } from "./room";
@@ -198,12 +198,22 @@ async function assetNoDuplicateOpenReport(assetId, type) {
   }
 }
 
+async function assertAssetNotCondemned(assetId) {
+  if (!assetId) return;
+
+  const snap = await getDoc(doc(db, "asset", assetId));
+  if (snap.exists() && isAssetCondemned(snap.data())) {
+    throw new Error("This asset is condemned and can no longer be reported.");
+  }
+}
+
 export async function addReport(
   { type, asset_id, asset, description, narrative, photo },
   reportedBy,
   reportedByName,
 ) {
-  // == Step 0: block duplicate open report of the same type ===============
+  // == Step 0: block duplicate open report and condemned assets ===========
+  await assertAssetNotCondemned(asset_id);
   await assetNoDuplicateOpenReport(asset_id, type);
 
   // == Step 1: generate report_no via counter transaction =================

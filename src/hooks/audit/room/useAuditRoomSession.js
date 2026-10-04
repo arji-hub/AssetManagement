@@ -51,7 +51,6 @@ function useAuditRoomSession(roomID) {
       auditedBy: user.uid,
       auditedByName: fullname,
     };
-    //console.log("addAuditRoom payload:", payload);
 
     try {
       setCreating(true);
