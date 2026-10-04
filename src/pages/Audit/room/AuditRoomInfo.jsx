@@ -67,6 +67,7 @@ function AuditRoomInfo() {
   } = useRoomInfo(auditID);
 
   const { auditPDF, auditItemsPDF } = useAuditRoomPDF(auditID);
+  console.log("auditPDF", auditItemsPDF);
 
   const isCompleted = audit?.status === "completed";
 

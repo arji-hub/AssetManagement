@@ -38,8 +38,13 @@ function AuditRoomOverview() {
     auditsError,
     lastAuditedAt,
   } = useRoomOverview(roomID);
-  const { handleCreateAudit, handleStatusClose, addStatus, addError } =
-    useAuditRoomSession(roomID);
+  const {
+    handleCreateAudit,
+    handleStatusClose,
+    addStatus,
+    addError,
+    addErrorTitle,
+  } = useAuditRoomSession(roomID);
 
   return (
     <MainLayout>
@@ -201,6 +206,7 @@ function AuditRoomOverview() {
         <AddingStatusModal
           title="Audit"
           status={addStatus}
+          errorTitle={addErrorTitle}
           errorMessage={addError}
           onClose={handleStatusClose}
         />

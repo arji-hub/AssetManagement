@@ -18,6 +18,7 @@ function useAuditRoomSession(roomID) {
   // status modal state
   const [addStatus, setAddStatus] = useState(null);
   const [addError, setAddError] = useState(null);
+  const [addErrorTitle, setAddErrorTitle] = useState(undefined);
   const [createdAuditID, setCreatedAuditID] = useState(null);
 
   useEffect(() => {
@@ -46,6 +47,7 @@ function useAuditRoomSession(roomID) {
 
   async function handleCreateAudit() {
     setAddError(null);
+    setAddErrorTitle(undefined);
     setCreatedAuditID(null);
 
     if (!user) {
@@ -66,9 +68,18 @@ function useAuditRoomSession(roomID) {
       setAddStatus("loading");
 
       // Check for an open audit first so the right message wins
-      await assertNoOpenAuditInRoom(roomID);
+      try {
+        await assertNoOpenAuditInRoom(roomID);
+      } catch (err) {
+        setAddErrorTitle("Ongoing audit session found");
+        failWith(
+          err.message ?? "An audit is already in progress for this room.",
+        );
+        return;
+      }
 
       if (assets.length === 0) {
+        setAddErrorTitle("Zero assets in room");
         throw new Error("No assets found in this room to audit.");
       }
 
@@ -98,6 +109,7 @@ function useAuditRoomSession(roomID) {
 
     setAddStatus(null);
     setAddError(null);
+    setAddErrorTitle(undefined);
 
     if (wasSuccess && auditID) {
       navigate(`/audit/room/${roomID}/${auditID}`);
@@ -109,6 +121,7 @@ function useAuditRoomSession(roomID) {
     handleStatusClose,
     addStatus,
     addError,
+    addErrorTitle,
     assets,
     assetsLoading,
     assetsError,

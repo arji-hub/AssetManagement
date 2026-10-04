@@ -29,11 +29,13 @@ export const AUDIT_NO_CONFIG = {
 export const AUDIT_STATUS_LABELS = {
   audited: "Audited",
   not_audited: "Not Audited",
+  missing: "Missing",
   misplaced: "Misplaced",
 };
 
 export const AUDIT_STATUS_COLORS = {
   audited: "#1a7d1a",
   not_audited: "#666666",
+  missing: "#860100",
   misplaced: "#b36b00",
 };

@@ -363,7 +363,9 @@ export function AuditRoomPDF({ roomName, audit, items }) {
                     },
                   ]}
                 >
-                  {AUDIT_STATUS_LABELS[item.audit_status] || ""}
+                  {AUDIT_STATUS_LABELS[item.audit_status] ||
+                    item.audit_status ||
+                    ""}
                 </Text>
               </View>
             </View>
