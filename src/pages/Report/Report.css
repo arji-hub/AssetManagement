@@ -129,6 +129,10 @@
   min-height: 0;
 }
 
+.report-table-wrap .panel-header .panel-header-cell:nth-child(-n + 2) {
+  text-align: left;
+}
+
 /* ── responsive ── */
 @media (max-width: 960px) {
   .report-page {
