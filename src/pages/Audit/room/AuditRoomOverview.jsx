@@ -12,29 +12,14 @@ import useAuditRoomSession from "../../../hooks/audit/room/useAuditRoomSession";
 import Table from "../../../components/panel/Table";
 import AssetCard from "../../../components/ui/card/asset/AssetCard";
 import PreviousAuditCard from "../../../components/ui/card/audit/PreviousAuditCard";
+import AddingStatusModal from "../../../components/ui/status/AddingStatusModal";
 import {
   auditRoomAssetColumns,
   auditHistoryColumns,
 } from "../../../data/columns/auditColumns";
 import { formatDate } from "../../../utils/date";
 import "./AuditRoomOverview.css";
-/* 
-<PDFPreviewModal
-                  title="Inventory Form"
-                  fileName={`room-inventory-${roomName}.pdf`}
-                  document={
-                    <RoomInventoryPDF
-                      roomName={roomName}
-                      assets={filteredAssets}
-                    />
-                  }
-                  triggerLabel={
-                    <>
-                      <FontAwesomeIcon icon="fa-solid fa-file-pdf" />
-                      Room Inventory Form
-                    </>
-                  }
-                /> */
+
 function AuditRoomOverview() {
   const navigate = useNavigate();
   const { roomID } = useParams();
@@ -53,7 +38,8 @@ function AuditRoomOverview() {
     auditsError,
     lastAuditedAt,
   } = useRoomOverview(roomID);
-  const { handleCreateAudit } = useAuditRoomSession(roomID);
+  const { handleCreateAudit, handleStatusClose, addStatus, addError } =
+    useAuditRoomSession(roomID);
 
   return (
     <MainLayout>
@@ -211,6 +197,14 @@ function AuditRoomOverview() {
           />
         </div>
       </div>
+      {addStatus && (
+        <AddingStatusModal
+          title="Audit"
+          status={addStatus}
+          errorMessage={addError}
+          onClose={handleStatusClose}
+        />
+      )}
     </MainLayout>
   );
 }

@@ -6,13 +6,18 @@ export const STATUS_CONFIG = {
   },
   not_audited: {
     label: "Not audited",
-    icon: "fa-solid fa-minus",
+    icon: "fa-solid fa-eye-slash",
     className: "not-audited",
   },
   misplaced: {
     label: "Misplaced",
     icon: "fa-solid fa-triangle-exclamation",
     className: "misplaced",
+  },
+  missing: {
+    label: "Missing",
+    icon: "fa-solid fa-circle-xmark",
+    className: "missing",
   },
 };
 
