@@ -14,6 +14,7 @@ import {
   where,
   runTransaction,
   onSnapshot,
+  increment,
 } from "firebase/firestore";
 import { getReportType, fetchReportSummary, addReport } from "./report";
 import { REPORT_TYPES, REPORT_STATUS } from "../data/reports";
@@ -41,7 +42,7 @@ export async function generateAuditNo(type) {
   });
 }
 
-async function assertNoOpenAuditInRoom(roomId) {
+export async function assertNoOpenAuditInRoom(roomId) {
   const q = query(
     collection(db, "audit_room"),
     where("room_id", "==", roomId),
@@ -326,7 +327,7 @@ export async function completeAuditSession(auditID) {
     throw new Error("This audit has already been completed.");
   }
 
-  // == Step 1: file a missing report for every asset not audited ==========
+  // == Step 1: report + flag every asset that was not audited =============
   const roomName = (await fetchRoomName(room_id).catch(() => null)) ?? room_id;
 
   const notAuditedSnap = await getDocs(
@@ -338,6 +339,7 @@ export async function completeAuditSession(auditID) {
 
   const reported = [];
   const skipped = [];
+  const missingItems = []; // become discrepancy items in the final batch
 
   // Sequential on purpose: addReport uses a counter transaction,
   // and parallel calls would contend on the same counter doc.
@@ -349,6 +351,20 @@ export async function completeAuditSession(auditID) {
       if (!assetSnap.exists()) throw new Error("Asset not found.");
 
       const asset = { id: assetSnap.id, ...assetSnap.data() };
+
+      // Condemned assets have no room: not missing, not a discrepancy
+      if (isAssetCondemned(asset)) {
+        skipped.push({
+          asset_id: item.asset_id,
+          reason: "Asset is condemned.",
+        });
+        continue;
+      }
+
+      // Flag it before filing the report, so it still counts as a
+      // discrepancy even if the report is skipped (e.g. already has an
+      // open missing report from an earlier audit).
+      missingItems.push(item);
 
       const { id: reportDocId, report_no } = await addReport(
         {
@@ -365,26 +381,52 @@ export async function completeAuditSession(auditID) {
 
       reported.push({ asset_id: item.asset_id, report_no, reportDocId });
     } catch (err) {
-      // e.g. asset already has an open missing report, or is condemned
       skipped.push({ asset_id: item.asset_id, reason: err.message });
     }
   }
 
-  // == Step 2: mark the audit completed ===================================
+  // == Step 2: write discrepancies + mark the audit completed =============
   const roomRef = doc(db, "room", room_id);
   const completedAt = serverTimestamp();
 
   const batch = writeBatch(db);
+
+  missingItems.forEach((item) => {
+    const discrepancyRef = doc(
+      db,
+      "audit_room",
+      auditID,
+      "discrepancy_item",
+      item.asset_id,
+    );
+    batch.set(discrepancyRef, {
+      asset_id: item.asset_id,
+      description: item.description ?? null,
+      serial_number: item.serial_number ?? null,
+      category: item.category ?? null,
+      custodian: item.custodian ?? null,
+      asset_status: item.asset_status ?? null,
+      audit_status: "missing",
+      audited_at: completedAt,
+      room_id,
+    });
+  });
+
   batch.update(auditRef, {
     status: "completed",
     completed_at: completedAt,
+    ...(missingItems.length > 0 && {
+      discrepancy_count: increment(missingItems.length),
+      has_discrepancies: true,
+    }),
   });
   batch.update(roomRef, {
     last_audited_at: completedAt,
   });
+
   await batch.commit();
 
-  return { reported, skipped };
+  return { reported, skipped, flagged: missingItems.length };
 }
 
 export async function addUnexpectedDiscrepancy(auditID, assetData, roomId) {
