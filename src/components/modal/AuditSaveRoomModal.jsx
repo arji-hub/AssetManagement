@@ -117,10 +117,19 @@ function AuditConfirmSaveModal({
         )}
 
         {hasRemaining && (
-          <p className="audit-save-confirm-warning">
-            <FontAwesomeIcon icon={faTriangleExclamation} aria-hidden="true" />
-            {remaining} asset{remaining === 1 ? "" : "s"} not yet audited.
-          </p>
+          <div className="audit-save-confirm-warning">
+            <FontAwesomeIcon
+              icon={faTriangleExclamation}
+              aria-hidden="true"
+              className="warning-icon"
+            />
+            <div className="warning-content">
+              <p>
+                {remaining} asset{remaining === 1 ? "" : "s"} not yet audited.
+              </p>
+              <p>Marked as missing if you proceed.</p>
+            </div>
+          </div>
         )}
 
         <div className="audit-save-confirm-actions">

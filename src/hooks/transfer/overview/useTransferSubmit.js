@@ -54,8 +54,6 @@ export function useTransferSubmit({
           move_to: targetRoom?.id ?? null,
         }));
 
-        //console.log("Room Transfer Payload:", roomPayloads);
-
         try {
           await addTransferRoom(
             {
