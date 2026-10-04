@@ -79,7 +79,7 @@ function InfoCard({ asset }) {
             <DetailItem
               label="Serial Number"
               value={asset.serial_number}
-              description="Manufacturer-issued serial number, used for warranty and identification."
+              description="Manufacturer-issued serial number used for identification."
             />
             <DetailItem
               label="Quantity"
@@ -112,7 +112,7 @@ function InfoCard({ asset }) {
             <DetailItem
               label="Local Custodian"
               value={asset.local_mr_name}
-              description="Secondary custodian assigned for day-to-day handling."
+              description="Local custodian assigned for day-to-day handling."
               onClick={
                 asset.local_mr
                   ? () => navigate(`/custodian/${asset.local_mr_username}`)
@@ -135,7 +135,7 @@ function InfoCard({ asset }) {
             <DetailItem
               label="Remarks"
               value={asset.remarks}
-              description="Additional notes or maintenance history for this asset."
+              description="Additional notes for this asset."
               className="info-card-detail-item--full"
             />
           </div>

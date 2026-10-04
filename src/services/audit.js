@@ -15,9 +15,11 @@ import {
   runTransaction,
   onSnapshot,
 } from "firebase/firestore";
-import { getReportType, fetchReportSummary } from "./report";
-import { REPORT_TYPES } from "../data/reports";
+import { getReportType, fetchReportSummary, addReport } from "./report";
+import { REPORT_TYPES, REPORT_STATUS } from "../data/reports";
 import { AUDIT_NO_CONFIG } from "../data/audit";
+import { fetchRoomName } from "./room";
+import { isAssetCondemned } from "./asset";
 
 //==========AUDIT ROOM===========
 
@@ -39,6 +41,24 @@ export async function generateAuditNo(type) {
   });
 }
 
+async function assertNoOpenAuditInRoom(roomId) {
+  const q = query(
+    collection(db, "audit_room"),
+    where("room_id", "==", roomId),
+    where("status", "==", "Ongoing"),
+    limit(1),
+  );
+
+  const snapshot = await getDocs(q);
+
+  if (!snapshot.empty) {
+    const open = snapshot.docs[0].data();
+    throw new Error(
+      `This room already has an ongoing audit (${open.audit_no}). Complete it before starting a new one.`,
+    );
+  }
+}
+
 export async function addAuditRoom({
   roomId,
   roomCustodian,
@@ -50,6 +70,8 @@ export async function addAuditRoom({
   if (!assets || assets.length === 0) {
     throw new Error("No assets provided for this audit.");
   }
+
+  await assertNoOpenAuditInRoom(roomId);
 
   const auditNo = await generateAuditNo("room");
 
@@ -294,11 +316,61 @@ export async function completeAuditSession(auditID) {
     throw new Error(`completeAuditSession: audit "${auditID}" not found.`);
   }
 
-  const { room_id } = auditSnap.data();
+  const auditData = auditSnap.data();
+  const { room_id } = auditData;
+
   if (!room_id) {
     throw new Error(`completeAuditSession: audit "${auditID}" has no room_id.`);
   }
+  if (auditData.status === "completed") {
+    throw new Error("This audit has already been completed.");
+  }
 
+  // == Step 1: file a missing report for every asset not audited ==========
+  const roomName = (await fetchRoomName(room_id).catch(() => null)) ?? room_id;
+
+  const notAuditedSnap = await getDocs(
+    query(
+      collection(db, "audit_room", auditID, "audit_item"),
+      where("audit_status", "==", "not_audited"),
+    ),
+  );
+
+  const reported = [];
+  const skipped = [];
+
+  // Sequential on purpose: addReport uses a counter transaction,
+  // and parallel calls would contend on the same counter doc.
+  for (const itemDoc of notAuditedSnap.docs) {
+    const item = itemDoc.data();
+
+    try {
+      const assetSnap = await getDoc(doc(db, "asset", item.asset_id));
+      if (!assetSnap.exists()) throw new Error("Asset not found.");
+
+      const asset = { id: assetSnap.id, ...assetSnap.data() };
+
+      const { id: reportDocId, report_no } = await addReport(
+        {
+          type: REPORT_STATUS.MISSING,
+          asset_id: item.asset_id,
+          asset,
+          description: item.description,
+          narrative: `Not found during audit in ${roomName}`,
+          photo: null,
+        },
+        auditData.audited_by ?? null,
+        auditData.audited_by_name ?? null,
+      );
+
+      reported.push({ asset_id: item.asset_id, report_no, reportDocId });
+    } catch (err) {
+      // e.g. asset already has an open missing report, or is condemned
+      skipped.push({ asset_id: item.asset_id, reason: err.message });
+    }
+  }
+
+  // == Step 2: mark the audit completed ===================================
   const roomRef = doc(db, "room", room_id);
   const completedAt = serverTimestamp();
 
@@ -310,8 +382,9 @@ export async function completeAuditSession(auditID) {
   batch.update(roomRef, {
     last_audited_at: completedAt,
   });
-
   await batch.commit();
+
+  return { reported, skipped };
 }
 
 export async function addUnexpectedDiscrepancy(auditID, assetData, roomId) {
@@ -320,6 +393,12 @@ export async function addUnexpectedDiscrepancy(auditID, assetData, roomId) {
 
   const assetId = assetData.id ?? assetData.asset_id;
   if (!assetId) throw new Error("assetData must include an id or asset_id.");
+
+  if (isAssetCondemned(assetData)) {
+    throw new Error(
+      "This asset is condemned and cannot be flagged as a discrepancy.",
+    );
+  }
 
   const auditRef = doc(db, "audit_room", auditID);
   const discrepancyRef = doc(

@@ -442,6 +442,10 @@ export async function updateAssetStatus(assetId, status) {
   });
 }
 
+export function isAssetCondemned(asset) {
+  return asset?.status?.toLowerCase() === "condemned";
+}
+
 export async function updateAssetRoom(assetId, room) {
   const docRef = doc(db, "asset", assetId);
   await updateDoc(docRef, {

@@ -395,3 +395,45 @@
     font-size: 12px;
   }
 }
+
+/* ── Desktop: room name on up to two rows, actions stay on the same line ── */
+@media (min-width: 769px) {
+  .audit-session-header {
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .audit-session-header-left {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .audit-session-title-group {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .audit-session-header-right {
+    flex-shrink: 0;
+    flex-wrap: nowrap;
+  }
+
+  .audit-session-room-name {
+    font-size: 1.15rem !important;
+    line-height: 1.25;
+    letter-spacing: 0.06em;
+
+    white-space: normal;
+    overflow-wrap: anywhere;
+
+    /* cap at 2 rows; only truncates if it needs a 3rd */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

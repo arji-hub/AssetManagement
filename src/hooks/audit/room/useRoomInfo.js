@@ -6,8 +6,7 @@ import {
   addUnexpectedDiscrepancy,
 } from "../../../services/audit";
 import { useRoomAssets } from "../../room/useRoomAssets";
-import useRoomOverview from "./useRoomOverview";
-import { fetchAssetByID } from "../../../services/asset";
+import { fetchAssetByID, isAssetCondemned } from "../../../services/asset";
 import { useNavigate } from "react-router-dom";
 
 function useRoomInfo(auditID) {
@@ -145,13 +144,34 @@ function useRoomInfo(auditID) {
         return;
       }
 
-      // Asset not found in this audit — show modal with option to flag it
+      // Not in this audit. Check whether it's condemned before offering
+      // to flag it as a discrepancy.
       if (!matchingItem) {
         setScannedItem({ id: assetId, asset_id: assetId });
-        setScanModalError("not_found.");
-        setScanModalStatus("error");
+        setScanModalError(null);
+        setScanModalStatus("loading");
         setScanModalOpen(true);
         setIsCameraOpen(false);
+
+        try {
+          const asset = await fetchAssetByID(assetId);
+
+          if (isAssetCondemned(asset)) {
+            setScannedItem({
+              id: assetId,
+              asset_id: assetId,
+              description: asset.description,
+              serial_number: asset.serial_number,
+            });
+            setScanModalStatus("condemned");
+            return;
+          }
+        } catch {
+          // Lookup failed: fall through to the normal not-found flow
+        }
+
+        setScanModalError("not_found.");
+        setScanModalStatus("error");
         return;
       }
 
@@ -194,6 +214,7 @@ function useRoomInfo(auditID) {
     if (
       scanModalStatus === "success" ||
       scanModalStatus === "duplicate" ||
+      scanModalStatus === "condemned" ||
       scanModalStatus === "discrepancy_added"
     ) {
       setTimeout(() => {
