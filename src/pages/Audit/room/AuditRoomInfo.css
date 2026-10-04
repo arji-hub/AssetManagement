@@ -302,6 +302,11 @@
   color: var(--text-faint);
 }
 
+.audit-status-badge--missing {
+  background: var(--missing-bg);
+  color: var(--missing);
+}
+
 /* == Verify button ============================================================ */
 
 .audit-session-verify-btn {

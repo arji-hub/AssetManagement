@@ -4,7 +4,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "../../layout/Navbar.css";
 import { createPortal } from "react-dom";
 
-function AddingStatusModal({ title, status, errorMessage, onClose }) {
+function AddingStatusModal({
+  title,
+  status,
+  errorTitle = "Something went wrong",
+  errorMessage,
+  onClose,
+}) {
   return createPortal(
     <div className="status-overlay">
       <div className="status-container">
@@ -44,7 +50,7 @@ function AddingStatusModal({ title, status, errorMessage, onClose }) {
             <div className="status-icon status-icon--error">
               <FontAwesomeIcon icon="fa-solid fa-circle-xmark" />
             </div>
-            <h2 className="status-title">Something Went Wrong</h2>
+            <h2 className="status-title">{errorTitle}</h2>
             <p className="status-message status-message--error">
               {errorMessage ||
                 "An unexpected error occurred. Please try again."}
@@ -63,6 +69,7 @@ function AddingStatusModal({ title, status, errorMessage, onClose }) {
 AddingStatusModal.propTypes = {
   title: PropTypes.string.isRequired,
   status: PropTypes.oneOf(["loading", "success", "error"]).isRequired,
+  errorTitle: PropTypes.string,
   errorMessage: PropTypes.string,
   onClose: PropTypes.func,
 };
