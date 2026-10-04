@@ -145,6 +145,10 @@
   min-height: 0;
 }
 
+.room-cards .panel-header .panel-header-cell:nth-child(1) {
+  text-align: left;
+}
+
 .room-cards .panel-header-cell:nth-last-child(2) {
   text-align: center;
 }

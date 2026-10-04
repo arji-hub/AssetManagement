@@ -98,6 +98,10 @@
   min-height: 0;
 }
 
+.custodian-cards .panel-header .panel-header-cell:nth-child(1) {
+  text-align: left;
+}
+
 .custodian-status {
   font-size: 14px;
   color: var(--text-muted);

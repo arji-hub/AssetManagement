@@ -71,7 +71,7 @@
   white-space: nowrap;
 }
 
-.custodian-row .custodian-row-cell:nth-last-child(-n + 2) {
+.custodian-row .custodian-row-cell:nth-last-child(-n + 3) {
   display: flex;
   align-items: center;
   justify-content: center;
