@@ -10,7 +10,9 @@ export function useCustodian() {
   const loadCustodians = useCallback(async () => {
     try {
       const data = await fetchCustodians();
-      setCustodians(data);
+      setCustodians(
+        [...data].sort((a, b) => (b.asset_count ?? 0) - (a.asset_count ?? 0)),
+      );
     } catch (err) {
       console.error("Failed to fetch custodians:", err);
     }

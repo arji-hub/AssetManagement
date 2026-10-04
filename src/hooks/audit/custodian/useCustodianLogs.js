@@ -20,7 +20,11 @@ function useCustodianLogs() {
     setCustodiansError("");
 
     fetchCustodians()
-      .then(setCustodians)
+      .then((data) =>
+        setCustodians(
+          [...data].sort((a, b) => (b.asset_count ?? 0) - (a.asset_count ?? 0)),
+        ),
+      )
       .catch((err) =>
         setCustodiansError(err.message ?? "Failed to load custodians."),
       )
@@ -32,9 +36,6 @@ function useCustodianLogs() {
     const query = search.trim().toLowerCase();
 
     return custodians.filter((custodian) => {
-      const assetCount = custodian.asset_count ?? 0;
-      if (assetCount <= 0) return false;
-
       if (!query) return true;
 
       const name = (custodian.fullname || "").toLowerCase();
