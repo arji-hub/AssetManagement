@@ -22,6 +22,10 @@
   flex-wrap: wrap;
 }
 
+.panel-container .panel-header .panel-header-cell:nth-child(1) {
+  text-align: left;
+}
+
 /* ── Header + back button ───────────────────────────────────── */
 .assets-header {
   display: flex;
@@ -217,6 +221,5 @@
   }
 }
 
-.asset-card-row-cell{
-  
+.asset-card-row-cell {
 }

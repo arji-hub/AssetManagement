@@ -159,3 +159,7 @@
 .asset-page .asset-card-row-cell:nth-child(2) {
   text-align: left;
 }
+
+.asset-page .panel-header .panel-header-cell:nth-child(-n + 2) {
+  text-align: left;
+}

@@ -10,7 +10,7 @@
   transition: background 0.15s ease;
 }
 
-.previous-audit-card-row-cell:nth-child(n + 3) {
+.previous-audit-card-row-cell:nth-child(n + 2) {
   display: flex;
   align-items: center;
   justify-content: center;

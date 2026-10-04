@@ -274,10 +274,12 @@
   overflow: hidden;
 }
 
-.audit-room-history-section .panel-header-cell:nth-child(-n + 2) {
-  display: flex;
-  justify-content: left;
-  text-align: center;
+.audit-room-primary-section .panel-header .panel-header-cell:nth-child(1) {
+  text-align: left;
+}
+
+.audit-room-history-section .panel-header-cell:nth-child(1) {
+  text-align: left;
 }
 
 /* == Secondary panel — previous audits, visually quieter ==================== */

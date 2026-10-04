@@ -75,14 +75,8 @@
   gap: 6px;
 }
 
-.custodian-audit-row-cell:nth-last-child(2) {
+.custodian-audit-row-cell:nth-last-child(-n + 4 ) {
   display: flex;
-  justify-content: center;
-}
-
-.custodian-audit-row .custodian-audit-row-cell:last-child {
-  display: flex;
-  align-items: center;
   justify-content: center;
 }
 
