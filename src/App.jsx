@@ -37,6 +37,8 @@ import ProfileSettings from "./pages/Settings/profile/Profile";
 import Security from "./pages/Settings/security/Security";
 import Notification from "./pages/Settings/notification/Notification";
 import Config from "./pages/Settings/config/Config";
+import Acquisition from "./pages/Asset/Acquisition";
+import AcquisitionInfo from "./pages/Asset/AcquisitionInfo";
 
 function App() {
   const { user, loading } = useAuth();
@@ -81,6 +83,14 @@ function App() {
             <Route index element={<Asset />} />
             <Route path="registration" element={<AssetRegistration />} />
             <Route path="info/:assetId" element={<AssetInfo />} />
+
+            {/* ADMIN ONLY: acquisitions */}
+            <Route element={<RoleRoute allowed={[ROLES.ADMIN]} />}>
+              <Route path="acquisition">
+                <Route index element={<Acquisition />} />
+                <Route path=":id" element={<AcquisitionInfo />} />
+              </Route>
+            </Route>
           </Route>
 
           {/* QR PAGE */}
