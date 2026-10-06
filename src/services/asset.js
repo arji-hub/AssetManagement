@@ -634,3 +634,134 @@ export function summarizeAssetEvents(assets, range) {
     trend: { direction, deltaPercent },
   };
 }
+
+/* Acquisition batch  */
+
+export function groupAssetsIntoAcquisitions(assetDocs) {
+  const map = new Map();
+
+  assetDocs.forEach((a) => {
+    if (!a.acquisition_id) return;
+
+    let acq = map.get(a.acquisition_id);
+    if (!acq) {
+      acq = {
+        id: a.acquisition_id,
+        acquisition_type: a.acquisition_type ?? null,
+        date_acquired: a.date_acquired ?? null,
+        source: a.donated_by || a.supplier || null,
+        document_url: a.donation_form_url || a.par_ics_doc_url || null,
+        asset_count: 0,
+      };
+      map.set(a.acquisition_id, acq);
+    }
+    acq.asset_count += 1;
+  });
+
+  return [...map.values()];
+}
+
+export function subscribeToAcquisitions(role, callback, onError) {
+  if (role !== ROLES.ADMIN) {
+    throw new Error("Permission denied: only admins can view acquisitions.");
+  }
+
+  const q = query(collection(db, "asset"), orderBy("date_acquired", "desc"));
+
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      callback(groupAssetsIntoAcquisitions(snapshot.docs.map((d) => d.data())));
+    },
+    (err) => onError?.(err),
+  );
+}
+
+/**
+ * Same enrichment subscribeToAssets does (custodian names, room name,
+ * category name), pulled into a helper so AssetCard/assetColumns/
+ * useAssetFilters get the fields they expect. Optional follow-up: have
+ * subscribeToAssets call this too instead of its inline copy.
+ */
+async function attachAssetDetails(assetData) {
+  const userIds = [
+    ...new Set(
+      assetData.flatMap((a) =>
+        [a.property_custodian, a.local_mr].filter(Boolean),
+      ),
+    ),
+  ];
+  const userDocs = await Promise.all(
+    userIds.map((uid) => getDoc(doc(db, "user", uid))),
+  );
+  const userMap = {};
+  const fullname = {};
+  userDocs.forEach((d) => {
+    if (d.exists()) {
+      const data = d.data();
+      userMap[d.id] = data.first_name;
+      fullname[d.id] = [data.first_name, data.middle_name, data.last_name]
+        .filter(Boolean)
+        .join(" ");
+    }
+  });
+
+  const roomNameMap = {};
+  await Promise.all(
+    [...new Set(assetData.map((a) => a.room_id).filter(Boolean))].map(
+      async (roomId) => {
+        try {
+          roomNameMap[roomId] = await fetchRoomName(roomId);
+        } catch {
+          roomNameMap[roomId] = null;
+        }
+      },
+    ),
+  );
+
+  const categoryNameMap = {};
+  await Promise.all(
+    [...new Set(assetData.map((a) => a.category_id).filter(Boolean))].map(
+      async (categoryId) => {
+        try {
+          categoryNameMap[categoryId] = await fetchCategoryName(categoryId);
+        } catch {
+          categoryNameMap[categoryId] = "---";
+        }
+      },
+    ),
+  );
+
+  return assetData.map((asset) => ({
+    ...asset,
+    property_custodian_name: userMap[asset.property_custodian] || "---",
+    property_custodian_fullname: fullname[asset.property_custodian] || "---",
+    local_mr_name: userMap[asset.local_mr] || "---",
+    local_mr_fullname: fullname[asset.local_mr] || "---",
+    category_name: categoryNameMap[asset.category_id],
+    room_name: roomNameMap[asset.room_id] ?? null,
+  }));
+}
+
+/**
+ * All assets under one acquisition, newest first. Single equality filter,
+ * so no composite index is needed; sorting happens client-side (adding
+ * orderBy here would require one).
+ */
+export async function fetchAssetsByAcquisitionId(acquisitionId) {
+  const snap = await getDocs(
+    query(collection(db, "asset"), where("acquisition_id", "==", acquisitionId)),
+  );
+
+  const assets = await attachAssetDetails(
+    snap.docs.map((d) => ({ id: d.id, ...d.data() })),
+  );
+
+  assets.sort((a, b) => {
+    const aMillis = a.created_at?.toMillis?.() ?? 0;
+    const bMillis = b.created_at?.toMillis?.() ?? 0;
+    return bMillis - aMillis;
+  });
+
+  return assets;
+}
