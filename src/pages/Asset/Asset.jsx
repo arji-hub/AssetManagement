@@ -88,12 +88,22 @@ function Asset() {
             </button>
 
             {isAdmin && (
-              <button
-                className="asset-add-btn"
-                onClick={() => navigate("/asset/registration")}
-              >
-                + Add Asset
-              </button>
+              <>
+                <button
+                  className="asset-filter-btn"
+                  onClick={() => navigate("/asset/acquisition")}
+                >
+                  <FontAwesomeIcon icon="fa-solid fa-boxes-stacked" />
+                  Acquisitions
+                </button>
+
+                <button
+                  className="asset-add-btn"
+                  onClick={() => navigate("/asset/registration")}
+                >
+                  + Add Asset
+                </button>
+              </>
             )}
           </div>
         </div>

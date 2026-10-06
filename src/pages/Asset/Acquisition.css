@@ -1,0 +1,54 @@
+.acq-header-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.acq-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.asset-page .acq-card-row-cell:nth-child(2) {
+  text-align: left;
+}
+
+.panel-container .panel-header .asset-card-row-cell:nth-child(2) {
+  text-align: left;
+}
+
+.acq-header-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.acq-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.acq-summary > * {
+  min-width: 0;
+}
+.acq-summary .audit-card-value {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1024px) {
+  .acq-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .acq-summary {
+    grid-template-columns: 1fr;
+  }
+}

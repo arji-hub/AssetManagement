@@ -6,7 +6,7 @@
 
 **Bulacan State University**
 College of Information and Communications Technology
-BSIT 3G — G2, Group 5
+BSIT 4G — G2, Group 5
 
 A web-based capstone project for tracking, registering, and monitoring institutional assets — built to replace manual, paper-based asset records with a fast, auditable digital system.
 
@@ -42,7 +42,7 @@ The **CICT Asset Management System (CICT-AMS)** is designed to give the College 
 ## 🛠️ Tech Stack
 
 | Layer                 | Technology                                   |
-| --------------------- | ---------------------------------------------|
+| --------------------- | -------------------------------------------- |
 | Frontend              | React + Vite                                 |
 | Styling               | Custom CSS                                   |
 | Backend / Database    | Firebase Firestore                           |
@@ -83,22 +83,22 @@ npm run dev
 
 ## 📂 Project Status
 
-| Phase                | Status         |
-| -------------------- | -------------- |
-| Core Architecture    | ✅ Complete    |
-| Asset Registration   | ✅ Complete    |
-| Custodian Management | ✅ Complete    |
-| Room Management      | ✅ Complete    |
-| Report Management    | ✅ Complete    |
-| Audit Management     | ✅ Complete    |
-| QR Code Integration  | ✅ Complete    |
-| System-Wide Testing  | 🔧 In Progress |
+| Phase                | Status      |
+| -------------------- | ----------- |
+| Core Architecture    | ✅ Complete |
+| Asset Registration   | ✅ Complete |
+| Custodian Management | ✅ Complete |
+| Room Management      | ✅ Complete |
+| Report Management    | ✅ Complete |
+| Audit Management     | ✅ Complete |
+| QR Code Integration  | ✅ Complete |
+| System-Wide Testing  | ✅ Complete |
 
 ---
 
 ## 👥 Team
 
-Developed by **Group #5 BSIT 3G — G4**
+Developed by **Group #5 BSIT 3G — G2**
 College of Information and Communications Technology
 Bulacan State University
 
