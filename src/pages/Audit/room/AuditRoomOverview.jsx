@@ -45,6 +45,8 @@ function AuditRoomOverview() {
     addError,
     addErrorTitle,
   } = useAuditRoomSession(roomID);
+  const ongoingAudit = previousAudits?.find((a) => !a.completed_at);
+  console.log("ongoingAudit", ongoingAudit);
 
   return (
     <MainLayout>
@@ -84,11 +86,27 @@ function AuditRoomOverview() {
               />
             )}
 
-            <AuditConfirmRoomModal
-              roomName={room?.name}
-              onConfirm={handleCreateAudit}
-              isEmpty={!totalAssets || totalAssets === 0}
-            />
+            {auditsLoading ? null : ongoingAudit ? (
+              <button
+                type="button"
+                className="audit-overview-scan-btn"
+                onClick={() =>
+                  navigate(`/audit/room/${roomID}/${ongoingAudit.id}`)
+                }
+              >
+                <FontAwesomeIcon
+                  icon="fa-solid fa-list-check"
+                  aria-hidden="true"
+                />
+                View ongoing audit
+              </button>
+            ) : (
+              <AuditConfirmRoomModal
+                roomName={room?.name}
+                onConfirm={handleCreateAudit}
+                isEmpty={!totalAssets || totalAssets === 0}
+              />
+            )}
           </div>
         </div>
 

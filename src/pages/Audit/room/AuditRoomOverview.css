@@ -97,8 +97,6 @@
 }
 
 .audit-overview-audits-wrap .panel-header-cell:nth-child(-n + 2) {
-  display: flex;
-  justify-content: left;
   text-align: center;
 }
 
