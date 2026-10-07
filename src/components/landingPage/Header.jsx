@@ -46,7 +46,7 @@ export default function Header({ onNavigate }) {
         >
           <img src={CICTLOGO} alt="" />
         </button>
-        <span>CICT-AMS Project</span>
+        <span>CICT-AMS</span>
       </div>
 
       <button

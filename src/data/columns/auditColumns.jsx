@@ -2,7 +2,159 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Status } from "../../components/ui/status/assetStatus";
 import AuditStatusBadge from "../../components/ui/status/AuditStatusBadge";
+import { PDFPreviewModal } from "../../components/modal/PDFPreviewModal";
+import { RoomInventoryPDF } from "../../pdf/templates/RoomInventoryPDF";
+import { useRoomAssets } from "../../hooks/room/useRoomAssets";
 import { formatDate, formatTime } from "../../utils/date";
+import { AUDIT_SESSION_STATUS_CONFIG } from "../audit";
+
+// ── Shared cells ─────────────────────────────────────────────────────────────
+
+function AuditSessionStatus({ status }) {
+  const config =
+    AUDIT_SESSION_STATUS_CONFIG[String(status ?? "").toLowerCase()];
+
+  if (!config) return <span>—</span>;
+
+  return (
+    <span
+      className={`audit-history-status audit-history-status--${config.className}`}
+    >
+      <FontAwesomeIcon icon={config.icon} />
+      {config.label}
+    </span>
+  );
+}
+
+function AuditFormCell({ audit }) {
+  const { assets, roomName } = useRoomAssets(audit.id);
+  return (
+    <PDFPreviewModal
+      title="Inventory Form"
+      fileName={`room-inventory-${audit.id}.pdf`}
+      document={<RoomInventoryPDF roomName={roomName} assets={assets} />}
+      triggerLabel={
+        <>
+          <FontAwesomeIcon icon="fa-solid fa-file-pdf" />
+          View
+        </>
+      }
+    />
+  );
+}
+
+// ── "Rooms" table (AuditRoom) ──
+export const roomAuditColumns = [
+  {
+    key: "room",
+    label: "Room",
+    width: "1.2fr",
+    priority: "high",
+    card: { role: "title" },
+    render: (audit) => (
+      <span className="room-audit-row-name">
+        <FontAwesomeIcon
+          icon="fa-solid fa-door-open"
+          className="icon-door icon-door--open"
+        />
+        <FontAwesomeIcon
+          icon="fa-solid fa-door-closed"
+          className="icon-door icon-door--closed"
+        />
+        <span className="room-audit-row-name-text">
+          {audit.name || audit.room_name || audit.room?.name}
+        </span>
+      </span>
+    ),
+  },
+  {
+    key: "last_audit",
+    label: "Last Audit",
+    width: "1fr",
+    priority: "high",
+    card: { role: "date" },
+    render: (audit) => (
+      <span className="room-row-audit">
+        {audit.audited_at || audit.last_audited_at
+          ? formatDate(audit.audited_at || audit.last_audited_at)
+          : "Not yet audited"}
+      </span>
+    ),
+  },
+  {
+    key: "assets",
+    label: "Total Assets",
+    width: "140px",
+    priority: "high",
+    card: { role: "assets" },
+    render: (audit) => (
+      <span className="room-row-assets-count">
+        <FontAwesomeIcon icon="fa-solid fa-box-archive" />
+        {audit.assetCount ?? audit.total_assets ?? 0}
+      </span>
+    ),
+  },
+  {
+    key: "form",
+    label: "Form",
+    width: "180px",
+    priority: "high",
+    card: { role: "action" },
+    render: (audit) => <AuditFormCell audit={audit} />,
+  },
+];
+
+// ── "Previous audits" table across all rooms (AuditRoom) ──
+export const previousAuditColumns = [
+  {
+    key: "room_name",
+    label: "Room",
+    width: "1.4fr",
+    priority: "high",
+    card: { role: "title" },
+    render: (audit) => audit.room_name ?? "Unknown room",
+  },
+  {
+    key: "audited_by_name",
+    label: "Conducted By",
+    width: "1.2fr",
+    priority: "high",
+    card: { role: "headerLeft", icon: "fa-solid fa-user" },
+    render: (audit) => audit.audited_by_name ?? "—",
+  },
+  {
+    key: "audited",
+    label: "Assets Audited",
+    width: "140px",
+    priority: "medium",
+    card: { icon: "fa-solid fa-clipboard-check" },
+    render: (audit) => `${audit.audited_count ?? 0}/${audit.total_assets ?? 0}`,
+  },
+  {
+    key: "discrepancy_count",
+    label: "Discrepancies",
+    width: "140px",
+    priority: "medium",
+    card: { icon: "fa-solid fa-triangle-exclamation" },
+    render: (audit) => audit.discrepancy_count ?? 0,
+  },
+  {
+    key: "status",
+    label: "Status",
+    width: "120px",
+    priority: "high",
+    card: { icon: "fa-solid fa-circle-info" },
+    render: (audit) => <AuditSessionStatus status={audit.status} />,
+  },
+  {
+    key: "created_at",
+    label: "Date",
+    width: "1fr",
+    priority: "high",
+    card: { role: "date" },
+    render: (audit) => (audit.created_at ? formatDate(audit.created_at) : "—"),
+  },
+];
 
 // ── "Assets in this room" table (AuditRoomOverview) ──
 export const auditRoomAssetColumns = [
@@ -38,20 +190,20 @@ export const auditRoomAssetColumns = [
   },
 ];
 
-// ── "Previous audits" table (AuditRoomOverview) ──
+// ── "Previous audits" table for one room (AuditRoomOverview) ──
 export const auditHistoryColumns = [
   {
     key: "audit_no",
     label: "Audit No.",
-    width: "1.2fr",
-    priority: "high",
+    width: "0.6fr",
+    priority: "medium",
     card: { role: "title" },
     render: (a) => a.audit_no || "—",
   },
   {
     key: "audited_by",
     label: "Conducted By",
-    width: "1.2fr",
+    width: "1.8fr",
     priority: "high",
     card: { role: "headerLeft", icon: "fa-solid fa-user" },
     render: (a) => a.audited_by_name || "—",
@@ -60,7 +212,7 @@ export const auditHistoryColumns = [
     key: "audited",
     label: "Assets Audited",
     width: "140px",
-    priority: "medium",
+    priority: "high",
     card: { icon: "fa-solid fa-clipboard-check" },
     render: (a) => `${a.audited_count ?? 0}/${a.total_assets ?? 0}`,
   },
