@@ -39,3 +39,16 @@ export const AUDIT_STATUS_COLORS = {
   missing: "#860100",
   misplaced: "#b36b00",
 };
+
+export const AUDIT_SESSION_STATUS_CONFIG = {
+  ongoing: {
+    label: "Ongoing",
+    icon: "fa-solid fa-spinner",
+    className: "ongoing",
+  },
+  completed: {
+    label: "Completed",
+    icon: "fa-solid fa-circle-check",
+    className: "completed",
+  },
+};

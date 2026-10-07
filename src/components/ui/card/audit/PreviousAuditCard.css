@@ -159,3 +159,25 @@
     display: flex;
   }
 }
+
+.audit-history-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.audit-history-status--ongoing {
+  background: color-mix(in srgb, var(--gold-500) 22%, transparent);
+  color: var(--text-strong);
+}
+
+.audit-history-status--completed {
+  background: var(--success-bg);
+  color: var(--success);
+}
