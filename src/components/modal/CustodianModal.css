@@ -59,7 +59,7 @@
   margin: 0;
   font-size: 1.1rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text-strong);
   letter-spacing: 0.01em;
 }
 
