@@ -434,7 +434,9 @@ function TransferOverview({ variant = "custodian" }) {
 
             <div className="transfer-overview-destination">
               <div className="transfer-overview-section-label">
-                Transfer Destination
+                {variant === "room" && "Transfer Destination"}
+                {variant === "localMR" && "Local MR Assignment"}
+                {variant === "custodian" && "Transfer Custodian"}
               </div>
 
               {variant === "room" ? (

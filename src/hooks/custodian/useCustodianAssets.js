@@ -13,9 +13,7 @@ export function useCustodianAssets(username) {
   const navigate = useNavigate();
 
   const [assets, setAssets] = useState([]);
-  const [custodianID, setCustodianID] = useState(null);
-  const [fullname, setFullname] = useState(null);
-  const [email, setEmail] = useState(null);
+  const [custodian, setCustodian] = useState(null);
   const [custodianStatus, setCustodianStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -25,6 +23,7 @@ export function useCustodianAssets(username) {
   const [archiveSubmitting, setArchiveSubmitting] = useState(false);
   const [archiveError, setArchiveError] = useState("");
 
+  const custodianID = custodian?.id ?? null;
   const isActive = custodianStatus !== "inactive";
 
   useEffect(() => {
@@ -34,26 +33,24 @@ export function useCustodianAssets(username) {
     async function start() {
       setLoading(true);
       setError(null);
-      setFullname(null);
+      setCustodian(null);
 
       try {
-        const custodian = await findCustodian(username);
+        const found = await findCustodian(username);
 
         if (cancelled) return;
 
-        if (!custodian) {
+        if (!found) {
           setError(new Error("Custodian not found."));
           setLoading(false);
           return;
         }
 
-        setCustodianID(custodian.id);
-        setFullname(custodian.fullname);
-        setEmail(custodian.email);
-        setCustodianStatus(custodian.status ?? "active");
+        setCustodian(found);
+        setCustodianStatus(found.status ?? "active");
 
         unsubscribe = subscribeToAssetsByCustodian(
-          custodian.id,
+          found.id,
           (assets) => {
             setAssets(assets);
             setLoading(false);
@@ -116,8 +113,7 @@ export function useCustodianAssets(username) {
 
   return {
     assets,
-    fullname,
-    email,
+    custodian,
     isActive,
     loading,
     error,

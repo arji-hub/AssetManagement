@@ -13,6 +13,8 @@ const GMAIL_PASS = defineSecret("GMAIL_PASS");
 
 const NOTIFICATION_CATEGORY = "transfer_request";
 
+const MAX_LISTED_ASSETS = 5;
+
 const SLOT_LABELS = {
   admin: "Admin",
   from: "Current Custodian",
@@ -24,26 +26,60 @@ function humanizeType(type) {
   return type.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-// slots that still need to acknowledge — filtered by whose turn it actually
-// is, based on status, since admin only acts after from/to have both
-// acknowledged (status === "for_approval"). Without this, admin.acknowledged
-// starts false at creation and would look "pending" immediately, even
-// though nothing is actually waiting on admin yet.
+// Old docs have a single top-level asset_id/asset_description; new docs have
+// an `items` array. Normalize both into one list.
+function getRequestItems(data) {
+  if (Array.isArray(data?.items) && data.items.length > 0) return data.items;
+  if (data?.asset_id) {
+    return [
+      { asset_id: data.asset_id, asset_description: data.asset_description },
+    ];
+  }
+  return [];
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function assetsHtml(transferData, marginBottom = "8px") {
+  const items = getRequestItems(transferData);
+  if (items.length === 0) return "";
+
+  const nameOf = (item) =>
+    escapeHtml(item.asset_description || item.asset_id || "Unknown asset");
+
+  if (items.length === 1) {
+    return `<p style="margin: 0 0 ${marginBottom}; font-size: 14px; color: #333;"><strong>Asset:</strong> ${nameOf(items[0])}</p>`;
+  }
+
+  const shown = items.slice(0, MAX_LISTED_ASSETS);
+  const remaining = items.length - shown.length;
+
+  return `
+      <p style="margin: 0 0 4px; font-size: 14px; color: #333;"><strong>Assets (${items.length}):</strong></p>
+      <ul style="margin: 0 0 ${marginBottom}; padding-left: 20px; font-size: 14px; color: #333; line-height: 1.6;">
+        ${shown.map((item) => `<li>${nameOf(item)}</li>`).join("")}
+        ${remaining > 0 ? `<li style="color: #777;">and ${remaining} more</li>` : ""}
+      </ul>`;
+}
+
 function getPendingRecipients(acknowledgments, status) {
   const candidates = ["admin", "from", "to"]
     .map((slot) => ({ slot, ...acknowledgments?.[slot] }))
     .filter((a) => a.uid && !a.acknowledged);
 
   if (status === "for_approval") {
-    // only admin should be notified at this stage
     return candidates.filter((a) => a.slot === "admin");
   }
 
-  // status is "pending" — from/to still need to acknowledge; admin isn't up yet
   return candidates.filter((a) => a.slot !== "admin");
 }
 
-// every slot that has a real participant, regardless of ack state
 function getAllParticipants(acknowledgments) {
   return ["admin", "from", "to"]
     .map((slot) => ({ slot, ...acknowledgments?.[slot] }))
@@ -76,7 +112,7 @@ function pendingApprovalHtml({
     </p>
     <div style="background-color: #fff8ee; border-left: 4px solid #f5aa2c; padding: 16px; border-radius: 4px; margin: 24px 0;">
       <p style="margin: 0 0 8px; font-size: 14px; color: #333;"><strong>Type:</strong> ${humanizeType(transferData.type)}</p>
-      <p style="margin: 0 0 8px; font-size: 14px; color: #333;"><strong>Asset:</strong> ${transferData.asset_description || transferData.asset_id}</p>
+      ${assetsHtml(transferData, "8px")}
       <p style="margin: 0; font-size: 14px; color: #333;"><strong>Requested by:</strong> ${transferData.requested_by_name}</p>
       ${transferData.notes ? `<p style="margin: 8px 0 0; font-size: 14px; color: #333;"><strong>Notes:</strong> ${transferData.notes}</p>` : ""}
     </div>
@@ -115,7 +151,7 @@ function resolvedHtml({ transferData, requestId, recipientFirstName }) {
     </p>
     <div style="background-color: #fff8ee; border-left: 4px solid #f5aa2c; padding: 16px; border-radius: 4px; margin: 24px 0;">
       <p style="margin: 0 0 8px; font-size: 14px; color: #333;"><strong>Type:</strong> ${humanizeType(transferData.type)}</p>
-      <p style="margin: 0; font-size: 14px; color: #333;"><strong>Asset:</strong> ${transferData.asset_description || transferData.asset_id}</p>
+      ${assetsHtml(transferData, "0")}
     </div>
     <div style="text-align: center; margin: 32px 0;">
       <a href="https://ams-cict.web.app/transfer/${requestId}"
@@ -150,8 +186,8 @@ async function notifyRecipients(
   await Promise.all(
     recipients.map(async (r) => {
       const userData = await getUserData(r.uid);
-      if (!userData?.email) return; // no email on file — skip silently, don't fail the whole batch
-      if (!isNotificationEnabled(userData, NOTIFICATION_CATEGORY)) return; // opted out in Settings > Notifications
+      if (!userData?.email) return;
+      if (!isNotificationEnabled(userData, NOTIFICATION_CATEGORY)) return;
       try {
         await sendEmail({
           gmailUser,
@@ -166,7 +202,6 @@ async function notifyRecipients(
           }),
         });
       } catch (err) {
-        // one failed email shouldn't crash the trigger or block the others
         console.error(
           `Failed to send transfer email to ${userData.email}:`,
           err,
@@ -228,7 +263,7 @@ exports.onTransferRequestUpdated = onDocumentUpdated(
         gmailUser,
         gmailPass,
       );
-      return; // skip the "next approver" email below — nothing left to approve
+      return;
     }
 
     const someoneJustAcknowledged = ["admin", "from", "to"].some((slot) => {
@@ -239,7 +274,7 @@ exports.onTransferRequestUpdated = onDocumentUpdated(
       );
     });
 
-    if (!someoneJustAcknowledged) return; // unrelated field changed — don't spam email
+    if (!someoneJustAcknowledged) return;
 
     const pending = getPendingRecipients(after.acknowledgments, after.status);
     if (pending.length === 0) return;

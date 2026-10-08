@@ -131,3 +131,8 @@ export function getMillis(value) {
   if (value instanceof Date) return value.getTime();
   return 0;
 }
+
+export function toDate(value) {
+  const ms = getTimeValue(value);
+  return ms ? new Date(ms) : null;
+}

@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import MainLayout from "../../../components/layout/MainLayout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClipboardCheck } from "@fortawesome/free-solid-svg-icons";
 import { PDFPreviewModal } from "../../../components/modal/PDFPreviewModal";
 import { RoomInventoryPDF } from "../../../pdf/templates/RoomInventoryPDF";
 import useRoomOverview from "../../../hooks/audit/room/useRoomOverview";
-import AuditConfirmRoomModal from "../../../components/modal/AuditConfirmRoomModal";
+import ConfirmModal from "../../../components/modal/ConfirmModal";
 import AuditCard from "../../../components/ui/card/audit/AuditCard";
 import BackButton from "../../../components/ui/button/BackButton";
 import useAuditRoomSession from "../../../hooks/audit/room/useAuditRoomSession";
@@ -46,7 +47,8 @@ function AuditRoomOverview() {
     addErrorTitle,
   } = useAuditRoomSession(roomID);
   const ongoingAudit = previousAudits?.find((a) => !a.completed_at);
-  console.log("ongoingAudit", ongoingAudit);
+  const isEmpty = !totalAssets || totalAssets === 0;
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   return (
     <MainLayout>
@@ -70,7 +72,7 @@ function AuditRoomOverview() {
           </div>
 
           <div className="audit-overview-header-actions">
-            {!(!totalAssets || totalAssets === 0) && (
+            {!isEmpty && (
               <PDFPreviewModal
                 title="Inventory Form"
                 fileName={`room-inventory-${room?.name ?? roomID}.pdf`}
@@ -101,11 +103,14 @@ function AuditRoomOverview() {
                 View ongoing audit
               </button>
             ) : (
-              <AuditConfirmRoomModal
-                roomName={room?.name}
-                onConfirm={handleCreateAudit}
-                isEmpty={!totalAssets || totalAssets === 0}
-              />
+              <button
+                type="button"
+                className="audit-overview-scan-btn"
+                onClick={() => setIsConfirmOpen(true)}
+              >
+                <FontAwesomeIcon icon={faClipboardCheck} aria-hidden="true" />
+                Create new audit
+              </button>
             )}
           </div>
         </div>
@@ -220,6 +225,29 @@ function AuditRoomOverview() {
           />
         </div>
       </div>
+      {!auditsLoading && !ongoingAudit && (
+        <ConfirmModal
+          isOpen={isConfirmOpen}
+          onClose={() => setIsConfirmOpen(false)}
+          onConfirm={handleCreateAudit}
+          title={isEmpty ? "No assets to audit" : "Start a new audit?"}
+          infoOnly={isEmpty}
+          closeLabel="Return"
+        >
+          {isEmpty ? (
+            <p>
+              This room{room?.name ? ` (${room.name})` : ""} has no assets yet.
+              Add assets to this room before starting an audit.
+            </p>
+          ) : (
+            <p>
+              This will begin a new audit session
+              {room?.name ? ` for ${room.name}` : ""}. Make sure any audit
+              currently in progress for this room has been completed first.
+            </p>
+          )}
+        </ConfirmModal>
+      )}
       {addStatus && (
         <AddingStatusModal
           title="Audit"

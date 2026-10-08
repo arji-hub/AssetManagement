@@ -19,7 +19,7 @@ import { getName, getAdmin } from "./user";
 import ROLES from "../data/roles";
 import { TRANSFER_TYPES, STATUS } from "../data/transfer";
 import { roomCount, resolveRoomName } from "./room.js";
-import { getMillis } from "../utils/date";
+import { getMillis, toDate } from "../utils/date";
 
 const COLLECTION = "transfer_request";
 
@@ -325,13 +325,6 @@ function chunk(arr, size) {
   return out;
 }
 
-/**
- * Blocks filing a request if ANY asset in the batch already has an open
- * (non-completed) transfer request. `array-contains-any` maxes out at 10
- * values per query, so asset IDs are checked in chunks of 10 and merged.
- * Relies on the doc-level `asset_ids` flat array (kept in sync with
- * `items`) — Firestore can't query a field nested inside an array of maps.
- */
 async function assertNoOpenTransferForAssets(assetIds) {
   const col = collection(db, COLLECTION);
   const chunks = chunk(assetIds, 10);
@@ -364,13 +357,6 @@ async function assertNoOpenTransferForAssets(assetIds) {
   }
 }
 
-/**
- * Normalizes a transfer_request doc's assets into a uniform item list,
- * regardless of whether it was written before or after the multi-asset
- * restructure. Lets old completed/denied docs (single top-level asset_id/
- * asset_description, no `items`) keep rendering correctly without a data
- * migration.
- */
 export function getRequestItems(request) {
   if (Array.isArray(request?.items) && request.items.length > 0) {
     return request.items;
@@ -920,22 +906,6 @@ function buildEmptyBuckets(range) {
   return buckets;
 }
 
-function toDate(value) {
-  const ms = getMillis(value);
-  return ms ? new Date(ms) : null;
-}
-
-/**
- * Pure transform: raw transfer_request-shaped items -> { series, totals,
- * trend } for the admin view of TransferDashboardPanel: circulation, not
- * backlog. Bucketed by completed_at; only status === "completed" items
- * count. For each bucket, tracks both the number of REQUESTS resolved and
- * the number of ASSETS moved (a single request can carry several assets,
- * via getRequestItems), since those tell different stories — request
- * count is approval-workflow volume, asset count is actual circulation.
- * Admin has no personal from/to stake, so unlike
- * summarizeCustodianAssignmentEvents this doesn't filter by uid.
- */
 export function summarizeTransferActivity(items, range) {
   const { currentStart, previousStart } = getRangeBounds(range);
   const bucketMap = new Map(
@@ -1001,12 +971,6 @@ export function summarizeTransferActivity(items, range) {
 
 // ── Firestore-backed subscriptions (only these touch the network) ──
 
-/**
- * Scopes a live collection of transfer_request docs created since
- * `sinceDate`: admins get everything, everyone else gets only requests
- * they're party to (requester, from, or to), merged the same way
- * subscribeMergedByFields() does elsewhere in this file.
- */
 function subscribeScopedSince(user, sinceDate, callback, onError) {
   const col = collection(db, COLLECTION);
 
@@ -1079,12 +1043,6 @@ export function subscribeToTransferActivityTrend(
   );
 }
 
-/**
- * Live "currently open" backlog count (Pending + For Approval),
- * independent of the Month/Year range. This is the same query the old
- * useTransferSummary hook ran inline — moved here so the hook never
- * imports firebase/firestore directly.
- */
 export function subscribeToPendingSummary(user, callback, onError) {
   if (!user?.uid) {
     callback(0);
@@ -1103,15 +1061,6 @@ export function subscribeToPendingSummary(user, callback, onError) {
   return subscribeToAction(user, (items) => callback(items.length), onError);
 }
 
-/**
- * Pure transform: raw transfer_request-shaped items -> { series, totals,
- * trend } for a non-admin custodian's view of AssetDashboardPanel: tracks
- * when assets were assigned TO them vs removed FROM them, for completed
- * transfers only. Bucketed by completed_at (when it actually took effect),
- * not created_at. Works uniformly across ASSIGN/REMOVE/TRANSFER/ASSIGNMR/
- * REMOVEMR — every type encodes a from/to pair, so no type-specific
- * branching is needed here.
- */
 export function summarizeCustodianAssignmentEvents(items, range, uid) {
   const { currentStart, previousStart } = getRangeBounds(range);
   const bucketMap = new Map(
@@ -1240,4 +1189,106 @@ export function subscribeToCustodianAssignmentTrend(
       callback(summarizeCustodianAssignmentEvents(items, range, user.uid)),
     onError,
   );
+}
+
+//PROMOTE TO FULLTIME requests (admin only)
+export async function getPromotionBlockers(custodianId) {
+  const snap = await getDocs(
+    query(collection(db, "asset"), where("local_mr", "==", custodianId)),
+  );
+  const assetIds = snap.docs.map((d) => d.id);
+  if (assetIds.length === 0) return [];
+
+  const snapshots = await Promise.all(
+    chunk(assetIds, 10).map((ids) =>
+      getDocs(
+        query(
+          collection(db, COLLECTION),
+          where("asset_ids", "array-contains-any", ids),
+          where("completed_at", "==", null),
+        ),
+      ),
+    ),
+  );
+
+  const blocked = new Set();
+  snapshots.forEach((s) =>
+    s.docs.forEach((d) =>
+      (d.data().asset_ids || []).forEach((id) => {
+        if (assetIds.includes(id)) blocked.add(id);
+      }),
+    ),
+  );
+  return [...blocked];
+}
+
+export async function createPromotionTransferRequest(custodianId, requestedBy) {
+  if (!custodianId) throw new Error("Custodian ID is required.");
+
+  // ── 1. Scan assets held as local MR by this custodian ──
+  const snap = await getDocs(
+    query(collection(db, "asset"), where("local_mr", "==", custodianId)),
+  );
+
+  // ── 2. Group by property custodian ──
+  // Key is the property custodian uid, or null for assets with none.
+  // Assets where the promoted custodian is already the property custodian
+  // are skipped (nothing to transfer).
+  const groups = new Map(); // propertyCustodianUid | null -> items[]
+  snap.docs.forEach((d) => {
+    const { property_custodian, description } = d.data();
+    const pc = property_custodian ?? null;
+    if (pc === custodianId) return;
+
+    if (!groups.has(pc)) groups.set(pc, []);
+    groups.get(pc).push({ asset_id: d.id, asset_description: description });
+  });
+
+  if (groups.size === 0) return [];
+
+  // ── 3. Check every asset up front so we don't half-create requests ──
+  const allAssetIds = [...groups.values()].flatMap((items) =>
+    items.map((i) => i.asset_id),
+  );
+  await assertNoOpenTransferForAssets(allAssetIds);
+
+  // ── 4. Resolve requester + notes ──
+  let requester = requestedBy;
+  if (!requester?.uid) {
+    const admin = await getAdmin();
+    if (!admin) throw new Error("No admin found to file the transfer request.");
+    requester = { uid: admin.uid, name: admin.fullname, role: ROLES.ADMIN };
+  }
+
+  const custodian = await getName(custodianId);
+  const notes = `Auto-generated upon promotion of ${custodian?.fullname ?? "custodian"} to full-time.`;
+
+  // ── 5. One request per group ──
+  // - has property custodian -> TRANSFER (FULLTIME -> FULLTIME)
+  // - no property custodian  -> ASSIGN   (from = null)
+  const created = [];
+  for (const [propertyCustodianUid, items] of groups) {
+    try {
+      const request = await addTransferRequest(
+        {
+          items,
+          from: propertyCustodianUid
+            ? { uid: propertyCustodianUid, role: ROLES.FULLTIME }
+            : null,
+          to: { uid: custodianId, role: ROLES.FULLTIME },
+          notes,
+        },
+        requester.uid,
+        requester.name,
+        requester.role,
+      );
+      created.push(request);
+    } catch (err) {
+      throw new Error(
+        `Created ${created.length} of ${groups.size} transfer request(s) before failing: ${err.message}`,
+      );
+    }
+  }
+
+  return created;
 }

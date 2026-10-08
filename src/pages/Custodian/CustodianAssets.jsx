@@ -1,6 +1,6 @@
 import React from "react";
 import "./CustodianAssets.css";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import MainLayout from "../../components/layout/MainLayout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FilterModal from "../../components/ui/filter/FilterModal";
@@ -13,17 +13,18 @@ import Table from "../../components/panel/Table";
 import AssetCard from "../../components/ui/card/asset/AssetCard";
 import { custodianAssetsColumns } from "../../data/columns";
 import InputModal from "../../components/modal/InputModal";
+import ConfirmModal from "../../components/modal/ConfirmModal";
+import AddingStatusModal from "../../components/ui/status/AddingStatusModal";
+import { useCustodianPromote } from "../../hooks/custodian/useCustodianPromote";
 
 function CustodianAssets() {
   const { username } = useParams();
-  const navigate = useNavigate();
 
   const {
     assets,
     loading,
     error,
-    fullname,
-    email,
+    custodian,
     isActive,
     handleArchiveCustodian,
     showArchiveModal,
@@ -32,6 +33,20 @@ function CustodianAssets() {
     handleArchiveConfirm,
     handleArchiveClose,
   } = useCustodianAssets(username);
+
+  const {
+    isPartTime,
+    hasAssets,
+    assetCount,
+    promoting,
+    promoteStatus,
+    promoteError,
+    closePromoteStatus,
+    showPromoteModal,
+    openPromoteModal,
+    closePromoteModal,
+    handlePromoteConfirm,
+  } = useCustodianPromote(custodian, assets?.length ?? 0);
 
   const {
     showFilter,
@@ -58,28 +73,47 @@ function CustodianAssets() {
             <BackButton />
 
             <div className="custodian-context-card">
-              <div className="custodian-context-primary">
-                <h1 className="assets-title">
-                  <span className="assets-title-text">{fullname}</span>
-                </h1>
+              <div className="custodian-context-info">
+                <div className="custodian-context-primary">
+                  <h1 className="assets-title">
+                    <span className="assets-title-text">
+                      {custodian?.fullname}
+                    </span>
+                  </h1>
+                </div>
+
+                <div className="custodian-context-email">
+                  <span className="email-icon-badge">
+                    <FontAwesomeIcon icon="fa-solid fa-envelope" />
+                  </span>
+                  <span className="custodian-email-text">
+                    {custodian?.email}
+                  </span>
+                </div>
               </div>
 
-              <div className="custodian-context-email">
-                <span className="email-icon-badge">
-                  <FontAwesomeIcon icon="fa-solid fa-envelope" />
-                </span>
-                <span className="custodian-email-text">{email}</span>
-              </div>
+              {isPartTime && (
+                <button
+                  type="button"
+                  className="promote-custodian-btn"
+                  onClick={openPromoteModal}
+                  disabled={loading || promoting}
+                  aria-label="Promote to full-time custodian"
+                  title={loading ? "Loading assets…" : "Promote to full-time"}
+                >
+                  <FontAwesomeIcon icon="fa-solid fa-circle-up" />
+                </button>
+              )}
             </div>
           </div>
 
           <div className="assets-settings">
             <PDFPreviewModal
               title="Custodian Inventory Form"
-              fileName={`custodian-inventory-${fullname}.pdf`}
+              fileName={`custodian-inventory-${custodian?.fullname}.pdf`}
               document={
                 <CustodianInventoryPDF
-                  custodianName={fullname}
+                  custodianName={custodian?.fullname}
                   assets={filteredAssets}
                 />
               }
@@ -167,6 +201,8 @@ function CustodianAssets() {
           loadingOptions={loadingOptions}
         />
       )}
+
+      {/* ── Archive / Restore Modal ── */}
       {showArchiveModal && (
         <InputModal
           title={isActive ? "Archive Custodian" : "Restore Custodian"}
@@ -181,7 +217,7 @@ function CustodianAssets() {
               ? "Archiving does not delete this custodian's history — past transfer logs and audits referencing them will remain intact."
               : "Restoring makes this custodian selectable again for asset transfers and audits."
           }
-          value={fullname}
+          value={custodian?.fullname}
           onChange={() => {}}
           onSubmit={handleArchiveConfirm}
           onClose={handleArchiveClose}
@@ -189,6 +225,44 @@ function CustodianAssets() {
           error={archiveError}
           submitLabel={isActive ? "Archive" : "Restore"}
           readOnly
+        />
+      )}
+
+      {/* ── Promote to Full-time Modal ── */}
+      <ConfirmModal
+        isOpen={showPromoteModal}
+        onClose={closePromoteModal}
+        onConfirm={handlePromoteConfirm}
+        title="Promote to full-time?"
+        icon="fa-solid fa-circle-up"
+        iconTone="info"
+        confirmTone="primary"
+        confirmLabel={hasAssets ? "Promote & transfer" : "Promote"}
+        confirmIcon={
+          hasAssets ? "fa-solid fa-right-left" : "fa-solid fa-circle-up"
+        }
+      >
+        <p>
+          {custodian?.fullname ? (
+            <strong>{custodian?.fullname}</strong>
+          ) : (
+            "This custodian"
+          )}{" "}
+          will be promoted from part-time to full-time.{" "}
+          {hasAssets
+            ? `A transfer request will also be generated for the ${assetCount} asset${assetCount === 1 ? "" : "s"} currently assigned to them.`
+            : "Their history will stay as it is."}
+        </p>
+      </ConfirmModal>
+
+      {/* ── Promote result (success / error) ── */}
+      {promoteStatus && (
+        <AddingStatusModal
+          title="Promotion"
+          status={promoteStatus}
+          errorTitle="Promotion failed"
+          errorMessage={promoteError}
+          onClose={closePromoteStatus}
         />
       )}
     </MainLayout>
