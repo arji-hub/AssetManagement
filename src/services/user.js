@@ -11,6 +11,7 @@ import {
   limit,
   serverTimestamp,
   or,
+  runTransaction,
 } from "firebase/firestore";
 import { getFunctions, httpsCallable } from "firebase/functions";
 import { toLowerCase } from "../utils/TextCasing";
@@ -395,4 +396,38 @@ export async function restoreCustodian(uid, role) {
     status: "active",
     updated_at: serverTimestamp(),
   });
+}
+
+export async function promoteCustodian(id) {
+  if (!id) throw new Error("Custodian ID is required.");
+
+  const ref = doc(db, "user", id);
+
+  try {
+    await runTransaction(db, async (tx) => {
+      const snap = await tx.get(ref);
+
+      if (!snap.exists()) throw new Error("Custodian not found.");
+
+      const { role } = snap.data();
+      if (role === "fulltime") {
+        throw new Error("Custodian is already full-time.");
+      }
+      if (role !== "parttime") {
+        throw new Error("Only part-time custodians can be promoted.");
+      }
+
+      tx.update(ref, { role: "fulltime" });
+    });
+  } catch (err) {
+    console.error("promoteCustodian failed:", err);
+
+    if (err.code === "permission-denied") {
+      throw new Error("You don't have permission to promote this custodian.");
+    }
+    if (err.code === "unavailable") {
+      throw new Error("Network error. Please check your connection and try again.");
+    }
+    throw err;
+  }
 }

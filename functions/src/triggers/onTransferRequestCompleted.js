@@ -74,17 +74,36 @@ exports.onTransferRequestCompleted = onDocumentUpdated(
           { requestId, assetIds, type: after.type },
         );
       } else if (toUid) {
+        const refs = assetIds.map((assetId) =>
+          db.collection("asset").doc(assetId),
+        );
+
+        // When property_custodian is being set, read the current assets so we can
+        // drop local_mr wherever it matches the new property custodian.
+        const snaps = isLocalMr ? [] : await db.getAll(...refs);
+
+        let clearedLocalMr = 0;
         const batch = db.batch();
-        assetIds.forEach((assetId) => {
-          batch.update(db.collection("asset").doc(assetId), {
+
+        refs.forEach((ref, i) => {
+          const update = {
             [fieldName]: toUid,
             updated_at: FieldValue.serverTimestamp(),
-          });
+          };
+
+          if (!isLocalMr && snaps[i]?.data()?.local_mr === toUid) {
+            update.local_mr = null;
+            clearedLocalMr += 1;
+          }
+
+          batch.update(ref, update);
         });
+
         await batch.commit();
         logger.info(
-          `transfer_request/${requestId}: set ${fieldName} to ${toUid} on ${assetIds.length} asset(s).`,
-          { requestId, assetIds, type: after.type, toUid },
+          `transfer_request/${requestId}: set ${fieldName} to ${toUid} on ${assetIds.length} asset(s)` +
+            (clearedLocalMr ? `, cleared local_mr on ${clearedLocalMr}.` : "."),
+          { requestId, assetIds, type: after.type, toUid, clearedLocalMr },
         );
       } else {
         logger.warn(
