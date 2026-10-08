@@ -10,7 +10,7 @@ export const TRANSFER_COLUMNS = {
   action: [
     {
       key: "asset_id",
-      label: "Assets Transferred",
+      label: "Assets",
       width: "0.9fr",
       priority: "high",
       render: (r) => (

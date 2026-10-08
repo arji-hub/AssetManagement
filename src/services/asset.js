@@ -11,6 +11,7 @@ import {
   updateDoc,
   query,
   where,
+  or,
   orderBy,
   onSnapshot,
   serverTimestamp,
@@ -34,12 +35,17 @@ export function subscribeToAssets(role, currentUserUid, callback, onError) {
   let q;
   if (role === ROLES.ADMIN) {
     q = query(assetsRef, orderBy("date_acquired", "desc"));
-  } else if (role === ROLES.PARTTIME) {
-    q = query(assetsRef, where("local_mr", "==", currentUserUid));
-  } else if (role === ROLES.FULLTIME) {
-    q = query(assetsRef, where("property_custodian", "==", currentUserUid));
   } else {
-    throw new Error("Invalid user role: " + role);
+    if (!currentUserUid) {
+      throw new Error("Missing user UID for non-admin asset subscription");
+    }
+    q = query(
+      assetsRef,
+      or(
+        where("local_mr", "==", currentUserUid),
+        where("property_custodian", "==", currentUserUid),
+      ),
+    );
   }
 
   const unsubscribe = onSnapshot(
@@ -750,7 +756,10 @@ async function attachAssetDetails(assetData) {
  */
 export async function fetchAssetsByAcquisitionId(acquisitionId) {
   const snap = await getDocs(
-    query(collection(db, "asset"), where("acquisition_id", "==", acquisitionId)),
+    query(
+      collection(db, "asset"),
+      where("acquisition_id", "==", acquisitionId),
+    ),
   );
 
   const assets = await attachAssetDetails(
