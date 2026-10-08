@@ -109,11 +109,23 @@ function About() {
                 key={member.name + member.role}
                 style={{ "--reveal-index": index }}
               >
+                <div className="team-card__photo">
+                  {member.photo ? (
+                    <img src={member.photo} alt={member.name} loading="lazy" />
+                  ) : (
+                    <span aria-hidden="true">
+                      {member.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .slice(0, 2)
+                        .join("")}
+                    </span>
+                  )}
+                </div>
                 <div className="team-card__header">
                   <h3 className="team-card__name">{member.name}</h3>
                   <span className="team-card__role">{member.role}</span>
                 </div>
-                <p className="team-card__bio">{member.bio}</p>
               </div>
             ))}
           </div>
