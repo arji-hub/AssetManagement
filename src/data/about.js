@@ -3,9 +3,23 @@ import {
   faUserShield,
   faClipboardCheck,
   faChartLine,
-  faLayerGroup,
-  faBullseye,
 } from "@fortawesome/free-solid-svg-icons";
+
+const profileModules = import.meta.glob(
+  "../assets/profile/*.{jpg,jpeg,png,jfif,jpe}",
+  { eager: true, import: "default", query: "?url" },
+);
+
+const profileImages = Object.fromEntries(
+  Object.entries(profileModules).map(([path, url]) => [
+    path
+      .split("/")
+      .pop()
+      .replace(/\.[^.]+$/, "")
+      .toLowerCase(),
+    url,
+  ]),
+);
 
 export const SYSTEM_OVERVIEW = {
   title: "About the System",
@@ -50,26 +64,26 @@ export const TEAM_MEMBERS = [
   {
     name: "Ralph Jasper Ortiz",
     role: "Project Lead / Project Manager",
-    bio: "Oversees the full development lifecycle of the CICT Asset Management System, ensuring architectural integrity and on-time delivery. Bridges technical direction with stakeholder requirements across all project phases.",
+    photo: profileImages["ralph"],
   },
   {
     name: "Ralf Gett Gatmaitan",
     role: "Backend Developer",
-    bio: "Designs and maintains the server-side logic, database schemas, and REST API endpoints powering the platform. Specializes in secure, scalable Node.js architecture and SQL query optimization.",
+    photo: profileImages["arji"],
   },
   {
     name: "Lance Estopace",
     role: "Frontend Developer",
-    bio: "Builds and refines the React-based interface, translating design mockups into responsive, accessible components. Focuses on performance, cross-browser consistency, and a smooth faculty user experience.",
+    photo: profileImages["lance"],
   },
   {
     name: "Jerald Gutierrez",
     role: "UI/UX Designer",
-    bio: "Leads the visual identity and interaction design of the system, conducting user research with CICT staff to inform every screen. Responsible for the design system, prototypes, and usability standards.",
+    photo: profileImages["je"],
   },
   {
     name: "Humphrey Caasi",
     role: "QA Engineer",
-    bio: "Owns the testing strategy across unit, integration, and end-to-end layers to guarantee system reliability before every release. Documents defects, tracks resolution, and enforces quality gates throughout the sprint cycle.",
+    photo: profileImages["humps"],
   },
 ];
