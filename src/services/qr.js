@@ -1,7 +1,14 @@
 //AssetManagement>src/services/qr.js
 import QRCodeStyling from "qr-code-styling";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  or,
+  orderBy,
+} from "firebase/firestore";
 import { db, storage } from "./firebase-config";
 import { ROLES } from "../data/roles";
 import { fetchRoomName } from "./room";
@@ -128,12 +135,17 @@ export async function fetchAssetsQR(role, currentUserUid) {
   let q;
   if (role === ROLES.ADMIN) {
     q = query(assetsRef, orderBy("date_acquired", "desc"));
-  } else if (role === ROLES.PARTTIME) {
-    q = query(assetsRef, where("local_mr", "==", currentUserUid));
-  } else if (role === ROLES.FULLTIME) {
-    q = query(assetsRef, where("property_custodian", "==", currentUserUid));
   } else {
-    throw new Error("Invalid user role: " + role);
+    if (!currentUserUid) {
+      throw new Error("Missing user UID for non-admin asset subscription");
+    }
+    q = query(
+      assetsRef,
+      or(
+        where("local_mr", "==", currentUserUid),
+        where("property_custodian", "==", currentUserUid),
+      ),
+    );
   }
 
   const snapshot = await getDocs(q);
