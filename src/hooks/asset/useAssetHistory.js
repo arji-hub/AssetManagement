@@ -6,9 +6,8 @@ import { subscribeToReportsByAsset } from "../../services/report";
 import {
   subscribeToTransfersByAsset,
   subscribeToRoomTransfersByAsset,
-  getRequestItems,
-  getRoomTransferItems,
 } from "../../services/transfer";
+import { getRequestItems, getRoomTransferItems } from "../../utils/transfer";
 import { resolveRoomName } from "../../services/room";
 import { splitDateTime, toSortableDate } from "../../utils/date";
 

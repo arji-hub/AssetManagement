@@ -110,21 +110,16 @@ export function subscribeToReports(uid, callback, onError) {
   return unsubscribe;
 }
 
-export async function fetchReportByID(id) {
-  const snap = await getDoc(doc(db, "report", id));
-  if (!snap.exists()) throw new Error("Report not found.");
-
+async function buildReport(snap) {
   const report = { id: snap.id, ...snap.data() };
-
   const latestLog = report.status_log?.[report.status_log.length - 1];
 
-  const custodianName = report.current_custodian
-    ? await getName(report.current_custodian)
-    : null;
+  const [custodianName, roomName] = await Promise.all([
+    report.current_custodian ? getName(report.current_custodian) : null,
+    getRoomName(report.room_id),
+  ]);
 
-  const roomName = await getRoomName(report.room_id);
-
-  const filteredReport = {
+  return {
     id: report.id,
     asset_id: report.asset_id,
     report_no: report.report_no,
@@ -147,8 +142,38 @@ export async function fetchReportByID(id) {
     latest_note: latestLog?.note ?? null,
     latest_date: latestLog?.date ?? null,
   };
+}
 
-  return filteredReport;
+export async function fetchReportByID(id) {
+  const snap = await getDoc(doc(db, "report", id));
+  if (!snap.exists()) throw new Error("Report not found.");
+  return buildReport(snap);
+}
+
+export function subscribeToReportByID(id, callback, onError) {
+  let latestRun = 0; // guards against out-of-order async results
+
+  return onSnapshot(
+    doc(db, "report", id),
+    async (snap) => {
+      const run = ++latestRun;
+
+      if (!snap.exists()) {
+        onError?.(new Error("Report not found."));
+        return;
+      }
+
+      try {
+        const report = await buildReport(snap);
+        // A newer snapshot arrived while resolving names; drop this stale result
+        if (run !== latestRun) return;
+        callback(report);
+      } catch (err) {
+        if (run === latestRun) onError?.(err);
+      }
+    },
+    (err) => onError?.(err),
+  );
 }
 
 const generateReportNo = async () => {
