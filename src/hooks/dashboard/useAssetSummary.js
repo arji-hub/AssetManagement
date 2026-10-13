@@ -1,10 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { subscribeToAssets, summarizeAssetEvents } from "../../services/asset";
 import { subscribeToAssetsByCustodian } from "../../services/user";
-import {
-  subscribeToCustodianAssignmentTrend,
-  summarizeCustodianAssignmentEvents,
-} from "../../services/transfer";
+import { subscribeToCustodianAssignmentTrend } from "../../services/transfer";
+import { summarizeCustodianAssignmentEvents } from "../../utils/transfer";
 import { ROLES } from "../../data/roles";
 
 export function useAssetSummary(

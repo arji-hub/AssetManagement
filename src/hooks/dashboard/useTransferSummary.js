@@ -3,9 +3,11 @@ import {
   subscribeToPendingSummary,
   subscribeToTransferActivityTrend,
   subscribeToCustodianAssignmentTrend,
+} from "../../services/transfer";
+import {
   summarizeTransferActivity,
   summarizeCustodianAssignmentEvents,
-} from "../../services/transfer";
+} from "../../utils/transfer";
 
 export function useTransferSummary(user, range, mockTransfers) {
   const isMocked = mockTransfers !== undefined;

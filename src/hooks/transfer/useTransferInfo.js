@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { ROLES } from "../../data/roles";
 import {
-  fetchTransferByID,
+  subscribeToTransferByID,
   updateTransferRequest,
 } from "../../services/transfer";
 import { TRANSFER_TYPE_LABELS, TRANSFER_TYPES } from "../../data/transfer";
@@ -11,25 +10,30 @@ import { TRANSFER_TYPE_LABELS, TRANSFER_TYPES } from "../../data/transfer";
 export function useTransferInfo() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { role, user } = useAuth();
+  const { user } = useAuth();
 
   const [request, setRequest] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const loadRequest = () => {
-    setLoading(true);
-    return fetchTransferByID(id)
-      .then((data) => {
-        setRequest(data);
-      })
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
-  };
-
   useEffect(() => {
-    loadRequest();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setLoading(true);
+    setError(null);
+
+    const unsubscribe = subscribeToTransferByID(
+      id,
+      (data) => {
+        setRequest(data);
+        setError(null);
+        setLoading(false);
+      },
+      (err) => {
+        setError(err.message);
+        setLoading(false);
+      },
+    );
+
+    return unsubscribe;
   }, [id]);
 
   const isCompleted = request?.status === "completed";
@@ -90,7 +94,7 @@ export function useTransferInfo() {
         note,
         isApprove,
       );
-      await loadRequest();
+      // no manual refetch: the snapshot listener pushes the updated request
       setSubmitStatus("success");
     } catch (err) {
       setSubmitError(err.message);
@@ -104,8 +108,8 @@ export function useTransferInfo() {
     setSubmitError(null);
   };
 
-  const handleAssetClick = (id) => {
-    navigate(`/asset/info/${id}`);
+  const handleAssetClick = (assetId) => {
+    navigate(`/asset/info/${assetId}`);
   };
 
   return {
