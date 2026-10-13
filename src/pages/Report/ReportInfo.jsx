@@ -1,36 +1,33 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useParams } from "react-router-dom";
 import MainLayout from "../../components/layout/MainLayout";
-import { fetchReportByID } from "../../services/report";
-import { useAuth } from "../../context/AuthContext";
-import { ROLES } from "../../data/roles";
 import { Status } from "../../components/ui/status/assetStatus";
 import { formatDate } from "../../utils/date";
-import { getReportType } from "../../utils/report";
 import ReportLog from "../../components/ui/card/report/ReportLog";
 import ReportActionModal from "../../components/modal/ReportActionModal";
-import "./ReportInfo.css";
 import BackButton from "../../components/ui/button/BackButton";
+import { useReportInfo } from "../../hooks/report/useReportInfo";
+import "./ReportInfo.css";
 
 function ReportInfo() {
   const { id } = useParams();
-  const { role } = useAuth();
-  const isAdmin = role === ROLES.ADMIN;
-
-  const [report, setReport] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const [actionModal, setActionModal] = useState(null);
-
-  useEffect(() => {
-    setLoading(true);
-    fetchReportByID(id)
-      .then(setReport)
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
-  }, [id]);
+  const {
+    report,
+    loading,
+    error,
+    reportType,
+    evidencePhoto,
+    isAdmin,
+    isDamaged,
+    isMissing,
+    isForRepair,
+    isResolved,
+    actionModal,
+    openAction,
+    closeAction,
+    refresh,
+  } = useReportInfo(id);
 
   if (loading) return <MainLayout>Loading Report Info</MainLayout>;
 
@@ -40,16 +37,6 @@ function ReportInfo() {
         <div className="asset-info-error">{error}</div>
       </MainLayout>
     );
-
-  const reportType = getReportType(report);
-  const isDamaged = report.status === "damaged";
-  const isMissing = report.status === "missing";
-  const isForRepair = report.status === "for_repair";
-  const isResolved =
-    report.status === "working" || report.status === "condemned";
-
-  // photo from first status_log entry that has an image
-  const evidencePhoto = report.status_log?.find((log) => log.img)?.img ?? null;
 
   return (
     <MainLayout>
@@ -68,14 +55,14 @@ function ReportInfo() {
                 <>
                   <button
                     className="action-btn action-btn--danger"
-                    onClick={() => setActionModal("for_repair")}
+                    onClick={() => openAction("for_repair")}
                   >
                     <i className="ti ti-tool" aria-hidden="true" />
                     Endorse for Repair/Replacement
                   </button>
                   <button
                     className="action-btn"
-                    onClick={() => setActionModal("condemned")}
+                    onClick={() => openAction("condemned")}
                   >
                     <i className="ti ti-ban" aria-hidden="true" />
                     Condemn
@@ -88,14 +75,14 @@ function ReportInfo() {
                 <>
                   <button
                     className="action-btn action-btn--danger"
-                    onClick={() => setActionModal("found")}
+                    onClick={() => openAction("found")}
                   >
                     <i className="ti ti-circle-check" aria-hidden="true" />
                     Mark as Found
                   </button>
                   <button
                     className="action-btn"
-                    onClick={() => setActionModal("condemned")}
+                    onClick={() => openAction("condemned")}
                   >
                     <i className="ti ti-ban" aria-hidden="true" />
                     Condemn
@@ -108,14 +95,14 @@ function ReportInfo() {
                 <>
                   <button
                     className="action-btn action-btn--danger"
-                    onClick={() => setActionModal("working")}
+                    onClick={() => openAction("working")}
                   >
                     <i className="ti ti-circle-check" aria-hidden="true" />
                     Mark as Resolved
                   </button>
                   <button
                     className="action-btn"
-                    onClick={() => setActionModal("condemned")}
+                    onClick={() => openAction("condemned")}
                   >
                     <i className="ti ti-ban" aria-hidden="true" />
                     Condemn
@@ -228,12 +215,13 @@ function ReportInfo() {
           </div>
         </div>
       </div>
+
       {actionModal && (
         <ReportActionModal
           report={report}
           newStatus={actionModal}
-          onClose={() => setActionModal(null)}
-          onSuccess={() => fetchReportByID(id).then(setReport)}
+          onClose={closeAction}
+          onSuccess={refresh}
         />
       )}
     </MainLayout>
