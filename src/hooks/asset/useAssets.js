@@ -15,7 +15,6 @@ export function useAssets(role, currentUser) {
       currentUser.uid,
       (assets) => {
         setAssets(assets);
-        console.log("Assets updated:", assets);
         setLoading(false);
       },
       (err) => {

@@ -22,7 +22,9 @@ const REPORT_TYPE_COLORS = {
 
 const styles = StyleSheet.create({
   page: {
-    padding: 36,
+    paddingTop: 36,
+    paddingHorizontal: 36,
+    paddingBottom: 64, // room for the fixed footer
     fontSize: 9,
     fontFamily: "Helvetica",
     color: "#000",
@@ -71,12 +73,12 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1.5,
     borderColor: "#860100",
     marginTop: 8,
-    marginBottom: 12,
   },
 
   // ── Form title ──
   titleWrap: {
     alignItems: "center",
+    marginTop: 10,
     marginBottom: 10,
   },
   title: {
@@ -85,7 +87,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
 
-  // ── Meta rows (Log Name / Generated Date) ──
+  // ── Meta row (Log Name / Generated Date) ──
   metaRow: {
     flexDirection: "row",
     borderWidth: 1,
@@ -142,21 +144,26 @@ const styles = StyleSheet.create({
   },
 
   // ── Table ──
-  table: {
-    borderWidth: 1,
-    borderColor: "#000",
-    borderTopWidth: 0,
-    marginTop: 10,
+  tableGap: {
+    height: 10,
   },
-  tableHeaderRow: {
-    flexDirection: "row",
-    borderBottomWidth: 1,
+  // Thin line that repeats at the top of every page (fixed)
+  tableTopLine: {
     borderTopWidth: 1,
     borderColor: "#000",
-    backgroundColor: "#f2f2f2",
+  },
+  // Header prints on page 1 only
+  tableHeaderRow: {
+    flexDirection: "row",
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: "#000",
   },
   tableRow: {
     flexDirection: "row",
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
     borderBottomWidth: 1,
     borderColor: "#000",
     minHeight: 22,
@@ -211,10 +218,12 @@ const styles = StyleSheet.create({
   },
 
   // ── Signatures ──
+  signatureWrap: {
+    marginTop: 40,
+  },
   signatureRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 40,
   },
   signatureBlock: {
     width: "45%",
@@ -222,11 +231,19 @@ const styles = StyleSheet.create({
   },
   signatureLabel: {
     fontSize: 9,
-    marginBottom: 30,
+  },
+  signatureLine: {
+    width: "100%",
+    height: 30,
+    borderBottomWidth: 1,
+    borderColor: "#000",
+    justifyContent: "flex-end",
+    alignItems: "center",
   },
   signatureName: {
     fontSize: 9,
     fontWeight: "bold",
+    paddingBottom: 2,
   },
   signatureCaption: {
     fontSize: 7,
@@ -247,9 +264,45 @@ const styles = StyleSheet.create({
   },
 });
 
-const MIN_ROWS = 14;
 const FORM_CODE = "BulSU-OP-CICT-14F4";
 const REVISION = "0";
+const TAIL_ROWS = 3; // last rows that always travel with the signatures
+
+const renderRow = (row, index) => (
+  <View style={styles.tableRow} key={index} wrap={false}>
+    <View style={styles.colReportNo}>
+      <Text style={styles.cellText}>{row.report_no}</Text>
+    </View>
+    <View style={styles.colDescription}>
+      <Text style={styles.cellText}>{row.description}</Text>
+    </View>
+    <View style={styles.colType}>
+      <Text
+        style={[
+          styles.statusText,
+          { color: REPORT_TYPE_COLORS[row.type] || "#000" },
+        ]}
+      >
+        {REPORT_TYPE_LABELS[row.type] || ""}
+      </Text>
+    </View>
+    <View style={styles.colRoom}>
+      <Text
+        style={[
+          styles.cellText,
+          row.room === "Unallocated" && styles.cellTextItalic,
+        ]}
+      >
+        {row.room}
+      </Text>
+    </View>
+    <View style={styles.colDate}>
+      <Text style={styles.cellText}>
+        {row.created_at ? formatDate(row.created_at) : ""}
+      </Text>
+    </View>
+  </View>
+);
 
 export function ReportLogPDF({ reportLog, reports, preparedByName }) {
   const rows = (reports ?? []).map((report) => ({
@@ -260,14 +313,15 @@ export function ReportLogPDF({ reportLog, reports, preparedByName }) {
     created_at: report.created_at,
   }));
 
-  // Fill with empty rows if needed
-  while (rows.length < MIN_ROWS) {
-    rows.push({ type: "" });
-  }
+  const safeRows = rows.length ? rows : [{ type: "" }]; // never an empty table
+  const splitAt = Math.max(0, safeRows.length - TAIL_ROWS);
+  const bodyRows = safeRows.slice(0, splitAt);
+  const tailRows = safeRows.slice(splitAt);
 
   return (
     <Document>
       <Page size="A4" style={styles.page}>
+        {/* Letterhead (page 1 only) */}
         <View style={styles.letterheadRow}>
           <Image src={cictLogo} style={styles.logo} />
           <View style={styles.letterheadText}>
@@ -286,6 +340,7 @@ export function ReportLogPDF({ reportLog, reports, preparedByName }) {
           <Text style={styles.title}>ASSET REPORT LOG</Text>
         </View>
 
+        {/* Meta row */}
         <View style={styles.metaRow}>
           <View style={styles.metaCell}>
             <Text style={styles.metaLabel}>
@@ -299,6 +354,7 @@ export function ReportLogPDF({ reportLog, reports, preparedByName }) {
           </View>
         </View>
 
+        {/* Summary strip */}
         <View style={styles.summaryRow}>
           <View style={styles.summaryCell}>
             <Text style={styles.summaryValue}>
@@ -320,81 +376,63 @@ export function ReportLogPDF({ reportLog, reports, preparedByName }) {
           </View>
         </View>
 
-        <View style={styles.table}>
-          <View style={styles.tableHeaderRow}>
-            <View style={styles.colReportNo}>
-              <Text style={styles.headerCellText}>REPORT NO.</Text>
-            </View>
-            <View style={styles.colDescription}>
-              <Text style={styles.headerCellText}>DESCRIPTION</Text>
-            </View>
-            <View style={styles.colType}>
-              <Text style={styles.headerCellText}>TYPE</Text>
-            </View>
-            <View style={styles.colRoom}>
-              <Text style={styles.headerCellText}>ROOM</Text>
-            </View>
-            <View style={styles.colDate}>
-              <Text style={styles.headerCellText}>DATE</Text>
-            </View>
-          </View>
+        {/* Gap between summary and table (page 1 only) */}
+        <View style={styles.tableGap} />
 
-          {rows.map((row, index) => (
-            <View style={styles.tableRow} key={index}>
-              <View style={styles.colReportNo}>
-                <Text style={styles.cellText}>{row.report_no}</Text>
-              </View>
-              <View style={styles.colDescription}>
-                <Text style={styles.cellText}>{row.description}</Text>
-              </View>
-              <View style={styles.colType}>
-                <Text
-                  style={[
-                    styles.statusText,
-                    { color: REPORT_TYPE_COLORS[row.type] || "#000" },
-                  ]}
-                >
-                  {REPORT_TYPE_LABELS[row.type] || ""}
-                </Text>
-              </View>
-              <View style={styles.colRoom}>
-                <Text
-                  style={[
-                    styles.cellText,
-                    row.room === "Unallocated" && styles.cellTextItalic,
-                  ]}
-                >
-                  {row.room}
-                </Text>
-              </View>
-              <View style={styles.colDate}>
-                <Text style={styles.cellText}>
-                  {row.created_at ? formatDate(row.created_at) : ""}
-                </Text>
-              </View>
-            </View>
-          ))}
-        </View>
+        {/* Top line: repeats at the top of every page */}
+        <View style={styles.tableTopLine} fixed />
 
-        <View style={styles.signatureRow}>
-          <View style={styles.signatureBlock}>
-            <Text style={styles.signatureLabel}>Prepared by:</Text>
-            <Text style={styles.signatureName}>
-              {preparedByName || "_____________________"}
-            </Text>
-            <Text style={styles.signatureCaption}>
-              Signature Over Printed Name
-            </Text>
+        {/* Column header: page 1 only */}
+        <View style={styles.tableHeaderRow}>
+          <View style={styles.colReportNo}>
+            <Text style={styles.headerCellText}>REPORT NO.</Text>
           </View>
-          <View style={styles.signatureBlock}>
-            <Text style={styles.signatureLabel}>Noted by:</Text>
-            <Text style={styles.signatureName}>_____________________</Text>
-            <Text style={styles.signatureCaption}>
-              Signature Over Printed Name of Property Custodian
-            </Text>
+          <View style={styles.colDescription}>
+            <Text style={styles.headerCellText}>DESCRIPTION</Text>
+          </View>
+          <View style={styles.colType}>
+            <Text style={styles.headerCellText}>TYPE</Text>
+          </View>
+          <View style={styles.colRoom}>
+            <Text style={styles.headerCellText}>ROOM</Text>
+          </View>
+          <View style={styles.colDate}>
+            <Text style={styles.headerCellText}>DATE</Text>
           </View>
         </View>
 
+        {/* Data rows */}
+        {bodyRows.map(renderRow)}
+
+        {/* Last rows + signatures stay together on one page */}
+        <View wrap={false}>
+          {tailRows.map((row, i) => renderRow(row, splitAt + i))}
+
+          <View style={styles.signatureWrap}>
+            <View style={styles.signatureRow}>
+              <View style={styles.signatureBlock}>
+                <Text style={styles.signatureLabel}>Prepared by:</Text>
+                <View style={styles.signatureLine}>
+                  {preparedByName ? (
+                    <Text style={styles.signatureName}>{preparedByName}</Text>
+                  ) : null}
+                </View>
+                <Text style={styles.signatureCaption}>
+                  Signature Over Printed Name
+                </Text>
+              </View>
+              <View style={styles.signatureBlock}>
+                <Text style={styles.signatureLabel}>Noted by:</Text>
+                <View style={styles.signatureLine} />
+                <Text style={styles.signatureCaption}>
+                  Signature Over Printed Name of Property Custodian
+                </Text>
+              </View>
+            </View>
+          </View>
+        </View>
+
+        {/* Footer */}
         <View style={styles.footer} fixed>
           <Text>
             {FORM_CODE}
