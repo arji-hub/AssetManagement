@@ -1,0 +1,59 @@
+/* Base skeleton block. Uses theme vars + opacity pulse so it works in light/dark. */
+.sk {
+  display: block;
+  max-width: 100%;
+  border-radius: 6px;
+  background: var(--card-border);
+  opacity: 0.6;
+  animation: sk-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes sk-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.75;
+  }
+}
+
+/* Keeps the evidence placeholder square like the real image */
+.sk-square {
+  aspect-ratio: 1;
+  height: auto !important;
+}
+
+/* Narrative block: stacked lines inside the existing narrative box */
+.sk-narrative {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Status history items */
+.sk-log-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.sk-log-text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+@media (max-width: 650px) {
+  .sk-log-item {
+    padding: 8px 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sk {
+    animation: none;
+    opacity: 0.5;
+  }
+}

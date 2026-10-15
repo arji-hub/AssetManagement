@@ -39,9 +39,38 @@ function getRoomName(roomId) {
   return roomNameCache.get(roomId);
 }
 
+// ─── name resolution (read time) ───────────────────────────────────
+// reported_by_name is stored on the report when it's filed, but users can
+// rename themselves. On every read we look the name up by uid so the UI
+// always shows the current full name, falling back to the stored name if
+// the user doc is missing or the lookup fails.
+
+/** Resolve uids (dupes/nulls ignored) to Map<uid, fullname | null>. */
+async function resolveFullNames(uids) {
+  const uniqueUids = [...new Set(uids.filter(Boolean))];
+  const entries = await Promise.all(
+    uniqueUids.map(async (uid) => [
+      uid,
+      (await getName(uid).catch(() => null))?.fullname || null,
+    ]),
+  );
+  return new Map(entries);
+}
+
+/** Replace reported_by_name with the reporter's current full name. */
+async function withReporterNames(reports) {
+  const names = await resolveFullNames(reports.map((r) => r.reported_by));
+
+  return reports.map((report) => ({
+    ...report,
+    reported_by_name: names.get(report.reported_by) || report.reported_by_name,
+  }));
+}
+
 export function subscribeToReports(uid, callback, onError) {
   const q = query(collection(db, "report"), orderBy("updated_at", "desc"));
   let latestRun = 0; // guards against out-of-order async results
+  let active = true;
 
   const unsubscribe = onSnapshot(
     q,
@@ -86,16 +115,20 @@ export function subscribeToReports(uid, callback, onError) {
                   report.reported_by === uid,
               );
 
-        // Resolve room names only for the reports we're actually returning
-        const withRoomNames = await Promise.all(
-          filtered.map(async (report) => ({
-            ...report,
-            room_name: await getRoomName(report.room_id),
-          })),
-        );
+        // Resolve reporter + room names only for the reports we're returning
+        const [named, roomNames] = await Promise.all([
+          withReporterNames(filtered),
+          Promise.all(filtered.map((report) => getRoomName(report.room_id))),
+        ]);
 
-        // A newer snapshot arrived while we were fetching; drop this stale result
-        if (run !== latestRun) return;
+        const withRoomNames = named.map((report, i) => ({
+          ...report,
+          room_name: roomNames[i],
+        }));
+
+        // A newer snapshot arrived (or we unsubscribed) while we were
+        // fetching; drop this stale result
+        if (!active || run !== latestRun) return;
 
         callback(withRoomNames);
       } catch (err) {
@@ -107,15 +140,18 @@ export function subscribeToReports(uid, callback, onError) {
     },
   );
 
-  return unsubscribe;
+  return () => {
+    active = false; // ignore lookups that finish after unsubscribing
+    unsubscribe();
+  };
 }
 
 async function buildReport(snap) {
   const report = { id: snap.id, ...snap.data() };
   const latestLog = report.status_log?.[report.status_log.length - 1];
 
-  const [custodianName, roomName] = await Promise.all([
-    report.current_custodian ? getName(report.current_custodian) : null,
+  const [names, roomName] = await Promise.all([
+    resolveFullNames([report.current_custodian, report.reported_by]),
     getRoomName(report.room_id),
   ]);
 
@@ -127,9 +163,9 @@ async function buildReport(snap) {
     room_id: report.room_id,
     room_name: roomName,
     custodian: report.current_custodian,
-    custodian_name: custodianName?.fullname ?? "---",
+    custodian_name: names.get(report.current_custodian) ?? "---",
     reported_by: report.reported_by,
-    reported_by_name: report.reported_by_name,
+    reported_by_name: names.get(report.reported_by) || report.reported_by_name,
     status: report.status,
     date_resolved: report.date_resolved,
     status_log: report.status_log,
@@ -152,8 +188,9 @@ export async function fetchReportByID(id) {
 
 export function subscribeToReportByID(id, callback, onError) {
   let latestRun = 0; // guards against out-of-order async results
+  let active = true;
 
-  return onSnapshot(
+  const unsubscribe = onSnapshot(
     doc(db, "report", id),
     async (snap) => {
       const run = ++latestRun;
@@ -165,15 +202,21 @@ export function subscribeToReportByID(id, callback, onError) {
 
       try {
         const report = await buildReport(snap);
-        // A newer snapshot arrived while resolving names; drop this stale result
-        if (run !== latestRun) return;
+        // A newer snapshot arrived (or we unsubscribed) while resolving
+        // names; drop this stale result
+        if (!active || run !== latestRun) return;
         callback(report);
       } catch (err) {
-        if (run === latestRun) onError?.(err);
+        if (active && run === latestRun) onError?.(err);
       }
     },
     (err) => onError?.(err),
   );
+
+  return () => {
+    active = false; // ignore lookups that finish after unsubscribing
+    unsubscribe();
+  };
 }
 
 const generateReportNo = async () => {
@@ -464,9 +507,14 @@ export function subscribeToReportsByAsset(assetId, callback, onError) {
     orderBy("created_at", "desc"),
   );
 
+  let latestRun = 0; // guards against out-of-order async results
+  let active = true;
+
   const unsubscribe = onSnapshot(
     q,
-    (snapshot) => {
+    async (snapshot) => {
+      const run = ++latestRun;
+
       try {
         const reports = snapshot.docs.map((doc) => {
           const report = { id: doc.id, ...doc.data() };
@@ -493,7 +541,11 @@ export function subscribeToReportsByAsset(assetId, callback, onError) {
           };
         });
 
-        callback(reports);
+        const named = await withReporterNames(reports);
+
+        if (!active || run !== latestRun) return;
+
+        callback(named);
       } catch (err) {
         onError?.(err);
       }
@@ -503,7 +555,10 @@ export function subscribeToReportsByAsset(assetId, callback, onError) {
     },
   );
 
-  return unsubscribe;
+  return () => {
+    active = false; // ignore lookups that finish after unsubscribing
+    unsubscribe();
+  };
 }
 
 export async function getReportType(id) {
@@ -522,11 +577,10 @@ export async function fetchReportSummary(id) {
 
   const report = snap.data();
 
-  const custodianName = report.current_custodian
-    ? await getName(report.current_custodian)
-    : null;
-
-  const type = await getReportType(id);
+  const [names, type] = await Promise.all([
+    resolveFullNames([report.current_custodian, report.reported_by]),
+    getReportType(id),
+  ]);
 
   return {
     id,
@@ -535,8 +589,9 @@ export async function fetchReportSummary(id) {
     created_at: report.created_at,
     type,
     reported_by: report.reported_by,
+    reported_by_name: names.get(report.reported_by) || report.reported_by_name,
     room_id: report.room_id,
     custodian: report.current_custodian,
-    custodian_name: custodianName?.fullname ?? "---",
+    custodian_name: names.get(report.current_custodian) ?? "---",
   };
 }
