@@ -6,8 +6,6 @@ import NewAuditRoomModal from "../../../components/modal/NewAuditRoomModal";
 import AuditCard from "../../../components/ui/card/audit/AuditCard";
 import BackButton from "../../../components/ui/button/BackButton";
 import useRoomLogs from "../../../hooks/audit/room/useRoomLogs";
-import { RoomListPDF } from "../../../pdf/templates/RoomListPDF";
-import { PDFPreviewModal } from "../../../components/modal/PDFPreviewModal";
 import RoomAuditFilter from "../../../components/ui/filter/RoomAuditFilter";
 import { roomAuditColumns, previousAuditColumns } from "../../../data/columns";
 import Table from "../../../components/panel/Table";
@@ -90,12 +88,6 @@ function AuditRoom() {
 
           <div className="audit-room-filter-actions">
             <RoomAuditFilter value={auditFilter} onChange={setAuditFilter} />
-            <PDFPreviewModal
-              title="Room List"
-              fileName="room-list.pdf"
-              document={<RoomListPDF rooms={rooms} />}
-              triggerLabel="Room List"
-            />
           </div>
         </div>
 

@@ -4,6 +4,8 @@ import Table from "../../components/panel/Table";
 import RoomCard from "../../components/ui/card/room/RoomCard";
 import RoomModal from "../../components/modal/RoomModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { RoomListPDF } from "../../pdf/templates/RoomListPDF";
+import { PDFPreviewModal } from "../../components/modal/PDFPreviewModal";
 import { useRoom } from "../../hooks/room/useRoom";
 import { ROOM_FILTER_OPTIONS } from "../../data/room";
 import { displayDate } from "../../utils/date";
@@ -48,6 +50,12 @@ function Room() {
                 placeholder="Search rooms..."
               />
             </div>
+            <PDFPreviewModal
+              title="Room List"
+              fileName="room-list.pdf"
+              document={<RoomListPDF rooms={filteredRooms} />}
+              triggerLabel="Room List"
+            />
 
             <AssetCountFilter
               value={assetCountFilter}
