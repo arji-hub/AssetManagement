@@ -8,6 +8,7 @@ import ReportLog from "../../components/ui/card/report/ReportLog";
 import ReportActionModal from "../../components/modal/ReportActionModal";
 import BackButton from "../../components/ui/button/BackButton";
 import { useReportInfo } from "../../hooks/report/useReportInfo";
+import ReportInfoSkeleton from "../../components/ui/skeleton/ReportInfoSkeleton";
 import "./ReportInfo.css";
 
 function ReportInfo() {
@@ -29,7 +30,12 @@ function ReportInfo() {
     refresh,
   } = useReportInfo(id);
 
-  if (loading) return <MainLayout>Loading Report Info</MainLayout>;
+  if (loading)
+    return (
+      <MainLayout>
+        <ReportInfoSkeleton />
+      </MainLayout>
+    );
 
   if (error)
     return (
