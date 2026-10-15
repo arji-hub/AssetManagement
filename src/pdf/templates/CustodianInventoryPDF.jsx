@@ -11,7 +11,9 @@ import bulsuLogo from "../../assets/logo/BULSULOGO.png";
 
 const styles = StyleSheet.create({
   page: {
-    padding: 36,
+    paddingTop: 36,
+    paddingHorizontal: 36,
+    paddingBottom: 64, // room for the fixed footer
     fontSize: 9,
     fontFamily: "Helvetica",
     color: "#000",
@@ -55,15 +57,17 @@ const styles = StyleSheet.create({
     marginTop: 1,
   },
 
+  // ── Divider under letterhead ──
   letterheadDivider: {
     borderBottomWidth: 1.5,
     borderColor: "#860100",
     marginTop: 8,
-    marginBottom: 12,
   },
 
+  // ── Form title ──
   titleWrap: {
     alignItems: "center",
+    marginTop: 10,
     marginBottom: 10,
   },
   title: {
@@ -73,9 +77,12 @@ const styles = StyleSheet.create({
   },
 
   // ── Meta row (Custodian / Date) ──
+  // No bottom border: the table top line draws it
   metaRow: {
     flexDirection: "row",
-    borderWidth: 1,
+    borderTopWidth: 1,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
     borderColor: "#000",
     marginTop: 10,
   },
@@ -95,19 +102,23 @@ const styles = StyleSheet.create({
   },
 
   // ── Table ──
-  table: {
-    borderWidth: 1,
+  // Thin line that repeats at the top of every page (fixed)
+  tableTopLine: {
+    borderTopWidth: 1,
     borderColor: "#000",
-    borderTopWidth: 0,
   },
+  // Header prints on page 1 only
   tableHeaderRow: {
     flexDirection: "row",
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
     borderBottomWidth: 1,
     borderColor: "#000",
-    backgroundColor: "#f2f2f2",
   },
   tableRow: {
     flexDirection: "row",
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
     borderBottomWidth: 1,
     borderColor: "#000",
     minHeight: 22,
@@ -155,10 +166,12 @@ const styles = StyleSheet.create({
   },
 
   // ── Signatures ──
+  signatureWrap: {
+    marginTop: 40,
+  },
   signatureRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 40,
   },
   signatureBlock: {
     width: "45%",
@@ -166,11 +179,12 @@ const styles = StyleSheet.create({
   },
   signatureLabel: {
     fontSize: 9,
-    marginBottom: 30,
   },
-  signatureName: {
-    fontSize: 9,
-    fontWeight: "bold",
+  signatureLine: {
+    width: "100%",
+    height: 30,
+    borderBottomWidth: 1,
+    borderColor: "#000",
   },
   signatureCaption: {
     fontSize: 7,
@@ -191,15 +205,35 @@ const styles = StyleSheet.create({
   },
 });
 
-const MIN_ROWS = 14;
 const FORM_CODE = "BulSU-OP-CICT-14F3";
 const REVISION = "0";
+const TAIL_ROWS = 3; // last rows that always travel with the signatures
 
 function formatCellDate(value) {
   if (!value) return "";
   const d = value?.toDate ? value.toDate() : new Date(value);
   return isNaN(d) ? "" : d.toLocaleDateString();
 }
+
+const renderRow = (item, index) => (
+  <View style={styles.tableRow} key={index} wrap={false}>
+    <View style={styles.colName}>
+      <Text style={styles.cellText}>{item.name}</Text>
+    </View>
+    <View style={styles.colCategory}>
+      <Text style={styles.cellText}>{item.category}</Text>
+    </View>
+    <View style={styles.colRoom}>
+      <Text style={styles.cellText}>{item.room}</Text>
+    </View>
+    <View style={styles.colStatus}>
+      <Text style={styles.cellText}>{item.status}</Text>
+    </View>
+    <View style={styles.colDate}>
+      <Text style={styles.cellText}>{item.date}</Text>
+    </View>
+  </View>
+);
 
 export function CustodianInventoryPDF({ custodianName, assets = [] }) {
   const rows = assets.map((a) => ({
@@ -210,12 +244,15 @@ export function CustodianInventoryPDF({ custodianName, assets = [] }) {
     date: formatCellDate(a.date_assigned),
   }));
 
-  while (rows.length < MIN_ROWS) rows.push({});
+  const safeRows = rows.length ? rows : [{}]; // never an empty table
+  const splitAt = Math.max(0, safeRows.length - TAIL_ROWS);
+  const bodyRows = safeRows.slice(0, splitAt);
+  const tailRows = safeRows.slice(splitAt);
 
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        {/* Letterhead */}
+        {/* Letterhead (page 1 only) */}
         <View style={styles.letterheadRow}>
           <Image src={cictLogo} style={styles.logo} />
           <View style={styles.letterheadText}>
@@ -228,7 +265,6 @@ export function CustodianInventoryPDF({ custodianName, assets = [] }) {
           </View>
           <Image src={bulsuLogo} style={styles.logo} />
         </View>
-
         <View style={styles.letterheadDivider} />
 
         <View style={styles.titleWrap}>
@@ -249,62 +285,52 @@ export function CustodianInventoryPDF({ custodianName, assets = [] }) {
           </View>
         </View>
 
-        {/* Table */}
-        <View style={styles.table}>
-          <View style={styles.tableHeaderRow}>
-            <View style={styles.colName}>
-              <Text style={styles.headerCellText}>ASSET NAME</Text>
-            </View>
-            <View style={styles.colCategory}>
-              <Text style={styles.headerCellText}>CATEGORY</Text>
-            </View>
-            <View style={styles.colRoom}>
-              <Text style={styles.headerCellText}>ROOM</Text>
-            </View>
-            <View style={styles.colStatus}>
-              <Text style={styles.headerCellText}>STATUS</Text>
-            </View>
-            <View style={styles.colDate}>
-              <Text style={styles.headerCellText}>DATE ASSIGNED</Text>
-            </View>
-          </View>
+        {/* Top line: repeats at the top of every page */}
+        <View style={styles.tableTopLine} fixed />
 
-          {rows.map((item, index) => (
-            <View style={styles.tableRow} key={index}>
-              <View style={styles.colName}>
-                <Text style={styles.cellText}>{item.name}</Text>
-              </View>
-              <View style={styles.colCategory}>
-                <Text style={styles.cellText}>{item.category}</Text>
-              </View>
-              <View style={styles.colRoom}>
-                <Text style={styles.cellText}>{item.room}</Text>
-              </View>
-              <View style={styles.colStatus}>
-                <Text style={styles.cellText}>{item.status}</Text>
-              </View>
-              <View style={styles.colDate}>
-                <Text style={styles.cellText}>{item.date}</Text>
-              </View>
-            </View>
-          ))}
+        {/* Column header: page 1 only */}
+        <View style={styles.tableHeaderRow}>
+          <View style={styles.colName}>
+            <Text style={styles.headerCellText}>ASSET NAME</Text>
+          </View>
+          <View style={styles.colCategory}>
+            <Text style={styles.headerCellText}>CATEGORY</Text>
+          </View>
+          <View style={styles.colRoom}>
+            <Text style={styles.headerCellText}>ROOM</Text>
+          </View>
+          <View style={styles.colStatus}>
+            <Text style={styles.headerCellText}>STATUS</Text>
+          </View>
+          <View style={styles.colDate}>
+            <Text style={styles.headerCellText}>DATE ASSIGNED</Text>
+          </View>
         </View>
 
-        {/* Signatures */}
-        <View style={styles.signatureRow}>
-          <View style={styles.signatureBlock}>
-            <Text style={styles.signatureLabel}>Prepared by:</Text>
-            <Text style={styles.signatureName}>_____________________</Text>
-            <Text style={styles.signatureCaption}>
-              Signature Over Printed Name of Custodian
-            </Text>
-          </View>
-          <View style={styles.signatureBlock}>
-            <Text style={styles.signatureLabel}>Noted by:</Text>
-            <Text style={styles.signatureName}>_____________________</Text>
-            <Text style={styles.signatureCaption}>
-              Signature Over Printed Name of Property Officer
-            </Text>
+        {/* Data rows */}
+        {bodyRows.map(renderRow)}
+
+        {/* Last rows + signatures stay together on one page */}
+        <View wrap={false}>
+          {tailRows.map((item, i) => renderRow(item, splitAt + i))}
+
+          <View style={styles.signatureWrap}>
+            <View style={styles.signatureRow}>
+              <View style={styles.signatureBlock}>
+                <Text style={styles.signatureLabel}>Prepared by:</Text>
+                <View style={styles.signatureLine} />
+                <Text style={styles.signatureCaption}>
+                  Signature Over Printed Name of Custodian
+                </Text>
+              </View>
+              <View style={styles.signatureBlock}>
+                <Text style={styles.signatureLabel}>Noted by:</Text>
+                <View style={styles.signatureLine} />
+                <Text style={styles.signatureCaption}>
+                  Signature Over Printed Name of Property Officer
+                </Text>
+              </View>
+            </View>
           </View>
         </View>
 

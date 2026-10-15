@@ -13,7 +13,9 @@ import { AUDIT_STATUS_LABELS, AUDIT_STATUS_COLORS } from "../../data/audit";
 
 const styles = StyleSheet.create({
   page: {
-    padding: 36,
+    paddingTop: 36,
+    paddingHorizontal: 36,
+    paddingBottom: 64, // room for the fixed footer
     fontSize: 9,
     fontFamily: "Helvetica",
     color: "#000",
@@ -62,12 +64,12 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1.5,
     borderColor: "#860100",
     marginTop: 8,
-    marginBottom: 12,
   },
 
   // ── Form title ──
   titleWrap: {
     alignItems: "center",
+    marginTop: 10,
     marginBottom: 10,
   },
   title: {
@@ -97,57 +99,27 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 
-  // ── Summary strip ──
-  summaryRow: {
-    flexDirection: "row",
-    borderWidth: 1,
-    borderTopWidth: 0,
-    borderColor: "#000",
-  },
-  summaryCell: {
-    flex: 1,
-    padding: 6,
-    borderRightWidth: 1,
-    borderColor: "#000",
-    alignItems: "center",
-  },
-  summaryCellLast: {
-    flex: 1,
-    padding: 6,
-    alignItems: "center",
-  },
-  summaryValue: {
-    fontSize: 12,
-    fontWeight: "bold",
-  },
-  summaryLabel: {
-    fontSize: 7,
-    color: "#333",
-    marginTop: 2,
-    textAlign: "center",
-  },
-  summaryValueFlag: {
-    fontSize: 12,
-    fontWeight: "bold",
-    color: "#860100",
-  },
-
   // ── Table ──
-  table: {
-    borderWidth: 1,
-    borderColor: "#000",
-    borderTopWidth: 0,
-    marginTop: 10,
+  tableGap: {
+    height: 10,
   },
-  tableHeaderRow: {
-    flexDirection: "row",
-    borderBottomWidth: 1,
+  // Thin line that repeats at the top of every page (fixed)
+  tableTopLine: {
     borderTopWidth: 1,
     borderColor: "#000",
-    backgroundColor: "#f2f2f2",
+  },
+  // Header prints on page 1 only
+  tableHeaderRow: {
+    flexDirection: "row",
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: "#000",
   },
   tableRow: {
     flexDirection: "row",
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
     borderBottomWidth: 1,
     borderColor: "#000",
     minHeight: 22,
@@ -203,10 +175,12 @@ const styles = StyleSheet.create({
   },
 
   // ── Signatures ──
+  signatureWrap: {
+    marginTop: 40,
+  },
   signatureRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 40,
   },
   signatureBlock: {
     width: "45%",
@@ -214,11 +188,19 @@ const styles = StyleSheet.create({
   },
   signatureLabel: {
     fontSize: 9,
-    marginBottom: 30,
+  },
+  signatureLine: {
+    width: "100%",
+    height: 30,
+    borderBottomWidth: 1,
+    borderColor: "#000",
+    justifyContent: "flex-end",
+    alignItems: "center",
   },
   signatureName: {
     fontSize: 9,
     fontWeight: "bold",
+    paddingBottom: 2,
   },
   signatureCaption: {
     fontSize: 7,
@@ -239,9 +221,9 @@ const styles = StyleSheet.create({
   },
 });
 
-const MIN_ROWS = 14;
 const FORM_CODE = "BulSU-OP-CICT-14F3";
 const REVISION = "0";
+const TAIL_ROWS = 3; // last rows that always travel with the signatures
 
 // react-pdf's Text only breaks lines at spaces/hyphens by default, so a long
 // unbroken serial number just overflows the cell instead of wrapping. Force
@@ -252,8 +234,34 @@ function insertSoftBreaks(text, chunkSize = 20) {
   return chunks.join("\n");
 }
 
-export function AuditRoomPDF({ roomName, audit, items }) {
-  //prep
+const renderRow = (item, index) => (
+  <View style={styles.tableRow} key={index} wrap={false}>
+    <View style={styles.colSerial}>
+      <Text style={styles.cellTextBreak}>{item.serial}</Text>
+    </View>
+    <View style={styles.colDescription}>
+      <Text style={styles.cellText}>{item.description}</Text>
+    </View>
+    <View style={styles.colCategory}>
+      <Text style={styles.cellText}>{item.category}</Text>
+    </View>
+    <View style={styles.colCustodian}>
+      <Text style={styles.cellText}>{item.custodian}</Text>
+    </View>
+    <View style={styles.colAuditStatus}>
+      <Text
+        style={[
+          styles.statusText,
+          { color: AUDIT_STATUS_COLORS[item.audit_status] || "#000" },
+        ]}
+      >
+        {AUDIT_STATUS_LABELS[item.audit_status] || item.audit_status || ""}
+      </Text>
+    </View>
+  </View>
+);
+
+export function AuditRoomPDF({ roomName, audit, items = [] }) {
   const rows = items.map((item) => ({
     serial: insertSoftBreaks(item.serial_number) || "—",
     description: item.description || "",
@@ -262,14 +270,20 @@ export function AuditRoomPDF({ roomName, audit, items }) {
     audit_status: item.audit_status || "not_audited",
   }));
 
-  // Fill with empty rows if needed
-  while (rows.length < MIN_ROWS) {
-    rows.push({ audit_status: "" });
-  }
+  const safeRows = rows.length ? rows : [{ audit_status: "" }]; // never an empty table
+  const splitAt = Math.max(0, safeRows.length - TAIL_ROWS);
+  const bodyRows = safeRows.slice(0, splitAt);
+  const tailRows = safeRows.slice(splitAt);
+
+  const auditorName =
+    audit.audited_by_name && audit.audited_by_name !== "—"
+      ? audit.audited_by_name
+      : "";
 
   return (
     <Document>
       <Page size="A4" style={styles.page}>
+        {/* Letterhead (page 1 only) */}
         <View style={styles.letterheadRow}>
           <Image src={cictLogo} style={styles.logo} />
           <View style={styles.letterheadText}>
@@ -288,6 +302,7 @@ export function AuditRoomPDF({ roomName, audit, items }) {
           <Text style={styles.title}>ROOM ASSET AUDIT REPORT</Text>
         </View>
 
+        {/* Meta rows */}
         <View style={styles.metaRow}>
           <View style={styles.metaCell}>
             <Text style={styles.metaLabel}>ROOM NAME: {roomName}</Text>
@@ -321,78 +336,63 @@ export function AuditRoomPDF({ roomName, audit, items }) {
           </View>
         </View>
 
-        <View style={styles.table}>
-          <View style={styles.tableHeaderRow}>
-            <View style={styles.colSerial}>
-              <Text style={styles.headerCellText}>SERIAL NO./ MODEL NO.</Text>
-            </View>
-            <View style={styles.colDescription}>
-              <Text style={styles.headerCellText}>DESCRIPTION</Text>
-            </View>
-            <View style={styles.colCategory}>
-              <Text style={styles.headerCellText}>CATEGORY</Text>
-            </View>
-            <View style={styles.colCustodian}>
-              <Text style={styles.headerCellText}>CUSTODIAN</Text>
-            </View>
-            <View style={styles.colAuditStatus}>
-              <Text style={styles.headerCellText}>STATUS</Text>
-            </View>
-          </View>
+        {/* Gap between meta and table (page 1 only) */}
+        <View style={styles.tableGap} />
 
-          {rows.map((item, index) => (
-            <View style={styles.tableRow} key={index}>
-              <View style={styles.colSerial}>
-                <Text style={styles.cellTextBreak}>{item.serial}</Text>
+        {/* Top line: repeats at the top of every page */}
+        <View style={styles.tableTopLine} fixed />
+
+        {/* Column header: page 1 only */}
+        <View style={styles.tableHeaderRow}>
+          <View style={styles.colSerial}>
+            <Text style={styles.headerCellText}>SERIAL NO./ MODEL NO.</Text>
+          </View>
+          <View style={styles.colDescription}>
+            <Text style={styles.headerCellText}>DESCRIPTION</Text>
+          </View>
+          <View style={styles.colCategory}>
+            <Text style={styles.headerCellText}>CATEGORY</Text>
+          </View>
+          <View style={styles.colCustodian}>
+            <Text style={styles.headerCellText}>CUSTODIAN</Text>
+          </View>
+          <View style={styles.colAuditStatus}>
+            <Text style={styles.headerCellText}>STATUS</Text>
+          </View>
+        </View>
+
+        {/* Data rows */}
+        {bodyRows.map(renderRow)}
+
+        {/* Last rows + signatures stay together on one page */}
+        <View wrap={false}>
+          {tailRows.map((item, i) => renderRow(item, splitAt + i))}
+
+          <View style={styles.signatureWrap}>
+            <View style={styles.signatureRow}>
+              <View style={styles.signatureBlock}>
+                <Text style={styles.signatureLabel}>Audited by:</Text>
+                <View style={styles.signatureLine}>
+                  {auditorName ? (
+                    <Text style={styles.signatureName}>{auditorName}</Text>
+                  ) : null}
+                </View>
+                <Text style={styles.signatureCaption}>
+                  Signature Over Printed Name of Auditor
+                </Text>
               </View>
-              <View style={styles.colDescription}>
-                <Text style={styles.cellText}>{item.description}</Text>
-              </View>
-              <View style={styles.colCategory}>
-                <Text style={styles.cellText}>{item.category}</Text>
-              </View>
-              <View style={styles.colCustodian}>
-                <Text style={styles.cellText}>{item.custodian}</Text>
-              </View>
-              <View style={styles.colAuditStatus}>
-                <Text
-                  style={[
-                    styles.statusText,
-                    {
-                      color: AUDIT_STATUS_COLORS[item.audit_status] || "#000",
-                    },
-                  ]}
-                >
-                  {AUDIT_STATUS_LABELS[item.audit_status] ||
-                    item.audit_status ||
-                    ""}
+              <View style={styles.signatureBlock}>
+                <Text style={styles.signatureLabel}>Noted by:</Text>
+                <View style={styles.signatureLine} />
+                <Text style={styles.signatureCaption}>
+                  Signature Over Printed Name of Custodian
                 </Text>
               </View>
             </View>
-          ))}
-        </View>
-
-        <View style={styles.signatureRow}>
-          <View style={styles.signatureBlock}>
-            <Text style={styles.signatureLabel}>Audited by:</Text>
-            <Text style={styles.signatureName}>
-              {audit.audited_by_name && audit.audited_by_name !== "—"
-                ? audit.audited_by_name
-                : "_____________________"}
-            </Text>
-            <Text style={styles.signatureCaption}>
-              Signature Over Printed Name of Auditor
-            </Text>
-          </View>
-          <View style={styles.signatureBlock}>
-            <Text style={styles.signatureLabel}>Noted by:</Text>
-            <Text style={styles.signatureName}>_____________________</Text>
-            <Text style={styles.signatureCaption}>
-              Signature Over Printed Name of Custodian
-            </Text>
           </View>
         </View>
 
+        {/* Footer */}
         <View style={styles.footer} fixed>
           <Text>
             {FORM_CODE}

@@ -12,7 +12,9 @@ import bulsuLogo from "../../assets/logo/BULSULOGO.png";
 
 const styles = StyleSheet.create({
   page: {
-    padding: 36,
+    paddingTop: 36,
+    paddingHorizontal: 36,
+    paddingBottom: 64, // room for the fixed footer
     fontSize: 9,
     fontFamily: "Helvetica",
     color: "#000",
@@ -61,12 +63,12 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1.5,
     borderColor: "#860100",
     marginTop: 8,
-    marginBottom: 12,
   },
 
   // ── Form title ──
   titleWrap: {
     alignItems: "center",
+    marginTop: 10,
     marginBottom: 10,
   },
   title: {
@@ -76,9 +78,12 @@ const styles = StyleSheet.create({
   },
 
   // ── Meta row (Total Rooms / Date) ──
+  // No bottom border: the table top line draws it
   metaRow: {
     flexDirection: "row",
-    borderWidth: 1,
+    borderTopWidth: 1,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
     borderColor: "#000",
     marginTop: 10,
   },
@@ -98,19 +103,23 @@ const styles = StyleSheet.create({
   },
 
   // ── Table ──
-  table: {
-    borderWidth: 1,
+  // Thin line that repeats at the top of every page (fixed)
+  tableTopLine: {
+    borderTopWidth: 1,
     borderColor: "#000",
-    borderTopWidth: 0,
   },
+  // Header prints on page 1 only
   tableHeaderRow: {
     flexDirection: "row",
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
     borderBottomWidth: 1,
     borderColor: "#000",
-    backgroundColor: "#f2f2f2",
   },
   tableRow: {
     flexDirection: "row",
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
     borderBottomWidth: 1,
     borderColor: "#000",
     minHeight: 22,
@@ -155,12 +164,23 @@ const styles = StyleSheet.create({
     fontSize: 9,
     textAlign: "center",
   },
+  cellTextBold: {
+    fontSize: 9,
+    fontWeight: "bold",
+  },
+  cellTextCenterBold: {
+    fontSize: 9,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
 
   // ── Signatures ──
+  signatureWrap: {
+    marginTop: 40,
+  },
   signatureRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 40,
   },
   signatureBlock: {
     width: "45%",
@@ -168,11 +188,12 @@ const styles = StyleSheet.create({
   },
   signatureLabel: {
     fontSize: 9,
-    marginBottom: 30,
   },
-  signatureName: {
-    fontSize: 9,
-    fontWeight: "bold",
+  signatureLine: {
+    width: "100%",
+    height: 30,
+    borderBottomWidth: 1,
+    borderColor: "#000",
   },
   signatureCaption: {
     fontSize: 7,
@@ -193,9 +214,28 @@ const styles = StyleSheet.create({
   },
 });
 
-const MIN_ROWS = 14;
 const FORM_CODE = "BulSU-OP-CICT-14F4";
 const REVISION = "0";
+const TAIL_ROWS = 3; // last rows that always travel with the TOTAL row and signatures
+
+// `index` is the row's position in the whole list, so numbering keeps going
+// across the body rows and the tail rows.
+const renderRow = (item, index) => (
+  <View style={styles.tableRow} key={index} wrap={false}>
+    <View style={styles.colNo}>
+      <Text style={styles.cellTextCenter}>{item.name ? index + 1 : ""}</Text>
+    </View>
+    <View style={styles.colName}>
+      <Text style={styles.cellText}>{item.name}</Text>
+    </View>
+    <View style={styles.colCustodian}>
+      <Text style={styles.cellText}>{item.custodian}</Text>
+    </View>
+    <View style={styles.colAssets}>
+      <Text style={styles.cellTextCenter}>{item.name ? item.assets : ""}</Text>
+    </View>
+  </View>
+);
 
 export function RoomListPDF({ rooms = [] }) {
   const rows = rooms.map((r) => ({
@@ -206,11 +246,15 @@ export function RoomListPDF({ rooms = [] }) {
 
   const totalAssets = rooms.reduce((sum, r) => sum + (r.assetCount || 0), 0);
 
-  while (rows.length < MIN_ROWS) rows.push({});
+  const safeRows = rows.length ? rows : [{}]; // never an empty table
+  const splitAt = Math.max(0, safeRows.length - TAIL_ROWS);
+  const bodyRows = safeRows.slice(0, splitAt);
+  const tailRows = safeRows.slice(splitAt);
 
   return (
     <Document>
       <Page size="A4" style={styles.page}>
+        {/* Letterhead (page 1 only) */}
         <View style={styles.letterheadRow}>
           <Image src={cictLogo} style={styles.logo} />
           <View style={styles.letterheadText}>
@@ -229,6 +273,7 @@ export function RoomListPDF({ rooms = [] }) {
           <Text style={styles.title}>ROOM LIST</Text>
         </View>
 
+        {/* Meta row */}
         <View style={styles.metaRow}>
           <View style={styles.metaCell}>
             <Text style={styles.metaLabel}>TOTAL ROOMS: {rooms.length}</Text>
@@ -240,80 +285,65 @@ export function RoomListPDF({ rooms = [] }) {
           </View>
         </View>
 
-        <View style={styles.table}>
-          <View style={styles.tableHeaderRow}>
-            <View style={styles.colNo}>
-              <Text style={styles.headerCellText}>NO.</Text>
-            </View>
-            <View style={styles.colName}>
-              <Text style={styles.headerCellText}>ROOM NAME</Text>
-            </View>
-            <View style={styles.colCustodian}>
-              <Text style={styles.headerCellText}>ROOM CUSTODIAN</Text>
-            </View>
-            <View style={styles.colAssets}>
-              <Text style={styles.headerCellText}>TOTAL ASSETS</Text>
-            </View>
+        {/* Top line: repeats at the top of every page */}
+        <View style={styles.tableTopLine} fixed />
+
+        {/* Column header: page 1 only */}
+        <View style={styles.tableHeaderRow}>
+          <View style={styles.colNo}>
+            <Text style={styles.headerCellText}>NO.</Text>
           </View>
+          <View style={styles.colName}>
+            <Text style={styles.headerCellText}>ROOM NAME</Text>
+          </View>
+          <View style={styles.colCustodian}>
+            <Text style={styles.headerCellText}>ROOM CUSTODIAN</Text>
+          </View>
+          <View style={styles.colAssets}>
+            <Text style={styles.headerCellText}>TOTAL ASSETS</Text>
+          </View>
+        </View>
 
-          {rows.map((item, index) => (
-            <View style={styles.tableRow} key={index}>
-              <View style={styles.colNo}>
-                <Text style={styles.cellTextCenter}>
-                  {item.name ? index + 1 : ""}
-                </Text>
-              </View>
-              <View style={styles.colName}>
-                <Text style={styles.cellText}>{item.name}</Text>
-              </View>
-              <View style={styles.colCustodian}>
-                <Text style={styles.cellText}>{item.custodian}</Text>
-              </View>
-              <View style={styles.colAssets}>
-                <Text style={styles.cellTextCenter}>
-                  {item.name ? item.assets : ""}
-                </Text>
-              </View>
-            </View>
-          ))}
+        {/* Data rows */}
+        {bodyRows.map(renderRow)}
 
+        {/* Last rows + TOTAL row + signatures stay together on one page */}
+        <View wrap={false}>
+          {tailRows.map((item, i) => renderRow(item, splitAt + i))}
+
+          {/* TOTAL row */}
           <View style={styles.tableRow}>
-            <View style={styles.colNo}>
-              <Text style={styles.cellText}></Text>
-            </View>
+            <View style={styles.colNo} />
             <View style={styles.colName}>
-              <Text style={[styles.cellText, { fontWeight: "bold" }]}>
-                TOTAL
-              </Text>
+              <Text style={styles.cellTextBold}>TOTAL</Text>
             </View>
-            <View style={styles.colCustodian}>
-              <Text style={styles.cellText}></Text>
-            </View>
+            <View style={styles.colCustodian} />
             <View style={styles.colAssets}>
-              <Text style={[styles.cellTextCenter, { fontWeight: "bold" }]}>
-                {totalAssets}
-              </Text>
+              <Text style={styles.cellTextCenterBold}>{totalAssets}</Text>
+            </View>
+          </View>
+
+          <View style={styles.signatureWrap}>
+            <View style={styles.signatureRow}>
+              <View style={styles.signatureBlock}>
+                <Text style={styles.signatureLabel}>Prepared by:</Text>
+                <View style={styles.signatureLine} />
+                <Text style={styles.signatureCaption}>
+                  Signature Over Printed Name
+                </Text>
+              </View>
+              <View style={styles.signatureBlock}>
+                <Text style={styles.signatureLabel}>Noted by:</Text>
+                <View style={styles.signatureLine} />
+                <Text style={styles.signatureCaption}>
+                  Signature Over Printed Name of Admin
+                </Text>
+              </View>
             </View>
           </View>
         </View>
 
-        <View style={styles.signatureRow}>
-          <View style={styles.signatureBlock}>
-            <Text style={styles.signatureLabel}>Prepared by:</Text>
-            <Text style={styles.signatureName}>_____________________</Text>
-            <Text style={styles.signatureCaption}>
-              Signature Over Printed Name
-            </Text>
-          </View>
-          <View style={styles.signatureBlock}>
-            <Text style={styles.signatureLabel}>Noted by:</Text>
-            <Text style={styles.signatureName}>_____________________</Text>
-            <Text style={styles.signatureCaption}>
-              Signature Over Printed Name of Admin
-            </Text>
-          </View>
-        </View>
-
+        {/* Footer */}
         <View style={styles.footer} fixed>
           <Text>
             {FORM_CODE}
