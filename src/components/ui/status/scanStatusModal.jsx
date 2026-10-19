@@ -12,7 +12,6 @@ function ScanStatusModal({
   onClose,
 }) {
   if (!item) return null;
-  console.log("ScanStatusModal item:", item);
 
   const isNotFound = errorMessage === "not_found.";
 

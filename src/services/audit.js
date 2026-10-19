@@ -327,25 +327,50 @@ export async function completeAuditSession(auditID) {
     throw new Error("This audit has already been completed.");
   }
 
-  // == Step 1: report + flag every asset that was not audited =============
+  // == Step 1: report every not-audited asset AND every misplaced asset ====
   const roomName = (await fetchRoomName(room_id).catch(() => null)) ?? room_id;
 
-  const notAuditedSnap = await getDocs(
-    query(
-      collection(db, "audit_room", auditID, "audit_item"),
-      where("audit_status", "==", "not_audited"),
+  const [notAuditedSnap, misplacedSnap] = await Promise.all([
+    getDocs(
+      query(
+        collection(db, "audit_room", auditID, "audit_item"),
+        where("audit_status", "==", "not_audited"),
+      ),
     ),
-  );
+    // Assets found in this room but registered in another room
+    // (written during the audit by addUnexpectedDiscrepancy).
+    getDocs(collection(db, "audit_room", auditID, "discrepancy_item")),
+  ]);
+
+  const work = [
+    ...notAuditedSnap.docs.map((d) => ({
+      kind: "not_audited",
+      item: d.data(),
+    })),
+    ...misplacedSnap.docs.map((d) => ({
+      kind: "misplaced",
+      ref: d.ref,
+      item: { ...d.data(), asset_id: d.data().asset_id ?? d.id },
+    })),
+  ];
 
   const reported = [];
   const skipped = [];
-  const missingItems = []; // become discrepancy items in the final batch
+  const missingItems = []; // not-audited items: need a NEW discrepancy doc
+  const misplacedReports = []; // existing discrepancy docs to link to their report
+
+  const roomNameCache = new Map([[room_id, roomName]]);
+  const getRoomName = async (id) => {
+    if (!id) return null;
+    if (!roomNameCache.has(id)) {
+      roomNameCache.set(id, (await fetchRoomName(id).catch(() => null)) ?? id);
+    }
+    return roomNameCache.get(id);
+  };
 
   // Sequential on purpose: addReport uses a counter transaction,
   // and parallel calls would contend on the same counter doc.
-  for (const itemDoc of notAuditedSnap.docs) {
-    const item = itemDoc.data();
-
+  for (const { kind, item, ref } of work) {
     try {
       const assetSnap = await getDoc(doc(db, "asset", item.asset_id));
       if (!assetSnap.exists()) throw new Error("Asset not found.");
@@ -361,25 +386,37 @@ export async function completeAuditSession(auditID) {
         continue;
       }
 
-      // Flag it before filing the report, so it still counts as a
-      // discrepancy even if the report is skipped (e.g. already has an
-      // open missing report from an earlier audit).
-      missingItems.push(item);
+      // Not-audited items still need a discrepancy doc; flag before filing
+      // the report so it counts even if the report is skipped.
+      if (kind === "not_audited") missingItems.push(item);
+
+      let narrative;
+      if (kind === "misplaced") {
+        const registeredName =
+          (await getRoomName(asset.room_id)) ?? "another room";
+        narrative = `Found in ${roomName} during audit but registered in ${registeredName}. Missing from its registered room.`;
+      } else {
+        narrative = `Not found during audit in ${roomName}`;
+      }
 
       const { id: reportDocId, report_no } = await addReport(
         {
           type: REPORT_STATUS.MISSING,
           asset_id: item.asset_id,
           asset,
-          description: item.description,
-          narrative: `Not found during audit in ${roomName}`,
+          description: item.description ?? asset.description,
+          narrative,
           photo: null,
         },
         auditData.audited_by ?? null,
         auditData.audited_by_name ?? null,
       );
 
-      reported.push({ asset_id: item.asset_id, report_no, reportDocId });
+      reported.push({ asset_id: item.asset_id, report_no, reportDocId, kind });
+
+      if (kind === "misplaced") {
+        misplacedReports.push({ ref, report_no, reportDocId });
+      }
     } catch (err) {
       skipped.push({ asset_id: item.asset_id, reason: err.message });
     }
@@ -391,6 +428,7 @@ export async function completeAuditSession(auditID) {
 
   const batch = writeBatch(db);
 
+  // New discrepancy docs for the not-audited (missing) assets
   missingItems.forEach((item) => {
     const discrepancyRef = doc(
       db,
@@ -412,13 +450,22 @@ export async function completeAuditSession(auditID) {
     });
   });
 
+  // Link already-existing misplaced docs to the report we just filed
+  misplacedReports.forEach(({ ref, report_no, reportDocId }) => {
+    batch.update(ref, { report_no, report_id: reportDocId });
+  });
+
+  const hasAnyDiscrepancy = missingItems.length > 0 || misplacedSnap.size > 0;
+
   batch.update(auditRef, {
     status: "completed",
     completed_at: completedAt,
+    // Misplaced items were already counted when addUnexpectedDiscrepancy ran,
+    // so only the newly flagged missing items are added here.
     ...(missingItems.length > 0 && {
       discrepancy_count: increment(missingItems.length),
-      has_discrepancies: true,
     }),
+    ...(hasAnyDiscrepancy && { has_discrepancies: true }),
   });
   batch.update(roomRef, {
     last_audited_at: completedAt,
@@ -426,7 +473,12 @@ export async function completeAuditSession(auditID) {
 
   await batch.commit();
 
-  return { reported, skipped, flagged: missingItems.length };
+  return {
+    reported,
+    skipped,
+    flagged: missingItems.length,
+    misplaced: misplacedSnap.size,
+  };
 }
 
 export async function addUnexpectedDiscrepancy(auditID, assetData, roomId) {
