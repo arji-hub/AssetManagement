@@ -8,20 +8,19 @@ import { formatDate } from "../../utils/date";
 import cictLogo from "../../assets/logo/CICTLOGO.png";
 import ViewAssetDocument from "./ViewAssetDocument";
 
+// Same COA rule as InfoCard: below threshold = ICS, at/above = PAR
+const PAR_COST_THRESHOLD = 50000;
+
+function getDocumentType(cost) {
+  const amount = Number(cost);
+  if (!Number.isFinite(amount) || amount <= 0) return null;
+  return amount >= PAR_COST_THRESHOLD ? "PAR" : "ICS";
+}
+
 function displayValue(value) {
   if (value === null || value === undefined || value === "") return "—";
   return value;
 }
-
-const FIELD_ICONS = {
-  serial: "fa-solid fa-barcode",
-  category: "fa-solid fa-tag",
-  date: "fa-solid fa-calendar-days",
-  value: "fa-solid fa-coins",
-  qty: "fa-solid fa-layer-group",
-  room: "fa-solid fa-door-open",
-  custodian: "fa-solid fa-user-shield",
-};
 
 function QRInfo({ asset }) {
   const navigate = useNavigate();
@@ -49,17 +48,24 @@ function QRInfo({ asset }) {
   }
 
   const {
+    id,
     serial_number,
     category_id,
+    category_name,
     description,
     date_acquired,
     unit_value,
+    cost,
+    acquisition_type,
+    donated_by,
     qty,
     status,
     remarks,
     asset_image_url,
     property_custodian_name,
+    local_mr_name,
     room_id,
+    room_name,
   } = asset;
 
   const statusStyle = STATUS_COLORS[status] || {
@@ -67,17 +73,88 @@ function QRInfo({ asset }) {
     color: "#1f1f1f",
   };
 
+  const isDonated = acquisition_type === "donated";
+  const acquisitionCost = cost ?? unit_value;
+  const documentType = getDocumentType(acquisitionCost);
+
   const fields = [
-    { key: "serial", label: "Serial No.", value: displayValue(serial_number) },
-    { key: "category", label: "Category", value: displayValue(category_id) },
-    { key: "date", label: "Date Acquired", value: formatDate(date_acquired) },
-    { key: "value", label: "Unit Value", value: formatCurrency(unit_value) },
-    { key: "qty", label: "Quantity", value: displayValue(qty) },
-    { key: "room", label: "Room", value: displayValue(room_id) },
+    {
+      key: "id",
+      label: "Asset ID",
+      icon: "fa-solid fa-hashtag",
+      value: displayValue(id),
+    },
+    {
+      key: "serial",
+      label: "Serial No.",
+      icon: "fa-solid fa-barcode",
+      value: displayValue(serial_number),
+    },
+    {
+      key: "category",
+      label: "Category",
+      icon: "fa-solid fa-tag",
+      value: displayValue(category_name ?? category_id),
+    },
+    {
+      key: "date",
+      label: "Date Acquired",
+      icon: "fa-solid fa-calendar-days",
+      value: formatDate(date_acquired) || "—",
+    },
+    {
+      key: "qty",
+      label: "Quantity",
+      icon: "fa-solid fa-boxes-stacked",
+      value: displayValue(qty),
+    },
+    {
+      key: "room",
+      label: "Current Room",
+      icon: "fa-solid fa-door-open",
+      value: displayValue(room_name ?? room_id),
+    },
     {
       key: "custodian",
       label: "Custodian",
+      icon: "fa-solid fa-user-shield",
       value: displayValue(property_custodian_name),
+    },
+    {
+      key: "local",
+      label: "Local Custodian",
+      icon: "fa-solid fa-user-tag",
+      value: displayValue(local_mr_name),
+    },
+    ...(isDonated
+      ? [
+          {
+            key: "donor",
+            label: "Donated By",
+            icon: "fa-solid fa-hand-holding-heart",
+            value: displayValue(donated_by),
+          },
+        ]
+      : [
+          {
+            key: "cost",
+            label: "Acquisition Cost",
+            icon: "fa-solid fa-peso-sign",
+            value: formatCurrency(acquisitionCost),
+          },
+          {
+            key: "doctype",
+            label: "Document Type",
+            icon: "fa-solid fa-file-signature",
+            value: displayValue(documentType),
+          },
+        ]),
+    {
+      key: "remarks",
+      label: "Remarks",
+      icon: "fa-solid fa-note-sticky",
+      value: displayValue(remarks),
+      full: true,
     },
   ];
 
@@ -209,25 +286,18 @@ function QRInfo({ asset }) {
 
           <dl className="qri-fields">
             {fields.map((f) => (
-              <div className="qri-field" key={f.key}>
+              <div
+                className={`qri-field${f.full ? " qri-field--full" : ""}`}
+                key={f.key}
+              >
                 <dt className="qri-field-label">
-                  <FontAwesomeIcon icon={FIELD_ICONS[f.key]} />
+                  <FontAwesomeIcon icon={f.icon} />
                   <span>{f.label}</span>
                 </dt>
                 <dd className="qri-field-value">{f.value}</dd>
               </div>
             ))}
           </dl>
-
-          {remarks && (
-            <div className="qri-remarks">
-              <div className="qri-remarks-label">
-                <FontAwesomeIcon icon="fa-solid fa-note-sticky" />
-                <span>Remarks</span>
-              </div>
-              <p className="qri-remarks-text">{remarks}</p>
-            </div>
-          )}
         </div>
 
         {/* ── Footer ── */}

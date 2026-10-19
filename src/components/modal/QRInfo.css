@@ -1,5 +1,6 @@
 /* ═══════════════════════════════════════
    QRInfo — official plaque, premium finish
+   Themed via :root / :root[data-theme="dark"] tokens
    ═══════════════════════════════════════ */
 
 .qri-overlay {
@@ -10,7 +11,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.55);
+  background: var(--overlay);
   backdrop-filter: blur(6px);
   padding: 16px;
   box-sizing: border-box;
@@ -18,6 +19,13 @@
 }
 
 .qri-plaque {
+  /* The plaque face stays brand-gold in both themes, so text sitting
+     directly on the gold uses these fixed-contrast tokens. */
+  --qri-on-gold: #1a1a1a;
+  --qri-on-gold-soft: #6b4400;
+  --qri-brand: var(--maroon-900); /* maroon text/icons on gold */
+  --qri-brand-solid: var(--maroon-700); /* maroon fills (pill, border) */
+
   position: relative;
   width: 100%;
   max-width: 720px;
@@ -27,8 +35,13 @@
   flex-direction: column;
   overflow: hidden;
   border-radius: 20px;
-  background: linear-gradient(160deg, #f7b53a 0%, #f0a022 55%, #e6931a 100%);
-  border: 3px solid #860100;
+  background: linear-gradient(
+    160deg,
+    var(--gold-400) 0%,
+    var(--gold-500) 60%,
+    color-mix(in srgb, var(--gold-500) 88%, #000) 100%
+  );
+  border: 3px solid var(--qri-brand-solid);
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.15),
     0 30px 70px -12px rgba(0, 0, 0, 0.6),
@@ -40,7 +53,8 @@
   content: "";
   position: absolute;
   inset: 7px;
-  border: 1.5px solid rgba(134, 1, 0, 0.35);
+  border: 1.5px solid
+    color-mix(in srgb, var(--qri-brand-solid) 35%, transparent);
   border-radius: 14px;
   pointer-events: none;
   z-index: 5;
@@ -64,14 +78,14 @@
   width: 54px;
   height: 54px;
   border-radius: 50%;
-  background: #f5aa2c;
-  border: 2px solid #860100;
+  background: var(--gold-500);
+  border: 2px solid var(--qri-brand-solid);
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow:
     0 2px 6px rgba(0, 0, 0, 0.25),
-    inset 0 0 0 3px rgba(245, 170, 44, 0.5);
+    inset 0 0 0 3px color-mix(in srgb, var(--gold-500) 50%, transparent);
 }
 
 .qri-seal-img {
@@ -94,7 +108,7 @@
   font-size: clamp(12px, 4vw, 32px);
   font-weight: 600;
   letter-spacing: 0.01em;
-  color: #860100;
+  color: var(--qri-brand);
   line-height: 1.3;
 }
 
@@ -114,7 +128,7 @@
   line-height: 200%;
   text-transform: uppercase;
   color: #ffffff;
-  background: #860100;
+  background: var(--qri-brand-solid);
   border-radius: 999px;
   width: 100%;
 }
@@ -124,7 +138,7 @@
   font-family: "Sansation";
   font-size: clamp(10.5px, 3vw, 11.5px);
   font-weight: 600;
-  color: #6b4400;
+  color: var(--qri-on-gold-soft);
   line-height: 1.35;
 }
 
@@ -138,10 +152,10 @@
   flex: 1 1 auto;
   min-width: 0;
   aspect-ratio: 16 / 9;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   overflow: hidden;
-  background: #f1f1f1;
-  border: 1px solid rgba(134, 1, 0, 0.15);
+  background: var(--track-bg);
+  border: 1px solid color-mix(in srgb, var(--qri-brand-solid) 15%, transparent);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
   cursor: pointer;
 }
@@ -166,24 +180,25 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  color: #b8b8b8;
+  color: var(--text-faint);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   background: repeating-linear-gradient(
     45deg,
-    #f4f4f4,
-    #f4f4f4 10px,
-    #eeeeee 10px,
-    #eeeeee 20px
+    var(--surface-subtle),
+    var(--surface-subtle) 10px,
+    var(--track-bg) 10px,
+    var(--track-bg) 20px
   );
   cursor: default;
 }
 
 .qri-media-placeholder svg {
   font-size: 26px;
-  color: #ccc;
+  color: var(--text-faint);
+  opacity: 0.6;
 }
 
 /* Status badge — overlaid on the image (wide layout, ≥370px) */
@@ -285,8 +300,8 @@
   overflow-y: auto;
   margin: 0 16px 14px;
   padding: 16px;
-  background: #fffdf8;
-  border-radius: 12px;
+  background: var(--surface-subtle);
+  border-radius: var(--radius-md);
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.06),
     0 8px 20px rgba(0, 0, 0, 0.12);
@@ -301,8 +316,12 @@
 }
 
 .qri-scroll::-webkit-scrollbar-thumb {
-  background: rgba(134, 1, 0, 0.35);
+  background: var(--scrollbar-thumb);
   border-radius: 999px;
+}
+
+.qri-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
 }
 
 /* subtle watermark logo behind the scrollable info */
@@ -319,8 +338,7 @@
 }
 
 .qri-description,
-.qri-fields,
-.qri-remarks {
+.qri-fields {
   position: relative;
   z-index: 1;
 }
@@ -332,9 +350,11 @@
   font-family: "Sansation";
   font-size: clamp(14.5px, 4vw, 16px);
   font-weight: 700;
-  color: #1a1a1a;
+  /* description sits on the gold plaque face on mobile & beside the image */
+  color: var(--qri-on-gold);
   line-height: 1.4;
-  border-bottom: 1.5px dashed rgba(134, 1, 0, 0.25);
+  border-bottom: 1.5px dashed
+    color-mix(in srgb, var(--qri-brand-solid) 25%, transparent);
 }
 
 .qri-fields {
@@ -350,11 +370,7 @@
   justify-content: space-between;
   gap: 12px;
   padding: 9px 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-}
-
-.qri-field:last-child {
-  border-bottom: none;
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .qri-field-label {
@@ -367,7 +383,7 @@
   font-weight: 700;
   letter-spacing: 0.03em;
   text-transform: uppercase;
-  color: #860100;
+  color: var(--maroon-700);
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -375,7 +391,7 @@
 .qri-field-label svg {
   font-size: 11px;
   width: 13px;
-  color: #d99520;
+  color: var(--maroon-700);
   flex-shrink: 0;
 }
 
@@ -383,37 +399,38 @@
   margin: 0;
   font-size: 13.5px;
   font-weight: 600;
-  color: #262626;
+  color: var(--text-strong);
   text-align: right;
   word-break: break-word;
 }
 
-.qri-remarks {
-  margin-top: 14px;
+/* Full-width field (Remarks): label on top, value below, taller on mobile */
+.qri-field--full {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 6px;
+  min-height: 96px;
+  margin-top: 8px;
   padding: 12px 14px;
-  background: rgba(245, 170, 44, 0.12);
-  border-left: 3px solid #f5aa2c;
-  border-radius: 8px;
+  background: var(--missing-bg);
+  border-bottom: 3px solid var(--gold-500);
+  border-radius: var(--radius-sm);
 }
 
-.qri-remarks-label {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  margin-bottom: 5px;
-  font-family: "Sansation";
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: #7a5700;
+.qri-field--full .qri-field-label,
+.qri-field--full .qri-field-label svg {
+  color: var(--missing);
 }
 
-.qri-remarks-text {
-  margin: 0;
+.qri-field--full .qri-field-value {
+  width: 100%;
+  text-align: left;
   font-size: 12.5px;
-  color: #5a4a2a;
+  font-weight: 500;
   line-height: 1.5;
+  color: var(--text-muted);
+  white-space: pre-wrap;
 }
 
 /* ── Footer ── */
@@ -440,17 +457,19 @@
   cursor: pointer;
   border: none;
   color: #ffffff;
-  background: linear-gradient(135deg, #9c0201 0%, #6b0000 100%);
-  box-shadow: 0 8px 20px -6px rgba(134, 1, 0, 0.5);
+  background: var(--maroon-gradient);
+  box-shadow: 0 8px 20px -6px
+    color-mix(in srgb, var(--qri-brand-solid) 50%, transparent);
   transition:
-    background 0.25s ease,
+    filter 0.25s ease,
     box-shadow 0.25s ease,
     transform 0.15s ease;
 }
 
 .qri-btn:hover {
-  background: linear-gradient(135deg, #ac0201 0%, #7a0000 100%);
-  box-shadow: 0 10px 24px -6px rgba(134, 1, 0, 0.55);
+  filter: brightness(1.1);
+  box-shadow: 0 10px 24px -6px
+    color-mix(in srgb, var(--qri-brand-solid) 55%, transparent);
 }
 
 .qri-btn:active {
@@ -471,8 +490,8 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: rgba(134, 1, 0, 0.12);
-  color: #860100;
+  background: var(--maroon-tint);
+  color: var(--qri-brand);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -485,13 +504,13 @@
   font-family: "Sansation";
   font-size: 17px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--qri-on-gold);
 }
 
 .qri-empty-text {
   margin: 0 0 12px;
   font-size: 13px;
-  color: #6b4400;
+  color: var(--qri-on-gold-soft);
 }
 
 .qri-plaque--empty .qri-btn {
@@ -610,6 +629,11 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0 20px;
+  }
+
+  .qri-field--full {
+    grid-column: 1 / -1; /* span both columns */
+    min-height: 0;
   }
 
   .qri-footer {
