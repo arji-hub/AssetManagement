@@ -22,7 +22,6 @@ export default function Header({ onNavigate }) {
     };
 
     // Run once on mount in case the page loads already scrolled
-    // (e.g. navigating back with scroll position restored).
     handleScroll();
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -75,7 +74,7 @@ export default function Header({ onNavigate }) {
             Features
           </button>
 
-          <button className="nav-link" onClick={() => navigate("/about")}>
+          <button className="nav-link" onClick={() => handleNavigate("system")}>
             About
           </button>
         </nav>
