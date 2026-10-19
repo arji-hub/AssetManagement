@@ -73,11 +73,10 @@ function useRoomOverview(roomId) {
 
   // Custodian holding the most assets in this room
   const topCustodian = useMemo(() => {
-    if (assets.length === 0) return null;
-
     const counts = new Map();
     assets.forEach((asset) => {
-      const name = asset.property_custodian_fullname || "Unassigned";
+      const name = asset.property_custodian_fullname;
+      if (!name || name === "---") return;
       counts.set(name, (counts.get(name) ?? 0) + 1);
     });
 
@@ -87,7 +86,6 @@ function useRoomOverview(roomId) {
     }
     return best;
   }, [assets]);
-
   // Last audited date — prefer the most recent completed audit
   const lastAuditedAt = useMemo(() => {
     if (previousAudits.length === 0) return null;

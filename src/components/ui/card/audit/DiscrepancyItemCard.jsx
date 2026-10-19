@@ -23,13 +23,15 @@ function resolveCardRoles(columns) {
   };
 }
 
-function DiscrepancyItemCard({ item, index, columns }) {
+function DiscrepancyItemCard({ item, index, columns, onRowClick }) {
   const { titleCol, badgeCol, dateCol, metaCols } = resolveCardRoles(columns);
+
+  const handleClick = () => onRowClick?.(item.id);
 
   return (
     <>
       {/* ── Desktop / tablet row ── */}
-      <div className="discrepancy-item-card-row">
+      <div className="discrepancy-item-card-row" onClick={handleClick}>
         {columns.map((col) => (
           <div
             key={col.key}
@@ -42,7 +44,7 @@ function DiscrepancyItemCard({ item, index, columns }) {
       </div>
 
       {/* ── Mobile card ── */}
-      <div className="discrepancy-item-card">
+      <div className="discrepancy-item-card" onClick={handleClick}>
         <div className="discrepancy-item-card-header">
           {titleCol && (
             <p className="discrepancy-item-card-title">

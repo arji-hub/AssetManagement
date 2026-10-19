@@ -116,7 +116,7 @@ export function useRoomAssets(roomID) {
         await restoreRoom(roomID, role);
         setRoomStatus("active");
         setShowArchiveModal(false);
-        // no navigation — stay on page, room is active again
+        // no navigation stay on page, room is active again
       }
     } catch (err) {
       setArchiveError(

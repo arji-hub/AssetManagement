@@ -236,6 +236,24 @@ function ScanStatusModal({
                   </span>
                 </div>
               )}
+              {item.registered_room && (
+                <div className="scan-modal-item-row">
+                  <span className="scan-modal-item-label">
+                    Registered Room:
+                  </span>
+                  <span className="scan-modal-item-value">
+                    {item.registered_room}
+                  </span>
+                </div>
+              )}
+              {item.found_room && (
+                <div className="scan-modal-item-row">
+                  <span className="scan-modal-item-label">Found In:</span>
+                  <span className="scan-modal-item-value">
+                    {item.found_room}
+                  </span>
+                </div>
+              )}
             </div>
 
             <p className="scan-modal-message scan-modal-message--error">
@@ -287,6 +305,40 @@ function ScanStatusModal({
                   {item.asset_id || item.id}
                 </span>
               </div>
+              {item.description && (
+                <div className="scan-modal-item-row">
+                  <span className="scan-modal-item-label">Description:</span>
+                  <span className="scan-modal-item-value">
+                    {item.description}
+                  </span>
+                </div>
+              )}
+              {item.registered_room && (
+                <div className="scan-modal-item-row">
+                  <span className="scan-modal-item-label">
+                    Registered Room:
+                  </span>
+                  <span className="scan-modal-item-value">
+                    {item.registered_room}
+                  </span>
+                </div>
+              )}
+              {item.found_room && (
+                <div className="scan-modal-item-row">
+                  <span className="scan-modal-item-label">Found In:</span>
+                  <span className="scan-modal-item-value">
+                    {item.found_room}
+                  </span>
+                </div>
+              )}
+              {item.custodian && (
+                <div className="scan-modal-item-row">
+                  <span className="scan-modal-item-label">Custodian:</span>
+                  <span className="scan-modal-item-value">
+                    {item.custodian}
+                  </span>
+                </div>
+              )}
             </div>
 
             <p className="scan-modal-message scan-modal-message--duplicate">
@@ -316,6 +368,8 @@ ScanStatusModal.propTypes = {
     serial_number: PropTypes.string,
     category: PropTypes.string,
     custodian: PropTypes.string,
+    room: PropTypes.string,
+    room_name: PropTypes.string,
     audited_at: PropTypes.string,
     audit_status: PropTypes.string,
   }),
