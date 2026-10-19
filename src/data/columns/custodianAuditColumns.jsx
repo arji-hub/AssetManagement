@@ -5,14 +5,14 @@ import { CustodianInventoryPDF } from "../../pdf/templates/CustodianInventoryPDF
 import { useCustodianAssets } from "../../hooks/custodian/useCustodianAssets";
 
 function CustodianAuditFormCell({ audit }) {
-  const { assets, fullname } = useCustodianAssets(audit.username);
+  const { assets } = useCustodianAssets(audit.username);
 
   return (
     <PDFPreviewModal
       title="Custody Form"
       fileName={`custodian-inventory-${audit.username}.pdf`}
       document={
-        <CustodianInventoryPDF custodianName={fullname} assets={assets} />
+        <CustodianInventoryPDF custodianName={audit.fullname} assets={assets} />
       }
       triggerLabel={
         <>
