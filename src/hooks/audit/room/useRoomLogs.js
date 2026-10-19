@@ -130,6 +130,7 @@ function useRoomLogs() {
     [qualifyingRooms, latestAuditByRoom],
   );
 
+  //average discrepancy rate = (sum of discrepancy rates for rooms with assets) / (number of rooms with assets)
   const avgDiscrepancyRate = useMemo(() => {
     const withAssets = auditRooms.filter(
       (audit) => (audit.total_assets ?? 0) > 0,
