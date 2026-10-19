@@ -16,7 +16,7 @@ function ReportLogCreateCard({
     _cardRole: col.card?.role || "meta",
   }));
 
-  const titleCol = roledColumns.find((c) => c._cardRole === "title");
+  const titleCol = roledColumns.find((c) => c._cardRole === "desc");
   const badgeCol = roledColumns.find((c) => c._cardRole === "badge");
   const metaCols = roledColumns.filter((c) => c._cardRole === "meta");
   const dateCol = roledColumns.find((c) => c._cardRole === "date");
@@ -31,25 +31,30 @@ function ReportLogCreateCard({
         className={`report-log-create-row${selected ? " report-log-create-row-selected" : ""}`}
         onClick={handleRowClick}
       >
-        <div
-          className="report-log-create-row-checkbox"
-          onClick={handleCheckboxClick}
-        >
-          <input
-            type="checkbox"
-            checked={selected}
-            onChange={() => onToggleSelect(report.id)}
-          />
-        </div>
-        {roledColumns.map((col) => (
-          <div
-            key={col.key}
-            className="report-log-create-row-cell"
-            data-priority={col.priority || "high"}
-          >
-            {col.render(report)}
-          </div>
-        ))}
+        {roledColumns.map((col) =>
+          col._cardRole === "select" ? (
+            <div
+              key={col.key}
+              className="report-log-create-row-cell report-log-create-row-checkbox"
+              data-priority="high"
+              onClick={handleCheckboxClick}
+            >
+              <input
+                type="checkbox"
+                checked={selected}
+                onChange={() => onToggleSelect(report.id)}
+              />
+            </div>
+          ) : (
+            <div
+              key={col.key}
+              className="report-log-create-row-cell"
+              data-priority={col.priority || "high"}
+            >
+              {col.render(report)}
+            </div>
+          ),
+        )}
       </div>
 
       {/* ── Mobile card ── */}

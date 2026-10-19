@@ -1,7 +1,9 @@
+/* ── Overlay ────────────────────────────────────────────────── */
 .modal-overlay {
   position: fixed;
   inset: 0;
   background: var(--overlay);
+  backdrop-filter: blur(3px);
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -20,13 +22,16 @@
   }
 }
 
+/* ── Container ──────────────────────────────────────────────── */
 .modal-container {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
-  border-radius: 12px;
+  border-radius: 16px;
   width: 100%;
-  max-width: 420px;
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.18);
+  max-width: 560px;
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.22),
+    0 2px 6px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -49,37 +54,75 @@
 /* ── Header ─────────────────────────────────────────────────── */
 .modal-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 18px 24px;
-  background: var(--maroon-700);
+  gap: 14px;
+  padding: 16px 24px;
+  background: linear-gradient(
+    135deg,
+    var(--maroon-900) 0%,
+    var(--maroon-700) 100%
+  );
+  border-bottom: 3px solid var(--gold-500);
+}
+
+/* The one memorable detail: a monogram that fills in as you type */
+.modal-monogram {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--gold-500);
+  color: var(--maroon-900);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.14);
+}
+
+.modal-heading {
+  flex: 1;
+  min-width: 0;
 }
 
 .modal-title {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 700;
-  color: var(--text-strong);
-  letter-spacing: 0.01em;
+  color: #ffffff;
+  letter-spacing: 0.005em;
 }
 
 .modal-close {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
   background: none;
   border: none;
+  border-radius: 0;
   font-size: 1rem;
-  line-height: 1;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.85);
   cursor: pointer;
-  transition: color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
 }
 
 .modal-close:hover {
   color: #ffffff;
 }
 
+.modal-close:focus-visible {
+  outline: 2px solid var(--gold-500);
+  outline-offset: 2px;
+}
+
 /* ── Body ───────────────────────────────────────────────────── */
 .modal-body {
-  padding: 16px;
+  padding: 20px 24px 8px;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -87,8 +130,10 @@
 
 /* ── Row (two columns) ──────────────────────────────────────── */
 .modal-row {
-  display: flex;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  align-items: start;
 }
 
 /* ── Field ──────────────────────────────────────────────────── */
@@ -96,24 +141,52 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
   position: relative;
 }
 
-.modal-field label {
+.modal-field label,
+.modal-field legend {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0;
   font-size: 13px;
   font-weight: 600;
-  color: var(--text-muted);
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+  color: var(--text-strong);
 }
 
-.modal-field input,
-.modal-field select {
-  font-size: 15px;
-  padding: 10px 14px;
+.field-optional {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-faint);
+}
+
+/* Input with leading icon */
+.input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 13px;
+  font-size: 14px;
+  color: var(--text-faint);
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+
+.input-wrap input {
+  font-size: 14.5px;
+  padding: 11px 14px 11px 38px;
   border: 1.5px solid var(--card-border);
-  border-radius: 8px;
+  border-radius: 10px;
   color: var(--text-strong);
   background: var(--card-bg);
   outline: none;
@@ -124,20 +197,136 @@
   box-sizing: border-box;
 }
 
-.modal-field input::placeholder {
+.input-wrap input::placeholder {
   color: var(--text-faint);
 }
 
-.modal-field input:focus,
-.modal-field select:focus {
-  border-color: var(--maroon-700);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--maroon-700) 10%, transparent);
-  background: var(--card-bg);
+.input-wrap:hover input:not(:focus) {
+  border-color: color-mix(in srgb, var(--maroon-700) 35%, var(--card-border));
 }
 
-.modal-field select {
+.input-wrap:focus-within .input-icon {
+  color: var(--maroon-700);
+}
+
+.input-wrap input:focus {
+  border-color: var(--maroon-700);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--maroon-700) 14%, transparent);
+}
+
+/* No leading icon (e.g. name fields) */
+.input-wrap.no-icon input {
+  padding-left: 14px;
+}
+
+/* Room for the show/hide button */
+.input-wrap:has(.input-toggle) input {
+  padding-right: 42px;
+}
+
+.input-toggle {
+  position: absolute;
+  right: 6px;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text-muted);
   cursor: pointer;
-  appearance: auto;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.input-toggle:hover {
+  background: var(--maroon-tint);
+  color: var(--maroon-700);
+}
+
+.input-toggle:focus-visible {
+  outline: 2px solid var(--maroon-700);
+  outline-offset: 1px;
+}
+
+/* ── Classification (segmented control) ─────────────────────── */
+.segmented {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  background: color-mix(in srgb, var(--card-border) 45%, transparent);
+  border: 1.5px solid var(--card-border);
+  border-radius: 10px;
+}
+
+.segmented input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.segmented label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 7px 8px;
+  border-radius: 7px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.segmented label:hover {
+  color: var(--maroon-700);
+}
+
+.segmented input:checked + label {
+  background: var(--maroon-700);
+  color: #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.segmented input:focus-visible + label {
+  outline: 2px solid var(--gold-500);
+  outline-offset: 2px;
+}
+
+/* ── Status + error messages ────────────────────────────────── */
+.field-checking,
+.field-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.field-checking {
+  color: var(--text-muted);
+}
+
+.field-error {
+  color: var(--danger);
+  font-weight: 500;
+}
+
+.input-wrap.has-error input {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 12%, transparent);
+}
+
+.input-wrap.has-error .input-icon {
+  color: var(--danger);
 }
 
 /* ── Info box ───────────────────────────────────────────────── */
@@ -145,9 +334,9 @@
   display: flex;
   gap: 10px;
   align-items: flex-start;
-  background: color-mix(in srgb, var(--gold-500) 6%, transparent);
-  border: 1px solid color-mix(in srgb, var(--maroon-700) 20%, transparent);
-  border-radius: 8px;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
   padding: 12px 14px;
 }
 
@@ -160,8 +349,8 @@
 
 .modal-info p {
   margin: 0;
-  font-size: 12px;
-  color: var(--danger);
+  font-size: 12.5px;
+  color: var(--text-muted);
   line-height: 1.6;
 }
 
@@ -171,27 +360,26 @@
   justify-content: flex-end;
   align-items: center;
   gap: 10px;
-  padding: 16px 24px 24px;
+  padding: 18px 24px 22px;
 }
 
-/* ── Buttons ─────────────────────────────────────────────────── */
+/* ── Buttons ────────────────────────────────────────────────── */
 .modal-cancel,
 .modal-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   font-size: 14px;
   font-weight: 600;
-  padding: 9px 22px;
-  border-radius: 8px;
-  border: none;
+  padding: 10px 22px;
+  border-radius: 10px;
   cursor: pointer;
   transition:
     background 0.2s ease,
     transform 0.1s ease,
-    opacity 0.2s ease;
-}
-
-.modal-cancel,
-.modal-submit {
-  border: none;
+    opacity 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .modal-cancel:active,
@@ -199,21 +387,30 @@
   transform: scale(0.97);
 }
 
-/* Cancel — outlined with 30% color */
+.modal-cancel:focus-visible,
+.modal-submit:focus-visible {
+  outline: 2px solid var(--maroon-700);
+  outline-offset: 2px;
+}
+
+/* Cancel: quiet outline */
 .modal-cancel {
   background: var(--card-bg);
   color: var(--maroon-700);
-  border: 1.5px solid var(--maroon-700);
+  border: 1.5px solid var(--card-border);
 }
 
 .modal-cancel:hover {
   background: var(--maroon-tint);
+  border-color: var(--maroon-700);
 }
 
-/* Submit — 10% accent (gold) */
+/* Submit: gold accent */
 .modal-submit {
   background: var(--gold-500);
   color: var(--maroon-900);
+  border: none;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--gold-500) 40%, transparent);
 }
 
 .modal-submit:hover:not(:disabled) {
@@ -223,31 +420,17 @@
 .modal-submit:disabled {
   opacity: 0.55;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .modal-submit:disabled:active {
   transform: none;
 }
 
-/* ── Error states ────────────────────────────────────────────── */
-.modal-field.has-error input,
-.modal-field.has-error select,
-.input-error {
-  border-color: var(--danger) !important;
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 10%, transparent);
-}
-
-.field-error {
-  font-size: 12px;
-  color: var(--danger);
-  font-weight: 500;
-  margin-top: 2px;
-}
-
-/* ── Responsive ──────────────────────────────────────────────── */
-@media (max-width: 480px) {
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 560px) {
   .modal-row {
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
 
   .modal-header,
@@ -255,5 +438,21 @@
   .modal-footer {
     padding-left: 16px;
     padding-right: 16px;
+  }
+
+  .modal-footer {
+    flex-direction: column-reverse;
+  }
+
+  .modal-cancel,
+  .modal-submit {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-overlay,
+  .modal-container {
+    animation: none;
   }
 }
