@@ -10,6 +10,8 @@ import { useTransferInfo } from "../../hooks/transfer/useTransferInfo";
 import { getRequestItems } from "../../utils/transfer";
 import TransferActionModal from "../../components/modal/TransferActionModal";
 import AddingStatusModal from "../../components/ui/status/AddingStatusModal";
+import { PDFPreviewModal } from "../../components/modal/PDFPreviewModal";
+import { TransferLogPDF } from "../../pdf/templates/TransferLogPDF";
 import { TRANSFER_TYPES } from "../../data/transfer";
 import "./TransferInfo.css";
 import BackButton from "../../components/ui/button/BackButton";
@@ -81,6 +83,23 @@ function TransferInfo() {
                 Approve
               </button>
             </div>
+          )}
+          {request.status === "completed" && (
+            <PDFPreviewModal
+              title="Inventory Transfer Report"
+              fileName={`itr-${request.id}.pdf`}
+              document={
+                <TransferLogPDF
+                  request={request}
+                  items={items}
+                  typeLabel={typeLabel}
+                  ackAdmin={ackAdmin}
+                  ackFrom={ackFrom}
+                  ackTo={ackTo}
+                />
+              }
+              triggerLabel="View Transfer Report"
+            />
           )}
         </div>
 
@@ -208,9 +227,19 @@ function TransferInfo() {
                 Acknowledgments
               </span>
               <div className="transfer-info-ack-row">
-                {ackAdmin && <AckBadge label="Admin" ack={ackAdmin} />}
-                {ackFrom && <AckBadge label={ackFromLabel} ack={ackFrom} />}
-                {ackTo && <AckBadge label={ackToLabel} ack={ackTo} />}
+                {ackAdmin && (
+                  <AckBadge label="Admin" ack={ackAdmin} request={request} />
+                )}
+                {ackFrom && (
+                  <AckBadge
+                    label={ackFromLabel}
+                    ack={ackFrom}
+                    request={request}
+                  />
+                )}
+                {ackTo && (
+                  <AckBadge label={ackToLabel} ack={ackTo} request={request} />
+                )}
               </div>
             </div>
           )}

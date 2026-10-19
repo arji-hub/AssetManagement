@@ -11,10 +11,28 @@
   color: var(--text-faint);
 }
 
+/* approved */
 .transfer-ack-badge--done {
   border-color: color-mix(in srgb, var(--success) 40%, transparent);
   background: var(--success-bg);
   color: var(--success);
+}
+
+/* declined: who rejected the request */
+.transfer-ack-badge--declined {
+  border-color: color-mix(in srgb, var(--danger, #c62828) 40%, transparent);
+  background: var(--danger-bg, #fdecea);
+  color: var(--danger, #c62828);
+}
+
+/* request closed before this person responded */
+.transfer-ack-badge--closed {
+  opacity: 0.65;
+  border-style: dashed;
+}
+
+.transfer-ack-badge--closed .transfer-ack-badge-status {
+  font-style: italic;
 }
 
 .transfer-ack-badge svg {

@@ -200,6 +200,69 @@ export const subscribeToRequested = (user, callback, onError) =>
 export const subscribeToLogs = (user, callback, onError) =>
   subscribeScope(user, logsScope, callback, onError);
 
+const isDeclineEntry = (log) =>
+  [log?.action, log?.type, log?.status, log?.event].some((v) =>
+    /decline|denied|reject/i.test(String(v ?? "")),
+  );
+
+const toMillis = (ts) =>
+  ts?.toMillis ? ts.toMillis() : ts?.seconds ? ts.seconds * 1000 : 0;
+
+function withAckResponses(item) {
+  const acks = item.acknowledgments;
+  if (!acks) return item;
+
+  const acknowledgedSlots = ACK_SLOTS.filter(
+    (slot) => acks[slot]?.acknowledged,
+  );
+
+  let declinerSlot = null;
+  const declineLog = [...(item.status_log || [])]
+    .reverse()
+    .find(isDeclineEntry);
+
+  if (declineLog && item.status === "denied") {
+    const logName = String(
+      declineLog.name ?? declineLog.user_name ?? declineLog.by ?? "",
+    )
+      .trim()
+      .toLowerCase();
+
+    declinerSlot =
+      acknowledgedSlots.find(
+        (slot) =>
+          logName &&
+          String(acks[slot].name ?? "")
+            .trim()
+            .toLowerCase() === logName,
+      ) ?? null;
+
+    if (!declinerSlot && acknowledgedSlots.length) {
+      declinerSlot = acknowledgedSlots.reduce((latest, slot) =>
+        toMillis(acks[slot].acknowledged_at) >=
+        toMillis(acks[latest].acknowledged_at)
+          ? slot
+          : latest,
+      );
+    }
+  }
+
+  return {
+    ...item,
+    acknowledgments: Object.fromEntries(
+      Object.entries(acks).map(([slot, ack]) => [
+        slot,
+        ack?.acknowledged
+          ? {
+              ...ack,
+              response: slot === declinerSlot ? "declined" : "approved",
+            }
+          : ack,
+      ]),
+    ),
+  };
+}
+
 export function subscribeToTransferByID(id, callback, onError) {
   let latestRun = 0;
   let active = true;
@@ -207,7 +270,7 @@ export function subscribeToTransferByID(id, callback, onError) {
   const unsubscribe = onSnapshot(
     doc(db, COLLECTION, id),
     async (snap) => {
-      const run = ++latestRun; // invalidates any lookup still in flight
+      const run = ++latestRun;
 
       if (!snap.exists()) {
         onError?.(new Error("Transfer request not found."));
@@ -215,7 +278,7 @@ export function subscribeToTransferByID(id, callback, onError) {
       }
 
       try {
-        const item = await withResolvedNames(docToItem(snap));
+        const item = await withResolvedNames(withAckResponses(docToItem(snap)));
         if (active && run === latestRun) callback(item);
       } catch (err) {
         onError?.(err);
@@ -225,7 +288,7 @@ export function subscribeToTransferByID(id, callback, onError) {
   );
 
   return () => {
-    active = false; // ignore lookups that finish after unsubscribing
+    active = false;
     unsubscribe();
   };
 }
