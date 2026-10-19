@@ -156,13 +156,17 @@ function useRoomInfo(auditID) {
         try {
           const asset = await fetchAssetByID(assetId);
 
+          // keep the full asset so the modal can show its details
+          const fullItem = {
+            ...asset,
+            id: assetId,
+            asset_id: asset.asset_id ?? assetId,
+            registered_room: asset.room_name,
+            found_room: roomName,
+          };
+          setScannedItem(fullItem);
+
           if (isAssetCondemned(asset)) {
-            setScannedItem({
-              id: assetId,
-              asset_id: assetId,
-              description: asset.description,
-              serial_number: asset.serial_number,
-            });
             setScanModalStatus("condemned");
             return;
           }
@@ -205,7 +209,7 @@ function useRoomInfo(auditID) {
 
       setScanModalStatus("error");
     },
-    [auditItems, discrepancyItems, handleVerifyItem],
+    [auditItems, discrepancyItems, handleVerifyItem, roomName],
   );
 
   const handleScanModalClose = useCallback(() => {
@@ -269,6 +273,12 @@ function useRoomInfo(auditID) {
       const assetData = await fetchAssetByID(scannedItem.id);
 
       await addUnexpectedDiscrepancy(auditID, assetData, audit?.room_id);
+
+      setScannedItem((prev) => ({
+        ...prev,
+        ...assetData,
+        room_name: assetData.room_name ?? roomName,
+      }));
       setScanModalStatus("discrepancy_added");
     } catch (err) {
       setScanModalError(
@@ -277,7 +287,7 @@ function useRoomInfo(auditID) {
     } finally {
       setAddingDiscrepancy(false);
     }
-  }, [auditID, audit?.room_id, scannedItem]);
+  }, [auditID, audit?.room_id, scannedItem, roomName]);
 
   const handleRowClick = (id) => {
     navigate(`/asset/info/${id}`);

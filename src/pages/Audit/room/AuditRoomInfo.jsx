@@ -280,6 +280,7 @@ function AuditRoomInfo() {
                   item={item}
                   index={index}
                   columns={discrepancyItemColumns}
+                  onRowClick={handleRowClick}
                 />
               )}
             />
