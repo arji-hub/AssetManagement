@@ -2,6 +2,14 @@ import { formatDate } from "../../utils/date";
 
 export const reportLogCreateColumns = [
   {
+    key: "select",
+    label: "",
+    width: "40px",
+    priority: "high",
+    card: { role: "select" },
+    render: () => null,
+  },
+  {
     key: "report_no",
     label: "Report No.",
     width: "1fr",

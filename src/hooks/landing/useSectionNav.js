@@ -6,6 +6,7 @@ const SECTION_ROUTES = {
   campus: "/",
   qr: "/",
   features: "/about",
+  system: "/about",
 };
 
 export function useSectionNav(localRefs) {
