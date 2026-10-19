@@ -3,14 +3,15 @@
   position: fixed;
   inset: 0;
   background: var(--overlay);
+  backdrop-filter: blur(3px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 999;
-  animation: overlay-in 0.15s ease;
+  animation: room-overlay-in 0.15s ease;
 }
 
-@keyframes overlay-in {
+@keyframes room-overlay-in {
   from {
     opacity: 0;
   }
@@ -22,18 +23,21 @@
 /* Modal container */
 .room-modal {
   background: var(--card-bg);
-  border-radius: 12px;
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
   width: 100%;
-  max-width: 420px;
+  max-width: 440px;
   margin: 16px;
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.18);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.22),
+    0 2px 6px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
-  animation: modal-in 0.2s ease;
+  animation: room-modal-in 0.2s ease;
   overflow: hidden;
 }
 
-@keyframes modal-in {
+@keyframes room-modal-in {
   from {
     opacity: 0;
     transform: translateY(-12px) scale(0.97);
@@ -44,31 +48,58 @@
   }
 }
 
-/* Header — accent */
+/* ── Header ─────────────────────────────────────────────────── */
 .room-modal-header {
-  background: var(--maroon-700);
-  padding: 18px 24px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 14px;
+  padding: 16px 24px;
+  background: linear-gradient(
+    135deg,
+    var(--maroon-900) 0%,
+    var(--maroon-700) 100%
+  );
+  border-bottom: 3px solid var(--gold-500);
+}
+
+.room-modal-badge {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--gold-500);
+  color: var(--maroon-900);
+  font-size: 0.85rem;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.14);
+}
+
+.room-modal-heading {
+  flex: 1;
+  min-width: 0;
 }
 
 .room-modal-header h2 {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: #ffffff;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.005em;
 }
 
 .room-modal-close {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
   background: none;
   border: none;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 1.5rem;
-  line-height: 1;
+  border-radius: 0;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.85);
   cursor: pointer;
-  padding: 0 2px;
   transition: color 0.15s ease;
 }
 
@@ -76,9 +107,17 @@
   color: #ffffff;
 }
 
-/* Body — clean form */
+.room-modal-close:focus-visible {
+  outline: 2px solid var(--gold-500);
+  outline-offset: 2px;
+}
+
+/* ── Body ───────────────────────────────────────────────────── */
 .room-modal-body {
-  padding: 28px 24px 16px;
+  padding: 22px 24px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 .room-modal-field {
@@ -89,29 +128,48 @@
 }
 
 .room-modal-field label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   font-size: 13px;
   font-weight: 600;
-  color: var(--text-muted);
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+  color: var(--text-strong);
+}
+
+/* Character count sits inside the label row */
+.room-modal-char-count {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-faint);
 }
 
 .room-modal-field input {
-  padding: 10px 14px;
+  padding: 11px 14px;
   border: 1.5px solid var(--card-border);
-  border-radius: 8px;
-  font-size: 15px;
+  border-radius: 10px;
+  font-size: 14.5px;
   color: var(--text-strong);
   background: var(--card-bg);
   outline: none;
+  width: 100%;
+  box-sizing: border-box;
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease;
 }
 
+.room-modal-field input::placeholder {
+  color: var(--text-faint);
+}
+
+.room-modal-field input:hover:not(:focus):not(:disabled) {
+  border-color: color-mix(in srgb, var(--maroon-700) 35%, var(--card-border));
+}
+
 .room-modal-field input:focus {
   border-color: var(--maroon-700);
-  box-shadow: 0 0 0 3px var(--maroon-tint);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--maroon-700) 14%, transparent);
 }
 
 .room-modal-field input:disabled {
@@ -127,93 +185,127 @@
 }
 
 .room-modal-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 12px;
+  line-height: 1.4;
   color: var(--danger);
   font-weight: 500;
 }
 
-/* Info box */
-.modal-info {
+/* ── Info box ───────────────────────────────────────────────── */
+.room-modal-info {
   display: flex;
   gap: 10px;
   align-items: flex-start;
-  background: var(--missing-bg);
-  border: 1px solid var(--maroon-tint);
-  border-radius: 8px;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
   padding: 12px 14px;
-  margin-top: 4px;
 }
 
-.info-icon {
+.room-modal-info-icon {
   color: var(--maroon-700);
   font-size: 16px;
   flex-shrink: 0;
   margin-top: 2px;
 }
 
-.info-text {
+.room-modal-info-text {
   margin: 0;
-  font-size: 12px;
-  color: var(--maroon-700);
+  font-size: 12.5px;
+  color: var(--text-muted);
   line-height: 1.6;
 }
 
-/* Character count */
-.room-modal-char-count {
-  font-size: 11px;
-  color: var(--text-faint);
-  text-align: right;
-  margin-top: 2px;
-}
-
-/* Footer */
+/* ── Footer ─────────────────────────────────────────────────── */
 .room-modal-footer {
-  padding: 16px 24px 24px;
+  padding: 18px 24px 22px;
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   gap: 10px;
 }
 
 .room-modal-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   font-size: 14px;
   font-weight: 600;
-  padding: 9px 22px;
-  border-radius: 8px;
+  padding: 10px 22px;
+  border-radius: 10px;
   border: none;
   cursor: pointer;
   transition:
     background 0.2s ease,
     transform 0.1s ease,
-    opacity 0.2s ease;
+    opacity 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .room-modal-btn:active {
   transform: scale(0.97);
 }
 
+.room-modal-btn:focus-visible {
+  outline: 2px solid var(--maroon-700);
+  outline-offset: 2px;
+}
+
 .room-modal-btn:disabled {
   opacity: 0.55;
   cursor: not-allowed;
   transform: none;
+  box-shadow: none;
 }
 
-/* Cancel — outlined */
+/* Cancel — quiet outline */
 .room-modal-btn--cancel {
   background: var(--card-bg);
   color: var(--maroon-700);
-  border: 1.5px solid var(--maroon-700);
+  border: 1.5px solid var(--card-border);
 }
 
 .room-modal-btn--cancel:hover:not(:disabled) {
   background: var(--maroon-tint);
+  border-color: var(--maroon-700);
 }
 
 /* Submit — gold accent */
 .room-modal-btn--submit {
   background: var(--gold-500);
-  color: var(--maroon-700);
+  color: var(--maroon-900);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--gold-500) 40%, transparent);
 }
 
 .room-modal-btn--submit:hover:not(:disabled) {
   background: var(--gold-400);
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .room-modal-header,
+  .room-modal-body,
+  .room-modal-footer {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .room-modal-footer {
+    flex-direction: column-reverse;
+  }
+
+  .room-modal-btn {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .room-modal-overlay,
+  .room-modal {
+    animation: none;
+  }
 }
