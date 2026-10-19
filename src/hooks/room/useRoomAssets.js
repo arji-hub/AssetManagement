@@ -111,7 +111,7 @@ export function useRoomAssets(roomID) {
         await archiveRoom(roomID, role);
         setRoomStatus("inactive");
         setShowArchiveModal(false);
-        navigate("/rooms"); // leave the page since this room is no longer active
+        navigate("/room");
       } else {
         await restoreRoom(roomID, role);
         setRoomStatus("active");
