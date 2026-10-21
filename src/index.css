@@ -21,6 +21,7 @@
   font-style: normal;
   font-display: swap;
 }
+
 :root {
   /* ── marketing / non-navbar pages ── */
   --text: #6b6375;
@@ -106,27 +107,27 @@
   --success: #166534;
   --success-bg: rgba(34, 197, 94, 0.12);
 
-  /* semantic aliases for report types (used in ReportCard) */
-  --damaged: #860100;
-  --damaged-bg: rgba(134, 1, 0, 0.12);
-  --missing: #8a5c00;
-  --missing-bg: rgba(245, 170, 44, 0.18);
+  /* status colors — one token pair per color family (used by STATUS_COLORS) */
+  --status-neutral: #6b7280;
+  --status-neutral-bg: rgba(107, 114, 128, 0.1);
+  --status-success: #15803d;
+  --status-success-bg: rgba(34, 197, 94, 0.12);
+  --status-condemned: #6d28d9;
+  --status-condemned-bg: rgba(139, 92, 246, 0.1);
+  --status-warning: #c2410c;
+  --status-warning-bg: rgba(249, 115, 22, 0.1);
+  --status-pending: #a16207;
+  --status-pending-bg: rgba(234, 179, 8, 0.14);
+  --status-danger: #b91c1c;
+  --status-danger-bg: rgba(239, 68, 68, 0.1);
+  --status-info: #1d4ed8;
+  --status-info-bg: rgba(59, 130, 246, 0.1);
 
-  /* status colors — from data/asset.js STATUS_COLORS */
-  --status-neutral: #333333;
-  --status-neutral-bg: rgba(200, 200, 200, 0.7);
-  --status-success-2: #003d1f;
-  --status-success-2-bg: rgba(0, 255, 128, 0.7);
-  --status-condemned: #0d0d2e;
-  --status-condemned-bg: rgba(160, 160, 255, 0.7);
-  --status-warning: #2e1500;
-  --status-warning-bg: rgba(255, 120, 0, 0.7);
-  --status-pending-2: #3d2e00;
-  --status-pending-2-bg: rgba(255, 200, 0, 0.7);
-  --status-danger-2: #1a0008;
-  --status-danger-2-bg: rgba(255, 50, 80, 0.7);
-  --status-info-2: #10103d;
-  --status-info-2-bg: rgba(120, 130, 255, 0.7);
+  /* asset status tokens */
+  --damaged: var(--status-warning);
+  --damaged-bg: var(--status-warning-bg);
+  --missing: var(--status-danger);
+  --missing-bg: var(--status-danger-bg);
 }
 
 :root[data-theme="dark"] {
@@ -171,25 +172,21 @@
   --success: #6ee7b7;
   --success-bg: rgba(34, 197, 94, 0.16);
 
-  --damaged: #ff8080;
-  --damaged-bg: rgba(255, 107, 107, 0.16);
-  --missing: #ffcc66;
-  --missing-bg: rgba(245, 170, 44, 0.2);
-
-  --status-neutral: #e2e2e2;
-  --status-neutral-bg: rgba(200, 200, 200, 0.28);
-  --status-success-2: #7dffbf;
-  --status-success-2-bg: rgba(0, 255, 128, 0.22);
-  --status-condemned: #d6d6ff;
-  --status-condemned-bg: rgba(160, 160, 255, 0.24);
-  --status-warning: #ffb366;
-  --status-warning-bg: rgba(255, 120, 0, 0.24);
-  --status-pending-2: #ffe066;
-  --status-pending-2-bg: rgba(255, 200, 0, 0.24);
-  --status-danger-2: #ff8fa3;
-  --status-danger-2-bg: rgba(255, 50, 80, 0.24);
-  --status-info-2: #b3b8ff;
-  --status-info-2-bg: rgba(120, 130, 255, 0.26);
+  /* status colors (--damaged / --missing are aliases defined in :root) */
+  --status-neutral: #d1d5db;
+  --status-neutral-bg: rgba(156, 163, 175, 0.18);
+  --status-success: #86efac;
+  --status-success-bg: rgba(34, 197, 94, 0.18);
+  --status-condemned: #c4b5fd;
+  --status-condemned-bg: rgba(139, 92, 246, 0.2);
+  --status-warning: #fdba74;
+  --status-warning-bg: rgba(249, 115, 22, 0.2);
+  --status-pending: #fde047;
+  --status-pending-bg: rgba(234, 179, 8, 0.2);
+  --status-danger: #fca5a5;
+  --status-danger-bg: rgba(239, 68, 68, 0.2);
+  --status-info: #93c5fd;
+  --status-info-bg: rgba(59, 130, 246, 0.2);
 }
 
 body {
@@ -198,6 +195,7 @@ body {
   font-family: var(--sans);
   -webkit-font-smoothing: antialiased;
 }
+
 h1,
 h2,
 h3,
