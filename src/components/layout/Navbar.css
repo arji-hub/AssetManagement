@@ -14,12 +14,6 @@
   height: 100vh;
   height: 100dvh;
   overflow: hidden;
-  font-family:
-    "Inter",
-    "Segoe UI",
-    system-ui,
-    -apple-system,
-    sans-serif;
   color: var(--ink-900);
   transition:
     background-color 0.25s ease,
@@ -278,7 +272,6 @@
 
 /* logo text */
 .sidebar-logo-text {
-  font-family: "Montserrat", "Helvetica Neue", sans-serif;
   font-size: 1rem;
   font-weight: 600;
   color: var(--maroon-600);
@@ -380,15 +373,6 @@
   z-index: 110;
 }
 /* #endregion */
-
-/* #region ─── NAVBAR LEFT ───  */
-@font-face {
-  font-family: "Cinzel";
-  src: url("../../assets/fonts/Cinzel/Cinzel-VariableFont_wght.ttf")
-    format("truetype");
-  font-weight: bold;
-  font-style: normal;
-}
 
 .layout-wrapper h1.app-title {
   font-size: clamp(14px, 4.5vw, 30px);
