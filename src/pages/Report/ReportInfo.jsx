@@ -53,70 +53,6 @@ function ReportInfo() {
             <BackButton />
             <span className="breadcrumb-parent">Report Information</span>
           </div>
-          {/* ── Actions ── */}
-          {isAdmin && !isResolved && (
-            <div className="report-info-actions">
-              {/* Damaged actions */}
-              {isDamaged && (
-                <>
-                  <button
-                    className="action-btn action-btn--danger"
-                    onClick={() => openAction("for_repair")}
-                  >
-                    <i className="ti ti-tool" aria-hidden="true" />
-                    Endorse for Repair/Replacement
-                  </button>
-                  <button
-                    className="action-btn"
-                    onClick={() => openAction("condemned")}
-                  >
-                    <i className="ti ti-ban" aria-hidden="true" />
-                    Condemn
-                  </button>
-                </>
-              )}
-
-              {/* Missing actions */}
-              {isMissing && (
-                <>
-                  <button
-                    className="action-btn action-btn--danger"
-                    onClick={() => openAction("found")}
-                  >
-                    <i className="ti ti-circle-check" aria-hidden="true" />
-                    Mark as Found
-                  </button>
-                  <button
-                    className="action-btn"
-                    onClick={() => openAction("condemned")}
-                  >
-                    <i className="ti ti-ban" aria-hidden="true" />
-                    Condemn
-                  </button>
-                </>
-              )}
-
-              {/* For Repair or Found actions */}
-              {isForRepair && (
-                <>
-                  <button
-                    className="action-btn action-btn--danger"
-                    onClick={() => openAction("working")}
-                  >
-                    <i className="ti ti-circle-check" aria-hidden="true" />
-                    Mark as Resolved
-                  </button>
-                  <button
-                    className="action-btn"
-                    onClick={() => openAction("condemned")}
-                  >
-                    <i className="ti ti-ban" aria-hidden="true" />
-                    Condemn
-                  </button>
-                </>
-              )}
-            </div>
-          )}
         </div>
 
         {/* ── Main Card ── */}
@@ -220,6 +156,62 @@ function ReportInfo() {
             ))}
           </div>
         </div>
+
+        {/* ── Actions (bottom right) ── */}
+        {isAdmin && !isResolved && (
+          <div className="report-info-actions">
+            {/* Damaged actions */}
+            {isDamaged && (
+              <>
+                <button
+                  className="action-btn"
+                  onClick={() => openAction("condemned")}
+                >
+                  <i className="ti ti-ban" aria-hidden="true" />
+                  Condemn
+                </button>
+                <button
+                  className="action-btn action-btn--info"
+                  onClick={() => openAction("for_repair")}
+                >
+                  <i className="ti ti-tool" aria-hidden="true" />
+                  Endorse for Repair/Replacement
+                </button>
+              </>
+            )}
+
+            {/* Missing actions (no Condemn) */}
+            {isMissing && (
+              <button
+                className="action-btn action-btn--success"
+                onClick={() => openAction("found")}
+              >
+                <i className="ti ti-circle-check" aria-hidden="true" />
+                Mark as Found
+              </button>
+            )}
+
+            {/* For Repair actions */}
+            {isForRepair && (
+              <>
+                <button
+                  className="action-btn"
+                  onClick={() => openAction("condemned")}
+                >
+                  <i className="ti ti-ban" aria-hidden="true" />
+                  Condemn
+                </button>
+                <button
+                  className="action-btn action-btn--success"
+                  onClick={() => openAction("working")}
+                >
+                  <i className="ti ti-circle-check" aria-hidden="true" />
+                  Mark as Resolved
+                </button>
+              </>
+            )}
+          </div>
+        )}
       </div>
 
       {actionModal && (
