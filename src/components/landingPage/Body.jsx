@@ -37,11 +37,13 @@ function Body({ sectionRefs, previewAsset }) {
 
         <div className="hero-content">
           <div className="hero-logo">
-            <img src={CICTLOGO} alt="CICT Logo" className="cict-logo" />
             <img src={BULSULOGO} alt="BULSU Logo" className="bulsu-logo" />
+            <img src={CICTLOGO} alt="CICT Logo" className="cict-logo" />
           </div>
           <h1>Asset Management System</h1>
-          <p>"Every asset accounted for, every byte in its place."</p>
+          <p style={{ fontStyle: "italic" }}>
+            Every asset accounted for, every byte in its place
+          </p>
 
           <div className="hero-buttons">
             <button className="primary-btn" onClick={handleScanClick}>
