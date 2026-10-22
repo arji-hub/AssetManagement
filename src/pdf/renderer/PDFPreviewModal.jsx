@@ -1,17 +1,15 @@
-// src/components/modal/PDFPreviewModal.jsx
-import React, { useState, useEffect } from "react";
+// src/pdf/renderer/PDFPreviewModal.jsx — pure rendering; logic lives in usePDFPreview
+import React from "react";
 import { createPortal } from "react-dom";
-import { PDFDownloadLink, pdf } from "@react-pdf/renderer";
 import { Document, Page, pdfjs } from "react-pdf";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 import "./PDFPreviewModal.css";
+import { usePDFPreview } from "./usePDFPreview";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
-// A4-shaped placeholder shown while the PDF is being generated / rendered.
-// Colors come from theme tokens, so it follows light/dark automatically.
 function PDFSkeleton({ width }) {
   return (
     <div
@@ -22,13 +20,11 @@ function PDFSkeleton({ width }) {
     >
       <div className="pdf-skeleton-header">
         <span className="pdf-skeleton-block pdf-skeleton-logo" />
-
         <div className="pdf-skeleton-lines">
           <span className="pdf-skeleton-block" style={{ width: "55%" }} />
           <span className="pdf-skeleton-block" style={{ width: "80%" }} />
           <span className="pdf-skeleton-block" style={{ width: "40%" }} />
         </div>
-
         <span className="pdf-skeleton-block pdf-skeleton-logo" />
       </div>
 
@@ -49,76 +45,33 @@ export function PDFPreviewModal({
   title,
   triggerLabel = "Preview PDF",
 }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [printing, setPrinting] = useState(false);
-  const [blobUrl, setBlobUrl] = useState(null);
-  const [numPages, setNumPages] = useState(null);
-  const [pageNumber, setPageNumber] = useState(1);
-  const [containerWidth, setContainerWidth] = useState(600);
-  const [previewError, setPreviewError] = useState(false);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    let cancelled = false;
-    setPreviewError(false);
-
-    pdf(pdfDocument)
-      .toBlob()
-      .then((blob) => {
-        if (cancelled) return;
-        setBlobUrl(URL.createObjectURL(blob));
-      })
-      .catch((err) => {
-        // e.g. an image that failed to load — don't leave the skeleton spinning forever
-        console.error("[PDFPreviewModal] Failed to render preview:", err);
-        if (!cancelled) setPreviewError(true);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [isOpen, pdfDocument]);
-
-  useEffect(() => {
-    if (!isOpen && blobUrl) {
-      URL.revokeObjectURL(blobUrl);
-      setBlobUrl(null);
-      setNumPages(null);
-      setPageNumber(1);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen]);
-
-  const handlePrint = () => {
-    if (!blobUrl) return;
-
-    setPrinting(true);
-
-    const printWindow = window.open(blobUrl, "_blank");
-
-    if (!printWindow) {
-      setPrinting(false);
-      alert("Please allow pop-ups for this site to print the PDF.");
-      return;
-    }
-
-    printWindow.onload = () => {
-      printWindow.focus();
-      printWindow.print();
-      setPrinting(false);
-    };
-  };
-
-  const pageWidth = Math.min(containerWidth - 20, 700);
+  const {
+    isOpen,
+    open,
+    close,
+    blobUrl,
+    error,
+    printing,
+    print,
+    setViewerEl,
+    pageWidth,
+    onLoadSuccess,
+    numPages,
+    pageNumber,
+    prevPage,
+    nextPage,
+    canPrev,
+    canNext,
+  } = usePDFPreview(pdfDocument);
 
   const modal = isOpen ? (
-    <div className="pdf-modal-overlay" onClick={() => setIsOpen(false)}>
+    <div className="pdf-modal-overlay" onClick={close}>
       <div className="pdf-modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="pdf-modal-header">
           <h2>{title}</h2>
           <button
             className="pdf-modal-close"
-            onClick={() => setIsOpen(false)}
+            onClick={close}
             aria-label="Close"
           >
             <FontAwesomeIcon icon="fa-solid fa-xmark" />
@@ -126,18 +79,16 @@ export function PDFPreviewModal({
         </div>
 
         <div className="pdf-modal-actions">
-          <PDFDownloadLink document={pdfDocument} fileName={fileName}>
-            {({ loading }) => (
-              <button className="pdf-download-btn" disabled={loading}>
-                <FontAwesomeIcon icon="fa-solid fa-download" />
-                {loading ? "Preparing..." : "Download"}
-              </button>
-            )}
-          </PDFDownloadLink>
+          <a href={blobUrl ?? undefined} download={fileName}>
+            <button className="pdf-download-btn" disabled={!blobUrl}>
+              <FontAwesomeIcon icon="fa-solid fa-download" />
+              {blobUrl ? "Download" : "Preparing..."}
+            </button>
+          </a>
 
           <button
             className="pdf-print-btn"
-            onClick={handlePrint}
+            onClick={print}
             disabled={printing || !blobUrl}
           >
             <FontAwesomeIcon icon="fa-solid fa-print" />
@@ -145,16 +96,13 @@ export function PDFPreviewModal({
           </button>
         </div>
 
-        <div
-          className="pdf-modal-viewer"
-          ref={(el) => el && setContainerWidth(el.clientWidth)}
-        >
-          {previewError ? (
+        <div className="pdf-modal-viewer" ref={setViewerEl}>
+          {error ? (
             <p className="pdf-loading-text">Couldn't generate the preview.</p>
           ) : blobUrl ? (
             <Document
               file={blobUrl}
-              onLoadSuccess={({ numPages }) => setNumPages(numPages)}
+              onLoadSuccess={onLoadSuccess}
               loading={<PDFSkeleton width={pageWidth} />}
               error={<p className="pdf-loading-text">Couldn't load preview.</p>}
             >
@@ -170,19 +118,13 @@ export function PDFPreviewModal({
 
           {numPages > 1 && (
             <div className="pdf-page-nav">
-              <button
-                onClick={() => setPageNumber((p) => Math.max(1, p - 1))}
-                disabled={pageNumber <= 1}
-              >
+              <button onClick={prevPage} disabled={!canPrev}>
                 <FontAwesomeIcon icon="fa-solid fa-chevron-left" />
               </button>
               <span>
                 Page {pageNumber} of {numPages}
               </span>
-              <button
-                onClick={() => setPageNumber((p) => Math.min(numPages, p + 1))}
-                disabled={pageNumber >= numPages}
-              >
+              <button onClick={nextPage} disabled={!canNext}>
                 <FontAwesomeIcon icon="fa-solid fa-chevron-right" />
               </button>
             </div>
@@ -194,7 +136,7 @@ export function PDFPreviewModal({
 
   return (
     <>
-      <button className="pdf-trigger-btn" onClick={() => setIsOpen(true)}>
+      <button className="pdf-trigger-btn" onClick={open}>
         {triggerLabel}
       </button>
       {/* Render inside the app shell so the modal inherits its theme; fall back to body */}

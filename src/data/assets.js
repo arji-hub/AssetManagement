@@ -25,8 +25,8 @@ export const STATUS_COLORS = {
 
   // asset statuses
   Working: {
-    bg: "var(--status-success-2-bg)",
-    color: "var(--status-success-2)",
+    bg: "var(--status-success-bg)",
+    color: "var(--status-success)",
   },
   Condemned: {
     bg: "var(--status-condemned-bg)",
@@ -39,34 +39,34 @@ export const STATUS_COLORS = {
     color: "var(--status-warning)",
   },
   "For Repair": {
-    bg: "var(--status-pending-2-bg)",
-    color: "var(--status-pending-2)",
+    bg: "var(--status-pending-bg)",
+    color: "var(--status-pending)",
   },
   Missing: {
-    bg: "var(--status-danger-2-bg)",
-    color: "var(--status-danger-2)",
+    bg: "var(--status-danger-bg)",
+    color: "var(--status-danger)",
   },
   Found: {
-    bg: "var(--status-success-2-bg)",
-    color: "var(--status-success-2)",
+    bg: "var(--status-success-bg)",
+    color: "var(--status-success)",
   },
 
   // transfer statuses
   Pending: {
-    bg: "var(--status-pending-2-bg)",
-    color: "var(--status-pending-2)",
+    bg: "var(--status-pending-bg)",
+    color: "var(--status-pending)",
   },
   "For Approval": {
-    bg: "var(--status-info-2-bg)",
-    color: "var(--status-info-2)",
+    bg: "var(--status-info-bg)",
+    color: "var(--status-info)",
   },
   Completed: {
-    bg: "var(--status-success-2-bg)",
-    color: "var(--status-success-2)",
+    bg: "var(--status-success-bg)",
+    color: "var(--status-success)",
   },
   Denied: {
-    bg: "var(--status-danger-2-bg)",
-    color: "var(--status-danger-2)",
+    bg: "var(--status-danger-bg)",
+    color: "var(--status-danger)",
   },
 
   // audit statuses

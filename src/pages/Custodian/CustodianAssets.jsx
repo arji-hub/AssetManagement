@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FilterModal from "../../components/ui/filter/FilterModal";
 import { useAssetFilters } from "../../hooks/asset/useAssetFilters";
 import { useCustodianAssets } from "../../hooks/custodian/useCustodianAssets";
-import { PDFPreviewModal } from "../../components/modal/PDFPreviewModal";
+import { PDFPreviewModal } from "../../pdf/renderer/PDFPreviewModal";
 import { CustodianInventoryPDF } from "../../pdf/templates/CustodianInventoryPDF";
 import BackButton from "../../components/ui/button/BackButton";
 import Table from "../../components/panel/Table";

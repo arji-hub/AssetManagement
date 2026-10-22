@@ -10,7 +10,7 @@ import { useTransferInfo } from "../../hooks/transfer/useTransferInfo";
 import { getRequestItems } from "../../utils/transfer";
 import TransferActionModal from "../../components/modal/TransferActionModal";
 import AddingStatusModal from "../../components/ui/status/AddingStatusModal";
-import { PDFPreviewModal } from "../../components/modal/PDFPreviewModal";
+import { PDFPreviewModal } from "../../pdf/renderer/PDFPreviewModal";
 import { TransferLogPDF } from "../../pdf/templates/TransferLogPDF";
 import { TRANSFER_TYPES } from "../../data/transfer";
 import "./TransferInfo.css";
