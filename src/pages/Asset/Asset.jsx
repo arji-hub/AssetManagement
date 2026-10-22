@@ -7,7 +7,7 @@ import { ROLES } from "../../data/roles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./Asset.css";
 import FilterModal from "../../components/ui/filter/FilterModal";
-import { PDFPreviewModal } from "../../components/modal/PDFPreviewModal";
+import { PDFPreviewModal } from "../../pdf/renderer/PDFPreviewModal";
 import { CustodianInventoryPDF } from "../../pdf/templates/CustodianInventoryPDF";
 import SearchBar from "../../components/ui/searchBar/SearchBar";
 import { useAssetFilters } from "../../hooks/asset/useAssetFilters";

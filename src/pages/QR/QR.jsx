@@ -13,7 +13,7 @@ import QRModal from "../../components/modal/QRModal";
 import QRStatusModal from "../../components/ui/status/QRStatusModal";
 import SearchableSelect from "../../components/form/SearchableSelect";
 import AddingStatusModal from "../../components/ui/status/AddingStatusModal";
-import { PDFPreviewModal } from "../../components/modal/PDFPreviewModal";
+import { PDFPreviewModal } from "../../pdf/renderer/PDFPreviewModal";
 import { QRSheetPDF } from "../../pdf/templates/QRSheetPDF";
 import { useQRScanner } from "../../hooks/camera/useQRScanner";
 import { useQR } from "../../hooks/qr/useQR";

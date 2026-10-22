@@ -2,7 +2,7 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Status } from "../../components/ui/status/assetStatus";
 import AuditStatusBadge from "../../components/ui/status/AuditStatusBadge";
-import { PDFPreviewModal } from "../../components/modal/PDFPreviewModal";
+import { PDFPreviewModal } from "../../pdf/renderer/PDFPreviewModal";
 import { RoomInventoryPDF } from "../../pdf/templates/RoomInventoryPDF";
 import { useRoomAssets } from "../../hooks/room/useRoomAssets";
 import { formatDate, formatTime } from "../../utils/date";

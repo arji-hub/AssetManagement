@@ -1,7 +1,7 @@
-// src/components/modal/PDFPreviewModal.stories.jsx
+// src/pdf/renderer/PDFPreviewModal.stories.jsx
 import React from "react";
 import { Document, Page, View, Text, StyleSheet } from "@react-pdf/renderer";
-import { PDFPreviewModal } from "../../../components/modal/PDFPreviewModal";
+import { PDFPreviewModal } from "../../../pdf/renderer/PDFPreviewModal";
 
 // ── Mock data ─────────────────────────────────────────────
 const mockAssets = [

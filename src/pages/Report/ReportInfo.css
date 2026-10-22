@@ -185,13 +185,14 @@
   gap: 16px;
 }
 
-/* ── Actions ── */
+/* ── Actions (bottom right) ── */
 .report-info-actions {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
   padding-top: 8px;
 }
+
 /* ── Action Buttons ── */
 .action-btn {
   display: inline-flex;
@@ -230,6 +231,28 @@
   background: var(--danger-bg);
   border-color: var(--danger);
   color: var(--gold-500);
+}
+
+.action-btn--success {
+  background: var(--status-success-bg);
+  border-color: var(--status-success);
+  color: var(--status-success);
+}
+
+.action-btn--success:hover {
+  background: color-mix(in srgb, var(--status-success) 22%, transparent);
+  border-color: var(--status-success);
+}
+
+.action-btn--info {
+  background: var(--status-info-bg);
+  border-color: var(--status-info);
+  color: var(--status-info);
+}
+
+.action-btn--info:hover {
+  background: color-mix(in srgb, var(--status-info) 22%, transparent);
+  border-color: var(--status-info);
 }
 
 /* ── Responsive ── */

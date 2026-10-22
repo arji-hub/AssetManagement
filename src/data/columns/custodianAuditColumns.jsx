@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { formatDate } from "../../utils/date";
-import { PDFPreviewModal } from "../../components/modal/PDFPreviewModal";
+import { PDFPreviewModal } from "../../pdf/renderer/PDFPreviewModal";
 import { CustodianInventoryPDF } from "../../pdf/templates/CustodianInventoryPDF";
 import { useCustodianAssets } from "../../hooks/custodian/useCustodianAssets";
 

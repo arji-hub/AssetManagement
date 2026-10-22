@@ -119,7 +119,7 @@ function AssetStatusDashboardPanel({ user: userProp, mockAssets }) {
                 >
                   <span
                     className="asset-status-panel-legend-swatch"
-                    style={{ background: STATUS_COLORS[entry.status]?.color }}
+                    style={{ color: STATUS_COLORS[entry.status]?.color }}
                   />
                   <span className="asset-status-panel-legend-text">
                     <span className="asset-status-panel-legend-name">

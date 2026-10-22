@@ -1,330 +1,59 @@
-// src/pdf/templates/RoomInventoryPDF.jsx
-import {
-  Document,
-  Page,
-  View,
-  Text,
-  Image,
-  StyleSheet,
-} from "@react-pdf/renderer";
-import cictLogo from "../../assets/logo/CICTLOGO.png";
-import bulsuLogo from "../../assets/logo/BULSULOGO.png";
+import { Text } from "@react-pdf/renderer";
+import { PDFLayout } from "../styles/PDFLayout";
+import { MetaGrid, PDFTable, SectionLabel } from "../styles/PDFTable";
+import { Signatures } from "../styles/PDFSignature";
+import { styles } from "../styles/pdfStyles";
+import { roomInventoryPdfColumns } from "../columns/roomInventoryPdfColumns";
 
-const styles = StyleSheet.create({
-  page: {
-    paddingTop: 36,
-    paddingHorizontal: 36,
-    paddingBottom: 64, // room for the fixed footer
-    fontSize: 9,
-    fontFamily: "Helvetica",
-    color: "#000",
-  },
+const CERTIFICATION =
+  "This certifies that the equipment listed above was inventoried in the room indicated on the date shown.";
 
-  // ── Letterhead ──
-  letterheadRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 10,
-  },
-  logo: {
-    width: 55,
-    height: 55,
-  },
-  letterheadText: {
-    alignItems: "center",
-    justifyContent: "center",
-    flex: 1,
-  },
-  republicText: {
-    fontSize: 9,
-    color: "#000",
-  },
-  universityText: {
-    fontSize: 13,
-    fontWeight: "bold",
-    color: "#860100",
-    marginTop: 1,
-    letterSpacing: 0.3,
-  },
-  collegeText: {
-    fontSize: 10,
-    color: "#000",
-    marginTop: 1,
-  },
-  cityText: {
-    fontSize: 9,
-    color: "#000",
-    marginTop: 1,
-  },
-
-  // ── Divider under letterhead ──
-  letterheadDivider: {
-    borderBottomWidth: 1.5,
-    borderColor: "#860100",
-    marginTop: 8,
-  },
-
-  // ── Form title ──
-  titleWrap: {
-    alignItems: "center",
-    marginTop: 10,
-    marginBottom: 10,
-  },
-  title: {
-    fontSize: 14,
-    fontWeight: "bold",
-    letterSpacing: 0.5,
-  },
-
-  // ── Meta row (Room Name / Date) ──
-  metaRow: {
-    flexDirection: "row",
-    borderTopWidth: 1,
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderColor: "#000",
-    marginTop: 10,
-  },
-  metaCell: {
-    flex: 1,
-    padding: 6,
-    borderRightWidth: 1,
-    borderColor: "#000",
-  },
-  metaCellLast: {
-    flex: 1,
-    padding: 6,
-  },
-  metaLabel: {
-    fontSize: 9,
-    fontWeight: "bold",
-  },
-
-  // ── Table ──
-  // Thin line that repeats at the top of every page (fixed)
-  tableTopLine: {
-    borderTopWidth: 1,
-    borderColor: "#000",
-  },
-  // Header prints on page 1 only
-  tableHeaderRow: {
-    flexDirection: "row",
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: "#000",
-  },
-  tableRow: {
-    flexDirection: "row",
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: "#000",
-    minHeight: 22,
-  },
-  colType: {
-    width: "28%",
-    padding: 5,
-    borderRightWidth: 1,
-    borderColor: "#000",
-    justifyContent: "center",
-  },
-  colBrand: {
-    width: "34%",
-    padding: 5,
-    borderRightWidth: 1,
-    borderColor: "#000",
-    justifyContent: "center",
-  },
-  colSerial: {
-    width: "22%",
-    padding: 5,
-    borderRightWidth: 1,
-    borderColor: "#000",
-    justifyContent: "center",
-  },
-  colStatus: {
-    width: "16%",
-    padding: 5,
-    justifyContent: "center",
-  },
-  headerCellText: {
-    fontSize: 8,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  cellText: {
-    fontSize: 9,
-  },
-
-  // ── Signatures ──
-  signatureWrap: {
-    marginTop: 40,
-  },
-  signatureRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  signatureBlock: {
-    width: "45%",
-    alignItems: "flex-start",
-  },
-  signatureLabel: {
-    fontSize: 9,
-  },
-  signatureLine: {
-    width: "100%",
-    height: 30,
-    borderBottomWidth: 1,
-    borderColor: "#000",
-  },
-  signatureCaption: {
-    fontSize: 7,
-    color: "#333",
-    marginTop: 2,
-  },
-
-  // ── Footer ──
-  footer: {
-    position: "absolute",
-    bottom: 24,
-    left: 36,
-    right: 36,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    fontSize: 7,
-    color: "#444",
-  },
-});
-
-const FORM_CODE = "BulSU-OP-CICT-14F2";
-const REVISION = "0";
-const TAIL_ROWS = 3;
-
-const renderRow = (item, index) => (
-  <View style={styles.tableRow} key={index} wrap={false}>
-    <View style={styles.colType}>
-      <Text style={styles.cellText}>{item.type}</Text>
-    </View>
-    <View style={styles.colBrand}>
-      <Text style={styles.cellText}>{item.brand}</Text>
-    </View>
-    <View style={styles.colSerial}>
-      <Text style={styles.cellText}>{item.serial}</Text>
-    </View>
-    <View style={styles.colStatus}>
-      <Text style={styles.cellText}>{item.status}</Text>
-    </View>
-  </View>
-);
+// Fixed format so the date doesn't vary with the viewer's browser locale.
+const today = () =>
+  new Date().toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
 export function RoomInventoryPDF({ roomName, assets = [] }) {
-  const rows = assets.map((a) => ({
-    type: a.category_name || "",
-    brand: a.description || "",
-    serial: a.serial_number || "",
-    status: a.status || "",
-  }));
-
-  const safeRows = rows.length ? rows : [{}];
-  const splitAt = Math.max(0, safeRows.length - TAIL_ROWS);
-  const bodyRows = safeRows.slice(0, splitAt);
-  const tailRows = safeRows.slice(splitAt);
-
   return (
-    <Document>
-      <Page size="A4" style={styles.page}>
-        {/* Letterhead (page 1 only) */}
-        <View style={styles.letterheadRow}>
-          <Image src={cictLogo} style={styles.logo} />
-          <View style={styles.letterheadText}>
-            <Text style={styles.republicText}>Republic of the Philippines</Text>
-            <Text style={styles.universityText}>BULACAN STATE UNIVERSITY</Text>
-            <Text style={styles.collegeText}>
-              College of Information and Communication Technology
-            </Text>
-            <Text style={styles.cityText}>City of Malolos</Text>
-          </View>
-          <Image src={bulsuLogo} style={styles.logo} />
-        </View>
-        <View style={styles.letterheadDivider} />
+    <PDFLayout
+      title="ROOM EQUIPMENT INVENTORY FORM"
+      formCode="College of Information and Communications Technology"
+    >
+      <SectionLabel>Room details</SectionLabel>
+      <MetaGrid
+        rows={[
+          [
+            { label: "Room name", value: roomName },
+            { label: "Date prepared", value: today() },
+          ],
+          [{ label: "Total equipment", value: assets.length }],
+        ]}
+      />
 
-        <View style={styles.titleWrap}>
-          <Text style={styles.title}>ROOM EQUIPMENT INVENTORY FORM</Text>
-        </View>
-
-        {/* Meta row */}
-        <View style={styles.metaRow}>
-          <View style={styles.metaCell}>
-            <Text style={styles.metaLabel}>ROOM NAME: {roomName || "—"}</Text>
-          </View>
-          <View style={styles.metaCellLast}>
-            <Text style={styles.metaLabel}>
-              DATE: {new Date().toLocaleDateString()}
-            </Text>
-          </View>
-        </View>
-
-        {/* Top line: repeats at the top of every page */}
-        <View style={styles.tableTopLine} fixed />
-
-        {/* Column header: page 1 only */}
-        <View style={styles.tableHeaderRow}>
-          <View style={styles.colType}>
-            <Text style={styles.headerCellText}>EQUIPMENT TYPE</Text>
-          </View>
-          <View style={styles.colBrand}>
-            <Text style={styles.headerCellText}>BRAND/ DESCRIPTION</Text>
-          </View>
-          <View style={styles.colSerial}>
-            <Text style={styles.headerCellText}>SERIAL NO./ MODEL NO.</Text>
-          </View>
-          <View style={styles.colStatus}>
-            <Text style={styles.headerCellText}>STATUS</Text>
-          </View>
-        </View>
-
-        {/* Data rows */}
-        {bodyRows.map(renderRow)}
-
-        {/* Last rows + signatures stay together on one page */}
-        <View wrap={false}>
-          {tailRows.map(renderRow)}
-
-          <View style={styles.signatureWrap}>
-            <View style={styles.signatureRow}>
-              <View style={styles.signatureBlock}>
-                <Text style={styles.signatureLabel}>Prepared by:</Text>
-                <View style={styles.signatureLine} />
-                <Text style={styles.signatureCaption}>
-                  Signature Over Printed Name of Technician
-                </Text>
-              </View>
-              <View style={styles.signatureBlock}>
-                <Text style={styles.signatureLabel}>Noted by:</Text>
-                <View style={styles.signatureLine} />
-                <Text style={styles.signatureCaption}>
-                  Signature Over Printed Name of Custodian
-                </Text>
-              </View>
-            </View>
-          </View>
-        </View>
-
-        {/* Footer */}
-        <View style={styles.footer} fixed>
-          <Text>
-            {FORM_CODE}
-            {"\n"}Revision: {REVISION}
-          </Text>
-          <Text
-            render={({ pageNumber, totalPages }) =>
-              `Page ${pageNumber} of ${totalPages}`
-            }
-          />
-        </View>
-      </Page>
-    </Document>
+      <SectionLabel>Equipment inventory</SectionLabel>
+      <PDFTable
+        columns={roomInventoryPdfColumns}
+        rows={assets}
+        zebra
+        headerFill
+        summary={`Total equipment: ${assets.length}`}
+        footer={
+          <>
+            <Text style={styles.certification}>{CERTIFICATION}</Text>
+            <Signatures
+              signers={[
+                {
+                  label: "Prepared by:",
+                  caption: "Signature Over Printed Name of Technician",
+                },
+              ]}
+            />
+          </>
+        }
+      />
+    </PDFLayout>
   );
 }

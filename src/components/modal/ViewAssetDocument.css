@@ -71,7 +71,6 @@
 }
 
 .doc-modal-zoom-level {
-  font-family: "Sansation";
   font-weight: bold;
   font-size: 12px;
   color: var(--text-muted);
@@ -161,7 +160,6 @@
 
 /* ── Close button ── */
 .doc-modal-close {
-  font-family: "Sansation";
   font-weight: bold;
   font-size: 12px;
   color: #ffffff;

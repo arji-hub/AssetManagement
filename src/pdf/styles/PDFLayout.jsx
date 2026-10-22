@@ -1,24 +1,52 @@
-import { Document, Page, View, Text } from "@react-pdf/renderer";
+// Header image + footer image (both every page), title + form code on page 1,
+// "Page X of Y" on every page.
+import { Document, Page, View, Text, Image } from "@react-pdf/renderer";
+import headerImg from "../../assets/PDFTemplate/Header.png";
+import footerImg from "../../assets/PDFTemplate/Footer.png";
 import { styles } from "./pdfStyles";
 
-export function PDFLayout({ title, subtitle, children }) {
+function Header() {
   return (
-    <Document>
+    <View style={styles.headerWrap} fixed>
+      <Image src={headerImg} style={styles.headerImage} />
+    </View>
+  );
+}
+
+function Footer() {
+  return (
+    <View style={styles.footerWrap} fixed>
+      <Image src={footerImg} style={styles.footerImage} />
+    </View>
+  );
+}
+
+function PageNumber() {
+  return (
+    <Text
+      style={styles.pageNumber}
+      fixed
+      render={({ pageNumber, totalPages }) =>
+        `Page ${pageNumber} of ${totalPages}`
+      }
+    />
+  );
+}
+
+export function PDFLayout({ title, formCode, children }) {
+  return (
+    <Document title={title}>
       <Page size="A4" style={styles.page}>
-        <View style={styles.header}>
+        <Header />
+        <View style={styles.titleWrap}>
           <Text style={styles.title}>{title}</Text>
-          {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
+          {formCode ? <Text style={styles.formCode}>{formCode}</Text> : null}
         </View>
 
         {children}
 
-        <Text
-          style={styles.footer}
-          fixed
-          render={({ pageNumber, totalPages }) =>
-            `Page ${pageNumber} of ${totalPages} • Generated ${new Date().toLocaleString()}`
-          }
-        />
+        <Footer />
+        <PageNumber />
       </Page>
     </Document>
   );

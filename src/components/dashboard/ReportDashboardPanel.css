@@ -144,11 +144,11 @@
 }
 
 .report-panel-line-damaged {
-  stroke: var(--damaged);
+  stroke: var(--status-danger);
 }
 
 .report-panel-line-missing {
-  stroke: var(--missing);
+  stroke: var(--gold-500);
   stroke-dasharray: 6 4;
 }
 
@@ -201,11 +201,11 @@
 }
 
 .report-panel-legend-swatch-damaged {
-  background: var(--damaged);
+  background: var(--transfer-pending, var(--maroon-700));
 }
 
 .report-panel-legend-swatch-missing {
-  background: var(--missing);
+  background: var(--transfer-approval, var(--gold-500));
 }
 
 .report-panel-footer {
