@@ -2,19 +2,12 @@
 import { View, Text } from "@react-pdf/renderer";
 import { styles } from "./pdfStyles";
 
-// react-pdf only wraps text at spaces/hyphens, so long unbroken IDs overflow.
-// Forcing a newline every few characters guarantees they wrap.
 export function insertSoftBreaks(text, chunkSize = 20) {
   if (!text) return text;
   const chunks = text.match(new RegExp(`.{1,${chunkSize}}`, "g")) || [text];
   return chunks.join("\n");
 }
 
-/**
- * Bordered label rows.
- * rows: array of rows; each row is an array of strings (1 = full width, 2+ = split).
- * <MetaRows rows={[["ROOM: A", "DATE: x"], ["NOTES: y"]]} />
- */
 export function MetaRows({ rows }) {
   return rows.map((cells, r) => (
     <View style={styles.metaRow} key={r}>
@@ -30,28 +23,45 @@ export function MetaRows({ rows }) {
   ));
 }
 
-/**
- * Table with a repeating top line, header on page 1, and the last `tailRows`
- * rows kept together with the `footer` (signatures) so they never sit alone.
- *
- * columns: [{
- *   key, header, width: "30%",
- *   align?: "center",
- *   render?: (row, index) => string | number,
- *   textStyle?: (row) => style,   // e.g. status colors
- *   softBreak?: boolean,          // wrap long unbroken strings
- * }]
- * totalRow?: { [columnKey]: value } rendered bold after the last row.
- * footer?: node kept with the tail rows (e.g. <Signatures />).
- */
+export function SectionLabel({ children }) {
+  return <Text style={styles.sectionLabel}>{children}</Text>;
+}
+
+export function MetaGrid({ rows }) {
+  return rows.map((cells, r) => (
+    <View
+      style={[styles.metaRow, r > 0 && styles.metaRowStacked]}
+      key={r}
+      wrap={false}
+    >
+      {cells.map(({ label, value }, c) => (
+        <View
+          key={label}
+          style={c === cells.length - 1 ? styles.metaCellLast : styles.metaCell}
+        >
+          <Text style={styles.metaLabelSmall}>{label}</Text>
+          <Text style={styles.metaValue}>
+            {value === undefined || value === null || value === ""
+              ? "—"
+              : String(value)}
+          </Text>
+        </View>
+      ))}
+    </View>
+  ));
+}
 export function PDFTable({
   columns,
   rows = [],
   tailRows = 3,
   totalRow,
+  summary,
   footer,
+  repeatHeader = true,
+  zebra = false,
+  headerFill = false,
 }) {
-  const data = rows.length ? rows : [null]; // never an empty table
+  const data = rows.length ? rows : [null];
   const splitAt = Math.max(0, data.length - tailRows);
 
   const renderCells = (row, index, { bold = false, useKeys = false } = {}) =>
@@ -66,7 +76,7 @@ export function PDFTable({
       }
       value = value ?? "";
       if (col.softBreak && typeof value === "string") {
-        value = insertSoftBreaks(value);
+        value = insertSoftBreaks(value, col.chunkSize);
       }
 
       return (
@@ -82,6 +92,7 @@ export function PDFTable({
           <Text
             style={[
               styles.cellText,
+              col.mono && styles.textMono,
               col.align === "center" && styles.textCenter,
               bold && styles.textBold,
               row && !useKeys && col.textStyle?.(row),
@@ -94,7 +105,11 @@ export function PDFTable({
     });
 
   const renderRow = (row, index) => (
-    <View style={styles.tableRow} key={index} wrap={false}>
+    <View
+      style={[styles.tableRow, zebra && index % 2 === 1 && styles.tableRowAlt]}
+      key={index}
+      wrap={false}
+    >
       {renderCells(row, index)}
     </View>
   );
@@ -104,8 +119,10 @@ export function PDFTable({
       <View style={styles.tableGap} />
       <View style={styles.tableTopLine} fixed />
 
-      {/* Header prints on page 1 only */}
-      <View style={styles.tableHeaderRow}>
+      <View
+        style={[styles.tableHeaderRow, headerFill && styles.tableHeaderFill]}
+        fixed={repeatHeader}
+      >
         {columns.map((col, c) => (
           <View
             key={col.key}
@@ -129,6 +146,7 @@ export function PDFTable({
             {renderCells(totalRow, 0, { bold: true, useKeys: true })}
           </View>
         )}
+        {summary ? <Text style={styles.totalLine}>{summary}</Text> : null}
         {footer}
       </View>
     </>

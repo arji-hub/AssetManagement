@@ -2,10 +2,6 @@
 import { View, Text } from "@react-pdf/renderer";
 import { styles } from "./pdfStyles";
 
-/**
- * signers: [{ label: "Prepared by:", caption: "Signature Over Printed Name", name?: "Juan" }]
- * 1-2 signers get 45% width each, 3 get 30%.
- */
 export function Signatures({ signers }) {
   const width = signers.length >= 3 ? "30%" : "45%";
   return (

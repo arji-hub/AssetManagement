@@ -8,17 +8,29 @@ export const custodianListPdfColumns = [
   {
     key: "no",
     header: "NO.",
-    width: "5%",
+    width: "6%",
     align: "center",
     render: (_, i) => i + 1,
   },
-  { key: "name", header: "NAME", width: "35%", render: (c) => c.fullname },
-  { key: "email", header: "EMAIL", width: "30%", render: (c) => c.email },
+  {
+    key: "name",
+    header: "NAME",
+    width: "32%",
+    render: (c) => c.fullname || "—",
+  },
+  {
+    key: "email",
+    header: "EMAIL",
+    width: "30%",
+    softBreak: true, // emails have no spaces, so they need forced wrapping
+    chunkSize: 30,
+    render: (c) => c.email || "—",
+  },
   {
     key: "role",
     header: "CLASSIFICATION",
-    width: "15%",
-    render: (c) => ROLE_LABELS[c.role] || c.role,
+    width: "17%",
+    render: (c) => ROLE_LABELS[c.role] || c.role || "—",
   },
   {
     key: "assets",

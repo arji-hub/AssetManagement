@@ -1,31 +1,25 @@
+import { Text } from "@react-pdf/renderer";
 import { PDFLayout } from "../styles/PDFLayout";
-import { MetaRows, PDFTable } from "../styles/PDFTable";
+import { MetaGrid, PDFTable, SectionLabel } from "../styles/PDFTable";
 import { Signatures } from "../styles/PDFSignature";
+import { styles } from "../styles/pdfStyles";
 import { transferLogPdfColumns } from "../columns/transferLogPdfColumns";
 
 import { formatDate } from "../../utils/date";
 
-/**
- * Transfer report – render only for completed requests.
- * Props: request, items (getRequestItems(request)), ackAdmin, ackFrom, ackTo
- * (from useTransferInfo), plus optional fromLabel / toLabel for local MR types.
- */
+const CERTIFICATION =
+  "This certifies that the items listed above were transferred from the releasing custodian to the receiving custodian on the date indicated.";
+
 export function TransferLogPDF({
   request,
   items = [],
   ackAdmin,
   ackFrom,
   ackTo,
-  fromLabel = "FROM CUSTODIAN",
-  toLabel = "TO CUSTODIAN",
+  fromLabel = "Released from (custodian)",
+  toLabel = "Received by (custodian)",
 }) {
-  // Admin always signs; From / To only get a block when they exist (2 or 3 signatories).
   const signers = [
-    {
-      label: "Approved by:",
-      caption: "Signature Over Printed Name of Admin",
-      name: ackAdmin?.name,
-    },
     ackFrom?.name && {
       label: "Released by:",
       caption: "Signature Over Printed Name of Custodian",
@@ -36,27 +30,58 @@ export function TransferLogPDF({
       caption: "Signature Over Printed Name of Custodian",
       name: ackTo.name,
     },
+    {
+      label: "Approved by:",
+      caption: "Signature Over Printed Name of Admin",
+      name: ackAdmin?.name,
+    },
   ].filter(Boolean);
-
   return (
-    <PDFLayout title="INVENTORY TRANSFER REPORT" formCode="BulSU-OP-CICT-14F4">
-      <MetaRows
+    <PDFLayout
+      title="INVENTORY TRANSFER REPORT"
+      formCode="College of Information and Communications Technology"
+    >
+      <SectionLabel>Transfer details</SectionLabel>
+      <MetaGrid
         rows={[
           [
-            `${fromLabel}: ${ackFrom?.name || "—"}`,
-            `${toLabel}: ${ackTo?.name || "—"}`,
-          ],
-          [`NOTES: ${request?.notes || "—"}`],
-          [
-            `ASSET COUNT: ${items.length}`,
-            `DATE : ${formatDate(request?.completed_at)}`,
+            { label: "Asset count", value: items.length },
+            {
+              label: "Date completed",
+              value: request?.completed_at
+                ? formatDate(request.completed_at)
+                : "",
+            },
           ],
         ]}
       />
+
+      <SectionLabel>Custodian</SectionLabel>
+      <MetaGrid
+        rows={[
+          [
+            { label: fromLabel, value: ackFrom?.name },
+            { label: toLabel, value: ackTo?.name },
+          ],
+        ]}
+      />
+
+      <SectionLabel>Remarks / purpose</SectionLabel>
+      <MetaGrid rows={[[{ label: "Notes", value: request?.notes }]]} />
+
+      <SectionLabel>Items transferred</SectionLabel>
       <PDFTable
         columns={transferLogPdfColumns}
         rows={items}
-        footer={<Signatures signers={signers} />}
+        zebra
+        headerFill
+        summary={`Total items: ${items.length}`}
+        footer={
+          <>
+            <Text style={styles.certification}>{CERTIFICATION}</Text>
+            <Signatures signers={signers} />
+          </>
+        }
       />
     </PDFLayout>
   );

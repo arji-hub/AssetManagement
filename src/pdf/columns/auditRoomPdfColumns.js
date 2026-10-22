@@ -4,34 +4,44 @@ const statusOf = (r) => r.audit_status || "not_audited";
 
 export const auditRoomPdfColumns = [
   {
-    key: "serial",
-    header: "SERIAL NO./ MODEL NO.",
-    width: "20%",
-    softBreak: true,
-    render: (r) => r.serial_number || "—",
+    key: "no",
+    header: "NO.",
+    width: "6%",
+    align: "center",
+    render: (_, i) => i + 1,
   },
   {
     key: "description",
     header: "DESCRIPTION",
-    width: "32%",
-    render: (r) => r.description,
+    width: "28%",
+    render: (r) => r.description || "—",
+  },
+  {
+    key: "serial",
+    header: "SERIAL NO./ MODEL NO.",
+    width: "20%",
+    softBreak: true,
+    chunkSize: 16, // Courier 8.5pt fits ~18 chars in this column
+    mono: true,
+    render: (r) => r.serial_number || "—",
   },
   {
     key: "category",
     header: "CATEGORY",
-    width: "16%",
-    render: (r) => r.category,
+    width: "14%",
+    render: (r) => r.category || "—",
   },
   {
     key: "custodian",
     header: "CUSTODIAN",
-    width: "20%",
+    width: "18%",
     render: (r) => r.custodian || "—",
   },
   {
     key: "status",
     header: "STATUS",
-    width: "12%",
+    width: "14%",
+    align: "center",
     render: (r) => AUDIT_STATUS_LABELS[statusOf(r)] || statusOf(r),
     textStyle: (r) => ({
       fontWeight: "bold",

@@ -1,40 +1,45 @@
 import { View, Text, StyleSheet } from "@react-pdf/renderer";
 import { PDFLayout } from "../styles/PDFLayout";
-import { MetaRows, PDFTable } from "../styles/PDFTable";
+import { MetaGrid, PDFTable, SectionLabel } from "../styles/PDFTable";
 import { Signatures } from "../styles/PDFSignature";
+import { COLORS, styles } from "../styles/pdfStyles";
 import { reportLogPdfColumns } from "../columns/reportLogPdfColumns";
 
 import { formatDate } from "../../utils/date";
+
+const CERTIFICATION =
+  "This certifies that the reports listed above are a true record of the damaged and missing assets reported under this log.";
 
 // Only this form has a summary strip, so its styles stay local.
 const local = StyleSheet.create({
   summaryRow: {
     flexDirection: "row",
     borderWidth: 1,
-    borderTopWidth: 0,
-    borderColor: "#000",
+    borderColor: COLORS.black,
+    marginTop: -1, // attaches to the details grid without a doubled border
   },
   summaryCell: {
     flex: 1,
     padding: 6,
     borderRightWidth: 1,
-    borderColor: "#000",
+    borderColor: COLORS.black,
     alignItems: "center",
   },
   summaryCellLast: { flex: 1, padding: 6, alignItems: "center" },
   summaryValue: { fontSize: 12, fontWeight: "bold" },
-  summaryValueFlag: { fontSize: 12, fontWeight: "bold", color: "#860100" },
+  summaryValueFlag: { fontSize: 12, fontWeight: "bold", color: COLORS.maroon },
   summaryLabel: {
     fontSize: 7,
-    color: "#333",
+    color: COLORS.muted,
     marginTop: 2,
     textAlign: "center",
+    textTransform: "uppercase",
   },
 });
 
 function SummaryStrip({ items }) {
   return (
-    <View style={local.summaryRow}>
+    <View style={local.summaryRow} wrap={false}>
       {items.map((s, i) => (
         <View
           key={s.label}
@@ -53,48 +58,66 @@ function SummaryStrip({ items }) {
 }
 
 export function ReportLogPDF({ reportLog, reports = [], preparedByName }) {
+  const rows = reports ?? [];
+
   return (
-    <PDFLayout title="ASSET REPORT LOG" formCode="BulSU-OP-CICT-14F4">
-      <MetaRows
+    <PDFLayout
+      title="ASSET REPORT LOG"
+      formCode="College of Information and Communications Technology"
+    >
+      <SectionLabel>Log details</SectionLabel>
+      <MetaGrid
         rows={[
           [
-            `LOG NAME: ${reportLog?.log_name}`,
-            `DATE: ${formatDate(reportLog?.created_at)}`,
+            { label: "Log name", value: reportLog?.log_name },
+            {
+              label: "Date",
+              value: reportLog?.created_at
+                ? formatDate(reportLog.created_at)
+                : "",
+            },
           ],
         ]}
       />
       <SummaryStrip
         items={[
-          { label: "TOTAL REPORTS", value: reportLog?.report_count ?? 0 },
           {
-            label: "DAMAGED",
+            label: "Total reports",
+            value: reportLog?.report_count ?? rows.length,
+          },
+          {
+            label: "Damaged",
             value: reportLog?.damaged_count ?? 0,
             flag: true,
           },
           {
-            label: "MISSING",
+            label: "Missing",
             value: reportLog?.missing_count ?? 0,
             flag: true,
           },
         ]}
       />
+
+      <SectionLabel>Reported assets</SectionLabel>
       <PDFTable
         columns={reportLogPdfColumns}
-        rows={reports ?? []}
+        rows={rows}
+        zebra
+        headerFill
+        summary={`Total reports: ${rows.length}`}
         footer={
-          <Signatures
-            signers={[
-              {
-                label: "Prepared by:",
-                caption: "Signature Over Printed Name",
-                name: preparedByName,
-              },
-              {
-                label: "Noted by:",
-                caption: "Signature Over Printed Name of Property Custodian",
-              },
-            ]}
-          />
+          <>
+            <Text style={styles.certification}>{CERTIFICATION}</Text>
+            <Signatures
+              signers={[
+                {
+                  label: "Prepared by:",
+                  caption: "Signature Over Printed Name",
+                  name: preparedByName,
+                },
+              ]}
+            />
+          </>
         }
       />
     </PDFLayout>
