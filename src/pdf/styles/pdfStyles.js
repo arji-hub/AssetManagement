@@ -1,35 +1,91 @@
 import { StyleSheet } from "@react-pdf/renderer";
 
+export const COLORS = {
+  maroon: "#860100",
+  black: "#000",
+  muted: "#333",
+};
+
+export const PAGE_PADDING_TOP = 36;
+export const PAGE_PADDING_X = 36;
+export const FOOTER_RESERVE = 90;
+
 export const styles = StyleSheet.create({
-  page: { padding: 30, fontSize: 10, fontFamily: "Helvetica" },
-  header: {
-    marginBottom: 16,
-    borderBottom: "1px solid #ccc",
-    paddingBottom: 8,
+  page: {
+    paddingTop: PAGE_PADDING_TOP,
+    paddingHorizontal: PAGE_PADDING_X,
+    paddingBottom: FOOTER_RESERVE,
+    fontSize: 9,
+    fontFamily: "Helvetica",
+    color: COLORS.black,
   },
-  title: { fontSize: 16, fontWeight: "bold" },
-  subtitle: { fontSize: 10, color: "#555", marginTop: 2 },
-  table: { marginTop: 10 },
+
+  // ── Title ──
+  titleWrap: { alignItems: "center", marginTop: 10, marginBottom: 10 },
+  title: { fontSize: 14, fontWeight: "bold", letterSpacing: 0.5 },
+
+  // ── Meta rows ──
+  metaRow: {
+    flexDirection: "row",
+    borderWidth: 1,
+    borderColor: COLORS.black,
+  },
+  metaCell: {
+    flex: 1,
+    padding: 6,
+    borderRightWidth: 1,
+    borderColor: COLORS.black,
+  },
+  metaCellLast: { flex: 1, padding: 6 },
+  metaLabel: { fontSize: 9, fontWeight: "bold" },
+  tableGap: { height: 10 },
+
+  // ── Table ──
+  tableTopLine: { borderTopWidth: 1, borderColor: COLORS.black }, // fixed: repeats every page
   tableHeaderRow: {
     flexDirection: "row",
-    borderBottom: "1px solid #333",
-    paddingVertical: 4,
-    fontWeight: "bold",
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: COLORS.black,
   },
   tableRow: {
     flexDirection: "row",
-    borderBottom: "1px solid #eee",
-    paddingVertical: 4,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: COLORS.black,
+    minHeight: 22,
   },
-  cell: { flex: 1, paddingHorizontal: 2 },
-  cellIndex: { width: 24 },
-  footer: {
-    position: "absolute",
-    bottom: 20,
-    left: 30,
-    right: 30,
-    fontSize: 8,
-    color: "#999",
-    textAlign: "center",
+  cell: { padding: 5, justifyContent: "center", borderColor: COLORS.black },
+  cellDivider: { borderRightWidth: 1 },
+  cellCenterAlign: { alignItems: "center" },
+  headerCellText: { fontSize: 8, fontWeight: "bold", textAlign: "center" },
+  cellText: { fontSize: 9 },
+  textCenter: { textAlign: "center" },
+  textBold: { fontWeight: "bold" },
+
+  // ── Signatures ──
+  signatureWrap: { marginTop: 40 },
+  signatureRow: { flexDirection: "row", justifyContent: "space-between" },
+  signatureBlock: { alignItems: "flex-start" },
+  signatureLabel: { fontSize: 9 },
+  signatureLine: {
+    width: "100%",
+    height: 30,
+    borderBottomWidth: 1,
+    borderColor: COLORS.black,
+    justifyContent: "flex-end",
+    alignItems: "center",
   },
+  signatureName: { fontSize: 9, fontWeight: "bold", paddingBottom: 2 },
+  signatureCaption: { fontSize: 7, color: COLORS.muted, marginTop: 2 },
+
+  headerWrap: {
+    marginTop: -PAGE_PADDING_TOP,
+    marginHorizontal: -PAGE_PADDING_X,
+  },
+  headerImage: { width: "100%" },
+  footerWrap: { position: "absolute", bottom: 0, left: 0, right: 0 },
+  footerImage: { width: "100%" },
 });

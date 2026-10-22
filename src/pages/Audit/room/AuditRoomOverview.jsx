@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import MainLayout from "../../../components/layout/MainLayout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboardCheck } from "@fortawesome/free-solid-svg-icons";
-import { PDFPreviewModal } from "../../../components/modal/PDFPreviewModal";
+import { PDFPreviewModal } from "../../../pdf/renderer/PDFPreviewModal";
 import { RoomInventoryPDF } from "../../../pdf/templates/RoomInventoryPDF";
 import useRoomOverview from "../../../hooks/audit/room/useRoomOverview";
 import ConfirmModal from "../../../components/modal/ConfirmModal";

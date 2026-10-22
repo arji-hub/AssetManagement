@@ -4,7 +4,7 @@ import AuditCard from "../../../components/ui/card/audit/AuditCard";
 import BackButton from "../../../components/ui/button/BackButton";
 import useCustodianLogs from "../../../hooks/audit/custodian/useCustodianLogs";
 import { CustodianListPDF } from "../../../pdf/templates/CustodianListPDF";
-import { PDFPreviewModal } from "../../../components/modal/PDFPreviewModal";
+import { PDFPreviewModal } from "../../../pdf/renderer/PDFPreviewModal";
 import { custodianAuditColumns } from "../../../data/columns";
 import Table from "../../../components/panel/Table";
 import AuditCustodianCard from "../../../components/ui/card/audit/AuditCustodianCard";

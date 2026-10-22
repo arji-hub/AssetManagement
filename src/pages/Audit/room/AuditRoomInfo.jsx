@@ -9,7 +9,7 @@ import { formatDate } from "../../../utils/date";
 import Camera from "../../../components/camera/Camera";
 import ScanStatusModal from "../../../components/ui/status/scanStatusModal";
 import { AuditRoomPDF } from "../../../pdf/templates/AuditRoomPDF";
-import { PDFPreviewModal } from "../../../components/modal/PDFPreviewModal";
+import { PDFPreviewModal } from "../../../pdf/renderer/PDFPreviewModal";
 import AuditSaveRoomModal from "../../../components/modal/AuditSaveRoomModal";
 import useAuditRoomPDF from "../../../hooks/audit/room/useAuditRoomPDF";
 import Table from "../../../components/panel/Table";
