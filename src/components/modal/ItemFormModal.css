@@ -87,6 +87,9 @@
 .reg-modal-section {
   margin-top: 1.25rem;
 }
+.reg-error {
+  margin-bottom: 0.25rem;
+}
 
 .reg-modal-footer {
   display: flex;

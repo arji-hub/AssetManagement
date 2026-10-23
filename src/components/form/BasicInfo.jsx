@@ -105,8 +105,8 @@ function BasicInfo({
             name="serial_number"
             placeholder={
               isIndividual
-                ? "Base for auto-numbering, e.g. SN-99823-X"
-                : "e.g. SN-99823-X"
+                ? "Base for auto-numbering, e.g. SN-1234-X"
+                : "e.g. SN-1234-X"
             }
             value={item.serial_number}
             onChange={onChange}

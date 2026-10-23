@@ -1,3 +1,4 @@
+/* ───────── acquisition summary ───────── */
 .reg-review-summary {
   display: flex;
   align-items: center;
@@ -6,6 +7,11 @@
   padding-bottom: 1.25rem;
   margin-bottom: 1.25rem;
   border-bottom: 1px solid var(--border-subtle);
+}
+
+.reg-review-summary-text {
+  flex: 1 1 0;
+  min-width: 0; /* lets long supplier / donor names wrap instead of overflowing */
 }
 
 .reg-review-summary-label {
@@ -21,9 +27,11 @@
   font-size: 0.85rem;
   color: var(--text-strong);
   margin: 0.1rem 0;
+  overflow-wrap: anywhere;
 }
 
 .reg-review-doc-thumb {
+  flex-shrink: 0;
   width: 72px;
   height: 72px;
   object-fit: cover;
@@ -31,6 +39,7 @@
   border: 1px solid var(--card-border);
 }
 
+/* ───────── category groups ───────── */
 .reg-review-group {
   margin-bottom: 1rem;
 }
@@ -42,13 +51,107 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
   margin: 0 0 0.5rem;
+  overflow-wrap: anywhere;
 }
 
+/* ───────── item rows ───────── */
 .reg-review-row {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.25rem 1rem;
   font-size: 0.85rem;
   color: var(--text-strong);
-  padding: 0.4rem 0;
+  padding: 0.5rem 0;
   border-bottom: 1px solid var(--border-subtle);
+}
+
+.reg-review-row:last-child {
+  border-bottom: 0;
+}
+
+.reg-review-row-desc {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* qty + serials + photo chips */
+.reg-review-row-meta {
+  flex: 0 1 auto;
+  max-width: 60%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 0.25rem 0.75rem;
+  color: var(--text-muted);
+}
+
+.reg-review-qty,
+.reg-review-sn,
+.reg-review-photos {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 0.35rem;
+  overflow-wrap: anywhere;
+}
+
+.reg-review-qty,
+.reg-review-photos {
+  white-space: nowrap;
+}
+
+.reg-review-qty {
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+.reg-review-qty svg,
+.reg-review-sn svg,
+.reg-review-photos svg {
+  flex-shrink: 0;
+  margin-top: 0.22em; /* keeps the icon aligned to the first line when serials wrap */
+  font-size: 0.8em;
+}
+
+.reg-review-qty svg {
+  color: var(--maroon-700);
+}
+
+/* ───────── tablet / mobile ───────── */
+@media (max-width: 600px) {
+  .reg-review-summary {
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .reg-review-doc-thumb {
+    width: 56px;
+    height: 56px;
+  }
+
+  /* stack: description on top, qty + serials full width below */
+  .reg-review-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.3rem;
+  }
+
+  .reg-review-row-meta {
+    max-width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+/* very small phones */
+@media (max-width: 360px) {
+  .reg-review-row {
+    font-size: 0.8rem;
+  }
+
+  .reg-review-doc-thumb {
+    width: 48px;
+    height: 48px;
+  }
 }

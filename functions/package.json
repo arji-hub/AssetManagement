@@ -13,6 +13,7 @@
   },
   "main": "src/index.js",
   "dependencies": {
+    "@google/genai": "^2.30.0",
     "@react-email/components": "^1.0.12",
     "@react-email/render": "^2.0.8",
     "canvas": "^3.2.3",

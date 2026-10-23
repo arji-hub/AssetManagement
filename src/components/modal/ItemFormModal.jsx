@@ -1,6 +1,6 @@
 // src/components/form/ItemFormModal.jsx
 import "./ItemFormModal.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import BasicInfo from "../form/BasicInfo";
 import ImagePanel from "../form/ImagePanel";
@@ -31,6 +31,9 @@ function ItemFormModal({
     validate,
     toPayload,
   } = useItemForm(initialItem, isDonated, existingItems);
+  useEffect(() => {
+    if (initialItem) validate();
+  }, []);
 
   const [saving, setSaving] = useState(false);
 
@@ -79,15 +82,15 @@ function ItemFormModal({
           </div>
 
           <div className="reg-modal-section">
+            {error.assetImage && (
+              <p className="reg-error">{error.assetImage}</p>
+            )}
             <ImagePanel
               title="Asset Image"
               image={assetImage}
               onImageChange={setAssetImage}
               required
             />
-            {error.assetImage && (
-              <p className="reg-error">{error.assetImage}</p>
-            )}
           </div>
         </div>
 
