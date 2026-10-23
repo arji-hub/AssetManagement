@@ -194,7 +194,7 @@ function BasicInfo({
           {error.qty && <p className="reg-error">{error.qty}</p>}
         </div>
 
-        {qty > 1 && (
+        {/* {qty > 1 && (
           <div className="reg-field reg-field--full">
             <label className="reg-label">
               Tracking Mode <span className="reg-required">*</span>
@@ -241,7 +241,7 @@ function BasicInfo({
               <p className="reg-error">{error.tracking_mode}</p>
             )}
           </div>
-        )}
+        )} */}
 
         {isIndividual && (
           <div className="reg-field reg-field--full">

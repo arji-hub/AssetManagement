@@ -1,5 +1,6 @@
 // src/components/form/SearchableSelect.jsx
 import { useEffect, useRef, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./SearchableSelect.css";
 
 /**
@@ -91,6 +92,18 @@ function SearchableSelect({
           />
 
           <ul className="reg-searchable-list" role="listbox">
+            {value && (
+              <li
+                role="option"
+                aria-selected={false}
+                className="reg-searchable-option reg-searchable-option--clear"
+                onClick={() => handleSelect("")}
+              >
+                <FontAwesomeIcon icon="fa-solid fa-xmark" />
+                Clear
+              </li>
+            )}
+
             {filteredOptions.length === 0 ? (
               <li className="reg-searchable-empty">{emptyMessage}</li>
             ) : (

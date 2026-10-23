@@ -145,6 +145,31 @@
   font-weight: 600;
 }
 
+/* "Clear" row — pinned to the top of the scrolling list */
+.reg-searchable-option--clear {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+
+  margin-bottom: 4px;
+  border-radius: 6px 6px 0 0;
+  border-bottom: 1px solid var(--border-subtle);
+
+  background: var(--card-bg);
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.reg-searchable-option--clear:hover {
+  background: color-mix(in srgb, var(--danger) 10%, var(--card-bg));
+  color: var(--danger);
+}
+
 .reg-searchable-empty {
   padding: 0.6rem 0.65rem;
   color: var(--text-faint);

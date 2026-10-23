@@ -105,9 +105,6 @@ export function useAcquisitionRegistration() {
   const [itemModalOpen, setItemModalOpen] = useState(false);
   const [editingItemId, setEditingItemId] = useState(null);
 
-  // useEffect(() => {
-  //   console.log("items after scan:", items);
-  // }, [items]);
   // ── save state ───────────────────────────────────────────────────────
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState(null);
@@ -147,28 +144,8 @@ export function useAcquisitionRegistration() {
     const map = {};
     items.forEach((item) => {
       const missing = getMissingFields(item, { isDonated });
-
-      console.groupCollapsed(
-        `[missingByItem] ${item.description || "Untitled"} → ${missing.length ? missing.join(", ") : "OK"}`,
-      );
-      console.log("item (raw):", item);
-      console.log("summary:", {
-        qty: item.qty,
-        tracking_mode: item.tracking_mode,
-        serial_number: item.serial_number,
-        serial_numbers: item.serial_numbers,
-        serials: item.serials,
-        has_assetImage: !!item.assetImage?.file,
-        image_mode: item.image_mode,
-        unit_images_filled: (item.unit_images || []).filter((i) => i?.file)
-          .length,
-      });
-      console.log("missing:", missing);
-      console.groupEnd();
-
       if (missing.length) map[item.id] = missing;
     });
-    console.log("[missingByItem] result map:", map);
     return map;
   }, [items, isDonated]);
 
