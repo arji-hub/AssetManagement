@@ -1,3 +1,6 @@
+/* ItemList.css */
+
+/* ─── Header ────────────────────────────────────────────────────────────── */
 .reg-item-list-header {
   display: flex;
   align-items: flex-start;
@@ -6,6 +9,89 @@
   margin-bottom: 1.25rem;
 }
 
+/* ─── Missing-fields summary strip ──────────────────────────────────────── */
+.reg-item-list-alert {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.85rem 1rem;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+}
+
+.reg-item-list-alert-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.reg-item-list-alert-text {
+  min-width: 0;
+}
+
+.reg-item-list-alert-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
+.reg-item-list-alert-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold-500);
+  flex-shrink: 0;
+}
+
+.reg-item-list-alert-sub {
+  margin: 0.15rem 0 0 1rem; /* aligns under the title text, past the dot */
+  font-size: 0.78rem;
+  color: var(--text-faint);
+}
+
+.reg-item-list-alert-action {
+  flex-shrink: 0;
+  padding: 0.4rem 0.9rem;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--maroon-700);
+  background: none;
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+}
+
+.reg-item-list-alert-action:hover {
+  border-color: var(--maroon-700);
+  background: var(--maroon-tint);
+}
+
+.reg-item-list-alert-track {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--track-bg);
+  overflow: hidden;
+}
+
+.reg-item-list-alert-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--gold-500);
+  transition: width 0.3s ease;
+}
+
+/* ─── Empty state ───────────────────────────────────────────────────────── */
 .reg-item-list-empty {
   display: flex;
   flex-direction: column;
@@ -20,6 +106,7 @@
   font-size: 2rem;
 }
 
+/* ─── List + cards ──────────────────────────────────────────────────────── */
 .reg-item-list {
   display: flex;
   flex-direction: column;
@@ -31,10 +118,16 @@
   align-items: center;
   gap: 1rem;
   border: 1px solid var(--card-border);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 0.75rem 1rem;
 }
 
+.reg-item-card--incomplete {
+  border-color: var(--status-danger);
+  background: var(--status-danger-bg);
+}
+
+/* thumbnail */
 .reg-item-card-thumb {
   width: 52px;
   height: 52px;
@@ -54,6 +147,7 @@
   object-fit: cover;
 }
 
+/* text info */
 .reg-item-card-info {
   flex: 1;
   min-width: 0;
@@ -75,6 +169,17 @@
   margin: 0.2rem 0 0;
 }
 
+.reg-item-card-missing {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0.3rem 0 0;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--status-pending);
+}
+
+/* actions */
 .reg-item-card-actions {
   display: flex;
   gap: 0.5rem;
@@ -99,9 +204,24 @@
   color: var(--maroon-700);
 }
 
+.reg-item-card-actions button.is-fix {
+  border-color: var(--gold-500);
+  color: var(--status-pending);
+}
+
+/* ─── Responsive ────────────────────────────────────────────────────────── */
 @media (max-width: 640px) {
   .reg-item-list-header {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .reg-item-list-alert-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .reg-item-list-alert-action {
+    width: 100%;
   }
 }
