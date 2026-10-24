@@ -43,6 +43,14 @@ function AssetRegistration() {
     fulltimeCustodians,
     loadingOptions,
     handleSubmit,
+    scanning,
+    handleScanDoc,
+    missingByItem,
+    incompleteCount,
+    canProceedStep2,
+    scanStatus,
+    scanError,
+    scanItemCount,
   } = useAcquisitionRegistration();
 
   return (
@@ -71,16 +79,23 @@ function AssetRegistration() {
               setField={setAcquisitionField}
               docImage={docImage}
               setDocImage={setDocImage}
+              scanning={scanning}
+              onScanDoc={handleScanDoc}
+              scanDisabled={loadingOptions}
+              scanStatus={scanStatus}
+              scanError={scanError}
+              scanItemCount={scanItemCount}
             />
           )}
 
           {step === 2 && (
             <ItemList
               items={items}
+              missingByItem={missingByItem}
               onAdd={openAddItem}
               onEdit={openEditItem}
-              onRemove={removeItem}
               onDuplicate={duplicateItem}
+              onRemove={removeItem}
             />
           )}
 
@@ -136,7 +151,12 @@ function AssetRegistration() {
                 type="button"
                 className="reg-btn reg-btn--primary"
                 onClick={goToReview}
-                disabled={items.length === 0}
+                disabled={!canProceedStep2}
+                title={
+                  incompleteCount > 0
+                    ? `${incompleteCount} item${incompleteCount === 1 ? "" : "s"} need attention`
+                    : undefined
+                }
               >
                 Review
                 <FontAwesomeIcon icon="fa-solid fa-arrow-right" />

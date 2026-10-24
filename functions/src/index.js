@@ -7,6 +7,10 @@ exports.addCustodian = require("./https/addCustodian").addCustodian;
 exports.onTransferRequestCompleted =
   require("./triggers/onTransferRequestCompleted").onTransferRequestCompleted;
 
+//------------SCAN ACQUISITION DOCUMENT------------
+exports.scanAcquisitionDoc =
+  require("./https/scanAcquisitionDoc").scanAcquisitionDoc;
+
 //------------UPDATE ROOM------------
 exports.onRoomUpdated = require("./triggers/onRoomUpdated").onRoomUpdated;
 

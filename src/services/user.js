@@ -1,4 +1,3 @@
-import { db } from "./firebase-config";
 import {
   collection,
   doc,
@@ -13,14 +12,13 @@ import {
   or,
   runTransaction,
 } from "firebase/firestore";
-import { getFunctions, httpsCallable } from "firebase/functions";
+import { db, functions } from "./firebase-config";
+import { httpsCallable } from "firebase/functions";
 import { toLowerCase } from "../utils/TextCasing";
 import ROLES from "../data/roles";
 import { getMillis } from "../utils/date";
 import { fetchRoomName } from "./room";
 import { fetchCategoryName } from "./category";
-
-const functions = getFunctions();
 
 async function assetCount(uid) {
   const [custodianSnap, localMRSnap] = await Promise.all([
@@ -426,7 +424,9 @@ export async function promoteCustodian(id) {
       throw new Error("You don't have permission to promote this custodian.");
     }
     if (err.code === "unavailable") {
-      throw new Error("Network error. Please check your connection and try again.");
+      throw new Error(
+        "Network error. Please check your connection and try again.",
+      );
     }
     throw err;
   }
