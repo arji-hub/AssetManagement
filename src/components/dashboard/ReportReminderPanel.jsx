@@ -48,7 +48,7 @@ function ReportReminderPanel({ user: userProp, mockReports, mockAssets }) {
     ? `${counts.total} asset${plural} reported missing / damaged`
     : `${counts.total} of your assets ${counts.total === 1 ? "is" : "are"} missing / damaged`;
   const subtext = isAdmin
-    ? "Open reports across all rooms that have not been endorsed for repair or resolved."
+    ? "Open reports that have not been endorsed for repair or resolved."
     : "These assets are in your custody and still have an open report.";
 
   const visible = items.slice(0, MAX_ROWS);
