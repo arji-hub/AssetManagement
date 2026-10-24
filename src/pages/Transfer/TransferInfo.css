@@ -35,33 +35,10 @@
   display: flex;
   justify-content: flex-end;
   gap: 8px;
+  padding-top: 4px;
 }
 
-.transfer-action-btn--approve {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 9px 20px;
-  font-size: 13px;
-  font-weight: 600;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--maroon-700);
-  cursor: pointer;
-  background: var(--maroon-700);
-  color: #fff;
-  transition:
-    background 0.15s,
-    transform 0.1s;
-}
-
-.transfer-action-btn--approve:hover {
-  background: var(--maroon-600);
-}
-
-.transfer-action-btn--approve:active {
-  transform: translateY(1px);
-}
-
+.transfer-action-btn--approve,
 .transfer-action-btn--decline {
   display: inline-flex;
   align-items: center;
@@ -70,25 +47,46 @@
   font-size: 13px;
   font-weight: 600;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--card-border);
   cursor: pointer;
-  background: var(--card-bg);
-  color: var(--text-muted);
   transition:
-    border-color 0.15s,
-    color 0.15s,
-    background 0.15s;
+    background 0.15s,
+    transform 0.1s;
+}
+
+.transfer-action-btn--approve:active,
+.transfer-action-btn--decline:active {
+  transform: translateY(1px);
+}
+
+/* Approve → green */
+.transfer-action-btn--approve {
+  border: 1px solid var(--status-success);
+  background: var(--status-success-bg);
+  color: var(--status-success);
+}
+
+.transfer-action-btn--approve:hover {
+  background: color-mix(in srgb, var(--status-success) 22%, transparent);
+}
+
+/* Decline → red */
+.transfer-action-btn--decline {
+  border: 1px solid var(--status-danger);
+  background: var(--status-danger-bg);
+  color: var(--status-danger);
 }
 
 .transfer-action-btn--decline:hover {
-  border-color: var(--danger);
-  color: var(--danger);
-  background: var(--danger-bg);
+  background: color-mix(in srgb, var(--status-danger) 22%, transparent);
 }
 
-.transfer-action-btn--approve:focus-visible,
+.transfer-action-btn--approve:focus-visible {
+  outline: 2px solid var(--status-success);
+  outline-offset: 2px;
+}
+
 .transfer-action-btn--decline:focus-visible {
-  outline: 2px solid var(--maroon-700);
+  outline: 2px solid var(--status-danger);
   outline-offset: 2px;
 }
 

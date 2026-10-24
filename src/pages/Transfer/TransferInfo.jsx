@@ -66,24 +66,6 @@ function TransferInfo() {
             <span>Transfer Request</span>
           </div>
 
-          {showActions && (
-            <div className="transfer-info-actions">
-              <button
-                className="transfer-action-btn--decline"
-                onClick={() => setActionModal("decline")}
-              >
-                <FontAwesomeIcon icon="fa-solid fa-xmark" />
-                Decline
-              </button>
-              <button
-                className="transfer-action-btn--approve"
-                onClick={() => setActionModal("approve")}
-              >
-                <FontAwesomeIcon icon="fa-solid fa-check" />
-                Approve
-              </button>
-            </div>
-          )}
           {request.status === "completed" && (
             <PDFPreviewModal
               title="Inventory Transfer Report"
@@ -257,6 +239,24 @@ function TransferInfo() {
               ))}
           </div>
         </div>
+        {showActions && (
+          <div className="transfer-info-actions">
+            <button
+              className="transfer-action-btn--decline"
+              onClick={() => setActionModal("decline")}
+            >
+              <FontAwesomeIcon icon="fa-solid fa-xmark" />
+              Decline
+            </button>
+            <button
+              className="transfer-action-btn--approve"
+              onClick={() => setActionModal("approve")}
+            >
+              <FontAwesomeIcon icon="fa-solid fa-check" />
+              Approve
+            </button>
+          </div>
+        )}
       </div>
     </MainLayout>
   );
