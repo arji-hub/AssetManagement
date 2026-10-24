@@ -395,6 +395,9 @@
 .report-modal-btn--submit {
   background: var(--gold-500);
   color: var(--maroon-600);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .report-modal-btn--submit:hover:not(:disabled) {

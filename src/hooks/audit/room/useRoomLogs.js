@@ -145,15 +145,23 @@ function useRoomLogs() {
   }, [auditRooms]);
 
   const previousAudits = useMemo(() => {
+    const statusOrder = { ongoing: 0, completed: 1 };
+
     return auditRooms
       .map((audit) => ({
         ...audit,
         room_name:
           roomNameById.get(audit.room_id) ?? audit.room_name ?? "Unknown room",
       }))
-      .sort(
-        (a, b) => new Date(b.created_at ?? 0) - new Date(a.created_at ?? 0),
-      );
+      .sort((a, b) => {
+        // 1. Group by status
+        const statusA = statusOrder[a.status?.toLowerCase()] ?? 2;
+        const statusB = statusOrder[b.status?.toLowerCase()] ?? 2;
+        if (statusA !== statusB) return statusA - statusB;
+
+        // 2. Within the same status, newest first
+        return new Date(b.created_at ?? 0) - new Date(a.created_at ?? 0);
+      });
   }, [auditRooms, roomNameById]);
 
   const handleRoomClick = (roomID) => navigate(`/audit/room/${roomID}`);

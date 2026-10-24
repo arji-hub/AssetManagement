@@ -225,7 +225,17 @@ function ReportModal({ onClose, assetID = "" }) {
               onClick={() => handleSubmit()}
               disabled={isSubmitting || !isFormValid}
             >
-              {isSubmitting ? "Submitting..." : "Submit Report"}
+              {isSubmitting ? (
+                "Submitting..."
+              ) : (
+                <>
+                  <FontAwesomeIcon
+                    icon="fa-solid fa-paper-plane"
+                    aria-hidden="true"
+                  />
+                  Submit Report
+                </>
+              )}
             </button>
           </div>
         </div>

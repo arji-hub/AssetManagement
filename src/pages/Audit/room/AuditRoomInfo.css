@@ -442,3 +442,48 @@
     text-overflow: ellipsis;
   }
 }
+
+/* == Report (damaged) button + badge ========================================= */
+
+.audit-session-report-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid color-mix(in srgb, var(--danger) 60%, transparent);
+  border-radius: 6px;
+  background: var(--danger-bg);
+  color: var(--danger);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.audit-session-report-btn:hover {
+  background: color-mix(in srgb, var(--danger) 18%, transparent);
+  border-color: var(--danger);
+}
+
+.audit-session-report-btn:active {
+  transform: scale(0.98);
+}
+
+.audit-session-report-btn--full-width {
+  width: 100%;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.audit-status-badge--damaged {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+@media (max-width: 768px) {
+  .audit-session-report-btn {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+}
