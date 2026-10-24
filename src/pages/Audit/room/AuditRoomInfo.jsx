@@ -11,6 +11,7 @@ import ScanStatusModal from "../../../components/ui/status/scanStatusModal";
 import { AuditRoomPDF } from "../../../pdf/templates/AuditRoomPDF";
 import { PDFPreviewModal } from "../../../pdf/renderer/PDFPreviewModal";
 import AuditSaveRoomModal from "../../../components/modal/AuditSaveRoomModal";
+import ReportDamageModal from "../../../components/modal/ReportDamageModal";
 import useAuditRoomPDF from "../../../hooks/audit/room/useAuditRoomPDF";
 import Table from "../../../components/panel/Table";
 import AuditItemCard from "../../../components/ui/card/audit/AuditItemCard";
@@ -64,6 +65,12 @@ function AuditRoomInfo() {
     completeAuditError,
     handleCompleteAudit,
     handleRowClick,
+    reportTarget,
+    scannedAuditItem,
+    canReportScanned,
+    handleOpenReport,
+    handleReportClose,
+    handleSubmitDamageReport,
   } = useRoomInfo(auditID);
 
   const { auditPDF, auditItemsPDF } = useAuditRoomPDF(auditID);
@@ -76,8 +83,9 @@ function AuditRoomInfo() {
         verifyingId,
         isCompleted,
         onVerify: handleVerifyItem,
+        onReport: handleOpenReport,
       }),
-    [verifyingId, isCompleted, handleVerifyItem],
+    [verifyingId, isCompleted, handleVerifyItem, handleOpenReport],
   );
 
   return (
@@ -312,9 +320,22 @@ function AuditRoomInfo() {
             errorMessage={scanModalError}
             onAddDiscrepancy={handleAddDiscrepancy}
             addingDiscrepancy={addingDiscrepancy}
+            onReport={
+              canReportScanned
+                ? () => handleOpenReport(scannedAuditItem, "scan")
+                : undefined
+            }
             onClose={handleScanModalClose}
           />
         )}
+
+        {/* Damage report form (opened from the scan modal or the table) */}
+        <ReportDamageModal
+          isOpen={!!reportTarget}
+          item={reportTarget?.item}
+          onClose={handleReportClose}
+          onSubmit={handleSubmitDamageReport}
+        />
       </div>
     </MainLayout>
   );

@@ -229,7 +229,7 @@ const generateReportNo = async () => {
   });
 };
 
-async function assetNoDuplicateOpenReport(assetId, type) {
+export async function assetNoDuplicateOpenReport(assetId, type) {
   const DAMAGE_STATUSES = [REPORT_STATUS.DAMAGED, REPORT_STATUS.FOR_REPAIR];
   const MISSING_STATUSES = [REPORT_STATUS.MISSING, REPORT_STATUS.FOUND];
 

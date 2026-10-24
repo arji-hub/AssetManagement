@@ -241,7 +241,12 @@ export const auditHistoryColumns = [
 ];
 
 // ── "Audit items" table (AuditRoomInfo) — needs live handlers, so it's a factory ──
-export function getAuditItemColumns({ verifyingId, isCompleted, onVerify }) {
+export function getAuditItemColumns({
+  verifyingId,
+  isCompleted,
+  onVerify,
+  onReport,
+}) {
   return [
     {
       key: "asset_id",
@@ -303,6 +308,34 @@ export function getAuditItemColumns({ verifyingId, isCompleted, onVerify }) {
                   Verify
                 </>
               )}
+            </button>
+          );
+        }
+
+        // Reported damaged: show the report number
+        if (i.audit_status === "damaged" || i.report_no || i.has_open_report) {
+          return (
+            <span className="audit-status-badge audit-status-badge--damaged">
+              <FontAwesomeIcon icon="fa-solid fa-screwdriver-wrench" />
+              {i.report_no ?? "Open report"}
+            </span>
+          );
+        }
+
+        // Verified (and audit still open): the Verify button becomes Report
+        if (i.audit_status === "audited" && !isCompleted) {
+          return (
+            <button
+              type="button"
+              className="audit-session-report-btn audit-session-report-btn--full-width"
+              onClick={(e) => {
+                e.stopPropagation();
+                onReport?.(i, "table");
+              }}
+              title="Report as damaged"
+            >
+              <FontAwesomeIcon icon="fa-solid fa-triangle-exclamation" />
+              Report
             </button>
           );
         }

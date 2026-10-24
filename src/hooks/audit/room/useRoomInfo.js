@@ -1,18 +1,21 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import {
   subscribeToAuditByID,
   updateAuditItem,
   completeAuditSession,
   addUnexpectedDiscrepancy,
+  reportDamagedAuditItem,
 } from "../../../services/audit";
 import { useRoomAssets } from "../../room/useRoomAssets";
+import { assetNoDuplicateOpenReport } from "../../../services/report";
+import { REPORT_STATUS } from "../../../data/reports";
 import { fetchAssetByID, isAssetCondemned } from "../../../services/asset";
 import { useNavigate } from "react-router-dom";
 
 function useRoomInfo(auditID) {
   const navigate = useNavigate();
   const [audit, setAudit] = useState(null);
-  const [auditItems, setAuditItems] = useState([]);
+  const [rawAuditItems, setAuditItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [verifyingId, setVerifyingId] = useState(null);
@@ -35,6 +38,9 @@ function useRoomInfo(auditID) {
   //discrepancy
   const [addingDiscrepancy, setAddingDiscrepancy] = useState(false);
   const [discrepancyItems, setDiscrepancyItems] = useState([]);
+
+  //damage report — { item, origin: "scan" | "table" } while the form is open
+  const [reportTarget, setReportTarget] = useState(null);
 
   // Real-time subscription
   useEffect(() => {
@@ -74,6 +80,63 @@ function useRoomInfo(auditID) {
     return () => unsubscribe();
   }, [auditID]);
 
+  // ── Open damage reports ────────────────────────────────────────────────────
+  // asset ids that already have an open damage report (filed here or elsewhere)
+  const [openReportAssets, setOpenReportAssets] = useState(() => new Set());
+  const checkedAssetsRef = useRef(new Set()); // asset ids already looked up
+
+  // Reuses assetNoDuplicateOpenReport: it throws a plain Error when the asset
+  // already has an open report, so a throw WITHOUT a Firebase `code` means
+  // "has an open report". Firebase errors (network, permissions) mean unknown.
+  const hasOpenDamageReport = useCallback(async (assetId) => {
+    try {
+      await assetNoDuplicateOpenReport(assetId, REPORT_STATUS.DAMAGED);
+      return false;
+    } catch (err) {
+      return !err?.code;
+    }
+  }, []);
+
+  const markOpenReport = useCallback((assetId) => {
+    checkedAssetsRef.current.add(assetId);
+    setOpenReportAssets((prev) => new Set(prev).add(assetId));
+  }, []);
+
+  // Look up each audited item that would show a Report button, once per asset.
+  useEffect(() => {
+    const pending = rawAuditItems
+      .filter(
+        (i) =>
+          i.audit_status === "audited" &&
+          !i.report_no &&
+          !checkedAssetsRef.current.has(i.asset_id ?? i.id),
+      )
+      .map((i) => i.asset_id ?? i.id);
+
+    if (pending.length === 0) return;
+    pending.forEach((id) => checkedAssetsRef.current.add(id));
+
+    Promise.all(
+      pending.map(async (id) => [id, await hasOpenDamageReport(id)]),
+    ).then((results) => {
+      const open = results.filter(([, isOpen]) => isOpen).map(([id]) => id);
+      if (open.length > 0) {
+        setOpenReportAssets((prev) => new Set([...prev, ...open]));
+      }
+    });
+  }, [rawAuditItems, hasOpenDamageReport]);
+
+  // Audit items with has_open_report attached when the asset has an open report
+  const auditItems = useMemo(
+    () =>
+      rawAuditItems.map((item) =>
+        openReportAssets.has(item.asset_id ?? item.id)
+          ? { ...item, has_open_report: true }
+          : item,
+      ),
+    [rawAuditItems, openReportAssets],
+  );
+
   // Auto-close modal and reopen camera after a success OR duplicate result.
   /*useEffect(() => {
       if (
@@ -98,7 +161,7 @@ function useRoomInfo(auditID) {
         return { ok: false, reason: "no_audit_id" };
       }
 
-      if (currentStatus === "audited") {
+      if (currentStatus === "audited" || currentStatus === "damaged") {
         return { ok: false, reason: "already_audited" };
       }
 
@@ -186,10 +249,24 @@ function useRoomInfo(auditID) {
       setScanModalOpen(true);
       setIsCameraOpen(false);
 
+      // Check for an open damage report while the verify write runs
+      const assetKey = matchingItem.asset_id ?? matchingItem.id;
+      const alreadyHasReport =
+        matchingItem.audit_status === "damaged" || !!matchingItem.report_no;
+      const openCheck =
+        matchingItem.has_open_report || alreadyHasReport
+          ? Promise.resolve(!!matchingItem.has_open_report)
+          : hasOpenDamageReport(assetKey);
+
       const result = await handleVerifyItem(
         matchingItem.id,
         matchingItem.audit_status,
       );
+
+      if (await openCheck) {
+        markOpenReport(assetKey);
+        setScannedItem({ ...matchingItem, has_open_report: true });
+      }
 
       if (result.ok) {
         setScanModalStatus("success");
@@ -209,7 +286,14 @@ function useRoomInfo(auditID) {
 
       setScanModalStatus("error");
     },
-    [auditItems, discrepancyItems, handleVerifyItem, roomName],
+    [
+      auditItems,
+      discrepancyItems,
+      handleVerifyItem,
+      hasOpenDamageReport,
+      markOpenReport,
+      roomName,
+    ],
   );
 
   const handleScanModalClose = useCallback(() => {
@@ -289,6 +373,63 @@ function useRoomInfo(auditID) {
     }
   }, [auditID, audit?.room_id, scannedItem, roomName]);
 
+  // ── Damage report ──────────────────────────────────────────────────────────
+  const isCompleted = audit?.status === "completed";
+
+  // scannedItem is a snapshot taken BEFORE the verify write, so its
+  // audit_status is stale. Always look the item up in the live snapshot.
+  const scannedAuditItem = useMemo(() => {
+    if (!scannedItem) return null;
+    return (
+      auditItems.find(
+        (i) => i.id === scannedItem.id || i.asset_id === scannedItem.asset_id,
+      ) ?? null
+    );
+  }, [scannedItem, auditItems]);
+
+  const canReportScanned =
+    !isCompleted &&
+    (scanModalStatus === "success" || scanModalStatus === "duplicate") &&
+    scannedAuditItem?.audit_status === "audited" &&
+    !scannedAuditItem?.report_no &&
+    !scannedAuditItem?.has_open_report;
+
+  const handleOpenReport = useCallback((item, origin) => {
+    setReportTarget({ item, origin });
+    // Close the scan modal directly (NOT via handleScanModalClose, which would
+    // reopen the camera). The camera reopens when the report form closes.
+    if (origin === "scan") setScanModalOpen(false);
+  }, []);
+
+  const handleReportClose = useCallback(() => {
+    const origin = reportTarget?.origin;
+    setReportTarget(null);
+    if (origin === "scan") {
+      setTimeout(() => setIsCameraOpen(true), 300);
+    }
+  }, [reportTarget]);
+
+  const handleSubmitDamageReport = useCallback(
+    async ({ narrative, photo }) => {
+      if (!auditID || !reportTarget) return { ok: false, reason: "blocked" };
+
+      try {
+        const res = await reportDamagedAuditItem({
+          auditID,
+          itemID: reportTarget.item.id,
+          narrative,
+          photo,
+          reportedBy: audit?.audited_by,
+          reportedByName: audit?.audited_by_name,
+        });
+        return { ok: true, report_no: res.report_no };
+      } catch (err) {
+        return { ok: false, error: err };
+      }
+    },
+    [auditID, audit?.audited_by, audit?.audited_by_name, reportTarget],
+  );
+
   const handleRowClick = (id) => {
     navigate(`/asset/info/${id}`);
   };
@@ -325,6 +466,13 @@ function useRoomInfo(auditID) {
     completingAudit,
     completeAuditError,
     handleCompleteAudit,
+    // Damage report
+    reportTarget,
+    scannedAuditItem,
+    canReportScanned,
+    handleOpenReport,
+    handleReportClose,
+    handleSubmitDamageReport,
   };
 }
 

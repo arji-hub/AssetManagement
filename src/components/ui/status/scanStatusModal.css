@@ -2,173 +2,250 @@
    SCAN STATUS MODAL STYLES
    ============================================ */
 
+/* ── Tone tokens: each status sets --tone / --tone-bg once,
+      and the icon, message banner and badge all follow ── */
+.scan-modal-container {
+  --tone: var(--maroon-700);
+  --tone-bg: color-mix(in srgb, var(--maroon-700) 10%, transparent);
+}
+
+.scan-modal-container[data-tone="success"] {
+  --tone: var(--success);
+  --tone-bg: var(--success-bg);
+}
+
+.scan-modal-container[data-tone="error"] {
+  --tone: var(--danger);
+  --tone-bg: var(--danger-bg);
+}
+
+.scan-modal-container[data-tone="warning"] {
+  --tone: var(--missing);
+  --tone-bg: var(--missing-bg);
+}
+
+/* ── Overlay & container ── */
 .scan-modal-overlay {
   position: fixed;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 16px;
   background: var(--overlay);
   animation: scanFadeIn 0.2s ease;
   z-index: 1000;
 }
 
 .scan-modal-container {
-  background: var(--card-bg);
-  border-radius: 8px;
-  padding: 36px 32px 32px;
-  width: 100%;
-  max-width: 360px;
-  box-shadow: var(--card-elevated-container-elevation);
-  animation: scanSlideUp 0.3s ease;
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  max-width: 400px;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 36px 28px 28px;
+  background: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: var(--card-elevated-container-elevation);
+  animation: scanSlideUp 0.3s ease;
 }
 
-/* ── Spinner (Loading) ── */
-.scan-modal-spinner {
-  width: 60px;
-  height: 60px;
-  border: 4px solid var(--track-bg);
-  border-top: 4px solid var(--maroon-700);
-  border-radius: 50%;
-  animation: scanSpin 0.8s linear infinite;
-  margin-bottom: 20px;
-}
-
-/* ── Status Icon ── */
+/* ── Status icon ── */
 .scan-modal-icon {
-  width: 70px;
-  height: 70px;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 24px;
   border-radius: 50%;
-  font-size: 2.5rem;
-  margin-bottom: 20px;
+  font-size: 1.75rem;
+  background: var(--tone-bg);
+  color: var(--tone);
+  /* soft halo instead of an outline */
+  box-shadow: 0 0 0 8px color-mix(in srgb, var(--tone) 10%, transparent);
   animation: scanPulse 0.6s ease;
-}
-
-.scan-modal-icon--success {
-  background: var(--success-bg);
-  color: var(--success);
-}
-
-.scan-modal-icon--error {
-  background: var(--danger-bg);
-  color: var(--danger);
-}
-
-.scan-modal-icon--duplicate {
-  color: var(--gold-500);
 }
 
 /* ── Title ── */
 .scan-modal-title {
+  margin: 0 0 20px;
   text-align: center;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
   color: var(--text-strong);
-  margin-bottom: 20px;
 }
 
-/* ── Item Info Card ── */
-.scan-modal-item-info {
+/* ============================================
+   ITEM INFO CARD
+   Hierarchy: asset ID → description → details
+   ============================================ */
+.scan-item {
   width: 100%;
-  background: var(--surface-subtle);
-  border-radius: 6px;
-  padding: 16px;
-  margin-bottom: 20px;
-  border-left: 4px solid var(--maroon-700);
-}
-
-.scan-modal-item-row {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  margin-bottom: 12px;
+  gap: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  background: var(--surface-subtle);
+  border-radius: 12px;
 }
 
-.scan-modal-item-row:last-child {
-  margin-bottom: 0;
+/* Asset ID: the primary identifier */
+.scan-item-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
 }
 
-.scan-modal-item-label {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  color: var(--text-faint);
-  text-transform: uppercase;
-}
-
-.scan-modal-item-value {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-strong);
-  word-break: break-word;
-  line-height: 1.4;
-}
-
-.font-bold {
-  font-weight: 700;
-}
-
-.scan-item-id-success {
-  color: var(--success);
-  font-weight: 700;
-}
-
-/* ── Message Text ── */
-.scan-modal-message {
-  text-align: center;
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--text-muted);
-  margin-bottom: 20px;
-  min-height: 42px;
+.scan-item-badge {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  font-size: 1.05rem;
+  background: var(--tone);
+  color: #fff;
 }
 
-.scan-modal-message--success {
-  color: var(--success);
-  font-weight: 600;
-  background: var(--success-bg);
-  padding: 12px;
-  border-radius: 4px;
+.scan-item-id {
+  min-width: 0;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-strong);
+  word-break: break-all;
 }
 
-.scan-modal-message--error {
-  color: var(--danger);
+/* Description: secondary */
+.scan-item-description {
+  margin: 0;
+  font-size: 14px;
   font-weight: 500;
-  background: var(--danger-bg);
-  padding: 12px;
-  border-radius: 4px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  word-break: break-word;
 }
 
-.scan-modal-message--duplicate {
-  color: var(--missing);
+/* Details: tertiary, laid out as small tiles */
+.scan-item-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
 }
 
-/* ── Buttons ── */
+.scan-item-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  padding: 10px 12px;
+  background: var(--card-bg);
+  border-radius: 8px;
+}
+
+/* a lone last tile stretches across the row */
+.scan-item-field:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+.scan-item-field-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-faint);
+}
+
+.scan-item-field-label svg {
+  color: var(--tone);
+}
+
+.scan-item-field-value {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--text-strong);
+  word-break: break-word;
+}
+
+/* ── Message banner ── */
+.scan-modal-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  margin: 0 0 20px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  background: var(--tone-bg);
+  color: var(--tone);
+}
+
+.scan-modal-message svg {
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+/* Reminder banner (e.g. open damage report), stacked under the main message */
+.scan-modal-message--notice {
+  --tone: var(--missing);
+  --tone-bg: var(--missing-bg);
+}
+
+.scan-modal-message + .scan-modal-message--notice {
+  margin-top: -10px;
+}
+
+/* Loading: no banner, just quiet centered text */
+.scan-modal-message--plain {
+  justify-content: center;
+  padding: 0;
+  background: none;
+  color: var(--text-muted);
+}
+
+/* ── Buttons ──
+   One pattern everywhere: secondary (outlined, left) + primary (filled, right) */
 .scan-modal-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   width: 100%;
-  padding: 12px;
+  padding: 12px 14px;
   font-size: 15px;
   font-weight: 600;
-  letter-spacing: 0.06em;
-  border-radius: 4px;
-  border: none;
+  border-radius: 8px;
+  border: 1px solid transparent;
   cursor: pointer;
-  gap: 8px;
-  transition: all 0.2s ease;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.scan-modal-btn:focus-visible {
+  outline: 2px solid var(--maroon-700);
+  outline-offset: 2px;
 }
 
 .scan-modal-btn:disabled {
@@ -177,59 +254,45 @@
   transform: none;
 }
 
-.scan-modal-btn--success {
+/* Primary: same look in every status */
+.scan-modal-btn--primary {
   background: var(--maroon-700);
   color: #fff;
 }
 
-.scan-modal-btn--success:hover {
+.scan-modal-btn--primary:hover:not(:disabled) {
   background: var(--maroon-900);
-  transform: translateY(-2px);
 }
 
-.scan-modal-btn--success:active {
-  transform: translateY(0);
-}
-
-.scan-modal-btn--error {
-  background: var(--danger-bg);
-  color: var(--danger);
-  border: 1px solid var(--danger);
-}
-
-.scan-modal-btn--error:hover {
-  background: var(--card-border-hover);
-}
-
-.scan-modal-btn--error:active {
+.scan-modal-btn--primary:active:not(:disabled) {
   transform: scale(0.98);
 }
 
-.scan-modal-btn--duplicate {
-  background-color: var(--gold-500);
-  color: var(--text-strong);
+/* Secondary: outlined, accent color set by the variant */
+.scan-modal-btn--secondary {
+  background: transparent;
+  color: var(--btn-accent);
+  border-color: color-mix(in srgb, var(--btn-accent) 60%, transparent);
 }
 
-.scan-modal-btn--duplicate:hover {
-  background-color: var(--gold-400);
+.scan-modal-btn--secondary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--btn-accent) 10%, transparent);
+  border-color: var(--btn-accent);
+}
+
+.scan-modal-btn--secondary:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.scan-modal-btn--danger {
+  --btn-accent: var(--danger);
 }
 
 .scan-modal-btn--warning {
-  background: var(--missing-bg);
-  color: var(--missing);
-  border: 1px solid var(--gold-500);
+  --btn-accent: var(--missing);
 }
 
-.scan-modal-btn--warning:hover:not(:disabled) {
-  background: var(--gold-500);
-  color: var(--text-strong);
-}
-
-.scan-modal-btn--warning:active:not(:disabled) {
-  transform: scale(0.98);
-}
-
-/* ── Button Group (multiple buttons side by side) ── */
+/* ── Button group ── */
 .scan-modal-btn-group {
   display: flex;
   flex-direction: row;
@@ -263,12 +326,6 @@
   }
 }
 
-@keyframes scanSpin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 @keyframes scanPulse {
   0% {
     transform: scale(0.8);
@@ -283,26 +340,41 @@
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .scan-modal-overlay,
+  .scan-modal-container,
+  .scan-modal-icon {
+    animation: none;
+  }
+
+  .scan-modal-btn {
+    transition: none;
+  }
+}
+
 /* ── Responsive ── */
 @media (max-width: 480px) {
   .scan-modal-container {
-    padding: 28px 24px 24px;
-    max-width: 90%;
+    padding: 28px 20px 20px;
   }
 
   .scan-modal-title {
     font-size: 20px;
   }
 
-  .scan-modal-item-info {
-    padding: 12px;
+  .scan-item {
+    padding: 14px;
   }
 
-  .scan-modal-item-value {
-    font-size: 13px;
+  .scan-item-id {
+    font-size: 18px;
+  }
+
+  .scan-item-meta {
+    grid-template-columns: 1fr;
   }
 
   .scan-modal-btn-group {
-    flex-direction: column;
+    flex-direction: column-reverse;
   }
 }
