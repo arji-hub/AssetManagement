@@ -20,7 +20,7 @@ import { getReportType, fetchReportSummary, addReport } from "./report";
 import { REPORT_TYPES, REPORT_STATUS } from "../data/reports";
 import { AUDIT_NO_CONFIG } from "../data/audit";
 import { fetchRoomName } from "./room";
-import { isAssetCondemned } from "./asset";
+import { isAssetCondemned, fetchAssetByID } from "./asset";
 
 //==========AUDIT ROOM===========
 
@@ -276,6 +276,12 @@ export async function updateAuditItem(auditID, itemID, updates) {
     const itemData = itemSnap.data();
     const auditData = auditSnap.data();
 
+    // A reported-damaged item is already audited. Never let a re-verify
+    // overwrite "damaged" or bump audited_count a second time.
+    if (itemData.audit_status === "damaged") {
+      return { success: true, skipped: true, auditID, itemID, updates };
+    }
+
     // Track if we're marking as audited (was not audited, now is)
     const isMarkingAsAudited =
       itemData.audit_status !== "audited" && updates.audit_status === "audited";
@@ -303,6 +309,84 @@ export async function updateAuditItem(auditID, itemID, updates) {
       updates,
     };
   });
+}
+
+// Files a "damaged" report for an already-audited item and links the report
+// back onto the audit item (report_id / report_no) so the UI can reflect it.
+// Does NOT touch discrepancy_count: damage is a condition finding, not a
+// presence/location discrepancy.
+export async function reportDamagedAuditItem({
+  auditID,
+  itemID,
+  narrative,
+  photo,
+  reportedBy,
+  reportedByName,
+}) {
+  if (!auditID) throw new Error("auditID is required.");
+  if (!itemID) throw new Error("itemID is required.");
+  if (!narrative || !narrative.trim()) {
+    throw new Error("Please describe the damage.");
+  }
+
+  const auditRef = doc(db, "audit_room", auditID);
+  const itemRef = doc(db, "audit_room", auditID, "audit_item", itemID);
+
+  const [auditSnap, itemSnap] = await Promise.all([
+    getDoc(auditRef),
+    getDoc(itemRef),
+  ]);
+
+  if (!auditSnap.exists()) throw new Error("Audit not found.");
+  if (!itemSnap.exists()) throw new Error("Audit item not found.");
+
+  if (auditSnap.data().status === "completed") {
+    throw new Error("This audit is completed and can no longer be edited.");
+  }
+
+  const item = itemSnap.data();
+
+  if (item.audit_status !== "audited") {
+    throw new Error("Verify this asset before reporting it.");
+  }
+  if (item.report_no) {
+    throw new Error(`This asset was already reported (${item.report_no}).`);
+  }
+
+  const asset = await fetchAssetByID(item.asset_id);
+
+  // `description` is the ASSET description; the user's damage note is `narrative`.
+  const { id: reportId, report_no } = await addReport(
+    {
+      type: REPORT_STATUS.DAMAGED,
+      asset_id: item.asset_id,
+      asset,
+      description: item.description ?? asset.description,
+      narrative: narrative.trim(),
+      photo: photo ?? null,
+    },
+    reportedBy ?? null,
+    reportedByName ?? null,
+  );
+
+  // The report and the asset status are already written at this point. If the
+  // link fails, say so, otherwise a retry would hit "already has an open report".
+  try {
+    await updateDoc(itemRef, {
+      report_id: reportId,
+      report_no,
+      report_type: REPORT_STATUS.DAMAGED,
+      asset_status: REPORT_STATUS.DAMAGED,
+      audit_status: "damaged", // stays counted in audited_count (already audited)
+      reported_at: serverTimestamp(),
+    });
+  } catch {
+    throw new Error(
+      `Report ${report_no} was filed, but it could not be linked to this audit item.`,
+    );
+  }
+
+  return { id: reportId, report_no };
 }
 
 export async function completeAuditSession(auditID) {
