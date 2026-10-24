@@ -59,3 +59,9 @@ export const AUDIT_SESSION_STATUS_CONFIG = {
     className: "completed",
   },
 };
+
+// ── Add to data/audit.js ─────────────────────────────────────────────────────
+export const AUDIT_CYCLE_DAYS = 90; // a room is overdue past this many days since its last completed audit
+export const STALE_AUDIT_DAYS = 14; // an in-progress audit is "stale" after this many days...
+export const STALE_PROGRESS_PERCENT = 30; // ...if it's still under this much progress
+
