@@ -4,14 +4,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBoxesStacked,
   faClockRotateLeft,
+  faClipboardCheck,
   faEllipsis,
 } from "@fortawesome/free-solid-svg-icons";
 import MainLayout from "../../components/layout/MainLayout";
 import {
+  ReportReminderPanel,
   AssetDashboardPanel,
   AssetStatusDashboardPanel,
   ReportDashboardPanel,
   TransferDashboardPanel,
+  AuditDashboardPanel,
+  AuditAttentionDashboardPanel,
 } from "../../components/dashboard";
 
 import "./AdminDashboard.css";
@@ -23,6 +27,7 @@ function AdminDashboard() {
   return (
     <MainLayout>
       <div className="dashboard admin-dashboard">
+        <ReportReminderPanel user={user} />
         <section
           className="dashboard-section"
           aria-labelledby="assets-section-title"
@@ -74,6 +79,32 @@ function AdminDashboard() {
           <div className="dashboard-section-grid">
             <ReportDashboardPanel user={user} />
             <TransferDashboardPanel user={user} />
+          </div>
+        </section>
+        <section
+          className="dashboard-section"
+          aria-labelledby="audits-section-title"
+        >
+          <div className="dashboard-section-header">
+            <div className="dashboard-section-title" id="audits-section-title">
+              <FontAwesomeIcon
+                icon={faClipboardCheck}
+                className="dashboard-section-icon"
+              />
+              <span>Audits</span>
+            </div>
+            <button
+              type="button"
+              className="dashboard-section-menu"
+              aria-label="Audits section options"
+            >
+              <FontAwesomeIcon icon={faEllipsis} />
+            </button>
+          </div>
+
+          <div className="dashboard-section-grid">
+            <AuditDashboardPanel user={user} />
+            <AuditAttentionDashboardPanel user={user} />
           </div>
         </section>
       </div>
