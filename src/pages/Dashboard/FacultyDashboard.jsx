@@ -8,6 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import MainLayout from "../../components/layout/MainLayout";
 import {
+  ReportReminderPanel,
   AssetDashboardPanel,
   AssetStatusDashboardPanel,
   ReportDashboardPanel,
@@ -23,6 +24,7 @@ function FacultyDashboard() {
   return (
     <MainLayout>
       <div className="dashboard faculty-dashboard">
+        <ReportReminderPanel user={user} />
         <section
           className="dashboard-section"
           aria-labelledby="assets-section-title"

@@ -764,3 +764,12 @@ export function formatTimeAgo(date) {
 
   return "just now";
 }
+
+export function subscribeToAudits(onData, onError) {
+  const q = query(collection(db, "audit_room"), orderBy("created_at", "desc"));
+  return onSnapshot(
+    q,
+    (snap) => onData(snap.docs.map((d) => ({ id: d.id, ...d.data() }))),
+    onError,
+  );
+}

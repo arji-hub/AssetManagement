@@ -1,0 +1,413 @@
+/* ReportReminderPanel — formal summary notice for the top of the dashboard.
+   Neutral card, same border/radius as the other panels. Severity is shown
+   only through small status marks (icon, dots), not a colored edge. */
+
+.report-reminder {
+  --reminder-tone: var(--missing);
+  --reminder-tone-bg: var(--missing-bg);
+
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--card-bg);
+  border: 2px solid var(--card-border);
+  border-radius: var(--radius-md);
+  box-shadow: none;
+  overflow: hidden;
+  container-type: inline-size;
+  container-name: report-reminder;
+}
+
+/* Only damaged assets: the icon and dots use the damaged tone instead */
+.report-reminder.is-damaged {
+  --reminder-tone: var(--damaged);
+  --reminder-tone-bg: var(--damaged-bg);
+}
+
+/* ── Main row ──────────────────────────────────────────── */
+
+.report-reminder-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 16px 28px;
+  padding: 16px 20px;
+}
+
+.report-reminder-summary {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  min-width: 0;
+}
+
+.report-reminder-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--reminder-tone-bg);
+  color: var(--reminder-tone);
+  font-size: 15px;
+}
+
+.report-reminder-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.report-reminder-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.report-reminder-heading {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--text-strong);
+}
+
+.report-reminder-sub {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+/* ── Metrics ───────────────────────────────────────────── */
+
+.report-reminder-metrics {
+  display: flex;
+  margin: 0;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--surface-subtle);
+}
+
+.report-reminder-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 96px;
+  padding: 10px 18px;
+}
+
+.report-reminder-metric + .report-reminder-metric {
+  border-left: 1px solid var(--border-subtle);
+}
+
+.report-reminder-metric dt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.report-reminder-metric dd {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-strong);
+}
+
+.report-reminder-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: currentColor;
+}
+
+.report-reminder-metric.is-missing .report-reminder-dot,
+.report-reminder-status.is-missing .report-reminder-dot {
+  color: var(--danger);
+}
+
+.report-reminder-metric.is-damaged .report-reminder-dot,
+.report-reminder-status.is-damaged .report-reminder-dot {
+  color: var(--gold-500);
+}
+
+/* ── Actions ───────────────────────────────────────────── */
+
+.report-reminder-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.report-reminder-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-sizing: border-box;
+  min-height: 34px;
+  padding: 0 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.report-reminder-btn--primary {
+  border: 1px solid var(--maroon-700);
+  background: var(--maroon-700);
+  color: #fff;
+}
+
+.report-reminder-btn--primary:hover {
+  background: var(--maroon-800);
+  border-color: var(--maroon-800);
+}
+
+.report-reminder-btn--ghost {
+  border: 1px solid var(--card-border);
+  background: transparent;
+  color: var(--text-strong);
+}
+
+.report-reminder-btn--ghost:hover {
+  background: var(--hover-tint);
+}
+
+.report-reminder-btn--ghost i {
+  font-size: 10px;
+  color: var(--text-faint);
+}
+
+.report-reminder-btn:focus-visible {
+  outline: 2px solid var(--maroon-700);
+  outline-offset: 2px;
+}
+
+/* ── Details table ─────────────────────────────────────── */
+
+.report-reminder-details {
+  padding: 0 20px 16px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.report-reminder-table-wrap {
+  overflow-x: auto;
+}
+
+.report-reminder-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  color: var(--text-strong);
+}
+
+.report-reminder-table th {
+  padding: 12px 12px 8px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--text-faint);
+}
+
+.report-reminder-table td {
+  padding: 12px 12px 12px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: middle;
+  color: var(--text-muted);
+}
+
+.report-reminder-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.report-reminder-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.report-reminder-status.is-missing {
+  color: var(--missing);
+  background: var(--missing-bg);
+}
+
+.report-reminder-status.is-damaged {
+  color: var(--damaged);
+  background: var(--damaged-bg);
+}
+
+.report-reminder-asset {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.report-reminder-asset-name {
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
+.report-reminder-mono {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.report-reminder-more {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.report-reminder-link {
+  color: var(--maroon-700);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.report-reminder-link:hover {
+  text-decoration: underline;
+}
+
+/* ── Responsive (driven by the notice's own width) ─────── */
+
+/* Medium: summary on its own row, metrics left, actions right */
+@container report-reminder (max-width: 860px) {
+  .report-reminder-main {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "summary summary"
+      "metrics actions";
+    gap: 14px 20px;
+  }
+
+  .report-reminder-summary {
+    grid-area: summary;
+  }
+
+  .report-reminder-metrics {
+    grid-area: metrics;
+    justify-self: start;
+  }
+
+  .report-reminder-actions {
+    grid-area: actions;
+    flex-direction: row;
+    align-self: stretch;
+    align-items: center;
+  }
+}
+
+/* Small: everything stacks full width, details become labeled cards */
+@container report-reminder (max-width: 560px) {
+  .report-reminder-main {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "summary"
+      "metrics"
+      "actions";
+    padding: 14px 16px;
+  }
+
+  .report-reminder-metrics {
+    justify-self: stretch;
+  }
+
+  .report-reminder-metric {
+    flex: 1;
+    min-width: 0;
+    padding: 10px 14px;
+  }
+
+  .report-reminder-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .report-reminder-btn {
+    width: 100%;
+    min-height: 40px;
+  }
+
+  .report-reminder-heading {
+    font-size: 15px;
+  }
+
+  .report-reminder-details {
+    padding: 0 16px 12px;
+  }
+
+  .report-reminder-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .report-reminder-table,
+  .report-reminder-table tbody,
+  .report-reminder-table tr,
+  .report-reminder-table td {
+    display: block;
+  }
+
+  .report-reminder-table tr {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .report-reminder-table tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  .report-reminder-table td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 6px 0;
+    border-bottom: none;
+    text-align: right;
+  }
+
+  .report-reminder-table td::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  .report-reminder-asset {
+    align-items: flex-end;
+  }
+}
