@@ -181,7 +181,7 @@ function HeaderFooter() {
           />
           <ImageSlot
             label="Footer"
-            description="Shown at the bottom of every page, above the page number."
+            description="Shown at the bottom of every page."
             slot={footer}
             onPick={(file) => pickFile(FOOTER, file)}
             onSave={() => save(FOOTER)}
