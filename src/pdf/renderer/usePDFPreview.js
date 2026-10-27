@@ -1,7 +1,14 @@
 // All state + side effects for the PDF preview modal.
 // The component only renders what this hook returns.
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, cloneElement } from "react";
 import { pdf } from "@react-pdf/renderer";
+import {
+  fetchHeaderFooterSources,
+  DEFAULT_HEADER,
+  DEFAULT_FOOTER,
+} from "../../services/headerFooter";
+import { createElement } from "react";
+import { PDFAssetsContext } from "./pdfAssetsContext";
 
 const MAX_PAGE_WIDTH = 700;
 const PAGE_GUTTER = 20;
@@ -13,7 +20,7 @@ export function usePDFPreview(pdfDocument) {
   const [printing, setPrinting] = useState(false);
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
-  const [viewerEl, setViewerEl] = useState(null); // callback ref target
+  const [viewerEl, setViewerEl] = useState(null);
   const [containerWidth, setContainerWidth] = useState(600);
 
   // Keep the latest element in a ref so an inline <Template /> prop (new object
@@ -28,15 +35,30 @@ export function usePDFPreview(pdfDocument) {
     let url = null;
     setError(false);
 
-    pdf(documentRef.current)
-      .toBlob()
+    const element = documentRef.current;
+    console.log(
+      "[PDF] opening preview for:",
+      element.type?.name ?? element.type,
+    );
+
+    fetchHeaderFooterSources()
+      .then((sources) => {
+        console.log("[PDF] sources resolved:", sources);
+        console.log("[PDF] using custom image?", {
+          header: sources.headerSrc !== DEFAULT_HEADER,
+          footer: sources.footerSrc !== DEFAULT_FOOTER,
+        });
+        return pdf(
+          createElement(PDFAssetsContext.Provider, { value: sources }, element),
+        ).toBlob();
+      })
       .then((blob) => {
+        console.log("[PDF] blob generated:", blob.size, "bytes");
         if (cancelled) return;
         url = URL.createObjectURL(blob);
         setBlobUrl(url);
       })
       .catch((err) => {
-        // e.g. an image that failed to load — don't leave the skeleton spinning
         console.error("[usePDFPreview] Failed to render preview:", err);
         if (!cancelled) setError(true);
       });
