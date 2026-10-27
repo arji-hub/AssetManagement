@@ -87,7 +87,6 @@ async function fetchSlotUrl(slot) {
 
     const cached = readCache(slot);
     if (cached?.version === version) {
-      console.log(`[HeaderFooter] ${slot}: cache hit`, version);
       return cached.url;
     }
 
@@ -95,15 +94,9 @@ async function fetchSlotUrl(slot) {
     const separator = url.includes("?") ? "&" : "?";
     const versionedUrl = `${url}${separator}v=${encodeURIComponent(version)}`;
 
-    console.log(`[HeaderFooter] ${slot}: fetched new URL`, versionedUrl);
     writeCache(slot, { version, url: versionedUrl });
     return versionedUrl;
   } catch (err) {
-    console.log(
-      `[HeaderFooter] ${slot}: lookup failed ->`,
-      err?.code,
-      err?.message,
-    );
     if (err?.code === "storage/object-not-found") {
       writeCache(slot, null);
       return null;
@@ -194,7 +187,6 @@ export async function fetchHeaderFooterSources() {
   try {
     return resolveHeaderFooter(await fetchHeaderFooter());
   } catch (err) {
-    console.warn("Falling back to default PDF header/footer:", err);
     return resolveHeaderFooter(null);
   }
 }

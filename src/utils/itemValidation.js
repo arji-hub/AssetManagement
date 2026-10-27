@@ -28,14 +28,6 @@ export function getMissingFields(item, ctx = {}) {
   if (item.tracking_mode === "individual" && qty > 1) {
     const serials = item.serial_numbers || [];
     const filled = serials.filter((s) => !isBlank(s)).length;
-    console.log("[getMissingFields] serial check:", {
-      qty,
-      readsFrom: "item.serials",
-      serialsSeen: serials,
-      actualField: item.serial_numbers,
-      filled,
-      willFlag: filled < qty,
-    });
     if (filled < qty) missing.push("Serial numbers");
   }
 
