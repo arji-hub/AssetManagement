@@ -1,5 +1,5 @@
 import { db, auth } from "./firebase-config";
-import { ROLES } from "../data/roles"; // adjust path to wherever ROLES actually lives
+import { ROLES } from "../data/roles";
 import {
   collection,
   doc,

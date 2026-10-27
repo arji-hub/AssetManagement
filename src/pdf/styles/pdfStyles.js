@@ -9,10 +9,19 @@ export const COLORS = {
   headerFill: "#F2F2F2",
 };
 
+export const A4_WIDTH = 595.28;
+
+// Standard slot sizes. Every uploaded image is stretched to these.
+export const HEADER_HEIGHT = A4_WIDTH * (217 / 915); // ≈ 141.2pt
+export const FOOTER_HEIGHT = A4_WIDTH * (175 / 915); // ≈ 113.9pt
+
 export const PAGE_PADDING_TOP = 36;
 export const PAGE_PADDING_X = 36;
-export const FOOTER_RESERVE = 90;
-export const PAGE_NUMBER_BOTTOM = FOOTER_RESERVE - 14;
+
+export const FOOTER_GAP = 10;
+export const PAGE_NUMBER_HEIGHT = 10;
+export const FOOTER_RESERVE = FOOTER_HEIGHT + PAGE_NUMBER_HEIGHT + FOOTER_GAP; // ≈ 134pt
+export const PAGE_NUMBER_BOTTOM = FOOTER_HEIGHT + 2;
 
 export const styles = StyleSheet.create({
   page: {
@@ -124,10 +133,18 @@ export const styles = StyleSheet.create({
   headerWrap: {
     marginTop: -PAGE_PADDING_TOP,
     marginHorizontal: -PAGE_PADDING_X,
+    height: HEADER_HEIGHT,
   },
-  headerImage: { width: "100%" },
-  footerWrap: { position: "absolute", bottom: 0, left: 0, right: 0 },
-  footerImage: { width: "100%" },
+  headerImage: { width: "100%", height: HEADER_HEIGHT, objectFit: "fill" },
+
+  footerWrap: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: FOOTER_HEIGHT,
+  },
+  footerImage: { width: "100%", height: FOOTER_HEIGHT, objectFit: "fill" },
   pageNumber: {
     position: "absolute",
     bottom: PAGE_NUMBER_BOTTOM,
