@@ -36,24 +36,14 @@ export function usePDFPreview(pdfDocument) {
     setError(false);
 
     const element = documentRef.current;
-    console.log(
-      "[PDF] opening preview for:",
-      element.type?.name ?? element.type,
-    );
 
     fetchHeaderFooterSources()
       .then((sources) => {
-        console.log("[PDF] sources resolved:", sources);
-        console.log("[PDF] using custom image?", {
-          header: sources.headerSrc !== DEFAULT_HEADER,
-          footer: sources.footerSrc !== DEFAULT_FOOTER,
-        });
         return pdf(
           createElement(PDFAssetsContext.Provider, { value: sources }, element),
         ).toBlob();
       })
       .then((blob) => {
-        console.log("[PDF] blob generated:", blob.size, "bytes");
         if (cancelled) return;
         url = URL.createObjectURL(blob);
         setBlobUrl(url);
