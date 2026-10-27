@@ -1,22 +1,23 @@
 // Header image + footer image (both every page), title + form code on page 1,
 // "Page X of Y" on every page.
 import { Document, Page, View, Text, Image } from "@react-pdf/renderer";
-import headerImg from "../../assets/PDFTemplate/Header.png";
-import footerImg from "../../assets/PDFTemplate/Footer.png";
+import defaultHeaderImg from "../../assets/PDFTemplate/Header.png";
+import defaultFooterImg from "../../assets/PDFTemplate/Footer.png";
+import { usePDFAssets } from "../renderer/pdfAssetsContext";
 import { styles } from "./pdfStyles";
 
-function Header() {
+function Header({ src }) {
   return (
     <View style={styles.headerWrap} fixed>
-      <Image src={headerImg} style={styles.headerImage} />
+      <Image src={src} style={styles.headerImage} />
     </View>
   );
 }
 
-function Footer() {
+function Footer({ src }) {
   return (
     <View style={styles.footerWrap} fixed>
-      <Image src={footerImg} style={styles.footerImage} />
+      <Image src={src} style={styles.footerImage} />
     </View>
   );
 }
@@ -33,11 +34,14 @@ function PageNumber() {
   );
 }
 
+// headerSrc / footerSrc come from fetchHeaderFooterSources() in the caller.
+// They are optional: without them the bundled defaults are used.
 export function PDFLayout({ title, formCode, children }) {
+  const { headerSrc, footerSrc } = usePDFAssets();
   return (
     <Document title={title}>
       <Page size="A4" style={styles.page}>
-        <Header />
+        <Header src={headerSrc || defaultHeaderImg} />
         <View style={styles.titleWrap}>
           <Text style={styles.title}>{title}</Text>
           {formCode ? <Text style={styles.formCode}>{formCode}</Text> : null}
@@ -45,7 +49,7 @@ export function PDFLayout({ title, formCode, children }) {
 
         {children}
 
-        <Footer />
+        <Footer src={footerSrc || defaultFooterImg} />
         <PageNumber />
       </Page>
     </Document>
