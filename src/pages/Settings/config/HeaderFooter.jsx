@@ -155,13 +155,14 @@ function HeaderFooter() {
 
   return (
     <section className="settings-section">
-      <div className="settings-section-header">
+      <div className="settings-section-header hf-header">
         <div>
           <h3>PDF header and footer</h3>
           <p>
             These images appear at the top and bottom of every page in generated
-            PDF reports. Use a PNG or JPG up to 2 MB.
+            PDF reports.
           </p>
+          <p className="hf-hint">PNG or JPG, up to 2 MB.</p>
         </div>
       </div>
 
@@ -181,7 +182,7 @@ function HeaderFooter() {
           />
           <ImageSlot
             label="Footer"
-            description="Shown at the bottom of every page, above the page number."
+            description="Shown at the bottom of every page."
             slot={footer}
             onPick={(file) => pickFile(FOOTER, file)}
             onSave={() => save(FOOTER)}

@@ -84,6 +84,24 @@
   justify-content: flex-end;
   gap: 10px;
 }
+
+/* ---------------------------------------------------------
+   Section header
+--------------------------------------------------------- */
+.hf-header > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.hf-header p {
+  max-width: none;
+}
+
+.hf-hint {
+  margin-top: 2px;
+  color: var(--text-faint);
+  font-size: 12px;
+}
 /* ---------------------------------------------------------
    Actions
    Discard (left) | Replace image (center) | Save (right)
