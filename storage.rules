@@ -1,0 +1,51 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Asset files
+    match /assets/{assetId}/{fileName} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null &&
+        firestore.get(
+          /databases/(default)/documents/user/$(request.auth.uid)
+        ).data.role == "admin";
+    }
+
+    // Acquisition documents
+    match /acquisitions/{acquisitionId}/{fileName} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null &&
+        firestore.get(
+          /databases/(default)/documents/user/$(request.auth.uid)
+        ).data.role == "admin";
+    }
+
+    // Reports
+    match /reports/{reportNo}/{fileName} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+    }
+
+    // PDF header / footer template images
+    match /config/pdf/{fileName} {
+      allow read: if request.auth != null;
+
+      // Uploads: admin only, PNG/JPG only, max 2 MB (matches the service).
+      allow create, update: if request.auth != null &&
+        firestore.get(
+          /databases/(default)/documents/user/$(request.auth.uid)
+        ).data.role == "admin" &&
+        request.resource.contentType.matches("image/(png|jpeg)") &&
+        request.resource.size <= 2 * 1024 * 1024;
+
+      // Deletes: admin only. Kept separate because request.resource is
+      // null on delete, so the content checks above would always fail
+      // and the service could never remove the old image.
+      allow delete: if request.auth != null &&
+        firestore.get(
+          /databases/(default)/documents/user/$(request.auth.uid)
+        ).data.role == "admin";
+    }
+  }
+}

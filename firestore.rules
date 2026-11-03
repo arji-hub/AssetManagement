@@ -1,0 +1,121 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function getRole() {
+      return get(/databases/$(database)/documents/user/$(request.auth.uid)).data.role;
+    }
+
+    function isAdmin() {
+      return getRole() == 'admin';
+    }
+
+    function isFaculty() {
+      return getRole() in ['parttime', 'fulltime'];
+    }
+
+    //assets collection
+    match /asset/{assetId} {
+      // Admin: full access
+      allow write: if request.auth != null && isAdmin();
+      // public can read the database
+      allow read: if true;
+
+      // auth users can update status if reported
+      allow update: if request.auth != null &&
+        (isAdmin() ||
+         (request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['status', 'updated_at']) &&
+          request.resource.data.status in 
+          ['Working', 'Missing', 'For Repair', 'Damaged', 'Condemned']));
+    }
+
+    //users collection
+    function isValidStatus(status) {
+     return status == 'active' || status == 'inactive';
+    }
+
+    match /user/{userId} {
+      allow read: if true;
+
+      allow create: if request.auth != null && isAdmin() &&
+        isValidStatus(request.resource.data.get('status', 'active'));
+
+      allow update: if request.auth != null && (
+        (isAdmin() &&
+          isValidStatus(request.resource.data.get('status', 'active'))) ||
+        (
+        // allow self-update only if these fields are not changed
+        request.auth.uid == userId &&
+        request.resource.data.email == resource.data.email &&
+        request.resource.data.role == resource.data.role &&
+        request.resource.data.get('status', 'active') ==
+        resource.data.get('status', 'active')
+       )
+      );
+
+      allow delete: if request.auth != null && isAdmin();
+    }
+
+    //rooms collection
+    match /room/{roomId} {
+      allow read: if true;
+      allow write: if request.auth != null && isAdmin();
+    }
+
+    //categories collection
+    match /category/{catId} {
+      allow read: if true;
+      allow write: if request.auth != null && isAdmin();
+    }
+    
+    //counters collection
+    match /counters/{counterId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+    }
+    
+    //reports collection
+    match /report/{reportId} {
+      // anyone logged in can read/create report
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      // only admin can update report status
+      allow update: if request.auth != null && isAdmin();
+      allow delete: if request.auth != null && isAdmin();
+    }
+    
+    //transfer collection
+    match /transfer_request/{transfer_requestId} {
+      // anyone logged in can read/create/update report
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null;
+    }
+    
+    //transfer room 
+    match /transfer_room/{docId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && isAdmin();
+    }
+    
+    // audit_room 
+    match /audit_room/{auditRoomId} {
+      allow read, write: if request.auth != null && isAdmin();
+      match /audit_item/{itemId} {
+        allow read, write: if request.auth != null && isAdmin();
+      }
+      match /discrepancy_item/{itemId} {
+        allow read, write: if request.auth != null && isAdmin();
+      }
+    }
+    
+    // audit_report
+    match /audit_report/{auditRoomId} {
+      allow read, write: if request.auth != null && isAdmin();
+      match /audit_item/{itemId} {
+        allow read, write: if request.auth != null && isAdmin();
+      }
+    }
+  }
+}
