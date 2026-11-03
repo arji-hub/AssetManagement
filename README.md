@@ -60,6 +60,19 @@ The **CICT Asset Management System (CICT-AMS)** is designed to give the College 
 
 🌐 **[ams-cict.web.app](https://ams-cict.web.app)**
 
+The site is registered with Google Search Console, so you can also find it by searching for **CICT Asset Management System** on Google, or simply click the link above.
+
+### Demo Login Credentials
+
+| Role    | Email                                         | Password                                                    |
+| ------- | --------------------------------------------- | ----------------------------------------------------------- |
+| Admin   | `admin@bulsu.com`                             | `faculty123`                                                |
+| Faculty | `faculty1@gmail.com` to `faculty30@gmail.com` | Same as the part before the `@` (`faculty1` to `faculty30`) |
+
+Faculty accounts follow one pattern: the password is the name in front of the `@`. For example, `faculty1@gmail.com` uses the password `faculty1`, and `faculty2@gmail.com` uses `faculty2`. Thirty faculty accounts are available, up to `faculty30@gmail.com`.
+
+> These are demo accounts for trying out the system. Please do not enter real institutional data.
+
 ---
 
 ## 🚀 Getting Started
@@ -82,7 +95,7 @@ npm run dev
 
 ## ⚙️ Setup: Run It on Your Own Firebase Project
 
-This section walks you through standing up your own backend (Auth, Firestore, Storage, Cloud Functions) and connecting this frontend to it. No access to the original project is needed.
+This section walks you through standing up your own backend (Auth, Firestore, Storage, Cloud Functions) and connecting this frontend to it. You do not need access to the original project, but some source files contain CICT-specific branding and URLs, which steps 3 and 7 explain how to replace.
 
 ### Contents
 
@@ -106,6 +119,7 @@ This section walks you through standing up your own backend (Auth, Firestore, St
 - **Node.js** `v22.12.0` or higher (the Cloud Functions runtime is Node 22, and Vite 8 needs `v20.19+` or `v22.12+`)
 - **npm** `v9` or higher (or yarn / pnpm)
 - A **Google account** with access to the [Firebase Console](https://console.firebase.google.com/)
+- **Firebase CLI** — installed locally by `npm install` (it is a dev dependency), so run it as `npx firebase ...`; no global install is needed
 - **Microsoft Entra ID (Azure AD)** — optional, only if you want institutional Microsoft sign-in
 - Build tools for the `canvas` package, if `npm install` fails to compile it on your OS (see the [node-canvas install notes](https://github.com/Automattic/node-canvas#compiling))
 
@@ -114,7 +128,7 @@ This section walks you through standing up your own backend (Auth, Firestore, St
 ### 2. Create the Firebase project
 
 1. Open the [Firebase Console](https://console.firebase.google.com/) and click **Add project**. Name it (for example `ams-yourdept`).
-2. Upgrade the project to the **Blaze (pay-as-you-go)** plan. Cloud Functions require it, and Storage may require it to create the default bucket. Light usage typically stays within the free quota, but check current Firebase pricing.
+2. Upgrade the project to the **Blaze (pay-as-you-go)** plan. Cloud Functions require it, and Storage may require it to create the default bucket. Light usage typically stays within the free quota, but check current Firebase pricing, and create a budget alert in Google Cloud Billing so unexpected usage does not surprise you.
 
 ---
 
@@ -151,8 +165,8 @@ After you apply the settings in this guide (`VITE_APP_BASE_URL` here, and `funct
 
 1. Go to **Build > Authentication > Get started > Sign-in method**.
 2. Enable **Email/Password**.
-3. Enable **Google** and/or **Microsoft** (see below), depending on what your institution uses.
-4. Go to **Authentication > Settings > Authorized domains** and add the domain you will deploy to (for example `your-project.web.app` or your custom domain). `localhost` is already allowed. Without this, sign-in works locally but fails in production.
+3. Enable **Google** and/or **Microsoft**.
+4. Go to **Authentication > Settings > Authorized domains** and add the domain you will deploy to (for example `ams-cict.web.app` or your custom domain). Also check that `localhost` is listed, and add it if it is missing, so sign-in works during local development. Without this, sign-in works locally but fails in production.
 
 **Microsoft sign-in (optional)**
 
@@ -171,6 +185,24 @@ These must exist before you can deploy rules.
 
 1. **Build > Firestore Database > Create database.** Choose **Production mode** and a location. Pick the location carefully: it cannot be changed later, and your Cloud Functions region should be close to it.
 2. **Build > Storage > Get started.** Accept the default bucket.
+
+**Storage CORS (needed for QR code export).** Downloading QR codes as a ZIP reads images from Storage in the browser, which requires CORS to be configured on your bucket. Without it, that export fails while everything else works. Create a `cors.json` file listing the addresses the app runs on:
+
+```json
+[
+  {
+    "origin": ["http://localhost:8080", "https://YOUR_APP_DOMAIN"],
+    "method": ["GET"],
+    "maxAgeSeconds": 3600
+  }
+]
+```
+
+Use the local address that `npm run dev` prints, and your real hosting domain. Then apply it with the [Google Cloud CLI](https://cloud.google.com/sdk/docs/install), using your exact bucket name from `VITE_FIREBASE_STORAGE_BUCKET`:
+
+```bash
+gcloud storage buckets update gs://YOUR_BUCKET_NAME --cors-file=cors.json
+```
 
 ---
 
@@ -237,7 +269,7 @@ npx firebase functions:secrets:set GMAIL_PASS
 npx firebase functions:secrets:set GEMINI_API_KEY
 ```
 
-Each command prompts for the value. If you skip this step, the deploy in step 4 asks for any missing secret. Note that Gmail limits how many emails an account can send per day, so a dedicated sender account is recommended.
+Each command prompts for the value. Every function that declares a secret needs it to exist at deploy time, and the deploy command below prompts for any that are missing. If you do not plan to use email or document scanning yet, enter a placeholder value and replace it later (re-run the `secrets:set` command, then redeploy). Until real values are set, welcome and notification emails and document scanning will not work; the rest of the app is unaffected. Note that Gmail limits how many emails an account can send per day, so a dedicated sender account is recommended.
 
 3. Set the deployment-specific values (all paths are inside `functions/src/`):
 
@@ -273,14 +305,21 @@ The security rules only let admins create users, so the first admin is created b
    - **Document ID:** the UID you copied
    - **Fields:**
 
-```json
-{
-  "email": "admin@yourdepartment.edu",
-  "role": "admin",
-  "status": "active",
-  "created_at": "2026-01-01T00:00:00.000Z"
-}
-```
+| Field            | Example                    | Firestore type |
+| ---------------- | -------------------------- | -------------- |
+| `email`          | `admin@yourdepartment.edu` | string         |
+| `user_name`      | `admin`                    | string         |
+| `first_name`     | `System`                   | string         |
+| `middle_name`    | _(empty)_                  | string         |
+| `last_name`      | `Admin`                    | string         |
+| `role`           | `admin`                    | string         |
+| `status`         | `active`                   | string         |
+| `deactivated_at` | `null`                     | null           |
+| `created_at`     | the current time           | timestamp      |
+
+These are the same fields the `addCustodian` function writes for every user it creates. Use a real Firestore **timestamp** for `created_at`, not a text string.
+
+> **Sign-in note:** the app matches a signed-in account to its `user` document by UID, not by email. Sign in first with the same method you used to create the account (Email/Password in the steps above). Signing in with Google or Microsoft using the same email may create a separate account with a different UID unless the providers are linked, and that account will not have the admin role.
 
 Once signed in as admin, you can add custodians from inside the app. Valid roles are `admin`, `fulltime`, and `parttime`.
 
@@ -294,7 +333,17 @@ Once signed in as admin, you can add custodians from inside the app. Valid roles
 npm run dev
 ```
 
-Open `http://localhost:5173` and sign in with the admin account.
+Open the local address that Vite prints in the terminal (this project configures its own dev-server port, so it may differ from Vite's default of 5173) and sign in with the admin account.
+
+**Check that everything works end to end:**
+
+1. Sign in as the admin.
+2. Add a custodian (this calls `addCustodian` and sends a welcome email).
+3. Register an asset with an image (tests Storage uploads).
+4. Open the asset's QR link and confirm it points to your own app URL.
+5. Scan an acquisition document (tests `GEMINI_API_KEY`).
+6. File a report or transfer request and confirm the notification email arrives with working links.
+7. Download the QR codes as a ZIP (tests the Storage CORS setup).
 
 ---
 
