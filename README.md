@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://firebasestorage.googleapis.com/v0/b/ams-cict.firebasestorage.app/o/images%2Fcictlogo.jfif?alt=media&token=5ce68321-b3ef-40a4-86b5-6bcc42d7735e" width="90" alt="CICT Logo" />
+<img src="src/assets/logo/CICTLOGO.png" width="90" alt="CICT Logo" />
 
 # CICT Asset Management System
 
