@@ -141,7 +141,7 @@ export function subscribeToReports(uid, callback, onError) {
   );
 
   return () => {
-    active = false; // ignore lookups that finish after unsubscribing
+    active = false;
     unsubscribe();
   };
 }
