@@ -371,8 +371,6 @@ async function addAssetItem(
   };
 
   // ── create the asset docs first ──
-  // qr_code_url is intentionally omitted here: onAssetCreatedGenerateQR
-  // picks up the doc-create event and fills it in server-side.
   await Promise.all(
     records.map(({ assetId, serial }) =>
       setDoc(doc(db, "asset", assetId), {
@@ -425,12 +423,6 @@ async function addAssetItem(
     ),
   );
 
-  // NOTE: if categoryCount/roomCount are also read-increment-write
-  // transactions keyed by category_id/room_id, calling them once per
-  // record here has the same contention risk as the old generateAssetId
-  // did — worth checking their implementation and, if so, batching them
-  // (one call per unique category/room with `records.length` as a delta)
-  // the same way asset ID reservation was batched above.
   const countUpdates = records.flatMap(() => [
     categoryCount(item.category_id),
     ...(item.room_id ? [roomCount(item.room_id)] : []),
